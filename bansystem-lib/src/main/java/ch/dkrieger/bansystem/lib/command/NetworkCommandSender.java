@@ -1,6 +1,7 @@
 package ch.dkrieger.bansystem.lib.command;
 
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.UUID;
@@ -18,6 +19,8 @@ public interface NetworkCommandSender {
     public UUID getUUID();
 
     public NetworkPlayer getAsNetworkPlayer();
+
+    public OnlineNetworkPlayer getAsOnlineNetworkPlayer();
 
     public boolean hasPermission(String permission);
 

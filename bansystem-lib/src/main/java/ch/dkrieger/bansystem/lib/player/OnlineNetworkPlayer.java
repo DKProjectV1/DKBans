@@ -1,5 +1,7 @@
 package ch.dkrieger.bansystem.lib.player;
 
+import ch.dkrieger.bansystem.lib.player.history.value.Ban;
+import ch.dkrieger.bansystem.lib.player.history.value.Kick;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.UUID;
@@ -10,7 +12,13 @@ public interface OnlineNetworkPlayer {
 
     public String getName();
 
+    public String getProxy();
+
     public String getServer();
+
+    public int getPing();
+
+    public NetworkPlayer getPlayer();
 
     public void sendMessage(String message);
 
@@ -20,8 +28,14 @@ public interface OnlineNetworkPlayer {
 
     public void executeCommand(String command);
 
-    public void kick();
+    public void kickForBan(Ban ban);
 
-    public void ban();
+    public void kick(String reason, int reasonID);
+
+    public void kick(NetworkPlayer staff,int reasonID);
+
+    public void kick(NetworkPlayer staff, String reason, int reasonID);
+
+    public void kick(Kick kick);
 
 }
