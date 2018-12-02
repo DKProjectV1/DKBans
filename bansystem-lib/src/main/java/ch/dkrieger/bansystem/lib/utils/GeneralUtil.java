@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /*
  *
@@ -160,7 +161,24 @@ public class GeneralUtil {
         component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,link));
         return component;
     }
-
+    public static long convertToMIllis(long time, String timeType){
+        try{
+            return TimeUnit.valueOf(timeType.toUpperCase()).toMillis(time);
+        }catch (Exception exception){}
+        if(equalsOne(timeType,"second","seconds","sekunde","seunden","s")) return TimeUnit.SECONDS.toMillis(time);
+        else if(equalsOne(timeType,"minute","minutes","minute","minuten","m")) return TimeUnit.MINUTES.toMillis(time);
+        else if(equalsOne(timeType,"hour","hours","stunde","stunden","h","std")) return TimeUnit.HOURS.toMillis(time);
+        else if(equalsOne(timeType,"day","days","tage","tag","d","t")) return TimeUnit.DAYS.toMillis(time);
+        else if(equalsOne(timeType,"week","weeks","woche","wochen","w")) return TimeUnit.DAYS.toMillis(time*7);
+        else if(equalsOne(timeType,"month","months","monate","monaten","mo")) return TimeUnit.DAYS.toMillis(time*30);
+        else if(equalsOne(timeType,"year","years","jahr","jahre","y","j")) return TimeUnit.DAYS.toMillis(time*360);
+       throw new IllegalArgumentException("False time unit");
+    }
+    public static String arrayToString(String[] array, String split){
+        String result = "";
+        for(String string : array) result += string+split;
+        return result;
+    }
     public interface AcceptAble<T> {
         boolean accept(T object);
     }

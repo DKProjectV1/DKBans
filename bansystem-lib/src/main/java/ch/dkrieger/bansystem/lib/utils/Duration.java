@@ -17,6 +17,9 @@ public class Duration {
     public TimeUnit getUnit() {
         return unit;
     }
+    public String getFormatedTime(boolean shortCut){
+        return GeneralUtil.calculateTime(time,shortCut);
+    }
     public long getMillisTime(){
         return this.unit.toMillis(this.time);
     }

@@ -1,13 +1,26 @@
 package ch.dkrieger.bansystem.lib.player.history.value;
 
+import ch.dkrieger.bansystem.lib.BanSystem;
+import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+
 import java.util.UUID;
 
 public class HistoryValue {
 
     private String ip, reason, message;
     private long timeStamp;
-    private int points, reasonID;
+    private int id, points, reasonID;
     private UUID staff;
+
+    public HistoryValue(String ip, String reason, String message, long timeStamp, int points, int reasonID, UUID staff) {
+        this.ip = ip;
+        this.reason = reason;
+        this.message = message;
+        this.timeStamp = timeStamp;
+        this.points = points;
+        this.reasonID = reasonID;
+        this.staff = staff;
+    }
 
     public String getIp() {
         return ip;
@@ -15,6 +28,10 @@ public class HistoryValue {
 
     public String getReason() {
         return reason;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public long getTimeStamp() {
@@ -33,6 +50,7 @@ public class HistoryValue {
         return staff;
     }
     public String getStaffName(){
-        //return name
+        if(staff == null) return "Console";
+        else return BanSystem.getInstance().getPlayerManager().getPlayer(this.staff).getColoredName();
     }
 }

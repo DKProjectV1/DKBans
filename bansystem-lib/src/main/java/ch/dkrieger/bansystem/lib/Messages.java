@@ -48,12 +48,19 @@ public class Messages {
 
     public static String PLAYER_NOT_FOUND;
     public static String PLAYER_NOT_ONLINE;
+    public static String PLAYER_NOT_BANNED;
     public static String PLAYER_ALREADY_BANNED;
     public static String PLAYER_ALREADY_MUTED;
 
     public static String PLAYER_INFO_HELP;
     public static String PLAYER_INFO_ONLINE;
     public static String PLAYER_INFO_OFFLINE;
+
+    public static String STAFF_STATUS_ALREADY;
+    public static String STAFF_STATUS_CHANGE;
+    public static String STAFF_STATUS_NOT;
+    public static String STAFF_STATUS_LOGIN;
+    public static String STAFF_STATUS_LOGOUT;
 
     public static String REASON_NOT_FOUND;
     public static String REASON_NO_PERMISSION;
@@ -77,5 +84,24 @@ public class Messages {
     public static String BROADCAST_HELP;
 
     public static String JUMPTO_HELP;
+
+    public static String JOINME_COOLDOWN;
+    public static String JOINME_NOTFOUND;
+
+    public static String TEAMCHAT_HELP;
+    public static String TEAMCHAT_MESSAGE_COLOR;
+    public static String TEAMCHAT_MESSAGE_FORMAT;
+
+    public static String TEMPBAN_HELP;
+
+    public static String TEMPMUTE_HELP;
+
+    public static String HISTORY_HELP;
+    public static String HISTORY_NOTFOUND;
+
+    public static String ONLINE_TIME;
+
+    public static String UNBAN_HELP_HEADER;
+    public static String UNBAN_HELP_HELP;
 
 }

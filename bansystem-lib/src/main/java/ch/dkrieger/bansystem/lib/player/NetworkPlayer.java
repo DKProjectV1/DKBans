@@ -20,7 +20,7 @@ public class NetworkPlayer {
     private String name, color;
     private UUID uuid;
     private long lastLogin, firstLogin, onlineTime;
-    private boolean bypass;
+    private boolean bypass, teamChatLogin;
     private History history;
     private Document properties;
 
@@ -84,16 +84,16 @@ Gson gson = new GsonBuilder()
         return lastLogin;
     }
 
+    public boolean isTeamChatLoggedIn() {
+        return teamChatLogin;
+    }
+
     public long getFirstLogin() {
         return firstLogin;
     }
 
     public long getOnlineTime() {
         return onlineTime;
-    }
-
-    public boolean hasBypass() {
-        return bypass;
     }
 
     public History getHistory() {
@@ -108,6 +108,10 @@ Gson gson = new GsonBuilder()
         return onlineSessions;
     }
 
+    public void setTeamChatLogin(boolean teamChatLogin) {
+        this.teamChatLogin = teamChatLogin;
+    }
+
     public Ban getBan(){
 
     }
@@ -118,6 +122,12 @@ Gson gson = new GsonBuilder()
     public OnlineNetworkPlayer getOnlinePlayer(){
         return BanSystem.getInstance().getPlayerManager().getOnlinePlayer(this.uuid);
     }
+
+    public boolean hasBypass() {
+        return bypass;
+    }
+
+
 
     public boolean isOnline(){
         return getOnlinePlayer() != null;
@@ -130,17 +140,22 @@ Gson gson = new GsonBuilder()
         return getBan(type) != null;
     }
 
-    public Ban ban(BanType type, long duration, TimeUnit unit, int reasonID){
+    public Ban ban(BanType type, long duration, TimeUnit unit, String reason){
+        return ban(type,duration,unit,reason,-1);
+    }
+
+    public Ban ban(BanType type, long duration, TimeUnit unit,String reason, int reasonID){
+        return ban(type,duration,unit,reason,reasonID,null);
+    }
+
+    public Ban ban(BanType type, long duration, TimeUnit unit, String reason, UUID staff){
+        return ban(type,duration,unit,reason,-1,staff);
+    }
+
+    public Ban ban(BanType type, long duration, TimeUnit unit,String reason, int reasonID, UUID staff){
 
     }
 
-    public Ban ban(BanType type, long duration, TimeUnit unit, NetworkPlayer staff, int reasonID){
-
-    }
-
-    public Ban ban(BanType type, long duration, TimeUnit unit,NetworkPlayer staff, String reason, int reasonID){
-
-    }
 
     public Ban ban(BanReason reason, UUID staff){
 

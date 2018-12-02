@@ -4,7 +4,10 @@ import ch.dkrieger.bansystem.lib.config.mode.BanMode;
 
 public class Config {
 
-    private BanMode mode;
+    public BanMode banMode;
 
+    public boolean joinMeEnabled;
+    public int JoinMeCooldown;
+    public int joinMeTimeOut;
 
 }

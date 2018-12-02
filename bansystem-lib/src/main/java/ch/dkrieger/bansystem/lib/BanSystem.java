@@ -1,5 +1,6 @@
 package ch.dkrieger.bansystem.lib;
 
+import ch.dkrieger.bansystem.lib.config.Config;
 import ch.dkrieger.bansystem.lib.player.PlayerManager;
 import ch.dkrieger.bansystem.lib.reason.ReasonProvider;
 
@@ -10,7 +11,9 @@ public class BanSystem {
     private final DKBansPlatform platform;
     private PlayerManager playerManager;
     private ReasonProvider reasonProvider;
-    private Network network;
+    private DKNetwork network;
+
+    private Config config;
 
     public BanSystem(DKBansPlatform platform) {
         instance = this;
@@ -29,6 +32,10 @@ public class BanSystem {
         return version;
     }
 
+    public Config getConfig() {
+        return config;
+    }
+
     public PlayerManager getPlayerManager() {
         return playerManager;
     }
@@ -37,7 +44,7 @@ public class BanSystem {
         return reasonProvider;
     }
 
-    public Network getNetwork() {
+    public DKNetwork getNetwork() {
         return network;
     }
 

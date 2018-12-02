@@ -4,6 +4,7 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
+import ch.dkrieger.bansystem.lib.config.mode.BanMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.value.Ban;
@@ -17,8 +18,8 @@ import java.util.List;
 
 public class BanCommand extends NetworkCommand {
 
-    public BanCommand(String name, String description, String permission, String usage, String... aliases) {
-        super(name, description, permission, usage, aliases);
+    public BanCommand() {
+        super("ban","","dkbans.ban");
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
@@ -26,7 +27,10 @@ public class BanCommand extends NetworkCommand {
             sendReasons(sender);
             return;
         }
-
+        if(BanSystem.getInstance().getConfig().banMode == BanMode.SELF){
+            sender.executeCommand("tempban "+GeneralUtil.arrayToString(args," "));
+            return;
+        }
         //check ban type
 
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
@@ -61,7 +65,6 @@ public class BanCommand extends NetworkCommand {
                     .replace("[prefix]",getPrefix()));
             return;
         }
-
         String message = "";
         boolean overwrite = false;
 
