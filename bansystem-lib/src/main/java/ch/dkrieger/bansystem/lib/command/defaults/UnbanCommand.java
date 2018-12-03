@@ -5,6 +5,7 @@ import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.reason.UnbanReason;
 
 import java.util.List;
@@ -22,17 +23,27 @@ public class UnbanCommand extends NetworkCommand {
         }
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
         if(player != null){
-            sender.sendMessage(Messages.PLAYER_NOT_
-                    .replace("[prefix]",getPrefix())
-                    .replace("[player]",args[0]));
-            return;
-        }
-        if(!player.isBanned()){
             sender.sendMessage(Messages.PLAYER_NOT_FOUND
                     .replace("[prefix]",getPrefix())
                     .replace("[player]",args[0]));
             return;
         }
+        if(!player.isBanned()){
+            sender.sendMessage(Messages.PLAYER_NOT_BANNED
+                    .replace("[prefix]",getPrefix())
+                    .replace("[player]",args[0]));
+            return;
+        }
+        BanType type = null;
+        if(args.length > 2){
+            type = BanType.parse(args[2]);
+            return;
+        }
+        if(type != null && player.getBan(BanType.NETWORK) != null && player.getBan(BanType.CHAT) != null){
+
+            return;
+        }
+        player.unban();
     }
     private void sendReasons(NetworkCommandSender sender){
         sender.sendMessage(Messages.UNBAN_HELP_HEADER);

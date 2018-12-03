@@ -9,4 +9,10 @@ public enum BanType {
 
     }
 
+    public static BanType parse(String parse){
+        try{
+            return valueOf(parse.toUpperCase());
+        }catch (Exception exception){}
+        return null;
+    }
 }

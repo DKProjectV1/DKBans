@@ -1,4 +1,21 @@
 package ch.dkrieger.bansystem.lib.command.defaults;
 
-public class ReportCommand {
+import ch.dkrieger.bansystem.lib.command.NetworkCommand;
+import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
+
+import java.util.List;
+
+public class ReportCommand extends NetworkCommand {
+
+    public ReportCommand() {
+        super("report","","dkbans.report");
+    }
+    @Override
+    public void onExecute(NetworkCommandSender sender, String[] args) {
+
+    }
+    @Override
+    public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
+        return null;
+    }
 }

@@ -1,5 +1,6 @@
 package ch.dkrieger.bansystem.lib.reason;
 
+import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.utils.Duration;
 
 import java.util.List;
@@ -9,6 +10,7 @@ public class UnbanReason extends KickReason{
     private Duration maxDuration;
     private int maxPoints;
     private List<Integer> notForBanID;
+    private BanType banType;
 
     public UnbanReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, Duration maxDuration, int maxPoints, List<Integer> notForBanID) {
         super(id, points, name, display, permission, hidden, aliases);

@@ -8,6 +8,7 @@ import ch.dkrieger.bansystem.lib.player.history.value.Kick;
 import ch.dkrieger.bansystem.lib.player.history.value.Unban;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
 import ch.dkrieger.bansystem.lib.reason.KickReason;
+import ch.dkrieger.bansystem.lib.reason.UnbanReason;
 import ch.dkrieger.bansystem.lib.utils.Document;
 
 import java.util.List;
@@ -178,6 +179,13 @@ Gson gson = new GsonBuilder()
 
     public Kick kick(Kick kick){
 
+
+    }
+
+    public void unban(BanType type, UnbanReason reason){
+
+    }
+    public void unban(BanType type){
 
     }
 

@@ -4,7 +4,6 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
-import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,10 +21,10 @@ public class BroadcastCommand extends NetworkCommand {
                     .replace("[prefix]",getPrefix()));
             return;
         }
-        TextComponent component = new TextComponent();
         String message = "";
         for(int i = 0; i < args.length;i++)  message += args[0]+" ";
-        BanSystem.getInstance().getNetwork().broadcast(message);
+        BanSystem.getInstance().getNetwork().broadcast(Messages.BROADCAST
+                .replace("[prefix]",getPrefix()).replace("[message]",message));
     }
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
