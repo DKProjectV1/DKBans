@@ -1,8 +1,12 @@
 package ch.dkrieger.bansystem.lib;
 
+import ch.dkrieger.bansystem.lib.broadcast.BroadcastManager;
 import ch.dkrieger.bansystem.lib.config.Config;
+import ch.dkrieger.bansystem.lib.filter.FilterManager;
 import ch.dkrieger.bansystem.lib.player.PlayerManager;
 import ch.dkrieger.bansystem.lib.reason.ReasonProvider;
+import ch.dkrieger.bansystem.lib.report.ReportManager;
+import ch.dkrieger.bansystem.lib.storage.DKBansStorage;
 
 public class BanSystem {
 
@@ -10,7 +14,11 @@ public class BanSystem {
     private final String version;
     private final DKBansPlatform platform;
     private PlayerManager playerManager;
+    private ReportManager reportManager;
+    private BroadcastManager broadcastManager;
+    private FilterManager filterManager;
     private ReasonProvider reasonProvider;
+    private DKBansStorage storage;
     private DKNetwork network;
 
     private Config config;
@@ -40,8 +48,24 @@ public class BanSystem {
         return playerManager;
     }
 
+    public ReportManager getReportManager() {
+        return reportManager;
+    }
+
+    public BroadcastManager getBroadcastManager() {
+        return broadcastManager;
+    }
+
+    public FilterManager getFilterManager() {
+        return filterManager;
+    }
+
     public ReasonProvider getReasonProvider() {
         return reasonProvider;
+    }
+
+    public DKBansStorage getStorage() {
+        return storage;
     }
 
     public DKNetwork getNetwork() {

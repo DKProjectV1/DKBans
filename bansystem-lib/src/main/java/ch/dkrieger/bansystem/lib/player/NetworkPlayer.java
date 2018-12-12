@@ -8,8 +8,11 @@ import ch.dkrieger.bansystem.lib.player.history.value.Kick;
 import ch.dkrieger.bansystem.lib.player.history.value.Unban;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
 import ch.dkrieger.bansystem.lib.reason.KickReason;
+import ch.dkrieger.bansystem.lib.reason.ReportReason;
 import ch.dkrieger.bansystem.lib.reason.UnbanReason;
+import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.utils.Document;
+import com.sun.org.apache.regexp.internal.RE;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,7 +24,7 @@ public class NetworkPlayer {
     private String name, color;
     private UUID uuid;
     private long lastLogin, firstLogin, onlineTime;
-    private boolean bypass, teamChatLogin;
+    private boolean bypass, teamChatLogin, reportLogin;
     private History history;
     private Document properties;
 
@@ -76,6 +79,12 @@ Gson gson = new GsonBuilder()
     public String getColoredName(){
         return getColor()+this.name;
     }
+    public String getCountry(){
+        return null;
+    }
+    public String getIP(){
+        return null;
+    }
 
     public UUID getUUID() {
         return uuid;
@@ -87,6 +96,10 @@ Gson gson = new GsonBuilder()
 
     public boolean isTeamChatLoggedIn() {
         return teamChatLogin;
+    }
+
+    public boolean isReportLogin() {
+        return reportLogin;
     }
 
     public long getFirstLogin() {
@@ -111,6 +124,23 @@ Gson gson = new GsonBuilder()
 
     public void setTeamChatLogin(boolean teamChatLogin) {
         this.teamChatLogin = teamChatLogin;
+    }
+
+    public void setReportLogin(boolean reportLogin) {
+        this.reportLogin = reportLogin;
+    }
+
+    public List<Report> getReports(){
+
+    }
+    public Report getOpenReport(){
+        
+    }
+    public Report getReport(UUID reporter){
+
+    }
+    public boolean hasReport(UUID uuid){
+
     }
 
     public Ban getBan(){
@@ -182,10 +212,51 @@ Gson gson = new GsonBuilder()
 
     }
 
-    public void unban(BanType type, UnbanReason reason){
+    public Unban unban(BanType type, UnbanReason reason){
 
     }
-    public void unban(BanType type){
+    public Unban unban(BanType type){
+
+    }
+
+    public Report report(ReportReason reason){
+        return report(reason,null);
+    }
+    public Report report(ReportReason reason, UUID reporter){
+        return report(reporter,reason.getDisplay(),reason.getID());
+    }
+    public Report report(ReportReason reason,String lastServer, UUID reporter){
+        return report(reporter,reason.getDisplay(),reason.getID(),lastServer);
+    }
+    public Report report(String reason){
+        return report(null,reason);
+    }
+    public Report report(UUID reporter,String reason){
+        return report(reporter,reason,-1);
+    }
+    public Report report(UUID reporter,String reason, String lastServer){
+        return report(reporter,reason,-1,lastServer);
+    }
+    public Report report(UUID reporter,String reason, int reasonID ){
+        OnlineNetworkPlayer online = getOnlinePlayer();
+        if(online != null) return report(reporter,reason,reasonID,online.getServer());
+        return report(reporter,reason,reasonID,"Unknown");
+    }
+
+    public Report report(UUID reporter, String reason, int reasonID, String lastServer){
+        Report report = new Report(null,null,reporter,reason,lastServer,System.currentTimeMillis(),reasonID);
+        return report;
+    }
+    public void processOpenReports(NetworkPlayer player){
+        processOpenReports(player.getUUID());
+    }
+    public void processOpenReports(UUID staff){
+
+    }
+    public void resetHistory(){
+
+    }
+    public void resetHistory(int id){
 
     }
 

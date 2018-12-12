@@ -1,9 +1,8 @@
 package ch.dkrieger.bansystem.lib.config.mode;
 
-public enum BanMode {
+public enum ReportMode {
 
     SELF(),
-    POINT(),
     TEMPLATE();
 
 }

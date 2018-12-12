@@ -48,8 +48,8 @@ public class TeamChatCommand extends NetworkCommand {
             sender.sendMessage(Messages.STAFF_STATUS_CHANGE
                     .replace("[status]",(login?Messages.STAFF_STATUS_LOGIN:Messages.STAFF_STATUS_LOGOUT))
                     .replace("[prefix]",getPrefix()));
-            player.setTeamChatLogin(login);
         }
+        player.setTeamChatLogin(login);
     }
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {

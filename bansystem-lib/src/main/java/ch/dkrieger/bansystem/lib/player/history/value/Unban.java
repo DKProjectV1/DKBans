@@ -1,4 +1,4 @@
 package ch.dkrieger.bansystem.lib.player.history.value;
 
-public class Unban {
+public class Unban extends HistoryValue{
 }

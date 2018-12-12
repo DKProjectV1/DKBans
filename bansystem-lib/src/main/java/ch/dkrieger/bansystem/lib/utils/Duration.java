@@ -11,6 +11,7 @@ public class Duration {
         this.time = time;
         this.unit = unit;
     }
+
     public long getTime() {
         return time;
     }

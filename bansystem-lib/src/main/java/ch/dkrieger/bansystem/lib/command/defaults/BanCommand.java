@@ -31,10 +31,7 @@ public class BanCommand extends NetworkCommand {
             sender.executeCommand("tempban "+GeneralUtil.arrayToString(args," "));
             return;
         }
-        //check ban type
-
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
-
         if(player != null){
             sender.sendMessage(Messages.PLAYER_NOT_FOUND
                     .replace("[prefix]",getPrefix())

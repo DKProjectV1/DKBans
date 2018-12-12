@@ -5,15 +5,13 @@ import ch.dkrieger.bansystem.lib.reason.BanReason;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -149,13 +147,27 @@ public class GeneralUtil {
         return list;
     }
 
-    public static <U> U iterate(List<U> list, AcceptAble<U> acceptAble) {
+    public static <U> U iterateOne(Iterable<U> list, AcceptAble<U> acceptAble) {
         Iterator<U> iterator = list.iterator();
         U result = null;
         while(iterator.hasNext() && (result=iterator.next()) != null) if(acceptAble.accept(result)) return result;
         return null;
     }
-
+    public static <U> void iterateForEach(Iterable<U> list, ForEach<U> forEach){
+        Iterator<U> iterator = list.iterator();
+        U result = null;
+        while(iterator.hasNext() && (result=iterator.next()) != null) forEach.forEach(result);
+    }
+    public static <U> void iterateAcceptedForEach(Iterable<U> list, AcceptAble<U> acceptAble, ForEach<U> forEach) {
+        Iterator<U> iterator = list.iterator();
+        U result = null;
+        while(iterator.hasNext() && (result=iterator.next()) != null) if(acceptAble.accept(result)) forEach.forEach(result);
+    }
+    public static <U> List<U> iterateAcceptedReturn(Iterable<U> list, AcceptAble<U> acceptAble){
+        List<U> result = new ArrayList<>();
+        iterateAcceptedForEach(list,acceptAble,result::add);
+        return result;
+    }
     public static  TextComponent createLinkedMCText(String text, String link){
         TextComponent component = new TextComponent(text);
         component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,link));
@@ -174,6 +186,41 @@ public class GeneralUtil {
         else if(equalsOne(timeType,"year","years","jahr","jahre","y","j")) return TimeUnit.DAYS.toMillis(time*360);
        throw new IllegalArgumentException("False time unit");
     }
+    public static TextComponent replaceTextComponent(TextComponent text, String replacement, TextComponent component){
+        final List<BaseComponent> components = text.getExtra();
+        if(components.size() > 0){
+            for(int i = 0; i < components.size();i++){
+                if(components.get(i) instanceof  TextComponent){
+                    TextComponent tc = (TextComponent)components.get(i);
+                    if(tc.getExtra().size() > 0) for(BaseComponent subTC : tc.getExtra()) if(subTC instanceof TextComponent) replaceTextComponent((TextComponent)subTC,replacement,component);
+                    if(text.getText() != null && !(text.getText().equalsIgnoreCase(""))){
+                        TextComponent newTC = replaceTextComponent(tc.getText(),replacement,component);
+                        tc.setText("");
+                        tc.getExtra().addAll(newTC.getExtra());
+                    }
+                }
+            }
+            text.setExtra(components);
+        }
+        if(text.getText() != null && !(text.getText().equalsIgnoreCase(""))){
+            TextComponent newTC = replaceTextComponent(text.getText(),replacement,component);
+            text.setText("");
+            text.getExtra().addAll(newTC.getExtra());
+        }
+        return text;
+    }
+    public static TextComponent replaceTextComponent(String text, String replacement, TextComponent component){
+        TextComponent message = new TextComponent();
+        if(text.contains(replacement)){
+            int index = text.lastIndexOf("[accept]");
+            message.addExtra(new TextComponent(text.substring(0,index)));
+            message.addExtra(component);
+            text = text.substring(index).replace("[accept]","");
+        }
+        if(text.length() > 0) message.addExtra(text);
+        return message;
+    }
+
     public static String arrayToString(String[] array, String split){
         String result = "";
         for(String string : array) result += string+split;
@@ -181,5 +228,8 @@ public class GeneralUtil {
     }
     public interface AcceptAble<T> {
         boolean accept(T object);
+    }
+    public interface ForEach<T> {
+        void forEach(T object);
     }
 }

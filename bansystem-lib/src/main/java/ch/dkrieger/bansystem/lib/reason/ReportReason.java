@@ -1,7 +1,7 @@
 package ch.dkrieger.bansystem.lib.reason;
 
-public class ReportReason {
+public class ReportReason extends KickReason{
 
-    private int banID;
+
 
 }

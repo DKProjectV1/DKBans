@@ -30,6 +30,6 @@ public interface DKNetwork {
 
     public void reloadFilter();
 
-    public void reloadAutoBroadcast();
+    public void reloadBroadcast();
 
 }

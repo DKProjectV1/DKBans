@@ -35,6 +35,9 @@ public class PlayerManager {
     public NetworkPlayer getPlayer(UUID uuid){
 
     }
+    public NetworkPlayer getPlayerSave(UUID uuid) throws Exception{
+
+    }
     public NetworkPlayer getPlayer(String name){
 
     }
@@ -45,6 +48,9 @@ public class PlayerManager {
 
     }
     public OnlineNetworkPlayer getOnlinePlayer(String name){
+
+    }
+    public NetworkPlayer createPlayer(UUID uuid, String name){
 
     }
 

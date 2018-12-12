@@ -1,7 +1,5 @@
 package ch.dkrieger.bansystem.lib.reason;
 
-import ch.dkrieger.bansystem.lib.utils.Document;
-
 import java.util.List;
 
 public class KickReason {

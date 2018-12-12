@@ -5,7 +5,7 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 
 import java.util.UUID;
 
-public class HistoryValue {
+public abstract class HistoryValue {
 
     private String ip, reason, message;
     private long timeStamp;
@@ -42,6 +42,10 @@ public class HistoryValue {
         return points;
     }
 
+    public int getID() {
+        return id;
+    }
+
     public int getReasonID() {
         return reasonID;
     }
@@ -53,4 +57,6 @@ public class HistoryValue {
         if(staff == null) return "Console";
         else return BanSystem.getInstance().getPlayerManager().getPlayer(this.staff).getColoredName();
     }
+
+    public abstract String getTypeName();
 }

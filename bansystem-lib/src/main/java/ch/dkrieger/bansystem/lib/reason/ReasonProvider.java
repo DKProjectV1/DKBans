@@ -49,7 +49,21 @@ public class ReasonProvider {
     public BanReason getBanReason(int id){
         return GeneralUtil.iterate(this.banReasons,reason -> reason.getID() == id);
     }
+
+
     public BanReason getBanReason(String name){
         return GeneralUtil.iterate(this.banReasons,reason -> reason.hasAlias(name));
+    }
+
+    public ReportReason searchReportReason(String search){
+        if(GeneralUtil.isNumber(search)) return getReportReason(Integer.valueOf(search));
+        return getReportReason(search);
+    }
+
+    public ReportReason getReportReason(int id){
+        return GeneralUtil.iterate(this.reportReasons,reason -> reason.getID() == id);
+    }
+    public ReportReason getReportReason(String name){
+        return GeneralUtil.iterate(this.reportReasons,reason -> reason.hasAlias(name));
     }
 }
