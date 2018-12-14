@@ -174,6 +174,25 @@ public class Messages {
     public static String FILTER_LIST_HEADER;
     public static String FILTER_LIST_LIST;
 
+    public static String IPINFO_HEADER;
+    public static String IPINFO_IP_HEADER;
+    public static String IPINFO_IP_LIST;
+    public static String IPINFO_PLAYER_HEADER;
+    public static String IPINFO_PLAYER_LIST;
+    public static String IPINFO_PLAYER_ONLINE;
+    public static String IPINFO_PLAYER_OFFLINE;
+    public static String IPINFO_PLAYER_MUTED;
+    public static String IPINFO_PLAYER_BANNED;
+
+    public static String CHATLOG_PLAYER_HEADER;
+    public static String CHATLOG_PLAYER_LIST;
+    public static String CHATLOG_SERVER_HEADER;
+    public static String CHATLOG_SERVER_LIST;
+
     public static String BROADCAST;
+
+    public static String NETWORK_STATS;
+
+
 
 }

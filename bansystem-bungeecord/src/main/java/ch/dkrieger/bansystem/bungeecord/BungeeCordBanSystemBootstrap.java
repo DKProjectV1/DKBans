@@ -18,9 +18,8 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
     public void onLoad() {
         instance = this;
         this.commandManager = new BungeeCordCommandManager();
-        new BanSystem(this);
+        new BanSystem(this,new BungeeCordNetwork());
     }
-
     @Override
     public void onEnable() {
 

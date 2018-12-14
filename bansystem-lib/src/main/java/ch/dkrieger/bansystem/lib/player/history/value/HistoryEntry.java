@@ -5,14 +5,14 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 
 import java.util.UUID;
 
-public abstract class HistoryValue {
+public abstract class HistoryEntry {
 
     private String ip, reason, message;
     private long timeStamp;
     private int id, points, reasonID;
     private UUID staff;
 
-    public HistoryValue(String ip, String reason, String message, long timeStamp, int points, int reasonID, UUID staff) {
+    public HistoryEntry(String ip, String reason, String message, long timeStamp, int points, int reasonID, UUID staff) {
         this.ip = ip;
         this.reason = reason;
         this.message = message;

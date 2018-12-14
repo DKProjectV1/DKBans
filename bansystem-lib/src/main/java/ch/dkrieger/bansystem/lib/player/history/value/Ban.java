@@ -5,7 +5,7 @@ import ch.dkrieger.bansystem.lib.utils.Document;
 
 import java.util.UUID;
 
-public class Ban extends HistoryValue{
+public class Ban extends HistoryEntry {
 
     private long timeOut;
     private BanType banType;

@@ -37,7 +37,7 @@ public class PlayerInfoCommand extends NetworkCommand {
                     sender.sendMessage(Messages.PLAYER_INFO_SESSIONS_LIST
                             .replace("[client]",session.getClient())
                             .replace("[clientLanguage]",session.getClientLanguage())
-                            .replace("[clientVersion]",session.getClientVesion())
+                            .replace("[clientVersion]",session.getClientVersion())
                             .replace("[country]",session.getCountry())
                             .replace("[ip]",session.getIp())
                             .replace("[connected]",""+session.getConnected())
@@ -51,7 +51,6 @@ public class PlayerInfoCommand extends NetworkCommand {
                 return;
             }
         }
-
         OnlineNetworkPlayer online = player.getOnlinePlayer();
         if(online != null){
             sender.sendMessage(replace(Messages.PLAYER_INFO_OFFLINE

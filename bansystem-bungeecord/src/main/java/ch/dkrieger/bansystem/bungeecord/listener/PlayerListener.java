@@ -66,7 +66,6 @@ public class PlayerListener implements Listener {
                         .replace("[prefix]",Messages.PREFIX_NETWORK)));
             }
         }
-
     }
     @EventHandler
     public void onPostLogin(PostLoginEvent event){
@@ -122,7 +121,7 @@ public class PlayerListener implements Listener {
                     return;
                 }
             }
-            if(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.COMMAND,event.getMessage())){
+            if(!player.hasPermission("dkbans.bypass.chat") && BanSystem.getInstance().getFilterManager().isBlocked(FilterType.COMMAND,event.getMessage())){
                 player.sendMessage(new TextComponent(Messages.CHAT_FILTER_COMMAND.replace("[prefix]",Messages.PREFIX_CHAT)));
                 return;
             }
@@ -143,17 +142,27 @@ public class PlayerListener implements Listener {
                     .replace("[prefix]",Messages.PREFIX_NETWORK)));
             event.setCancelled(true);
         }else if(!event.isCommand()){
-            if(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.MESSAGE,event.getMessage())){
-                player.sendMessage(new TextComponent(Messages.CHAT_FILTER_MESSAGE.replace("[prefix]",Messages.PREFIX_CHAT)));
-                return;
+            FilterType filter = null;
+            if(!player.hasPermission("dkbans.bypass.chat")){
+                if(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.MESSAGE,event.getMessage())){
+                    filter = FilterType.MESSAGE;
+                    event.setCancelled(true);
+                    player.sendMessage(new TextComponent(Messages.CHAT_FILTER_MESSAGE.replace("[prefix]",Messages.PREFIX_CHAT)));
+                    return;
+                }
+                if(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.PROMOTION,event.getMessage())){
+                    filter = FilterType.PROMOTION;
+                    player.sendMessage(new TextComponent(Messages.CHAT_FILTER_PROMOTION.replace("[prefix]",Messages.PREFIX_CHAT)));
+                    return;
+                }
             }
-            if(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.PROMOTION,event.getMessage())){
-                player.sendMessage(new TextComponent(Messages.CHAT_FILTER_PROMOTION.replace("[prefix]",Messages.PREFIX_CHAT)));
-                return;
-            }
+            final FilterType finalFilter = filter;
+            BungeeCord.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
+                BanSystem.getInstance().getPlayerManager().createChatLog(player.getUniqueId(),event.getMessage()
+                        ,player.getServer().getInfo().getName(),finalFilter);
+            });
         }
     }
-
     @EventHandler
     public void onTabComplete(TabCompleteEvent event){
         if(event.getCursor().startsWith("/") && BanSystem.getInstance().getConfig().tabCompleteBlockEnabled){

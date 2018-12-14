@@ -106,11 +106,11 @@ public class GeneralUtil {
         for(int i = chararray.length-1;i > -1;i--) newstring += chararray[i];
         return newstring;
     }
-    public static Boolean equalsOne(String string, String... values){
+    public static boolean equalsOne(String string, String... values){
         for(String value : values) if(value.equalsIgnoreCase(string)) return true;
         return false;
     }
-    public static Boolean equalsALL(String string, String... values){
+    public static boolean equalsAll(String string, String... values){
         for(String value : values) if(!value.equalsIgnoreCase(string)) return false;
         return true;
     }
@@ -173,11 +173,11 @@ public class GeneralUtil {
         component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,link));
         return component;
     }
-    public static long convertToMIllis(long time, String timeType){
+    public static long convertToMillis(long time, String timeType){
         try{
             return TimeUnit.valueOf(timeType.toUpperCase()).toMillis(time);
         }catch (Exception exception){}
-        if(equalsOne(timeType,"second","seconds","sekunde","seunden","s")) return TimeUnit.SECONDS.toMillis(time);
+        if(equalsOne(timeType,"second","seconds","sekunde","sekunden","s")) return TimeUnit.SECONDS.toMillis(time);
         else if(equalsOne(timeType,"minute","minutes","minute","minuten","m")) return TimeUnit.MINUTES.toMillis(time);
         else if(equalsOne(timeType,"hour","hours","stunde","stunden","h","std")) return TimeUnit.HOURS.toMillis(time);
         else if(equalsOne(timeType,"day","days","tage","tag","d","t")) return TimeUnit.DAYS.toMillis(time);
@@ -226,6 +226,23 @@ public class GeneralUtil {
         for(String string : array) result += string+split;
         return result;
     }
+
+    public static Boolean isIP4Address(String ip){
+        try {
+            if(ip == null || ip.isEmpty()) return false;
+            String[] parts = ip.split("\\.");
+            if(parts.length != 4) return false;
+            for(String s : parts){
+                int i = Integer.parseInt(s);
+                if((i < 0) || (i > 255)) return false;
+            }
+            if(ip.endsWith(".")) return false;
+            return true;
+        }catch (NumberFormatException exception){
+            return false;
+        }
+    }
+
     public interface AcceptAble<T> {
         boolean accept(T object);
     }

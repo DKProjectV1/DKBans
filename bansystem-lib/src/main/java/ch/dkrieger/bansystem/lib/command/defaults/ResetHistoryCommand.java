@@ -6,7 +6,7 @@ import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.History;
-import ch.dkrieger.bansystem.lib.player.history.value.HistoryValue;
+import ch.dkrieger.bansystem.lib.player.history.value.HistoryEntry;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.util.List;
@@ -37,17 +37,17 @@ public class ResetHistoryCommand extends NetworkCommand {
             return;
         }
         if(args.length > 1 && GeneralUtil.isNumber(args[1])) {
-            HistoryValue value = history.getValue(Integer.valueOf(args[1]));
-            if(value == null){
+            HistoryEntry entry = history.getEntry(Integer.valueOf(args[1]));
+            if(entry == null){
                 sender.sendMessage(Messages.HISTORY_NOTFOUND
                         .replace("[prefix]",getPrefix())
                         .replace("[player]",player.getColoredName()));
                 return;
             }
-            player.resetHistory(value.getID());
+            player.resetHistory(entry.getID());
             sender.sendMessage(Messages.HISTORY_RESET_ONE
                     .replace("[prefix]",getPrefix())
-                    .replace("[id]",""+value.getID())
+                    .replace("[id]",""+entry.getID())
                     .replace("[player]",player.getColoredName()));
             return;
         }

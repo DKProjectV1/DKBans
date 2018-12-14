@@ -6,6 +6,7 @@ import ch.dkrieger.bansystem.lib.filter.FilterManager;
 import ch.dkrieger.bansystem.lib.player.PlayerManager;
 import ch.dkrieger.bansystem.lib.reason.ReasonProvider;
 import ch.dkrieger.bansystem.lib.report.ReportManager;
+import ch.dkrieger.bansystem.lib.stats.NetworkStats;
 import ch.dkrieger.bansystem.lib.storage.DKBansStorage;
 
 public class BanSystem {
@@ -23,13 +24,28 @@ public class BanSystem {
 
     private Config config;
 
-    public BanSystem(DKBansPlatform platform) {
+    public BanSystem(DKBansPlatform platform, DKNetwork network) {
+        if(instance != null) throw new IllegalArgumentException("DKbans is already initialised");
         instance = this;
         this.version = getClass().getPackage().getImplementationVersion();
         this.platform = platform;
+        this.network = network;
+
+        systemBootstrap();
+    }
+    private void systemBootstrap(){
+        new Messages("DKBans");
+
+
+        this.broadcastManager = new BroadcastManager();
+        this.filterManager = new FilterManager();
+
+        if(!storage.connect()){
+
+        }
     }
     public void shutdown(){
-
+        if(this.storage != null) this.storage.disconnect();
     }
 
     public DKBansPlatform getPlatform() {
@@ -70,6 +86,10 @@ public class BanSystem {
 
     public DKNetwork getNetwork() {
         return network;
+    }
+
+    public NetworkStats getNetworkStats(){
+
     }
 
     public static BanSystem getInstance() {

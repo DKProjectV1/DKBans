@@ -2,7 +2,6 @@ package ch.dkrieger.bansystem.lib.filter;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-import de.dytanic.cloudnet.lib.map.Maps;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -28,7 +27,7 @@ public class FilterManager {
         return filters;
     }
     public boolean isBlocked(FilterType type, String message){
-        return GeneralUtil.iterateOne(this.filters.values(), object -> object.getType().equals(type) && object.isBocked(message)) != null;
+        return GeneralUtil.iterateOne(this.filters.values(),object->object.getType().equals(type) && object.isBocked(message)) != null;
     }
     public Filter createFilterType(FilterType type,FilterOperation operation, String message){
         Filter filter = new Filter(-1,message,operation,type);
@@ -41,7 +40,7 @@ public class FilterManager {
     }
     public void deleteFilter(int id){
         this.filters.remove(id);
-        BanSystem.getInstance().getStorage().delteFilter(id);
+        BanSystem.getInstance().getStorage().deleteFilter(id);
     }
     public void reloadLocal(){
         this.filters.clear();

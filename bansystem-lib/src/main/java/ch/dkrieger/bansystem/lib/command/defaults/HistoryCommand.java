@@ -7,7 +7,7 @@ import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.History;
 import ch.dkrieger.bansystem.lib.player.history.value.Ban;
-import ch.dkrieger.bansystem.lib.player.history.value.HistoryValue;
+import ch.dkrieger.bansystem.lib.player.history.value.HistoryEntry;
 import ch.dkrieger.bansystem.lib.player.history.value.Kick;
 import ch.dkrieger.bansystem.lib.player.history.value.Unban;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
@@ -42,7 +42,7 @@ public class HistoryCommand extends NetworkCommand {
             return;
         }
         if(args.length > 1 && GeneralUtil.isNumber(args[1])){
-            HistoryValue value = history.getValue(Integer.valueOf(args[1]));
+            HistoryEntry value = history.getEntry(Integer.valueOf(args[1]));
             if(value != null){
                 String message = Messages.HISTORY_INFO_OTHER;
                 if(value instanceof Ban){
@@ -85,7 +85,7 @@ public class HistoryCommand extends NetworkCommand {
                 .replace("[player]",player.getColoredName())
                 .replace("[size]",""+history.size())
                 .replace("[prefix]",getPrefix()));
-        for(HistoryValue value : history.getValues()){
+        for(HistoryEntry value : history.getEntries()){
             TextComponent component = new TextComponent(Messages.HISTORY_LIST_LIST
                     .replace("[player]",player.getColoredName())
                     .replace("[id]",""+value.getID())

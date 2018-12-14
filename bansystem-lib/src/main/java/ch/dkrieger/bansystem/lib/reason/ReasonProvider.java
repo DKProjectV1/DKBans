@@ -35,10 +35,10 @@ public class ReasonProvider {
         return getKickReason(search);
     }
     public KickReason getKickReason(int id){
-      return GeneralUtil.iterate(this.kickReasons,reason -> reason.getID() == id);
+      return GeneralUtil.iterateOne(this.kickReasons,reason -> reason.getID() == id);
     }
     public KickReason getKickReason(String name){
-        return GeneralUtil.iterate(this.kickReasons,reason -> reason.hasAlias(name));
+        return GeneralUtil.iterateOne(this.kickReasons,reason -> reason.hasAlias(name));
     }
 
     public BanReason searchBanReason(String search){
@@ -47,12 +47,12 @@ public class ReasonProvider {
     }
 
     public BanReason getBanReason(int id){
-        return GeneralUtil.iterate(this.banReasons,reason -> reason.getID() == id);
+        return GeneralUtil.iterateOne(this.banReasons,reason -> reason.getID() == id);
     }
 
 
     public BanReason getBanReason(String name){
-        return GeneralUtil.iterate(this.banReasons,reason -> reason.hasAlias(name));
+        return GeneralUtil.iterateOne(this.banReasons,reason -> reason.hasAlias(name));
     }
 
     public ReportReason searchReportReason(String search){
@@ -61,9 +61,9 @@ public class ReasonProvider {
     }
 
     public ReportReason getReportReason(int id){
-        return GeneralUtil.iterate(this.reportReasons,reason -> reason.getID() == id);
+        return GeneralUtil.iterateOne(this.reportReasons,reason -> reason.getID() == id);
     }
     public ReportReason getReportReason(String name){
-        return GeneralUtil.iterate(this.reportReasons,reason -> reason.hasAlias(name));
+        return GeneralUtil.iterateOne(this.reportReasons,reason -> reason.hasAlias(name));
     }
 }

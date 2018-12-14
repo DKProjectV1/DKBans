@@ -2,7 +2,7 @@ package ch.dkrieger.bansystem.lib.player.history.value;
 
 import java.util.UUID;
 
-public class Kick extends HistoryValue{
+public class Kick extends HistoryEntry {
 
     private String server;
 

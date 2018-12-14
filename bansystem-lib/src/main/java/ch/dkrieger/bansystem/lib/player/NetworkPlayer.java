@@ -133,6 +133,9 @@ Gson gson = new GsonBuilder()
     public List<Report> getReports(){
 
     }
+    public List<String> getIPs(){
+
+    }
     public Report getOpenReport(){
         
     }
@@ -144,10 +147,10 @@ Gson gson = new GsonBuilder()
     }
 
     public Ban getBan(){
-
+        return history.getBan();
     }
     public Ban getBan(BanType type){
-
+        return history.getBan(type);
     }
 
     public OnlineNetworkPlayer getOnlinePlayer(){
