@@ -66,4 +66,15 @@ public class ReasonProvider {
     public ReportReason getReportReason(String name){
         return GeneralUtil.iterateOne(this.reportReasons,reason -> reason.hasAlias(name));
     }
+
+    public UnbanReason searchUnbanReason(String search){
+        if(GeneralUtil.isNumber(search)) return getUnbanReason(Integer.valueOf(search));
+        return getUnbanReason(search);
+    }
+    public UnbanReason getUnbanReason(int id){
+        return GeneralUtil.iterateOne(this.unbanReasons,reason -> reason.getID() == id);
+    }
+    public UnbanReason getUnbanReason(String name){
+        return GeneralUtil.iterateOne(this.unbanReasons,reason -> reason.hasAlias(name));
+    }
 }

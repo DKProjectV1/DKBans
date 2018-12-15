@@ -1,7 +1,7 @@
 package ch.dkrieger.bansystem.lib.player;
 
-import ch.dkrieger.bansystem.lib.player.history.value.Ban;
-import ch.dkrieger.bansystem.lib.player.history.value.Kick;
+import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
+import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.UUID;

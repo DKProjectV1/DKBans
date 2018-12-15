@@ -6,7 +6,7 @@ public enum BanType {
     CHAT();
 
     public String getDisplay(){
-
+        return null;
     }
 
     public static BanType parse(String parse){

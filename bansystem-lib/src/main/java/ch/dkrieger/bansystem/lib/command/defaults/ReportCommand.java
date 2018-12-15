@@ -56,7 +56,7 @@ public class ReportCommand extends NetworkCommand {
                             .replace("[prefix]",getPrefix()));
                     return;
                 }
-                Report report = player.getOpenReport();
+                Report report = player.getOneOpenReport();
                 if(report == null){
                     sender.sendMessage(Messages.REPORT_NOTFOUND
                             .replace("[player]",player.getColoredName())
@@ -68,14 +68,14 @@ public class ReportCommand extends NetworkCommand {
                 sender.sendMessage(Messages.REPORT_PROCESS
                         .replace("[server]",staff.getServer())
                         .replace("[prefix]",getPrefix()));
-                player.processOpenReports(sender.getUUID());
+                player.processOpenReports(sender.getAsNetworkPlayer());
                 if(staff.getServer().equalsIgnoreCase(online.getServer())){
                     sender.sendMessage(Messages.SERVER_ALREADY
                             .replace("[server]",staff.getServer())
                             .replace("[prefix]",getPrefix()));
                     return;
                 }else staff.connect(online.getServer());
-                if(BanSystem.getInstance().getConfig().reportControlls){
+                if(BanSystem.getInstance().getConfig().reportControls){
                     TextComponent deny = new TextComponent(Messages.REPORT_PROCESS_CONTROL_DENY);
                     deny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/report deny "+player.getUUID()));
 

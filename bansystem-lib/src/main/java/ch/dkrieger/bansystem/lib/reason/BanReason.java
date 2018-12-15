@@ -2,6 +2,7 @@ package ch.dkrieger.bansystem.lib.reason;
 
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
+import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,6 +43,9 @@ public class BanReason extends KickReason {
 
     }
     public BanReasonValue getNextDuration(NetworkPlayer player){
+
+    }
+    public Ban toBan(NetworkPlayer player, String staff){
 
     }
 }

@@ -7,7 +7,7 @@ import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.config.mode.BanMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
-import ch.dkrieger.bansystem.lib.player.history.value.Ban;
+import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
 import ch.dkrieger.bansystem.lib.reason.BanReasonValue;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
@@ -72,7 +72,7 @@ public class BanCommand extends NetworkCommand {
         if(player.isBanned(value.getType())){
             if(overwrite && sender.hasPermission("dkbans.ban.overwrite")
                     && !(sender.hasPermission("dkbans.ban.overwrite.all")
-                    || player.getBan(value.getType()).getStaff() == sender.getUUID())){
+                    || player.getBan(value.getType()).getStaff().equalsIgnoreCase(sender.getUUID().toString()))){
                     sender.sendMessage(Messages.BAN_OVERWRITE_NOTALLOWED
                             .replace("[prefix]",getPrefix())
                             .replace("[player]",player.getColoredName()));
@@ -89,7 +89,7 @@ public class BanCommand extends NetworkCommand {
                 }
                 if(sender.hasPermission("dkbans.ban.overwrite")
                         && (sender.hasPermission("dkbans.ban.overwrite.all")
-                        || player.getBan(value.getType()).getStaff() == sender.getUUID())){
+                        || player.getBan(value.getType()).getStaff().equalsIgnoreCase(sender.getUUID().toString()))){
                     TextComponent component = new TextComponent(Messages.BAN_OVERWRITE_INFO
                             .replace("[prefix]",getPrefix())
                             .replace("[player]",player.getColoredName()));

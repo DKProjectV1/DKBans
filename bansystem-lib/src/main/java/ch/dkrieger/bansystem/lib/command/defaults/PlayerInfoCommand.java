@@ -7,6 +7,7 @@ import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineSession;
+import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.util.List;
@@ -66,7 +67,19 @@ public class PlayerInfoCommand extends NetworkCommand {
                 .replace("[color]",player.getColor())
                 .replace("[country]",player.getCountry())
                 .replace("[ip]",player.getIP())
+                .replace("[firstLogin]",""+player.getFirstLogin())
+                .replace("[lastLogin]",""+player.getLastLogin())
                 .replace("[id]",String.valueOf(player.getID()))
+                .replace("[onlineTime]",""+player.getOnlineTime())
+                .replace("[logins]",""+player.getStats().getLogins())
+                .replace("[messages]",""+player.getStats().getMessages())
+                .replace("[reportsSent]",""+player.getStats().getReports())
+                .replace("[reportsAccepted]",""+player.getStats().getReportsAccepted())
+                .replace("[reportsDenies]",""+player.getStats().getReportsDenied())
+                .replace("[reportsReceived]",""+player.getStats().getReportsReceived())
+                .replace("[bans]",""+player.getHistory().getBanCount(BanType.NETWORK))
+                .replace("[mutes]",""+player.getHistory().getBanCount(BanType.CHAT))
+                .replace("[logins]",""+player.getStats().getLogins())
                 .replace("[uuid]",String.valueOf(player.getUUID()));
     }
 

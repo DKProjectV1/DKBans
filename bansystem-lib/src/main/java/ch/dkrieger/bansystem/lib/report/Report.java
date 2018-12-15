@@ -8,15 +8,16 @@ import java.util.UUID;
 public class Report {
 
     private UUID uuid, staff, reporter;
-    private String reason, reportedServer;
+    private String reason, message, reportedServer;
     private long timeStamp;
     private int reasonID;
 
-    public Report(UUID uuid, UUID staff, UUID reporter, String reason, String reportedServer, long timeStamp, int reasonID) {
+    public Report(UUID uuid, UUID staff, UUID reporter, String reason, String message, String reportedServer, long timeStamp, int reasonID) {
         this.uuid = uuid;
         this.staff = staff;
         this.reporter = reporter;
         this.reason = reason;
+        this.message = message;
         this.reportedServer = reportedServer;
         this.timeStamp = timeStamp;
         this.reasonID = reasonID;
@@ -34,6 +35,11 @@ public class Report {
     public String getReason() {
         return reason;
     }
+
+    public String getMessage() {
+        return message;
+    }
+
     public String getReportedServer() {
         return reportedServer;
     }

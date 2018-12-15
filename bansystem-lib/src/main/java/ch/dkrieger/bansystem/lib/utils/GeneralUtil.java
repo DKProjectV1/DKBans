@@ -9,6 +9,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
+import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -168,6 +169,7 @@ public class GeneralUtil {
         iterateAcceptedForEach(list,acceptAble,result::add);
         return result;
     }
+
     public static  TextComponent createLinkedMCText(String text, String link){
         TextComponent component = new TextComponent(text);
         component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,link));

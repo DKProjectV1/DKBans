@@ -58,4 +58,17 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
     public static BungeeCordBanSystemBootstrap getInstance() {
         return instance;
     }
+    /*
+    NetworkPlayerLoginEvent
+    NetworkPlayerUpdateEvent
+    NetworkPlayerLogoutEvent
+    OnlineNetworkPlayerUpdateEvent
+    NetworkPlayerBanEvent
+    NetworkPlayerKickEvent
+    NetworkPlayerReportEvent
+    NetworkPlayerReportProcessEvent
+    NetworkPlayerReportAcceptEvent
+    NetworkPlayerReportDenyEvent
+
+     */
 }

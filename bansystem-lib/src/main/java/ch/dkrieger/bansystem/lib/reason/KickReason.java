@@ -1,5 +1,8 @@
 package ch.dkrieger.bansystem.lib.reason;
 
+import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
+
 import java.util.List;
 
 public class KickReason {
@@ -46,7 +49,10 @@ public class KickReason {
     public boolean isHidden() {
         return hidden;
     }
-    public  boolean hasAlias(String alias){
+    public boolean hasAlias(String alias){
         return this.name.equalsIgnoreCase(alias) ||this.aliases.contains(alias);
+    }
+    public Kick toKick(NetworkPlayer player, String staff){
+        return null;
     }
 }

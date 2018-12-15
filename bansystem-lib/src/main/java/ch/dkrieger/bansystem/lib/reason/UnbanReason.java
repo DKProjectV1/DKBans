@@ -1,6 +1,8 @@
 package ch.dkrieger.bansystem.lib.reason;
 
+import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
+import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
 import ch.dkrieger.bansystem.lib.utils.Duration;
 
 import java.util.List;
@@ -29,5 +31,8 @@ public class UnbanReason extends KickReason{
 
     public List<Integer> getNotForBanID() {
         return notForBanID;
+    }
+    public Unban toUnban(BanType type, NetworkPlayer player,String message, String staff){
+
     }
 }

@@ -6,11 +6,9 @@ import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.filter.FilterType;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
-import ch.dkrieger.bansystem.lib.player.history.value.Ban;
+import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-import ch.dkrieger.bansystem.lib.utils.TabCompleteOption;
 import de.dytanic.cloudnet.bridge.CloudProxy;
-import de.dytanic.cloudnet.bridge.event.bukkit.BukkitPlayerDisconnectEvent;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -19,10 +17,18 @@ import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class PlayerListener implements Listener {
+
+    private Map<UUID,lastMessage> lastMessage;
+
+    public PlayerListener() {
+        this.lastMessage = new HashMap<>();
+    }
 
     @EventHandler
     public void onLogin(LoginEvent event){
@@ -102,7 +108,7 @@ public class PlayerListener implements Listener {
     }
     @EventHandler
     public void onChat(ChatEvent event){
-        if(!(event.getSender() instanceof  ProxiedPlayer)) return;
+        if(!(event.getSender() instanceof ProxiedPlayer)) return;
         ProxiedPlayer player = (ProxiedPlayer)event.getSender();
         NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
         if(event.isCommand()){
@@ -142,6 +148,21 @@ public class PlayerListener implements Listener {
                     .replace("[prefix]",Messages.PREFIX_NETWORK)));
             event.setCancelled(true);
         }else if(!event.isCommand()){
+            lastMessage lastMessage = this.lastMessage.get(player.getUniqueId());
+            if(lastMessage != null){
+                if(event.getMessage().equalsIgnoreCase(lastMessage.message)){
+                    player.sendMessage(new TextComponent(Messages.CHAT_FILTER_SPAM_REPEAT.replace("[prefix]",Messages.PREFIX_CHAT)));
+                    return;
+                }else if(lastMessage.time+BanSystem.getInstance().getConfig().chatDelay >= System.currentTimeMillis()){
+                    player.sendMessage(new TextComponent(Messages.CHAT_FILTER_SPAM_TOFAST.replace("[prefix]",Messages.PREFIX_CHAT)));
+                    return;
+                }else{
+                    lastMessage.message = event.getMessage();
+                    lastMessage.time = System.currentTimeMillis();
+                }
+            }else this.lastMessage.put(player.getUniqueId(),new lastMessage(event.getMessage(),System.currentTimeMillis()));
+
+
             FilterType filter = null;
             if(!player.hasPermission("dkbans.bypass.chat")){
                 if(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.MESSAGE,event.getMessage())){
@@ -181,5 +202,16 @@ public class PlayerListener implements Listener {
             ProxiedPlayer player = BungeeCord.getInstance().getPlayer(uuid);
             //if(player == null) CloudNetExtension.getInstance().unregisterPlayer(uuid);
         }, 550L, TimeUnit.MILLISECONDS);
+    }
+
+    private class lastMessage {
+
+        private String message;
+        private long time;
+
+        public lastMessage(String message, long time) {
+            this.message = message;
+            this.time = time;
+        }
     }
 }

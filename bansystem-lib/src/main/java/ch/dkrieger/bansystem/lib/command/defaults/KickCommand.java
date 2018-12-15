@@ -5,7 +5,7 @@ import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
-import ch.dkrieger.bansystem.lib.player.history.value.Kick;
+import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 import ch.dkrieger.bansystem.lib.reason.KickReason;
 
 import java.util.List;

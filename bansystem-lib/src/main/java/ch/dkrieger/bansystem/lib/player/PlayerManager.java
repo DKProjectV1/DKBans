@@ -2,6 +2,7 @@ package ch.dkrieger.bansystem.lib.player;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.filter.FilterType;
+import ch.dkrieger.bansystem.lib.player.chatlog.ChatLog;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import sun.nio.ch.Net;
 
@@ -13,9 +14,11 @@ import java.util.UUID;
 public abstract class PlayerManager {
 
     private Map<UUID,NetworkPlayer> loadedPlayers;
+    private int cachedRegisteredCount, cachedCountryCount;
 
     public PlayerManager() {
         this.loadedPlayers = new HashMap<>();
+        this.cachedRegisteredCount = -1;
     }
     public Map<UUID, NetworkPlayer> getLoadedPlayers() {
         return loadedPlayers;
@@ -43,14 +46,15 @@ public abstract class PlayerManager {
         return null;
     }
     public int getRegisteredCount(){
-
+        if(this.cachedRegisteredCount < 0) return this.cachedRegisteredCount;
+        else return BanSystem.getInstance().getStorage().getRegisteredPlayerCount();
     }
     public int getCountryCount(){
-
+        if(this.cachedCountryCount < 0) return this.cachedCountryCount;
+        else return BanSystem.getInstance().getStorage().getCountryCount();
     }
-
     public List<NetworkPlayer> getPlayers(String ip){
-
+        return BanSystem.getInstance().getStorage().getPlayersByIp(ip);
     }
 
     public NetworkPlayer getPlayer(int id){
@@ -87,6 +91,14 @@ public abstract class PlayerManager {
         }
         return player;
     }
+
+    public ChatLog getChatLog(UUID player){
+        return BanSystem.getInstance().getStorage().getChatLog(player);
+    }
+    public ChatLog getChatLog(String server){
+        return BanSystem.getInstance().getStorage().getChatLog(server);
+    }
+
     public NetworkPlayer createPlayer(UUID uuid, String name){
         NetworkPlayer player = new NetworkPlayer();
         BanSystem.getInstance().getStorage().createPlayer(player);
@@ -96,16 +108,22 @@ public abstract class PlayerManager {
     public void removePlayerFromCache(NetworkPlayer player){
         removePlayerFromCache(player.getUUID());
     }
-    public void createChatLog(UUID uuid, String message, String server){
-        createChatLog(uuid,message,server,null);
+    public void createChatLogEntry(UUID uuid, String message, String server){
+        createChatLogEntry(uuid,message,server,null);
     }
-    public void createChatLog(UUID uuid, String message, String server, FilterType filteredBy){
-
+    public void createChatLogEntry(UUID uuid, String message, String server, FilterType filter){
+        BanSystem.getInstance().getStorage().createChatLogEntry(uuid, message, server, filter);
     }
 
     public void removePlayerFromCache(UUID uuid){
         this.loadedPlayers.remove(uuid);
     }
+
+    public void resetCachedCounts(){
+        this.cachedRegisteredCount = -1;
+        this.cachedCountryCount = -1;
+    }
+
     public abstract OnlineNetworkPlayer getOnlinePlayer(int id);
 
     public abstract OnlineNetworkPlayer getOnlinePlayer(UUID uuid);

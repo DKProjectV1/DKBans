@@ -1,4 +1,4 @@
-package ch.dkrieger.bansystem.lib.player.history.value;
+package ch.dkrieger.bansystem.lib.player.history.entry;
 
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.utils.Document;
@@ -9,13 +9,11 @@ public class Ban extends HistoryEntry {
 
     private long timeOut;
     private BanType banType;
-    private Document properties;
 
-    public Ban(String ip, String reason, String message, long timeStamp, int points, int reasonID, UUID staff, long timeOut, BanType banType, Document properties) {
-        super(ip, reason, message, timeStamp, points, reasonID, staff);
+    public Ban(UUID uuid, String ip, String reason, String message, long timeStamp, int id, int points, int reasonID, String staff, Document properties, long timeOut, BanType banType) {
+        super(uuid, ip, reason, message, timeStamp, id, points, reasonID, staff, properties);
         this.timeOut = timeOut;
         this.banType = banType;
-        this.properties = properties;
     }
 
     public long getTimeOut() {
@@ -30,7 +28,9 @@ public class Ban extends HistoryEntry {
     public BanType getBanType() {
         return banType;
     }
-    public Document getProperties() {
-        return properties;
+
+    @Override
+    public String getTypeName() {
+        return "Ban";
     }
 }

@@ -158,6 +158,8 @@ public class Messages {
     public static String REPORT_MESSAGE_HOVER;
 
     public static String CHAT_PLUGIN;
+    public static String CHAT_FILTER_SPAM_REPEAT;
+    public static String CHAT_FILTER_SPAM_TOFAST;
     public static String CHAT_FILTER_MESSAGE;
     public static String CHAT_FILTER_PROMOTION;
     public static String CHAT_FILTER_NICKNAME;
@@ -184,10 +186,14 @@ public class Messages {
     public static String IPINFO_PLAYER_MUTED;
     public static String IPINFO_PLAYER_BANNED;
 
+    public static String CHATLOG_HELP;
+    public static String CHATLOG_NOTFOUND;
     public static String CHATLOG_PLAYER_HEADER;
-    public static String CHATLOG_PLAYER_LIST;
+    public static String CHATLOG_PLAYER_LIST_NORMAL;
+    public static String CHATLOG_PLAYER_LIST_BLOCKED;
     public static String CHATLOG_SERVER_HEADER;
-    public static String CHATLOG_SERVER_LIST;
+    public static String CHATLOG_SERVER_LIST_NORMAL;
+    public static String CHATLOG_SERVER_LIST_BLOCKED;
 
     public static String BROADCAST;
 

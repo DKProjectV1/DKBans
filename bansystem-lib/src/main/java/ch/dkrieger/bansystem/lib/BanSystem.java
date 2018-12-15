@@ -9,6 +9,8 @@ import ch.dkrieger.bansystem.lib.report.ReportManager;
 import ch.dkrieger.bansystem.lib.stats.NetworkStats;
 import ch.dkrieger.bansystem.lib.storage.DKBansStorage;
 
+import java.util.concurrent.TimeUnit;
+
 public class BanSystem {
 
     private static BanSystem instance;
@@ -24,8 +26,10 @@ public class BanSystem {
 
     private Config config;
 
+    private NetworkStats cachedNetworkStats;
+
     public BanSystem(DKBansPlatform platform, DKNetwork network) {
-        if(instance != null) throw new IllegalArgumentException("DKbans is already initialised");
+        if(instance != null) throw new IllegalArgumentException("DKBans is already initialised");
         instance = this;
         this.version = getClass().getPackage().getImplementationVersion();
         this.platform = platform;
@@ -35,7 +39,6 @@ public class BanSystem {
     }
     private void systemBootstrap(){
         new Messages("DKBans");
-
 
         this.broadcastManager = new BroadcastManager();
         this.filterManager = new FilterManager();
@@ -89,7 +92,9 @@ public class BanSystem {
     }
 
     public NetworkStats getNetworkStats(){
-
+        if(cachedNetworkStats == null || cachedNetworkStats.getLoadTime()+TimeUnit.MINUTES.toMillis(2) < System.currentTimeMillis())
+            this.cachedNetworkStats = getStorage().getNetworkStats();
+        return this.cachedNetworkStats;
     }
 
     public static BanSystem getInstance() {

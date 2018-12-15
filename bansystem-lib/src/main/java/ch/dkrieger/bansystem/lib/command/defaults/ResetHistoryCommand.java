@@ -6,7 +6,7 @@ import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.History;
-import ch.dkrieger.bansystem.lib.player.history.value.HistoryEntry;
+import ch.dkrieger.bansystem.lib.player.history.entry.HistoryEntry;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.util.List;
