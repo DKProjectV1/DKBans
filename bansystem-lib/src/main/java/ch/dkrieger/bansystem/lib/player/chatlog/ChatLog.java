@@ -10,7 +10,8 @@ public class ChatLog {
 
     private List<ChatLogEntry> entries;
 
-    public ChatLog() {
+    public ChatLog(List<ChatLogEntry> entries) {
+        this.entries = entries;
     }
     public List<ChatLogEntry> getEntries() {
         return this.entries;

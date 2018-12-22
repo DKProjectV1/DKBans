@@ -14,6 +14,7 @@ public class BroadcastCommand extends NetworkCommand {
 
     public BroadcastCommand() {
         super("broadcast","","dkbans.broadcast","","bc","alert","rundruf","autobroadcast","autobc");
+        setPrefix(Messages.PREFIX_NETWORK);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
@@ -127,9 +128,8 @@ public class BroadcastCommand extends NetworkCommand {
         }else if(args[1].equalsIgnoreCase("setauto")){
             broadcast.setAuto(Boolean.valueOf(args[2]));
             BanSystem.getInstance().getBroadcastManager().updateBroadcast(broadcast);
-            sender.sendMessage(Messages.BROADCAST_CHANGED_AUTO
-                    .replace("[message]",broadcast.getMessage())
-                    .replace("[prefix]",getPrefix()));
+            if(broadcast.isAuto()) sender.sendMessage(Messages.BROADCAST_CHANGED_AUTO_ENABLED.replace("[prefix]",getPrefix()));
+            else sender.sendMessage(Messages.BROADCAST_CHANGED_AUTO_DISABLED.replace("[prefix]",getPrefix()));
             return;
         }
         sender.sendMessage(Messages.BROADCAST_HELP

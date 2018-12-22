@@ -16,15 +16,16 @@ public class JumptoCommand extends NetworkCommand {
     public JumptoCommand() {
         super("jumpto","Jump to","dkbans.jumpto");
         getAliases().add("goto");
+        setPrefix(Messages.PREFIX_NETWORK);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
         if(args.length < 1){
-            sender.sendMessage(Messages.JUMPTO_HELP
-                    .replace("[prefix]",getPrefix()));
+            sender.sendMessage(Messages.JUMPTO_HELP.replace("[prefix]",getPrefix()));
             return;
         }
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
+        System.out.println("JUmp "+player);
         if(player == null){
             sender.sendMessage(Messages.PLAYER_NOT_FOUND
                     .replace("[prefix]",getPrefix())

@@ -3,10 +3,24 @@ package ch.dkrieger.bansystem.lib.player.history.entry;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.Document;
+import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
+import ch.dkrieger.bansystem.lib.utils.RuntimeTypeAdapterFactory;
+import net.md_5.bungee.api.chat.TextComponent;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public abstract class HistoryEntry {
+
+    public static Map<String,Class<? extends HistoryEntry> > GSONTYPEADAPTER = new HashMap<>();
+
+    static {
+        GSONTYPEADAPTER.put("BAN",Ban.class);
+        GSONTYPEADAPTER.put("KICK",Kick.class);
+        GSONTYPEADAPTER.put("UNBAN",Unban.class);
+        buildAdapter();
+    }
 
     private UUID uuid;
     private String ip, reason, message;
@@ -73,10 +87,26 @@ public abstract class HistoryEntry {
         return properties;
     }
 
+    public NetworkPlayer getPlayer(){
+        return BanSystem.getInstance().getPlayerManager().getPlayer(this.uuid);
+    }
+
     @SuppressWarnings("This is only for databse insert functions")
     public void setID(int id) {
         this.id = id;
     }
 
     public abstract String getTypeName();
+
+    public abstract TextComponent getListMessage();
+
+    public abstract TextComponent getInfoMessage();
+
+    public static void buildAdapter(){
+        RuntimeTypeAdapterFactory<HistoryEntry> adapter = RuntimeTypeAdapterFactory.of(HistoryEntry.class, "historyAdapterType");
+        for(Map.Entry<String,Class<? extends HistoryEntry>> entry : GSONTYPEADAPTER.entrySet()) adapter.registerSubtype(entry.getValue(),entry.getKey());
+        GeneralUtil.GSON_BUILDER.registerTypeAdapterFactory(adapter);
+        GeneralUtil.createGSON();
+        System.out.println("test----------------------------------\n-\n-\n-");
+    }
 }

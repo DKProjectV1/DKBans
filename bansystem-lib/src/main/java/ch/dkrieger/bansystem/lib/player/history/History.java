@@ -2,20 +2,24 @@ package ch.dkrieger.bansystem.lib.player.history;
 
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.HistoryEntry;
+import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class History {
 
 
-    public Map<Integer,HistoryEntry> entries;
+    private Map<Integer,HistoryEntry> entries;
 
+    public History(){
+        this.entries = new TreeMap<>();
+    }
+    public History(Map<Integer, HistoryEntry> entries) {
+        this.entries = new TreeMap<>(entries);
+    }
     public int size(){
         return this.entries.size();
     }
@@ -29,38 +33,38 @@ public class History {
         return entries.get(id);
     }
     public int getBanCount(){
-        return getBanCount(null);
+        return getBanCount(BanType.NETWORK)+getBanCount(BanType.CHAT);
     }
     public int getBanCount(BanType type){
         return getBans(type).size();
     }
     public boolean isBanned(){
-        return isBanned(null);
+        return isBanned(BanType.NETWORK) || isBanned(BanType.CHAT);
     }
     public boolean isBanned(BanType type){
         return getBan(type) != null;
     }
-    public Ban getBan(){
-        return getBan(null);
-    }
+
     public Ban getBan(BanType type){
         List<Ban> bans = new ArrayList<>();
         List<Unban> unbans = new ArrayList<>();
         GeneralUtil.iterateAcceptedForEach(this.entries.values(), object ->
                         (object instanceof Ban && (type == null || ((Ban) object).getBanType().equals(type))
-                        && ((Ban) object).getTimeOut() <= System.currentTimeMillis()) || (object instanceof Unban
+                        && (((Ban) object).getTimeOut() >= System.currentTimeMillis() || ((Ban) object).getTimeOut() <= 0)) || (object instanceof Unban
                         && (type == null || ((Unban) object).getBanType().equals(type)))
                 , object -> {
                     if(object instanceof Ban) bans.add((Ban)object);
                     else unbans.add((Unban)object);
                 });
-        if(bans.size() > 0 && bans.size() < unbans.size()){
+
+        if(bans.size() > 0 && bans.size() > unbans.size()){
             final Ban[] ban = new Ban[1];
             final long[] timeStamp = {0};
             GeneralUtil.iterateAcceptedForEach(bans,object -> object.getTimeStamp() > timeStamp[0], object -> {
                 ban[0] = object;
                 timeStamp[0] = object.getTimeStamp();
             });
+            if(GeneralUtil.iterateOne(unbans,object -> object.getTimeStamp() >= timeStamp[0]) != null) return null;
             return ban[0];
         }
         return null;
@@ -72,7 +76,9 @@ public class History {
         List<Ban> bans = new ArrayList<>();
         GeneralUtil.iterateAcceptedForEach(this.entries.values()
                 ,object -> object instanceof Ban && (type == null || ((Ban) object).getBanType().equals(type))
-                ,object -> bans.add((Ban)object));
+                ,object -> {
+            bans.add((Ban)object);
+                });
         return bans;
     }
     public List<Ban> getBans(int reasonID){
@@ -85,6 +91,26 @@ public class History {
         GeneralUtil.iterateAcceptedForEach(this.entries.values(),object -> object.getReason().equalsIgnoreCase(reason),object -> bans.add((Ban)object));
         return bans;
     }
+
+    public Unban getLastUnban(){
+        final Unban[] unban = new Unban[1];
+        final long[] timeStamp = {0};
+        GeneralUtil.iterateAcceptedForEach(this.entries.values(),object -> object instanceof Unban && object.getTimeStamp() > timeStamp[0], object -> {
+            unban[0] = (Unban) object;
+            timeStamp[0] = object.getTimeStamp();
+        });
+        return unban[0];
+    }
+    public Kick getLastKick(){
+        final Kick[] kick = new Kick[1];
+        final long[] timeStamp = {0};
+        GeneralUtil.iterateAcceptedForEach(this.entries.values(),object -> object instanceof Kick && object.getTimeStamp() > timeStamp[0], object -> {
+            kick[0] = (Kick) object;
+            timeStamp[0] = object.getTimeStamp();
+        });
+        return kick[0];
+    }
+
     public List<HistoryEntry> getEntries(Filter filter){
         return GeneralUtil.iterateAcceptedReturn(this.entries.values(),filter::accepted);
     }

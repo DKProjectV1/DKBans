@@ -3,8 +3,9 @@ package ch.dkrieger.bansystem.lib.player;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.filter.FilterType;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLog;
+import ch.dkrieger.bansystem.lib.player.chatlog.ChatLogEntry;
+import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-import sun.nio.ch.Net;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,11 +26,14 @@ public abstract class PlayerManager {
     }
     public NetworkPlayer searchPlayer(String parser){
         try{
-            if(parser.length() > 35) return getPlayer(UUID.fromString(parser));
+            if(parser.length() > 25){
+                return getPlayer(UUID.fromString(parser));
+            }
             else {
                 NetworkPlayer player = null;
                 if(parser.length() < 18) player = getPlayer(parser);
                 if(player == null && GeneralUtil.isNumber(parser)) return getPlayer(Integer.valueOf(parser));
+                return player;
             }
         }catch (Exception exception){}
         return null;
@@ -41,6 +45,7 @@ public abstract class PlayerManager {
                 OnlineNetworkPlayer player = null;
                 if(parser.length() < 18) player = getOnlinePlayer(parser);
                 if(player == null && GeneralUtil.isNumber(parser)) return getPlayer(Integer.valueOf(parser)).getOnlinePlayer();
+                return player;
             }
         }catch (Exception exception){}
         return null;
@@ -69,19 +74,23 @@ public abstract class PlayerManager {
     }
     public NetworkPlayer getPlayer(UUID uuid){
         NetworkPlayer player = loadedPlayers.get(uuid);
+        long start = System.currentTimeMillis();
         if(player == null){
             try{
                 player = getPlayerSave(uuid);
             }catch (Exception exception){}
         }
+        System.out.println("Loaded player in "+(System.currentTimeMillis()-start)+"ms");
         return player;
     }
     public NetworkPlayer getPlayerSave(UUID uuid) throws Exception{
+        System.out.println("get save");
         NetworkPlayer player = BanSystem.getInstance().getStorage().getPlayer(uuid);
         if(player != null) this.loadedPlayers.put(uuid,player);
         return player;
     }
     public NetworkPlayer getPlayer(String name){
+        long start = System.currentTimeMillis();
         NetworkPlayer player = GeneralUtil.iterateOne(this.loadedPlayers.values(), object -> object.getName().equalsIgnoreCase(name));
         if(player == null){
             try{
@@ -89,19 +98,22 @@ public abstract class PlayerManager {
                 if(player != null) this.loadedPlayers.put(player.getUUID(),player);
             }catch (Exception exception){}
         }
+        System.out.println("Loaded player in "+(System.currentTimeMillis()-start)+"ms");
         return player;
     }
-
-    public ChatLog getChatLog(UUID player){
-        return BanSystem.getInstance().getStorage().getChatLog(player);
+    public ChatLog getChatLog(NetworkPlayer player){
+        return getChatLog(player.getUUID());
+    }
+    public ChatLog getChatLog(UUID uuid){
+        return BanSystem.getInstance().getStorage().getChatLog(uuid);
     }
     public ChatLog getChatLog(String server){
         return BanSystem.getInstance().getStorage().getChatLog(server);
     }
 
-    public NetworkPlayer createPlayer(UUID uuid, String name){
-        NetworkPlayer player = new NetworkPlayer();
-        BanSystem.getInstance().getStorage().createPlayer(player);
+    public NetworkPlayer createPlayer(UUID uuid, String name, String ip){
+        NetworkPlayer player = new NetworkPlayer(uuid,name,ip,"//Implement");
+        player.setID(BanSystem.getInstance().getStorage().createPlayer(player));
         this.loadedPlayers.put(uuid,player);
         return player;
     }
@@ -112,7 +124,10 @@ public abstract class PlayerManager {
         createChatLogEntry(uuid,message,server,null);
     }
     public void createChatLogEntry(UUID uuid, String message, String server, FilterType filter){
-        BanSystem.getInstance().getStorage().createChatLogEntry(uuid, message, server, filter);
+        createChatLogEntry(new ChatLogEntry(uuid, message, server,System.currentTimeMillis(), filter));
+    }
+    public void createChatLogEntry(ChatLogEntry entry){
+        BanSystem.getInstance().getStorage().createChatLogEntry(entry);
     }
 
     public void removePlayerFromCache(UUID uuid){
@@ -135,6 +150,10 @@ public abstract class PlayerManager {
     public abstract void removeOnlinePlayerFromCache(OnlineNetworkPlayer player);
 
     public abstract void removeOnlinePlayerFromCache(UUID uuid);
+
+    public abstract void updatePlayer(NetworkPlayer player, NetworkPlayerUpdateCause cause, Document properties);
+
+    public abstract void updateOnlinePlayer(OnlineNetworkPlayer player);
 
     public abstract int getOnlineCount();
 }

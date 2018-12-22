@@ -20,6 +20,7 @@ public class JoinMeCommand extends NetworkCommand {
     public JoinMeCommand() {
         super("joinme");
         this.cooldown = new LinkedHashMap<>();
+        setPrefix(Messages.PREFIX_NETWORK);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
@@ -42,8 +43,7 @@ public class JoinMeCommand extends NetworkCommand {
         }
         if(args.length == 0 && sender.hasPermission("dkbans.joinme")){
             if(this.cooldown.containsKey(sender.getUUID()) && this.cooldown.get(sender.getUUID()) > (System.currentTimeMillis())){
-                sender.sendMessage(Messages.JOINME_COOLDOWN
-                        .replace("[prefix]",getPrefix()));
+                sender.sendMessage(Messages.JOINME_COOLDOWN.replace("[prefix]",getPrefix()));
                 return;
             }
             OnlineNetworkPlayer player = sender.getAsOnlineNetworkPlayer();

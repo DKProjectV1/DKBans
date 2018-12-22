@@ -15,7 +15,6 @@ import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.stats.PlayerStats;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-import com.sun.org.apache.regexp.internal.RE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,24 +24,44 @@ import java.util.concurrent.TimeUnit;
 public class NetworkPlayer {
 
     private int id;
-    private String name, color, lastIP, lastCountry;
     private UUID uuid;
+    private String name, color, lastIP, lastCountry;
     private long lastLogin, firstLogin, onlineTime;
     private boolean bypass, teamChatLogin, reportLogin;
-    private History history;
+    private transient History history;
     private Document properties;
     private PlayerStats stats;
     private List<OnlineSession> onlineSessions;
-    private List<Report> reports;
+    private transient List<Report> reports;
 
+    public NetworkPlayer(UUID uuid, String name, String ip, String country) {
+        this.id = -1;
+        this.uuid = uuid;
+        this.name = name;
+        this.color = BanSystem.getInstance().getConfig().playerColorDefault;
+        this.lastIP = ip;
+        this.lastCountry = country;
+        this.lastLogin = System.currentTimeMillis();
+        this.firstLogin = System.currentTimeMillis();
+        this.onlineTime = 0L;
+        this.bypass = false;
+        this.teamChatLogin = true;
+        this.reportLogin = true;
+        this.history = new History();
+        this.properties = new Document();
+        this.stats = new PlayerStats();
+        this.onlineSessions = new ArrayList<>();
+        this.reports = new ArrayList<>();
+    }
     public int getID() {
         return id;
     }
     public String getName() {
         return name;
     }
-
     public String getColor() {
+        String color = BanSystem.getInstance().getPlatform().getColor(this);
+        if(color == null) color = this.color;
         return color;
     }
     public String getColoredName(){
@@ -54,8 +73,8 @@ public class NetworkPlayer {
     public String getIP(){
         return this.lastIP;
     }
-    public UUID getUUID() {
-        return uuid;
+    public UUID getUUID(){
+        return this.uuid;
     }
     public long getLastLogin() {
         return lastLogin;
@@ -68,7 +87,6 @@ public class NetworkPlayer {
     public boolean isReportLoggedIn() {
         return reportLogin;
     }
-
 
     public boolean isTeamChatLogin() {
         return teamChatLogin;
@@ -104,10 +122,12 @@ public class NetworkPlayer {
 
     public void setTeamChatLogin(boolean teamChatLogin) {
         this.teamChatLogin = teamChatLogin;
+        saveStaffSettings();
     }
 
     public void setReportLogin(boolean reportLogin) {
         this.reportLogin = reportLogin;
+        saveStaffSettings();
     }
     public List<Report> getReports(){
         return this.reports;
@@ -117,28 +137,44 @@ public class NetworkPlayer {
         GeneralUtil.iterateAcceptedForEach(this.onlineSessions, object -> !ips.contains(object.getIp()), object ->ips.add(object.getIp()));
         return ips;
     }
-    public List<Report> getOpenReport(){
+    public List<Report> getOpenReports(){
         return GeneralUtil.iterateAcceptedReturn(this.reports, object -> object.getStaff() == null);
     }
-    public Report getOneOpenReport(){
-        List<Report> reports = getReports();
+    public List<Report> getProcessingReports(){
+        return GeneralUtil.iterateAcceptedReturn(this.reports, object -> object.getStaff() != null);
+    }
+    public Report getProcessingReport(){
+        List<Report> reports = getProcessingReports();
+        System.out.println(reports.size());
         if(reports.size() >= 1) return reports.get(0);
+        return null;
+    }
+    public Report getOpenReport(){
+        List<Report> reports = getOpenReports();
+        if(reports.size() >= 1) return reports.get(0);
+        return null;
+    }
+    public UUID getReportStaff(){
+        Report report = getProcessingReport();
+        if(report != null) return report.getStaff();
+        return null;
+    }
+    public Report getOpenReportWhenNoProcessing(){
+        List<Report> reports = getReports();
+        if(reports.size() >= 1 && reports.size() == this.reports.size()) return reports.get(0);
         return null;
     }
     public Report getReport(NetworkPlayer reporter) {
         return getReport(reporter.getUUID());
     }
     public Report getReport(UUID reporter){
-        return GeneralUtil.iterateOne(this.reports, object -> object.getReporterUUID().equals(reporter));
+        return GeneralUtil.iterateOne(this.reports, object -> object.getReporteUUID().equals(reporter));
     }
     public boolean hasReport(NetworkPlayer reporter){
         return getReport(reporter) != null;
     }
     public boolean hasReport(UUID reporter){
         return getReport(reporter) != null;
-    }
-    public Ban getBan(){
-        return history.getBan();
     }
     public Ban getBan(BanType type){
         return history.getBan(type);
@@ -147,17 +183,15 @@ public class NetworkPlayer {
     public OnlineNetworkPlayer getOnlinePlayer(){
         return BanSystem.getInstance().getPlayerManager().getOnlinePlayer(this.uuid);
     }
-
     public boolean hasBypass() {
         return bypass;
     }
-
     public boolean isOnline(){
         return getOnlinePlayer() != null;
     }
 
     public boolean isBanned(){
-        return getBan() != null;
+        return history.isBanned();
     }
     public boolean isBanned(BanType type){
         return getBan(type) != null;
@@ -170,7 +204,7 @@ public class NetworkPlayer {
         return ban(type,duration,unit,reason,reasonID,"Console");
     }
     public Ban ban(BanType type, long duration, TimeUnit unit,String reason, int reasonID, UUID staff){
-        return ban(type, duration,unit,reason,reasonID,staff.toString());
+        return ban(type, duration,unit,reason,reasonID,staff==null?"Console":staff.toString());
     }
 
     public Ban ban(BanType type, long duration, TimeUnit unit,String reason, int reasonID, String staff){
@@ -185,7 +219,7 @@ public class NetworkPlayer {
     }
 
     public Ban ban(BanType type, long duration, TimeUnit unit,String reason,String message,int points, int reasonID, UUID staff){
-        return ban(type, duration,unit,reason,message,points,reasonID,staff.toString());
+        return ban(type, duration,unit,reason,message,points,reasonID,staff==null?"Console":staff.toString());
     }
 
     public Ban ban(BanType type, long duration, TimeUnit unit,String reason,String message,int points, int reasonID, String staff){
@@ -193,7 +227,7 @@ public class NetworkPlayer {
     }
 
     public Ban ban(BanType type, long duration, TimeUnit unit,String reason,String message,int points, int reasonID, UUID staff, Document properties){
-        return ban(type, duration,unit,reason,message,points,reasonID,staff.toString(),properties);
+        return ban(type, duration,unit,reason,message,points,reasonID,staff==null?"Console":staff.toString(),properties);
     }
 
     public Ban ban(BanType type, long duration, TimeUnit unit,String reason,String message,int points, int reasonID, String staff, Document properties){
@@ -201,18 +235,19 @@ public class NetworkPlayer {
                 ,System.currentTimeMillis()+unit.toMillis(duration),type));
     }
     public Ban ban(BanReason reason){
-        return ban(reason.toBan(this,null));
+        return ban(reason.toBan(this,"",null));
     }
-    public Ban ban(BanReason reason, UUID staff) {
-        return ban(reason,staff.toString());
+    public Ban ban(BanReason reason,String message,UUID staff) {
+        return ban(reason,message,staff==null?"Console":staff.toString());
     }
-    public Ban ban(BanReason reason, String staff){
-        return ban(reason.toBan(this,staff));
+    public Ban ban(BanReason reason,String message, String staff){
+        return ban(reason.toBan(this,message,staff));
     }
     public Ban ban(Ban ban){
-        ban.setID(addToHistory(ban));
+        ban.setID(addToHistory(ban,NetworkPlayerUpdateCause.BAN,new Document().append("ban",ban).append("reports",this.reports)));
+        this.reports.clear();
         OnlineNetworkPlayer player = getOnlinePlayer();
-        if(player != null) player.kickForBan(ban);
+        if(player != null) player.sendBan(ban);
         return ban;
     }
     public Kick kick(String reason, String message){
@@ -228,7 +263,7 @@ public class NetworkPlayer {
     }
 
     public Kick kick(String reason, String message,int points, int reasonID, UUID staff){
-        return kick(reason,message,points,reasonID,staff.toString());
+        return kick(reason,message,points,reasonID,staff==null?"Console":staff.toString());
     }
 
     public Kick kick(String reason, String message,int points, int reasonID, String staff){
@@ -237,7 +272,7 @@ public class NetworkPlayer {
     }
 
     public Kick kick(String reason, String message,int points, int reasonID, UUID staff, Document properties){
-        return kick(reason,message,points,reasonID,staff.toString(),properties);
+        return kick(reason,message,points,reasonID,staff==null?"Console":staff.toString(),properties);
     }
 
     public Kick kick(String reason, String message,int points, int reasonID, String staff, Document properties){
@@ -246,7 +281,7 @@ public class NetworkPlayer {
     }
 
     public Kick kick(String reason, String message,int points, int reasonID, UUID staff, Document properties, String server){
-        return kick(new Kick(this.uuid,this.lastIP,reason,message,System.currentTimeMillis(),-1,points,reasonID,staff.toString(),properties,server));
+        return kick(new Kick(this.uuid,this.lastIP,reason,message,System.currentTimeMillis(),-1,points,reasonID,staff==null?"Console":staff.toString(),properties,server));
     }
 
     public Kick kick(String reason, String message,int points, int reasonID, String staff, Document properties, String server){
@@ -257,13 +292,13 @@ public class NetworkPlayer {
         return kick(reason.toKick(this,null));
     }
     public Kick kick(KickReason reason, UUID staff){
-        return kick(reason,staff.toString());
+        return kick(reason,staff==null?"Console":staff.toString());
     }
     public Kick kick(KickReason reason, String staff){
         return kick(reason.toKick(this,staff));
     }
     public Kick kick(Kick kick){
-        kick.setID(addToHistory(kick));
+        kick.setID(addToHistory(kick,NetworkPlayerUpdateCause.KICK));
         OnlineNetworkPlayer player = getOnlinePlayer();
         if(player != null) player.kick(kick);
         return kick;
@@ -271,6 +306,10 @@ public class NetworkPlayer {
     public Unban unban(BanType type) {
         return unban(type,"");
     }
+    public Unban unban(BanType type, String reason, UUID staff) {
+        return unban(type,reason,"",0,-1,staff);
+    }
+
     public Unban unban(BanType type, String reason) {
         return unban(type,reason,"");
     }
@@ -288,7 +327,7 @@ public class NetworkPlayer {
     }
 
     public Unban unban(BanType type, String reason, String message, int points, int reasonID, UUID staff) {
-        return unban(type,reason,message,points,reasonID,staff.toString());
+        return unban(type,reason,message,points,reasonID,staff==null?"Console":staff.toString());
     }
 
     public Unban unban(BanType type, String reason, String message, int points, int reasonID, String staff) {
@@ -296,7 +335,7 @@ public class NetworkPlayer {
     }
 
     public Unban unban(BanType type, String reason, String message, int points, int reasonID, UUID staff, Document properties) {
-        return unban(new Unban(this.uuid,this.lastIP,reason,message,System.currentTimeMillis(),-1,points,reasonID,staff.toString(),properties,type));
+        return unban(new Unban(this.uuid,this.lastIP,reason,message,System.currentTimeMillis(),-1,points,reasonID,staff==null?"Console":staff.toString(),properties,type));
     }
 
     public Unban unban(BanType type, String reason, String message, int id, int points, int reasonID, String staff, Document properties) {
@@ -308,24 +347,23 @@ public class NetworkPlayer {
     }
 
     public Unban unban(BanType type, UnbanReason reason,UUID staff){
-        return unban(type,reason,staff.toString());
+        return unban(type,reason,staff==null?"Console":staff.toString());
     }
 
     public Unban unban(BanType type, UnbanReason reason, String staff){
-        return unban(type,reason,"",staff.toString());
+        return unban(type,reason,"",staff);
     }
 
     public Unban unban(BanType type, UnbanReason reason,String message,UUID staff){
-        return unban(type,reason,message,staff.toString());
+        return unban(type,reason,message,staff==null?"Console":staff.toString());
     }
     public Unban unban(BanType type, UnbanReason reason,String message,String staff){
         return unban(reason.toUnban(type,this,message,staff));
     }
     public Unban unban(Unban unban) {
-        unban.setID(addToHistory(unban));
+        unban.setID(addToHistory(unban,NetworkPlayerUpdateCause.UNBAN));
         return unban;
     }
-
     public Report report(String reason){
         return report(null,reason);
     }
@@ -364,50 +402,91 @@ public class NetworkPlayer {
     public Report report(Report report) {
         if(report.getUUID() != this.uuid) throw new IllegalArgumentException("This reports ist not from this player");
         this.reports.add(report);
-        BanSystem.getInstance().getReportManager().report(report);
+        BanSystem.getInstance().getStorage().createReport(report);
+        update(NetworkPlayerUpdateCause.REPORTSEND,new Document().append("report",report));
         return report;
     }
     public void processOpenReports(NetworkPlayer staff){
-        BanSystem.getInstance().getReportManager().processOpenReports(this,staff);
+        GeneralUtil.iterateForEach(this.reports, object -> object.setStaff(staff.getUUID()));
+        BanSystem.getInstance().getStorage().processReports(this,staff);
+        update(NetworkPlayerUpdateCause.REPORTPROCESS,new Document().append("staff",staff.getUUID()));
     }
     public void deleteReports(){
-        BanSystem.getInstance().getReportManager().deleteReports(this);
+        this.reports.clear();
+        BanSystem.getInstance().getStorage().deleteReports(this);
+        update(NetworkPlayerUpdateCause.REPORTDELETE);
+    }
+    public void denyReports(){
+        BanSystem.getInstance().getStorage().deleteReports(this);
+        update(NetworkPlayerUpdateCause.REPORTDENY,new Document().append("reports",this.reports));
+        this.reports.clear();
     }
     public void resetHistory(){
         this.history = new History();
-        BanSystem.getInstance().getStorage().resetHistory(this.uuid);
+        BanSystem.getInstance().getStorage().clearHistory(this);
+        update(NetworkPlayerUpdateCause.HISTORYUPDATE);
     }
     public void resetHistory(int id){
         this.history.getRawEntries().remove(id);
-        BanSystem.getInstance().getStorage().resetHistory(this.uuid,id);
+        BanSystem.getInstance().getStorage().deleteHistoryEntry(this,id);
+        update(NetworkPlayerUpdateCause.HISTORYUPDATE);
     }
     public int addToHistory(HistoryEntry entry) {
+        return addToHistory(entry,NetworkPlayerUpdateCause.HISTORYUPDATE);
+    }
+    public int addToHistory(HistoryEntry entry,NetworkPlayerUpdateCause cause){
+        return addToHistory(entry, cause,new Document());
+    }
+    public int addToHistory(HistoryEntry entry,NetworkPlayerUpdateCause cause,Document properties) {
         this.history.getRawEntries().put(entry.getID(),entry);
-        return BanSystem.getInstance().getStorage().addHistoryEntry(this.uuid,entry);
+        update(cause,properties);
+        return BanSystem.getInstance().getStorage().createHistoryEntry(this,entry);
     }
-/*
-        RuntimeTypeAdapterFactory<Animal> runtimeTypeAdapterFactory = RuntimeTypeAdapterFactory
-                .of(Animal.class, "type")
-                .registerSubtype(Dog.class, "dog")
-                .registerSubtype(Cat.class, "cat");
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapterFactory(runtimeTypeAdapterFactory)
-                .create();
-
+    private void saveStaffSettings(){
+        BanSystem.getInstance().getStorage().saveStaffSettings(this.uuid,reportLogin,teamChatLogin);
+        update(NetworkPlayerUpdateCause.STAFFSETTINGS);
     }
-
-    /*
-    RuntimeTypeAdapterFactory<Animal> runtimeTypeAdapterFactory = RuntimeTypeAdapterFactory
-.of(Animal.class, "type")
-.registerSubtype(Dog.class, "dog")
-.registerSubtype(Cat.class, "cat");
-
-Gson gson = new GsonBuilder()
-    .registerTypeAdapterFactory(runtimeTypeAdapterFactory)
-    .create();
-
-
-     */
-
+    public void update(){
+        update(NetworkPlayerUpdateCause.NOTSET);
+    }
+    public void update(NetworkPlayerUpdateCause cause){
+        update(cause,new Document());
+    }
+    public void update(Document properties){
+        update(NetworkPlayerUpdateCause.NOTSET,properties);
+    }
+    public void update(NetworkPlayerUpdateCause cause,Document properties){
+        BanSystem.getInstance().getPlayerManager().updatePlayer(this,cause,properties);
+    }
+    @SuppressWarnings("Only for databse id creation")
+    public void setID(int id) {
+        this.id = id;
+    }
+    @SuppressWarnings("Only for databse id creation")
+    public void setHistory(History history) {
+        this.history = history;
+    }
+    @SuppressWarnings("Only for databse id creation")
+    public void setReports(List<Report> reports) {
+        this.reports = reports;
+    }
+    public void playerLogin(String name, String ip,int clientVersion, String clientLanguage, String proxy, String color ,boolean bypass){
+        this.reports.clear();
+        this.name = name;
+        this.color = color;
+        this.bypass = bypass;
+        this.lastIP = ip;
+        this.lastLogin = System.currentTimeMillis();
+        this.onlineSessions.add(new OnlineSession(ip,"Unknown","Unknown",proxy,clientLanguage,clientVersion
+                ,System.currentTimeMillis(),System.currentTimeMillis()));
+        BanSystem.getInstance().getStorage().deleteReports(this);
+        update(NetworkPlayerUpdateCause.LOGIN);
+    }
+    public void playerLogout(String color ,boolean bypass,String lastServer){
+        this.color = color;
+        this.bypass = bypass;
+        this.lastLogin = System.currentTimeMillis();
+        BanSystem.getInstance().getStorage().deleteReports(this);
+        update(NetworkPlayerUpdateCause.LOGOUT,new Document().append("reports",reports));
+    }
 }

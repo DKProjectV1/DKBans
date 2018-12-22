@@ -12,6 +12,7 @@ public class TeamChatCommand extends NetworkCommand {
 
     public TeamChatCommand() {
         super("teamchat","","dkbans.teamchat.send","","tc","team","@team","tchat","teamc");
+        setPrefix(Messages.PREFIX_TEAMCHAT);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {

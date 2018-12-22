@@ -17,50 +17,55 @@ public class ChatLogCommand extends NetworkCommand {
 
     public ChatLogCommand() {
         super("chatlog","","dkbans.chatlog","","chatlogs");
+        setPrefix(Messages.PREFIX_CHATLOG);
     }
 
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
-        if(GeneralUtil.equalsOne(args[0],"player","players","p","-p")){
-            NetworkPlayer player = BanSystem.getInstance().getPlayerManager().getPlayer(args[1]);
-            if(player == null){
-                sender.sendMessage(Messages.PLAYER_NOT_FOUND.replace("[prefix]",getPrefix()));
+        if(args.length >= 2){
+            if(GeneralUtil.equalsOne(args[0],"player","players","p","-p")){
+                NetworkPlayer player = BanSystem.getInstance().getPlayerManager().getPlayer(args[1]);
+                if(player == null){
+                    sender.sendMessage(Messages.PLAYER_NOT_FOUND.replace("[prefix]",getPrefix()));
+                    return;
+                }
+                ChatLog chatlog = BanSystem.getInstance().getPlayerManager().getChatLog(player);
+                if(chatlog == null){
+                    sender.sendMessage(Messages.CHATLOG_NOTFOUND.replace("[prefix]",getPrefix()));
+                    return;
+                }
+                sender.sendMessage(Messages.CHATLOG_PLAYER_HEADER.replace("[prefix]",getPrefix()));
+                GeneralUtil.iterateForEach(chatlog.getEntries(filter(args)), object -> {
+                    String message = Messages.CHATLOG_PLAYER_LIST_NORMAL;
+                    if(object.isBlocked()) message = Messages.CHATLOG_PLAYER_LIST_BLOCKED;
+                    sender.sendMessage(message
+                            .replace("[message]",object.getMessage())
+                            .replace("[time]",""+object.getTime())
+                            .replace("[server]",object.getServer())
+                            .replace("[filter]",(object.getFilter()!=null?object.getFilter().toString():"No"))
+                            .replace("[prefix]",getPrefix()));
+                });
+                return;
+            }else if(GeneralUtil.equalsOne(args[0],"server","servers","s","-s")){
+                ChatLog chatlog = BanSystem.getInstance().getPlayerManager().getChatLog(args[1]);
+                if(chatlog == null){
+                    sender.sendMessage(Messages.CHATLOG_NOTFOUND.replace("[prefix]",getPrefix()));
+                    return;
+                }
+                sender.sendMessage(Messages.CHATLOG_SERVER_HEADER.replace("[prefix]",getPrefix()));
+                GeneralUtil.iterateForEach(chatlog.getEntries(filter(args)), object -> {
+                    String message = Messages.CHATLOG_SERVER_LIST_NORMAL;
+                    if(object.isBlocked()) message = Messages.CHATLOG_SERVER_LIST_BLOCKED;
+                    sender.sendMessage(message
+                            .replace("[message]",object.getMessage())
+                            .replace("[time]",""+object.getTime())
+                            .replace("[player]",""+object.getPlayer().getColoredName())
+                            .replace("[server]",object.getServer())
+                            .replace("[filter]",(object.getFilter()!=null?object.getFilter().toString():"No"))
+                            .replace("[prefix]",getPrefix()));
+                });
                 return;
             }
-            ChatLog chatlog = BanSystem.getInstance().getPlayerManager().getChatLog(player.getUUID());
-            if(chatlog == null){
-                sender.sendMessage(Messages.CHATLOG_NOTFOUND.replace("[prefix]",getPrefix()));
-                return;
-            }
-            GeneralUtil.iterateForEach(chatlog.getEntries(filter(args)), object -> {
-                String message = Messages.CHATLOG_PLAYER_LIST_NORMAL;
-                if(object.isBlocked()) message = Messages.CHATLOG_PLAYER_LIST_BLOCKED;
-                sender.sendMessage(message
-                        .replace("[message]",object.getMessage())
-                        .replace("[time]",""+object.getTime())
-                        .replace("[server]",object.getServer())
-                        .replace("[filter]",(object.getFilter()!=null?object.getFilter().toString():"No"))
-                        .replace("[prefix]",getPrefix()));
-            });
-            return;
-        }else if(GeneralUtil.equalsOne(args[0],"server","servers","s","-s")){
-            ChatLog chatlog = BanSystem.getInstance().getPlayerManager().getChatLog(args[1]);
-            if(chatlog == null){
-                sender.sendMessage(Messages.CHATLOG_NOTFOUND.replace("[prefix]",getPrefix()));
-                return;
-            }
-            GeneralUtil.iterateForEach(chatlog.getEntries(filter(args)), object -> {
-                String message = Messages.CHATLOG_SERVER_LIST_NORMAL;
-                if(object.isBlocked()) message = Messages.CHATLOG_SERVER_LIST_BLOCKED;
-                sender.sendMessage(message
-                        .replace("[message]",object.getMessage())
-                        .replace("[time]",""+object.getTime())
-                        .replace("[player]",""+object.getPlayer().getColoredName())
-                        .replace("[server]",object.getServer())
-                        .replace("[filter]",(object.getFilter()!=null?object.getFilter().toString():"No"))
-                        .replace("[prefix]",getPrefix()));
-            });
-            return;
         }
         sender.sendMessage(Messages.CHATLOG_HELP.replace("[prefix]",getPrefix()));
         /*

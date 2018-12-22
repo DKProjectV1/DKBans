@@ -1,5 +1,6 @@
 package ch.dkrieger.bansystem.lib.command;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public abstract class NetworkCommand {
         this.description = description;
         this.permission = permission;
         this.usage = usage;
-        this.aliases = aliases;
+        this.aliases = new ArrayList<>(aliases);
     }
     public String getName() {
         return this.name;

@@ -16,6 +16,7 @@ public class PlayerInfoCommand extends NetworkCommand {
 
     public PlayerInfoCommand() {
         super("playerinfo","","dkbans.playerinfo");
+        setPrefix(Messages.PREFIX_BAN);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
@@ -36,9 +37,8 @@ public class PlayerInfoCommand extends NetworkCommand {
                 sender.sendMessage(Messages.PLAYER_INFO_SESSIONS_HEADER.replace("[prefix]",getPrefix()));
                 for(OnlineSession session : sessions){
                     sender.sendMessage(Messages.PLAYER_INFO_SESSIONS_LIST
-                            .replace("[client]",session.getClient())
                             .replace("[clientLanguage]",session.getClientLanguage())
-                            .replace("[clientVersion]",session.getClientVersion())
+                            .replace("[clientVersion]",""+session.getClientVersion())
                             .replace("[country]",session.getCountry())
                             .replace("[ip]",session.getIp())
                             .replace("[connected]",""+session.getConnected())

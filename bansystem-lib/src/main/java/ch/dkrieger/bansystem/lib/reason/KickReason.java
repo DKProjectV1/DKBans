@@ -2,7 +2,10 @@ package ch.dkrieger.bansystem.lib.reason;
 
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
+import ch.dkrieger.bansystem.lib.utils.Document;
+import net.md_5.bungee.api.ChatColor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class KickReason {
@@ -11,6 +14,7 @@ public class KickReason {
     private String name, display, permission;
     private boolean hidden;
     private List<String> aliases;
+    private Document properties;
 
     public KickReason(int id, int points, String name, String display,String permission, boolean hidden, List<String> aliases) {
         this.id = id;
@@ -19,7 +23,8 @@ public class KickReason {
         this.display = display;
         this.permission = permission;
         this.hidden = hidden;
-        this.aliases = aliases;
+        this.aliases = new ArrayList<>(aliases);
+        this.properties = new Document();
     }
 
     public int getID() {
@@ -35,7 +40,7 @@ public class KickReason {
     }
 
     public String getDisplay() {
-        return display;
+        return ChatColor.translateAlternateColorCodes('&',display);
     }
 
     public String getPermission() {
@@ -44,6 +49,10 @@ public class KickReason {
 
     public List<String> getAliases() {
         return aliases;
+    }
+
+    public Document getProperties() {
+        return properties;
     }
 
     public boolean isHidden() {

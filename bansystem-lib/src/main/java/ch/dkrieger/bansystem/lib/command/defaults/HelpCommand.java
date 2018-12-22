@@ -11,10 +11,11 @@ public class HelpCommand extends NetworkCommand {
     public HelpCommand() {
         super("help");
         addAlias("?");
+        setPrefix(Messages.PREFIX_NETWORK);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
-        sender.sendMessage(Messages.HELP);
+        sender.sendMessage(Messages.HELP.replace("[prefix]",getPrefix()));
     }
 
     @Override

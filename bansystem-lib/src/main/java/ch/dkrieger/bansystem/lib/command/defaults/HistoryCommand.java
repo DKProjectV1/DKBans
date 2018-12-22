@@ -20,6 +20,7 @@ public class HistoryCommand extends NetworkCommand {
 
     public HistoryCommand() {
         super("history","","dkbans.history");
+        setPrefix(Messages.PREFIX_BAN);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
@@ -43,60 +44,15 @@ public class HistoryCommand extends NetworkCommand {
         }
         if(args.length > 1 && GeneralUtil.isNumber(args[1])){
             HistoryEntry value = history.getEntry(Integer.valueOf(args[1]));
-            if(value != null){
-                String message = Messages.HISTORY_INFO_OTHER;
-                if(value instanceof Ban){
-                    message = Messages.HISTORY_INFO_BAN
-                            .replace("[banType]",((Ban)value).getBanType().getDisplay())
-                            .replace("[remaining]",GeneralUtil.calculateTime(((Ban)value).getRemaining(),true))
-                            .replace("[duration]",GeneralUtil.calculateTime(((Ban)value).getDuration(),true));
-                }else if(value instanceof Kick){
-                    message = Messages.HISTORY_INFO_KICK.replace("[lastServer]",((Kick)value).getServer());
-                }else if(value instanceof Unban){
-                    sender.sendMessage(Messages.HISTORY_INFO_UNBAN);
-                }else{
-                    sender.sendMessage(Messages.HISTORY_INFO_OTHER
-                            .replace("[prefix]",getPrefix())
-                            .replace("[id]",""+value.getID())
-                            .replace("[reason]",value.getReason())
-                            .replace("[type]",value.getTypeName())
-                            .replace("[points]",""+value.getPoints())
-                            .replace("[message]",value.getMessage())
-                            .replace("[date]",""+value.getTimeStamp())
-                            .replace("[ip]",value.getIp())
-                            .replace("[staff]",value.getStaffName())
-                            .replace("[player]",player.getColoredName()));
-                }
-                sender.sendMessage(message
-                        .replace("[prefix]",getPrefix())
-                        .replace("[id]",""+value.getID())
-                        .replace("[reason]",value.getReason())
-                        .replace("[type]",value.getTypeName())
-                        .replace("[points]",""+value.getPoints())
-                        .replace("[message]",value.getMessage())
-                        .replace("[date]",""+value.getTimeStamp())
-                        .replace("[ip]",value.getIp())
-                        .replace("[staff]",value.getStaffName())
-                        .replace("[player]",player.getColoredName()));
-                return;
-            }
+            if(value != null) sender.sendMessage(value.getInfoMessage());
+            return;
         }
         sender.sendMessage(Messages.HISTORY_LIST_HEADER
                 .replace("[player]",player.getColoredName())
                 .replace("[size]",""+history.size())
                 .replace("[prefix]",getPrefix()));
         for(HistoryEntry value : history.getEntries()){
-            TextComponent component = new TextComponent(Messages.HISTORY_LIST_LIST
-                    .replace("[player]",player.getColoredName())
-                    .replace("[id]",""+value.getID())
-                    .replace("[reason]",value.getReason())
-                    .replace("[reasonID]",""+value.getReasonID())
-                    .replace("[time]",""+value.getTimeStamp())
-                    .replace("[message]",value.getMessage())
-                    .replace("[type]",value.getTypeName())
-                    .replace("[staff]",value.getStaffName())
-                    .replace("[points]",""+value.getPoints())
-                    .replace("[prefix]",getPrefix()));
+            TextComponent component = value.getListMessage();
             component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/history "+player.getUUID()+" "+value.getID()));
             sender.sendMessage(component);
         }

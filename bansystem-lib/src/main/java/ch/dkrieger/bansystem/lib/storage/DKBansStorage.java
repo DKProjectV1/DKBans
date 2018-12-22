@@ -5,6 +5,7 @@ import ch.dkrieger.bansystem.lib.filter.Filter;
 import ch.dkrieger.bansystem.lib.filter.FilterType;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLog;
+import ch.dkrieger.bansystem.lib.player.chatlog.ChatLogEntry;
 import ch.dkrieger.bansystem.lib.player.history.History;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.HistoryEntry;
@@ -36,33 +37,29 @@ public interface DKBansStorage {
 
     public int createPlayer(NetworkPlayer player);
 
+    public void saveStaffSettings(UUID player, boolean report,boolean teamchat);
+
     public ChatLog getChatLog(UUID player);
 
     public ChatLog getChatLog(String server);
 
+    public void createChatLogEntry(ChatLogEntry entry);
+
     public History getHistory(UUID player);
 
-    public void resetHistory(UUID uuid);
+    public void clearHistory(NetworkPlayer player);
 
-    public void resetHistory(UUID uuid, int id);
+    public int createHistoryEntry(NetworkPlayer player, HistoryEntry entry);
 
-    public int addHistoryEntry(UUID uuid, HistoryEntry entry);
-
-    public void createChatLogEntry(UUID uuid, String message, String server, FilterType filter);
-
-    public void saveHistory(UUID uuid, History history);
-
-    public void createHistoryEntry(UUID player, HistoryEntry entry);
-
-    public void delteHistoryEntry(int id);
+    public void deleteHistoryEntry(NetworkPlayer player,int id);
 
     public List<Report> getReports();
 
     public void createReport(Report report);
 
-    public void processReports(UUID player, UUID staff);
+    public void processReports(NetworkPlayer player, NetworkPlayer staff);
 
-    public void deleteReports(UUID uuid);
+    public void deleteReports(NetworkPlayer player);
 
     @SuppressWarnings("This methode is dangerous, it (can) return many datas and have a long delay.")
     public List<Ban> getBans();
@@ -86,7 +83,7 @@ public interface DKBansStorage {
 
     public void updateBroadcast(Broadcast broadcast);
 
-    public int deleteBroadcast(int id);
+    public void deleteBroadcast(int id);
 
     public NetworkStats getNetworkStats();
 

@@ -20,30 +20,38 @@ public class Messages {
     public static String PREFIX_REPORT;
     public static String PREFIX_TEAMCHAT;
     public static String PREFIX_CHAT;
+    public static String PREFIX_CHATLOG;
 
     public static String ERROR;
     public static String NOPERMISSIONS;
     public static String HELP;
 
-    public static String TIME_WEEK_SINGLUAR;
+   /*
+    public static String TIME_WEEK_SINGULAR;
     public static String TIME_WEEK_PLURAL;
     public static String TIME_WEEK_SHORTCUT;
+    */
 
-    public static String TIME_DAY_SINGLUAR;
+    public static String TIME_DAY_SINGULAR;
     public static String TIME_DAY_PLURAL;
     public static String TIME_DAY_SHORTCUT;
 
-    public static String TIME_HOUR_SINGLUAR;
+    public static String TIME_HOUR_SINGULAR;
     public static String TIME_HOUR_PLURAL;
     public static String TIME_HOUR_SHORTCUT;
 
-    public static String TIME_MINUTE_SINGLUAR;
+    public static String TIME_MINUTE_SINGULAR;
     public static String TIME_MINUTE_PLURAL;
     public static String TIME_MINUTE_SHORTCUT;
 
-    public static String TIME_SECOND_SINGLUAR;
+    public static String TIME_SECOND_SINGULAR;
     public static String TIME_SECOND_PLURAL;
     public static String TIME_SECOND_SHORTCUT;
+
+    public static String TIME_PERMANENTLY_NORMAL;
+    public static String TIME_PERMANENTLY_SHORTCUT;
+
+    public static String TIME_FINISH;
 
     public static String SERVER_NOT_FOUND;
     public static String SERVER_ALREADY;
@@ -79,7 +87,10 @@ public class Messages {
     public static String REASON_HELP;
 
     public static String BAN_HELP_HEADER;
+    public static String BAN_HELP_REASON;
     public static String BAN_HELP_HELP;
+    public static String BAN_TYPE_NETWORK;
+    public static String BAN_TYPE_CHAT;
     public static String BAN_BYPASS;
     public static String BAN_SUCCESS;
     public static String BAN_OVERWRITE_INFO;
@@ -104,7 +115,8 @@ public class Messages {
     public static String BROADCAST_CHANGED_CLICK;
     public static String BROADCAST_CHANGED_HOVER;
     public static String BROADCAST_CHANGED_MESSAGE;
-    public static String BROADCAST_CHANGED_AUTO;
+    public static String BROADCAST_CHANGED_AUTO_DISABLED;
+    public static String BROADCAST_CHANGED_AUTO_ENABLED;
     public static String BROADCAST_NOTFOUND_CLICKTYPE;
     public static String BROADCAST_NOTFOUND_BROADCAST;
     public static String BROADCAST_FORMAT_DIRECT;
@@ -127,11 +139,14 @@ public class Messages {
     public static String HISTORY_HELP;
     public static String HISTORY_NOTFOUND;
     public static String HISTORY_LIST_HEADER;
-    public static String HISTORY_LIST_LIST;
-    public static String HISTORY_INFO_BAN;
+    public static String HISTORY_LIST_BAN_CHAT;
+    public static String HISTORY_LIST_BAN_NETWORK;
+    public static String HISTORY_LIST_KICK;
+    public static String HISTORY_LIST_UNBAN;
+    public static String HISTORY_INFO_BAN_CHAT;
+    public static String HISTORY_INFO_BAN_NETWORK;
     public static String HISTORY_INFO_KICK;
     public static String HISTORY_INFO_UNBAN;
-    public static String HISTORY_INFO_OTHER;
     public static String HISTORY_RESET_ALL;
     public static String HISTORY_RESET_ONE;
 
@@ -140,10 +155,16 @@ public class Messages {
     public static String UNBAN_HELP_HEADER;
     public static String UNBAN_HELP_HELP;
 
+    public static String REPORT_HELP_HEADER;
+    public static String REPORT_HELP_REASON;
+    public static String REPORT_HELP_HELP;
     public static String REPORT_SUCCESS;
     public static String REPORT_BYPASS;
     public static String REPORT_ACCEPTED;
-    public static String REPORT_DENIED;
+    public static String REPORT_DENIED_STAFF;
+    public static String REPORT_DENIED_USER;
+    public static String REPORT_LEAVED_STAFF;
+    public static String REPORT_LEAVED_USER;
     public static String REPORT_NOTFOUND;
     public static String REPORT_PROCESS;
     public static String REPORT_LIST_NO;
@@ -195,10 +216,5 @@ public class Messages {
     public static String CHATLOG_SERVER_LIST_NORMAL;
     public static String CHATLOG_SERVER_LIST_BLOCKED;
 
-    public static String BROADCAST;
-
     public static String NETWORK_STATS;
-
-
-
 }

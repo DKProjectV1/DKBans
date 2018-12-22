@@ -12,6 +12,7 @@ public class NetworkStatsCommand extends NetworkCommand {
 
     public NetworkStatsCommand() {
         super("networkstats","","dkbans.networkstats");
+        setPrefix(Messages.PREFIX_NETWORK);
     }
 
     @Override

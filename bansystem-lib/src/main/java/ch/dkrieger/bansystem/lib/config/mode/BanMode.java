@@ -6,4 +6,10 @@ public enum BanMode {
     POINT(),
     TEMPLATE();
 
+    public static BanMode parse(String name){
+        try {
+            return valueOf(name);
+        }catch (Exception exception){}
+        return TEMPLATE;
+    }
 }

@@ -13,13 +13,14 @@ public class ReportsCommand extends NetworkCommand {
 
     public ReportsCommand() {
         super("reports","","dkbans.report.receive");
+        setPrefix(Messages.PREFIX_REPORT);
     }
 
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
         List<Report> reports = BanSystem.getInstance().getReportManager().getReports();
         if(reports.size() <= 0){
-            sender.sendMessage(Messages.REPORT_LIST_NO);
+            sender.sendMessage(Messages.REPORT_LIST_NO .replace("[prefix]",getPrefix()));
             return;
         }
         int page = 0;

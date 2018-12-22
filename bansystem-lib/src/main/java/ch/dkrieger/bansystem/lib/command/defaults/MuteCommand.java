@@ -12,6 +12,7 @@ public class MuteCommand extends NetworkCommand {
 
     public MuteCommand() {
         super("mute");
+
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {

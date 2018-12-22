@@ -15,6 +15,7 @@ public class ResetHistoryCommand extends NetworkCommand {
 
     public ResetHistoryCommand() {
         super("resethistory");
+        setPrefix(Messages.PREFIX_BAN);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {

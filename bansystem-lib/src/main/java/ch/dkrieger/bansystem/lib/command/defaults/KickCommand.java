@@ -4,6 +4,7 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
+import ch.dkrieger.bansystem.lib.config.mode.KickMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 import ch.dkrieger.bansystem.lib.reason.KickReason;
@@ -15,13 +16,14 @@ public class KickCommand extends NetworkCommand {
 
     public KickCommand() {
         super("kick","Kick a player","dkbans.kick","<player> <reason>","gkick","globalkick");
+        setPrefix(Messages.PREFIX_BAN);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
-        if(args.length < 1){
+        if(args.length < 2){
             sendReasons(sender);
             return;
-        }
+        }//kick dkrieger 1
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
         if(player == null){
             sender.sendMessage(Messages.PLAYER_NOT_FOUND
@@ -35,25 +37,32 @@ public class KickCommand extends NetworkCommand {
                     .replace("[player]",player.getColoredName()));
             return;
         }
-        KickReason reason = BanSystem.getInstance().getReasonProvider().searchKickReason(args[1]);
-        if(reason == null){
-            sendReasons(sender);
-            return;
+        KickReason reason = null;
+        if(BanSystem.getInstance().getConfig().kickMode == KickMode.TEMPLATE){
+            reason = BanSystem.getInstance().getReasonProvider().searchKickReason(args[1]);
+            if(reason == null){
+                sendReasons(sender);
+                return;
+            }
+            if(!sender.hasPermission(reason.getPermission())){
+                sender.sendMessage(Messages.REASON_NO_PERMISSION
+                        .replace("[prefix]",getPrefix())
+                        .replace("[reason]",reason.getDisplay()));
+                return;
+            }
         }
-        if(!sender.hasPermission(reason.getPermission())){
-            sender.sendMessage(Messages.REASON_NO_PERMISSION
-                    .replace("[prefix]",getPrefix())
-                    .replace("[reason]",reason.getDisplay()));
-            return;
-        }
-
         if(player.hasBypass() && !(sender.hasPermission("dkbans.bypass.ignore"))){
             sender.sendMessage(Messages.KICK_BYPASS
                     .replace("[prefix]",getPrefix())
                     .replace("[player]",player.getColoredName()));
             return;
         }
-        Kick kick = player.kick(reason);
+        String message = "";
+        for(int i = 2;i < args.length;i++) message += args[i]+" ";
+
+        Kick kick = null;
+        if(BanSystem.getInstance().getConfig().kickMode == KickMode.TEMPLATE) kick = player.kick(reason,message);
+        else kick = player.kick(args[1],message);
         sender.sendMessage(Messages.KICK_SUCCESS
                 .replace("[prefix]",getPrefix())
                 .replace("[server]",kick.getServer())

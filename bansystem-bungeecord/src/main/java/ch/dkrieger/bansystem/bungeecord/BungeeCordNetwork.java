@@ -30,8 +30,8 @@ public class BungeeCordNetwork implements DKNetwork {
         return getJoinMe(player.getUUID());
     }
     @Override
-    public JoinMe getJoinMe(UUID player) {
-        return this.joinme.get(player);
+    public JoinMe getJoinMe(UUID uuid) {
+        return this.joinme.get(uuid);
     }
     @Override
     public void broadcast(String message) {
@@ -43,7 +43,7 @@ public class BungeeCordNetwork implements DKNetwork {
     }
     @Override
     public void sendJoinMe(JoinMe joinMe) {
-        this.joinme.put(joinMe.getPlayerUUID(),joinMe);
+        this.joinme.put(joinMe.getUUID(),joinMe);
         //send joinme
     }
     @Override

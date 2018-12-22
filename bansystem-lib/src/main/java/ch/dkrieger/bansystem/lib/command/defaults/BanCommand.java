@@ -20,19 +20,20 @@ public class BanCommand extends NetworkCommand {
 
     public BanCommand() {
         super("ban","","dkbans.ban");
+        setPrefix(Messages.PREFIX_BAN);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
-        if(args.length < 1){
+        if(args.length < 2){
             sendReasons(sender);
             return;
-        }
+        }//ban dkrieger 1
         if(BanSystem.getInstance().getConfig().banMode == BanMode.SELF){
             sender.executeCommand("tempban "+GeneralUtil.arrayToString(args," "));
             return;
         }
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
-        if(player != null){
+        if(player == null){
             sender.sendMessage(Messages.PLAYER_NOT_FOUND
                     .replace("[prefix]",getPrefix())
                     .replace("[player]",args[0]));
@@ -44,7 +45,6 @@ public class BanCommand extends NetworkCommand {
                     .replace("[player]",player.getColoredName()));
             return;
         }
-
         BanReason reason = BanSystem.getInstance().getReasonProvider().searchBanReason(args[1]);
         if(reason == null){
             sendReasons(sender);
@@ -70,13 +70,14 @@ public class BanCommand extends NetworkCommand {
             else message += args[i] + " ";
         }
         if(player.isBanned(value.getType())){
-            if(overwrite && sender.hasPermission("dkbans.ban.overwrite")
-                    && !(sender.hasPermission("dkbans.ban.overwrite.all")
-                    || player.getBan(value.getType()).getStaff().equalsIgnoreCase(sender.getUUID().toString()))){
+            if(overwrite){
+                if(!(sender.hasPermission("dkbans.ban.overwrite") && (sender.hasPermission("dkbans.ban.overwrite.all")
+                        || player.getBan(value.getType()).getStaff().equalsIgnoreCase(sender.getUUID().toString())))){
                     sender.sendMessage(Messages.BAN_OVERWRITE_NOTALLOWED
                             .replace("[prefix]",getPrefix())
                             .replace("[player]",player.getColoredName()));
                     return;
+                }
             }else{
                 if(value.getType() == BanType.NETWORK){
                     sender.sendMessage(Messages.PLAYER_ALREADY_BANNED
@@ -87,8 +88,7 @@ public class BanCommand extends NetworkCommand {
                             .replace("[prefix]",getPrefix())
                             .replace("[player]",player.getColoredName()));
                 }
-                if(sender.hasPermission("dkbans.ban.overwrite")
-                        && (sender.hasPermission("dkbans.ban.overwrite.all")
+                if(sender.hasPermission("dkbans.ban.overwrite") && (sender.hasPermission("dkbans.ban.overwrite.all")
                         || player.getBan(value.getType()).getStaff().equalsIgnoreCase(sender.getUUID().toString()))){
                     TextComponent component = new TextComponent(Messages.BAN_OVERWRITE_INFO
                             .replace("[prefix]",getPrefix())
@@ -100,7 +100,7 @@ public class BanCommand extends NetworkCommand {
                 return;
             }
         }
-        Ban ban = player.ban(reason,sender.getUUID());
+        Ban ban = player.ban(reason,message,sender.getUUID());
         sender.sendMessage(Messages.BAN_SUCCESS
                 .replace("[prefix]",getPrefix())
                 .replace("[player]",player.getColoredName())
@@ -110,19 +110,21 @@ public class BanCommand extends NetworkCommand {
                 .replace("[staff]",ban.getStaffName())
                 .replace("[reasonID]",String.valueOf(ban.getReasonID()))
                 .replace("[ip]",ban.getIp())
-                .replace("[duration-short]", GeneralUtil.calculateTime(ban.getRemaining(),true))
-                .replace("[duration]", GeneralUtil.calculateTime(ban.getRemaining(),false)));
+                .replace("[duration]",GeneralUtil.calculateDuration(ban.getDuration()))
+                .replace("[remaining]",GeneralUtil.calculateRemaining(ban.getDuration(),false))
+                .replace("[remaining-short]",GeneralUtil.calculateRemaining(ban.getDuration(),true)));
     }
     private void sendReasons(NetworkCommandSender sender){
-        sender.sendMessage(Messages.BAN_HELP_HEADER);
+        sender.sendMessage(Messages.BAN_HELP_HEADER.replace("[prefix]",getPrefix()));
         for(BanReason reason : BanSystem.getInstance().getReasonProvider().getBanReasons()){
             if(!sender.hasPermission(reason.getPermission())) continue;
-            sender.sendMessage(Messages.REASON_HELP
+            sender.sendMessage(Messages.BAN_HELP_REASON
                     .replace("[prefix]",getPrefix())
                     .replace("[id]",""+reason.getID())
                     .replace("[name]",reason.getDisplay())
                     .replace("[historyType]",reason.getHistoryType().getDisplay())
                     .replace("[banType]",reason.getBanType().getDisplay())
+                    .replace("[reason]",reason.getDisplay())
                     .replace("[points]",""+reason.getPoints()));
         }
         sender.sendMessage(Messages.BAN_HELP_HELP);

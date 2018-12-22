@@ -18,7 +18,7 @@ public class JoinMe {
         this.server = server;
         this.timeOut = timeOut;
     }
-    public UUID getPlayerUUID() {
+    public UUID getUUID() {
         return player;
     }
     public NetworkPlayer getPlayer(){

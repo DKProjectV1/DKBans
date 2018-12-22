@@ -8,7 +8,6 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-import de.dytanic.cloudnet.bridge.CloudProxy;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -32,7 +31,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onLogin(LoginEvent event){
-        CloudNetFix(event.getConnection().getUniqueId());
+        //CloudNetV2Fix(event.getConnection().getUniqueId());
         if(BungeeCord.getInstance().getConfig().isOnlineMode() && !(event.getConnection().isOnlineMode())) return;
         if(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.NICKNAME,event.getConnection().getName())){
             event.setCancelled(true);
@@ -53,23 +52,14 @@ public class PlayerListener implements Listener {
             }
         }
         if(player == null){
-            player =  BanSystem.getInstance().getPlayerManager().createPlayer(event.getConnection().getUniqueId(),event.getConnection().getName());
+            player =  BanSystem.getInstance().getPlayerManager().createPlayer(event.getConnection().getUniqueId()
+                    ,event.getConnection().getName(),event.getConnection().getAddress().getAddress().getHostAddress());
         }else{
             //update player info
             Ban ban = player.getBan(BanType.NETWORK);
             if(ban != null){
                 event.setCancelled(true);
-                String message = Messages.BAN_MESSAGE_NETWORK_TEMPORARY;
-                if(ban.getTimeOut() <= 0) message = Messages.BAN_MESSAGE_NETWORK_PERMANENT;
-                event.setCancelReason(new TextComponent(message
-                        .replace("[id]",ban.getID()+"")
-                        .replace("[staff]",ban.getStaffName())
-                        .replace("[reason]",ban.getReason())
-                        .replace("[message]",ban.getMessage())
-                        .replace("[remaining]",GeneralUtil.calculateTime(ban.getRemaining(),false))
-                        .replace("[remaining-short]", GeneralUtil.calculateTime(ban.getRemaining(),true))
-                        .replace("[time]",""+ban.getTimeStamp())
-                        .replace("[prefix]",Messages.PREFIX_NETWORK)));
+                event.setCancelReason(ban.toMessage());
             }
         }
     }
@@ -88,14 +78,17 @@ public class PlayerListener implements Listener {
                 if(BanSystem.getInstance().getConfig().onJoinReportInfo){
                     event.getPlayer().sendMessage(new TextComponent(Messages.STAFF_STATUS_NOW
                             .replace("[status]",(player.isReportLogin()?Messages.STAFF_STATUS_LOGIN:Messages.STAFF_STATUS_LOGOUT))
-                            .replace("[prefix]",Messages.PREFIX_TEAMCHAT)));
+                            .replace("[prefix]",Messages.PREFIX_REPORT)));
                 }
                 if(BanSystem.getInstance().getConfig().onJoinReportSize){
                     event.getPlayer().sendMessage(new TextComponent(Messages.REPORT_INFO
                             .replace("[size]",""+BanSystem.getInstance().getReportManager().getOpenReports().size())
                             .replace("[prefix]",Messages.PREFIX_REPORT)));
                 }
-            }
+            }//event.getPlayer().getLocale().getLanguage()
+            player.playerLogin(event.getPlayer().getName(),event.getPlayer().getAddress().getAddress().getHostAddress()
+                    ,event.getPlayer().getPendingConnection().getVersion(),"Unknown",BungeeCordBanSystemBootstrap.getInstance().getProxyName()
+                    ,BungeeCordBanSystemBootstrap.getInstance().getColor(player),event.getPlayer().hasPermission("dkbans.bypass"));
         });
     }
     @EventHandler
@@ -103,7 +96,8 @@ public class PlayerListener implements Listener {
         BungeeCord.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
             NetworkPlayer player = BanSystem.getInstance().getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
             if(player == null) return;
-            //update player info
+            player.playerLogout(BungeeCordBanSystemBootstrap.getInstance().getColor(player),event.getPlayer().hasPermission("dkbans.bypass")
+            ,event.getPlayer().getServer().getInfo().getName());
         });
     }
     @EventHandler
@@ -137,15 +131,7 @@ public class PlayerListener implements Listener {
             if(event.isCommand() && !(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.MUTECOMMAND,event.getMessage()))) return;
             String message = Messages.BAN_MESSAGE_CHAT_TEMPORARY;
             if(ban.getTimeOut() <= 0) message = Messages.BAN_MESSAGE_CHAT_PERMANENT;
-            player.sendMessage(new TextComponent(message
-                    .replace("[id]",ban.getID()+"")
-                    .replace("[staff]",ban.getStaffName())
-                    .replace("[reason]",ban.getReason())
-                    .replace("[message]",ban.getMessage())
-                    .replace("[remaining]",GeneralUtil.calculateTime(ban.getRemaining(),false))
-                    .replace("[remaining-short]", GeneralUtil.calculateTime(ban.getRemaining(),true))
-                    .replace("[time]",""+ban.getTimeStamp())
-                    .replace("[prefix]",Messages.PREFIX_NETWORK)));
+            player.sendMessage(ban.toMessage());
             event.setCancelled(true);
         }else if(!event.isCommand()){
             lastMessage lastMessage = this.lastMessage.get(player.getUniqueId());
@@ -161,8 +147,6 @@ public class PlayerListener implements Listener {
                     lastMessage.time = System.currentTimeMillis();
                 }
             }else this.lastMessage.put(player.getUniqueId(),new lastMessage(event.getMessage(),System.currentTimeMillis()));
-
-
             FilterType filter = null;
             if(!player.hasPermission("dkbans.bypass.chat")){
                 if(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.MESSAGE,event.getMessage())){
@@ -179,7 +163,7 @@ public class PlayerListener implements Listener {
             }
             final FilterType finalFilter = filter;
             BungeeCord.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
-                BanSystem.getInstance().getPlayerManager().createChatLog(player.getUniqueId(),event.getMessage()
+                BanSystem.getInstance().getPlayerManager().createChatLogEntry(player.getUniqueId(),event.getMessage()
                         ,player.getServer().getInfo().getName(),finalFilter);
             });
         }
@@ -196,9 +180,9 @@ public class PlayerListener implements Listener {
             }
         }
     }
-    private void CloudNetFix(final UUID uuid){
+    private void CloudNetV2Fix(final UUID uuid){
         //if(!BanSystem.getInstance().cloudnet) return;
-        ProxyServer.getInstance().getScheduler().schedule(CloudProxy.getInstance().getPlugin(), () -> {
+        ProxyServer.getInstance().getScheduler().schedule(de.dytanic.cloudnet.bridge.CloudProxy.getInstance().getPlugin(), () -> {
             ProxiedPlayer player = BungeeCord.getInstance().getPlayer(uuid);
             //if(player == null) CloudNetExtension.getInstance().unregisterPlayer(uuid);
         }, 550L, TimeUnit.MILLISECONDS);

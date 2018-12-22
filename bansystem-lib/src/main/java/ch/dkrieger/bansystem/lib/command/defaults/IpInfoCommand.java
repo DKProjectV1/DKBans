@@ -16,6 +16,7 @@ public class IpInfoCommand extends NetworkCommand {
 
     public IpInfoCommand() {
         super("ipinfo");
+        setPrefix(Messages.PREFIX_BAN);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {

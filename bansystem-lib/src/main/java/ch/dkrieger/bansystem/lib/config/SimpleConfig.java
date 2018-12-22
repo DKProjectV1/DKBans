@@ -41,9 +41,8 @@ public abstract class SimpleConfig {
     }
     public void loadConfig(){
         load();
-        registerDefaults();
-        save();
         onLoad();
+        save();
     }
     public void save(){
         if(file == null || !file.exists()) return;
@@ -68,7 +67,7 @@ public abstract class SimpleConfig {
         this.config.set(path,value);
     }
     public void addValue(String path, Object value){
-        if(!this.config.contains(path) )this.config.set(path,value);
+        if(!this.config.contains(path))this.config.set(path,value);
     }
     public String getStringValue(String path){
         return this.config.getString(path);
@@ -106,6 +105,58 @@ public abstract class SimpleConfig {
     public Object getValue(String path){
         return this.config.getStringList(path);
     }
+
+    public String addAndGetStringValue(String path, Object object){
+        addValue(path,object);
+        return this.config.getString(path);
+    }
+    public String addAndGetMessageValue(String path,Object object){
+        addValue(path,object);
+        return ChatColor.translateAlternateColorCodes('&',getStringValue(path));
+    }
+    public int addAndGetIntValue(String path,Object object){
+        addValue(path,object);
+        return this.config.getInt(path);
+    }
+    public double addAndGetDoubleValue(String path,Object object){
+        addValue(path,object);
+        return this.config.getDouble(path);
+    }
+    public long addAndGetLongValue(String path,Object object){
+        addValue(path,object);
+        return this.config.getLong(path);
+    }
+    public boolean addAndGetBooleanValue(String path,Object object){
+        addValue(path,object);
+        return this.config.getBoolean(path);
+    }
+    public List<String> addAndGetStringListValue(String path,Object object){
+        addValue(path,object);
+        return this.config.getStringList(path);
+    }
+    public List<Integer> addAndGetIntListValue(String path,Object object){
+        addValue(path,object);
+        return this.config.getIntList(path);
+    }
+    public List<Double> addAndGetDoubleListValue(String path,Object object){
+        addValue(path,object);
+        return this.config.getDoubleList(path);
+    }
+    public List<Long> addAndGetLongListValue(String path,Object object){
+        addValue(path,object);
+        return this.config.getLongList(path);
+    }
+    public List<Boolean> addAndGetBooleanListValue(String path,Object object){
+        addValue(path,object);
+        return this.config.getBooleanList(path);
+    }
+    public Object addAndGetValue(String path,Object object){
+        addValue(path,object);
+        return this.config.getStringList(path);
+    }
+
+
+
     public Collection<String> getKeys(String path){
         Configuration config = this.config.getSection(path);
         if(config != null) return config.getKeys();
@@ -115,5 +166,4 @@ public abstract class SimpleConfig {
         return this.config.contains(path);
     }
     public abstract void onLoad();
-    public abstract void registerDefaults();
 }

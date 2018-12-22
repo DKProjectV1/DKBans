@@ -7,18 +7,20 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class OnlinetimeCommand extends NetworkCommand {
 
     public OnlinetimeCommand() {
         super("onlinetime", "","dkbans.onlinetime","","otime");
+        setPrefix(Messages.PREFIX_NETWORK);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
         NetworkPlayer player = sender.getAsNetworkPlayer();
         sender.sendMessage(Messages.ONLINE_TIME
                 .replace("[player]",player.getColoredName())
-                .replace("[time]", GeneralUtil.calculateTime(player.getOnlineTime(),false))
+                .replace("[time]",""+TimeUnit.MILLISECONDS.toHours(player.getOnlineTime()))
                 .replace("[prefix]",getPrefix()));
     }
     @Override

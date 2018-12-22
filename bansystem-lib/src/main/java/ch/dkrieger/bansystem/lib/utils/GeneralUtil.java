@@ -12,6 +12,15 @@ import net.md_5.bungee.api.chat.TextComponent;
 import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -53,44 +62,78 @@ public class GeneralUtil {
         return h+1;
     }
 
-    public static String calculateTime(long duration, boolean shortcut){
-        long millis = duration;
-        long seconds = 0;
-        long minutes = 0;
-        long hours = 0;
-        long days = 0;
-        long weeks = 0;
+    public static String calculateRemaining(long durationMillis, boolean shortcut){
+        if(durationMillis < 1) return Messages.TIME_FINISH;
+        /*
+        long seconds = duration % 60;
+        long minutes = (duration % 3600) / 60;
+        Instant now = Instant.now();
+        Instant timeout = Instant.
 
-        while(millis > 1000){
-            millis -=1000;
-            seconds++;
-        }
-        while(seconds > 60){
-            seconds -=60;
-            minutes++;
-        }
-        while(minutes > 60){
-            minutes -=60;
-            hours++;
-        }
-        while(hours > 24){
-            hours -=24;
-            days++;
-        }
-        while(days > 7){
-            days -=7;
-            weeks++;
-        }
-        if(shortcut) return weeks+Messages.TIME_WEEK_SHORTCUT+" "+
-                days+Messages.TIME_DAY_SHORTCUT+" "+
+        Duration duration2 = Duration.between(i1,i1);
+        long secondsInMillis = 1000;
+        long minutesInMillis = secondsInMillis * 60;
+        long hoursInMillis = minutesInMillis *60;
+        long daysInMillis = hoursInMillis *24;
+        long weeksInMillis = daysInMillis * 7;
+
+        long weeks = duration / weeksInMillis;
+        duration = duration % weeksInMillis;
+
+        long days = duration / daysInMillis;
+        duration = duration % daysInMillis;
+
+        long hours = duration / hoursInMillis;
+        duration = duration % hoursInMillis;
+
+        long minutes = duration / minutesInMillis;
+        duration = duration % minutesInMillis;
+
+        long seconds = duration / secondsInMillis;
+
+        LocalDateTime d1 = LocalDateTime.now();
+        LocalDateTime d2 = LocalDateTime.parse("25/11/17 09:00:00", DateTimeFormatter.ofPattern("yy/MM/dd HH:mm:ss"));
+
+        days = d1.until(d2, ChronoUnit.DAYS);
+        d1 = d1.plusDays(days);
+        long hours = d1.until(d2, ChronoUnit.HOURS);
+        d1 = d1.plusHours(hours);
+        long minutes = d1.until(d2, ChronoUnit.MINUTES);
+        d1 = d1.plusMinutes(minutes);
+        long seconds = d1.until(d2, ChronoUnit.SECONDS);
+         */
+
+        Duration duration = Duration.ofMillis(durationMillis);
+        long days = duration.toDays();
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes();
+        long seconds = duration.tose;
+
+        Period
+
+        if(shortcut) return days+Messages.TIME_DAY_SHORTCUT+" "+
                 hours+Messages.TIME_HOUR_SHORTCUT+" "+
                 minutes+Messages.TIME_MINUTE_SHORTCUT+" "+
                 seconds+Messages.TIME_SECOND_SHORTCUT;
-        return weeks+(weeks == 1?Messages.TIME_WEEK_SINGLUAR:Messages.TIME_WEEK_PLURAL)+" "+
-                days+(days == 1?Messages.TIME_DAY_SINGLUAR:Messages.TIME_DAY_PLURAL)+" "+
-                hours+(hours == 1?Messages.TIME_HOUR_SINGLUAR:Messages.TIME_HOUR_PLURAL)+" "+
-                minutes+(minutes == 1?Messages.TIME_MINUTE_SINGLUAR:Messages.TIME_MINUTE_PLURAL)+" "+
-                seconds+(seconds == 1?Messages.TIME_SECOND_SINGLUAR:Messages.TIME_SECOND_PLURAL);
+        return days+(days == 1?Messages.TIME_DAY_SINGULAR:Messages.TIME_DAY_PLURAL)+" "+
+                hours+(hours == 1?Messages.TIME_HOUR_SINGULAR:Messages.TIME_HOUR_PLURAL)+" "+
+                minutes+(minutes == 1?Messages.TIME_MINUTE_SINGULAR:Messages.TIME_MINUTE_PLURAL)+" "+
+                seconds+(seconds == 1?Messages.TIME_SECOND_SINGULAR:Messages.TIME_SECOND_PLURAL);
+    }
+    public static String calculateDuration(long duration){
+        if(duration <= 0) return Messages.TIME_PERMANENTLY_NORMAL;
+        duration = duration/1000;
+        if(duration < 60) return duration+(duration==1?Messages.TIME_SECOND_SINGULAR:Messages.TIME_SECOND_PLURAL);
+        else if(duration <3600){
+            duration = Math.round((float)duration/60);
+            return duration+(duration==1?Messages.TIME_MINUTE_SINGULAR:Messages.TIME_MINUTE_PLURAL);
+        }
+        else if(duration < 86400){
+            duration = Math.round((float) (duration/60)/60);
+            return duration+(duration==1?Messages.TIME_HOUR_SINGULAR:Messages.TIME_HOUR_PLURAL);
+        }
+        duration = Math.round((float)((duration/60)/60)/24);
+        return duration+(duration==1?Messages.TIME_DAY_SINGULAR:Messages.TIME_DAY_PLURAL);
     }
 
     public static boolean isNumber(String value){
@@ -190,23 +233,16 @@ public class GeneralUtil {
     }
     public static TextComponent replaceTextComponent(TextComponent text, String replacement, TextComponent component){
         final List<BaseComponent> components = text.getExtra();
-        if(components.size() > 0){
-            for(int i = 0; i < components.size();i++){
-                if(components.get(i) instanceof  TextComponent){
-                    TextComponent tc = (TextComponent)components.get(i);
-                    if(tc.getExtra().size() > 0) for(BaseComponent subTC : tc.getExtra()) if(subTC instanceof TextComponent) replaceTextComponent((TextComponent)subTC,replacement,component);
-                    if(text.getText() != null && !(text.getText().equalsIgnoreCase(""))){
-                        TextComponent newTC = replaceTextComponent(tc.getText(),replacement,component);
-                        tc.setText("");
-                        tc.getExtra().addAll(newTC.getExtra());
-                    }
-                }
+        if(components != null && components.size() > 0){
+            for (BaseComponent subComponent : components) {
+                if(subComponent instanceof TextComponent)replaceTextComponent((TextComponent) subComponent,replacement,component);
             }
             text.setExtra(components);
         }
         if(text.getText() != null && !(text.getText().equalsIgnoreCase(""))){
             TextComponent newTC = replaceTextComponent(text.getText(),replacement,component);
             text.setText("");
+            if(text.getExtra() == null) text.setExtra(new ArrayList<>());
             text.getExtra().addAll(newTC.getExtra());
         }
         return text;
@@ -214,10 +250,10 @@ public class GeneralUtil {
     public static TextComponent replaceTextComponent(String text, String replacement, TextComponent component){
         TextComponent message = new TextComponent();
         if(text.contains(replacement)){
-            int index = text.lastIndexOf("[accept]");
+            int index = text.lastIndexOf(replacement);
             message.addExtra(new TextComponent(text.substring(0,index)));
             message.addExtra(component);
-            text = text.substring(index).replace("[accept]","");
+            text = text.substring(index).replace(replacement,"");
         }
         if(text.length() > 0) message.addExtra(text);
         return message;

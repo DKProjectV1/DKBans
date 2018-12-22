@@ -16,6 +16,7 @@ public class TempmuteCommand extends NetworkCommand {
 
     public TempmuteCommand() {
         super("tempmute","","dkbans.ban.temp.mute","","tmute");
+        setPrefix(Messages.PREFIX_BAN);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
@@ -38,14 +39,14 @@ public class TempmuteCommand extends NetworkCommand {
         }
         String unit = "days";
         if(args.length > 3) unit = args[3];
-        long millis = GeneralUtil.convertToMIllis(Long.valueOf(args[2]),unit);
+        long millis = GeneralUtil.convertToMillis(Long.valueOf(args[2]),unit);
         if(player.isBanned(BanType.CHAT)){
             sender.sendMessage(Messages.PLAYER_ALREADY_BANNED
                     .replace("[prefix]",getPrefix())
                     .replace("[player]",player.getColoredName()));
             return;
         }
-        Ban ban = player.ban(BanType.CHAT,millis,TimeUnit.MILLISECONDS,args[1],sender.getUUID());
+        Ban ban = player.ban(BanType.CHAT,millis,TimeUnit.MILLISECONDS,args[1],-1,sender.getUUID());
         sender.sendMessage(Messages.BAN_SUCCESS
                 .replace("[prefix]",getPrefix())
                 .replace("[player]",player.getColoredName())
@@ -55,8 +56,9 @@ public class TempmuteCommand extends NetworkCommand {
                 .replace("[staff]",ban.getStaffName())
                 .replace("[reasonID]",String.valueOf(ban.getReasonID()))
                 .replace("[ip]",ban.getIp())
-                .replace("[duration-short]", GeneralUtil.calculateTime(ban.getRemaining(),true))
-                .replace("[duration]", GeneralUtil.calculateTime(ban.getRemaining(),false)));
+                .replace("[duration]",GeneralUtil.calculateDuration(ban.getDuration()))
+                .replace("[remaining]",GeneralUtil.calculateRemaining(ban.getDuration(),false))
+                .replace("[remaining-short]",GeneralUtil.calculateRemaining(ban.getDuration(),true)));
     }
 
     @Override

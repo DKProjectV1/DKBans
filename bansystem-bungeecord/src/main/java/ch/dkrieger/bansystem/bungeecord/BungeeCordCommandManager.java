@@ -6,6 +6,7 @@ import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandManager;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -13,9 +14,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.UUID;
+import java.util.*;
 
 /*
  *
@@ -46,7 +45,7 @@ public class BungeeCordCommandManager implements NetworkCommandManager {
         private NetworkCommand command;
 
         public BungeeCordNetworkCommand(NetworkCommand command) {
-            super(command.getName(),command.getPermission(),command.getAliases().toArray(new String[command.getAliases().size()]));
+            super(command.getName(),null,command.getAliases().toArray(new String[command.getAliases().size()]));
             this.command = command;
         }
         @Override
@@ -65,7 +64,8 @@ public class BungeeCordCommandManager implements NetworkCommandManager {
         public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
             if(command.getPermission() == null || command.getPermission().equalsIgnoreCase("none")
                     ||sender.hasPermission(command.getPermission())){
-                return this.command.onTabComplete(new BungeeCordNetworkCommandSender(sender),args);
+                List<String> tab = this.command.onTabComplete(new BungeeCordNetworkCommandSender(sender),args);
+                if(tab != null) return tab;
             }
             return new LinkedHashSet<>();
         }
@@ -106,6 +106,11 @@ public class BungeeCordCommandManager implements NetworkCommandManager {
         @Override
         public void executeCommand(String command) {
             BungeeCord.getInstance().getPluginManager().dispatchCommand(sender,command);
+        }
+        @Override
+        public OnlineNetworkPlayer getAsOnlineNetworkPlayer() {
+            if(this.sender instanceof  ProxiedPlayer) return BanSystem.getInstance().getPlayerManager().getOnlinePlayer(getUUID());
+            return null;
         }
     }
 }

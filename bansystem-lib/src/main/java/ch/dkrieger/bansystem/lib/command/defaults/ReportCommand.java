@@ -20,6 +20,7 @@ public class ReportCommand extends NetworkCommand {
 
     public ReportCommand() {
         super("report","","dkbans.report");
+        setPrefix(Messages.PREFIX_REPORT);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
@@ -43,8 +44,35 @@ public class ReportCommand extends NetworkCommand {
             }else if(args[0].equalsIgnoreCase("list")){
                 sender.executeCommand("/reports");
                 return;
-            }else if(args[0].equalsIgnoreCase("jump") || args[0].equalsIgnoreCase("goto")) {
-                NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
+            }else if(args[0].equalsIgnoreCase("deny")){
+                NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[1]);
+                System.out.println(player.getReportStaff());
+                if(player == null || !(sender.getUUID().equals(player.getReportStaff()))){
+                    sender.sendMessage(Messages.REPORT_NOTFOUND
+                            .replace("[player]",player==null?args[1]:player.getColoredName())
+                            .replace("[prefix]",getPrefix()));
+                    return;
+                }
+                sender.sendMessage(Messages.REPORT_DENIED_STAFF
+                        .replace("[player]",player.getColoredName())
+                        .replace("[prefix]",getPrefix()));
+                player.denyReports();
+                return;
+            }else if(args[0].equalsIgnoreCase("accept")){
+                NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[1]);
+                if(player == null || !(sender.getUUID().equals(player.getReportStaff()))){
+                    sender.sendMessage(Messages.REPORT_NOTFOUND
+                            .replace("[player]",player==null?args[1]:player.getColoredName())
+                            .replace("[prefix]",getPrefix()));
+                    return;
+                }
+                Report report = player.getProcessingReport();
+                ReportReason reason = BanSystem.getInstance().getReasonProvider().getReportReason(report.getReasonID());
+                sender.executeCommand("ban "+report.getReporteUUID()+" "+reason.getForBan());
+                return;
+            }else if(args[0].equalsIgnoreCase("jump") || args[0].equalsIgnoreCase("goto") || args[0].equalsIgnoreCase("take")) {
+                NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[1]);
+                System.out.println(player);
                 if(player == null){
                     sender.sendMessage(Messages.PLAYER_NOT_FOUND.replace("[prefix]",getPrefix()));
                     return;
@@ -56,30 +84,37 @@ public class ReportCommand extends NetworkCommand {
                             .replace("[prefix]",getPrefix()));
                     return;
                 }
-                Report report = player.getOneOpenReport();
+                Report report = player.getOpenReportWhenNoProcessing();
                 if(report == null){
                     sender.sendMessage(Messages.REPORT_NOTFOUND
                             .replace("[player]",player.getColoredName())
                             .replace("[prefix]",getPrefix()));
                     return;
                 }
-
                 OnlineNetworkPlayer staff = sender.getAsOnlineNetworkPlayer();
-                sender.sendMessage(Messages.REPORT_PROCESS
-                        .replace("[server]",staff.getServer())
-                        .replace("[prefix]",getPrefix()));
                 player.processOpenReports(sender.getAsNetworkPlayer());
                 if(staff.getServer().equalsIgnoreCase(online.getServer())){
                     sender.sendMessage(Messages.SERVER_ALREADY
                             .replace("[server]",staff.getServer())
                             .replace("[prefix]",getPrefix()));
-                    return;
                 }else staff.connect(online.getServer());
+                sender.sendMessage(Messages.REPORT_PROCESS
+                        .replace("[player]",player.getColoredName())
+                        .replace("[message]",report.getMessage())
+                        .replace("[reason]",report.getReason())
+                        .replace("[reporter]",report.getReporter().getColoredName())
+                        .replace("[server]",staff.getServer())
+                        .replace("[prefix]",getPrefix()));
                 if(BanSystem.getInstance().getConfig().reportControls){
                     TextComponent deny = new TextComponent(Messages.REPORT_PROCESS_CONTROL_DENY);
                     deny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/report deny "+player.getUUID()));
 
-                    TextComponent accept = new TextComponent(Messages.REPORT_PROCESS_CONTROL_FORREASON);
+                    ReportReason reportReason = BanSystem.getInstance().getReasonProvider().getReportReason(report.getReasonID());
+                    BanReason reason = null;
+                    if(reportReason != null) reason =  BanSystem.getInstance().getReasonProvider().getBanReason(reportReason.getForBan());
+
+                    TextComponent accept = new TextComponent(Messages.REPORT_PROCESS_CONTROL_FORREASON
+                            .replace("[reason]",reason==null?"Unknown":reason.getDisplay()));
                     accept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/report accept "+player.getUUID()));
 
                     TextComponent other = new TextComponent(Messages.REPORT_PROCESS_CONTROL_OTHERREASON);
@@ -104,7 +139,7 @@ public class ReportCommand extends NetworkCommand {
             return;
         }
         if(player.hasBypass() && !(sender.hasPermission("dkbans.bypass.ignore"))){
-            sender.sendMessage(Messages.BAN_BYPASS
+            sender.sendMessage(Messages.REPORT_BYPASS
                     .replace("[prefix]",getPrefix())
                     .replace("[player]",player.getColoredName()));
             return;
@@ -123,15 +158,18 @@ public class ReportCommand extends NetworkCommand {
                 return;
             }else; //delete old report
         }
+        String message = "";
+        for(int i = 2;i < args.length;i++) message += args[i]+" ";
+
         if(BanSystem.getInstance().getConfig().reportMode == ReportMode.SELF){
-            player.report(sender.getUUID(),online.getServer(),args[1]);
+            report = player.report(sender.getUUID(),message,args[1],-1,online.getServer());
         }else{
-            ReportReason reason = BanSystem.getInstance().getReasonProvider().searchReportReason(args[0]);
+            ReportReason reason = BanSystem.getInstance().getReasonProvider().searchReportReason(args[1]);
             if(reason == null){
                 sendHelp(sender);
                 return;
             }
-            report = player.report(reason,online.getServer(),sender.getUUID());
+            report = player.report(reason,message,sender.getUUID(),online.getServer());
         }
         if(report == null) return;
         sender.sendMessage(Messages.REPORT_SUCCESS
@@ -142,7 +180,17 @@ public class ReportCommand extends NetworkCommand {
                 .replace("[prefix]",getPrefix()));
     }
     private void sendHelp(NetworkCommandSender sender){
-
+        sender.sendMessage(Messages.REPORT_HELP_HEADER.replace("[prefix]",getPrefix()));
+        for(ReportReason reason : BanSystem.getInstance().getReasonProvider().getReportReasons()){
+            if(!sender.hasPermission(reason.getPermission())) continue;
+            sender.sendMessage(Messages.REPORT_HELP_REASON
+                    .replace("[prefix]",getPrefix())
+                    .replace("[id]",""+reason.getID())
+                    .replace("[name]",reason.getDisplay())
+                    .replace("[reason]",reason.getDisplay())
+                    .replace("[points]",""+reason.getPoints()));
+        }
+        sender.sendMessage(Messages.REPORT_HELP_HELP.replace("[prefix]",getPrefix()));
     }
     private void changeLogin(NetworkCommandSender sender, NetworkPlayer player, boolean login){
         if(player.isReportLogin() == login){

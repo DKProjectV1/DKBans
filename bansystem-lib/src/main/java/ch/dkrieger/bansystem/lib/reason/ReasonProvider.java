@@ -1,16 +1,41 @@
 package ch.dkrieger.bansystem.lib.reason;
 
+import ch.dkrieger.bansystem.lib.DKBansPlatform;
+import ch.dkrieger.bansystem.lib.DKNetwork;
+import ch.dkrieger.bansystem.lib.Messages;
+import ch.dkrieger.bansystem.lib.player.history.BanType;
+import ch.dkrieger.bansystem.lib.utils.Document;
+import ch.dkrieger.bansystem.lib.utils.Duration;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ReasonProvider {
 
+    private DKBansPlatform platform;
     private List<KickReason> kickReasons;
     private List<BanReason> banReasons;
     private List<ReportReason> reportReasons;
     private List<UnbanReason> unbanReasons;
 
-    public ReasonProvider(List<KickReason> kickReasons, List<BanReason> banReasons, List<ReportReason> reportReasons, List<UnbanReason> unbanReasons) {
+    public ReasonProvider(DKBansPlatform platform){
+        this.platform = platform;
+        this.banReasons = new ArrayList<>();
+        this.kickReasons = new ArrayList<>();
+        this.reportReasons = new ArrayList<>();
+        this.unbanReasons = new ArrayList<>();
+        loadBanReasons();
+        loadUnbanReasons();
+        loadReportReasons();
+        loadKickReasons();
+    }
+    public ReasonProvider(DKBansPlatform platform,List<KickReason> kickReasons, List<BanReason> banReasons, List<ReportReason> reportReasons, List<UnbanReason> unbanReasons) {
+        this.platform = platform;
         this.kickReasons = kickReasons;
         this.banReasons = banReasons;
         this.reportReasons = reportReasons;
@@ -76,5 +101,121 @@ public class ReasonProvider {
     }
     public UnbanReason getUnbanReason(String name){
         return GeneralUtil.iterateOne(this.unbanReasons,reason -> reason.hasAlias(name));
+    }
+    public void loadBanReasons(){
+        File file = new File(this.platform.getFolder(),"ban-reasons.json");
+        if(file.exists()){
+            try{
+                this.banReasons = Document.loadData(file).getObject("reasons",new TypeToken<List<BanReason>>(){}.getType());
+                if(this.banReasons.size() > 0) return;
+            }catch (Exception exception){
+                if(file.exists()){
+                    file.renameTo(new File(this.platform.getFolder(),"ban-reasons-old-"+GeneralUtil.getRandomString(15)));
+                    System.out.println(Messages.SYSTEM_PREFIX+"Could not load ban-reasons, generating new (Saved als old)");
+                }
+            }
+        }
+        this.banReasons.add(new BanReason(1,30,"hacking","&4Hacking","dkbans.ban.reason.hacking"
+                ,false, Arrays.asList("hacks","hacker"),0.0, BanType.NETWORK
+                ,new BanReasonValue(BanType.NETWORK,30, TimeUnit.DAYS)
+                ,new BanReasonValue(BanType.NETWORK,60, TimeUnit.DAYS)
+                ,new BanReasonValue(BanType.NETWORK,90, TimeUnit.DAYS)
+                ,new BanReasonValue(BanType.NETWORK,-1, TimeUnit.DAYS)));
+        this.banReasons.add(new BanReason(2,15,"provocation","&4Provocation","dkbans.ban.reason.provocation"
+                ,false, Arrays.asList("provocation","provo"),0.5,BanType.CHAT
+                ,new BanReasonValue(BanType.CHAT,30,TimeUnit.MINUTES)
+                ,new BanReasonValue(BanType.CHAT,4,TimeUnit.HOURS)
+                ,new BanReasonValue(BanType.CHAT,10,TimeUnit.DAYS)
+                ,new BanReasonValue(BanType.CHAT,30,TimeUnit.DAYS)
+                ,new BanReasonValue(BanType.NETWORK,10,TimeUnit.DAYS)
+                ,new BanReasonValue(BanType.NETWORK,30,TimeUnit.DAYS)));
+
+        this.banReasons.add(new BanReason(3,12,"insult","&4Insult","dkbans.ban.reason.insult"
+                ,false, Arrays.asList("insult"),0.5,BanType.CHAT
+                ,new BanReasonValue(BanType.CHAT,5,TimeUnit.HOURS)
+                ,new BanReasonValue(BanType.CHAT,1,TimeUnit.DAYS)
+                ,new BanReasonValue(BanType.CHAT,10,TimeUnit.DAYS)
+                ,new BanReasonValue(BanType.CHAT,30,TimeUnit.DAYS)
+                ,new BanReasonValue(BanType.NETWORK,10,TimeUnit.DAYS)
+                ,new BanReasonValue(BanType.NETWORK,30,TimeUnit.DAYS)));
+
+        this.banReasons.add(new BanReason(4,20,"spam/promotion","&4Spam/Promotion","dkbans.ban.reason.promotion"
+                ,false, Arrays.asList("spam","spamming"),0.0,BanType.NETWORK
+                ,new BanReasonValue(BanType.NETWORK,3,TimeUnit.DAYS)
+                ,new BanReasonValue(BanType.NETWORK,10,TimeUnit.DAYS)
+                ,new BanReasonValue(BanType.NETWORK,30,TimeUnit.DAYS)
+                ,new BanReasonValue(BanType.NETWORK,-1,TimeUnit.DAYS)));
+
+        this.banReasons.add(new BanReason(5,300,"permanent","&4Permanent","dkbans.ban.reason.permanent"
+                ,false, Arrays.asList("spam","spamming"),0.0,BanType.NETWORK
+                ,new BanReasonValue(BanType.NETWORK,-1,TimeUnit.DAYS)));
+        new Document().append("reasons",this.banReasons).saveData(new File(this.platform.getFolder(),"ban-reasons.json"));
+    }
+    public void loadUnbanReasons(){
+        File file = new File(this.platform.getFolder(),"unban-reasons.json");
+        if(file.exists()){
+            try{
+                this.unbanReasons = Document.loadData(file).getObject("reasons",new TypeToken<List<UnbanReason>>(){}.getType());
+                if(this.unbanReasons.size() > 0) return;
+            }catch (Exception exception){
+                if(file.exists()){
+                    file.renameTo(new File(this.platform.getFolder(),"unban-reasons-old-"+GeneralUtil.getRandomString(15)));
+                    System.out.println(Messages.SYSTEM_PREFIX+"Could not load unban-reasons, generating new (Saved als old)");
+                }
+            }
+        }
+        this.unbanReasons.add(new UnbanReason(1,30,"falseban","&4False ban","dkbans.unban.reason.falsban"
+                ,false, Arrays.asList("fals","hacker"),null,100,null,null,0D));
+        this.unbanReasons.add(new UnbanReason(2,10,"acceptedrequest","&4Accepted unban request","dkbans.unban.reason.acceptedrequest"
+                ,false, Arrays.asList("accepted","unbanrequest","request"),new Duration(90,TimeUnit.DAYS),60,Arrays.asList(5),null,2D));
+        new Document().append("reasons",this.unbanReasons).saveData(new File(this.platform.getFolder(),"unban-reasons.json"));
+    }
+    public void loadReportReasons(){
+        File file = new File(this.platform.getFolder(),"report-reasons.json");
+        if(file.exists()){
+            try{
+                this.reportReasons = Document.loadData(file).getObject("reasons",new TypeToken<List<ReportReason>>(){}.getType());
+                if(this.reportReasons.size() > 0) return;
+            }catch (Exception exception){
+                if(file.exists()){
+                    file.renameTo(new File(this.platform.getFolder(),"report-reasons-old-"+GeneralUtil.getRandomString(15)));
+                    System.out.println(Messages.SYSTEM_PREFIX+"Could not load report-reasons, generating new (Saved als old)");
+                }
+            }
+        }//int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, int forban
+        this.reportReasons.add(new ReportReason(1,0,"hacking","&4Hacking","dkbans.report.reason.hacking"
+                ,false,Arrays.asList("hacks","hacker"),1));
+        this.reportReasons.add(new ReportReason(2,0,"provocation","&4Provocation","dkbans.report.reason.provocation"
+                ,false,Arrays.asList("provocation","provo"),2));
+        this.reportReasons.add(new ReportReason(3,0,"insult","&4Insult","dkbans.report.reason.insult"
+                ,false,Arrays.asList("insult"),3));
+        this.reportReasons.add(new ReportReason(4,0,"spam/provocation","&4Spam/Promotion","dkbans.report.reason.promotion"
+                ,false,Arrays.asList("spam","spamming"),4));
+
+        new Document().append("reasons",this.reportReasons).saveData(new File(this.platform.getFolder(),"report-reasons.json"));
+    }
+    public void loadKickReasons(){
+        File file = new File(this.platform.getFolder(),"kick-reasons.json");
+        if(file.exists()){
+            try{
+                this.kickReasons = Document.loadData(file).getObject("reasons",new TypeToken<List<ReportReason>>(){}.getType());
+                if(this.kickReasons.size() > 0) return;
+            }catch (Exception exception){
+                if(file.exists()){
+                    file.renameTo(new File(this.platform.getFolder(),"kick-reasons-old-"+GeneralUtil.getRandomString(15)));
+                    System.out.println(Messages.SYSTEM_PREFIX+"Could not load kick-reasons, generating new (Saved als old)");
+                }
+            }
+        }//int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, int forban
+        this.kickReasons.add(new KickReason(1,2,"provocation","&4Provocation","dkbans.kick.reason.provocation"
+                ,false,Arrays.asList("provocation","provo")));
+        this.kickReasons.add(new KickReason(2,2,"insult","&4Insult","dkbans.kick.reason.insult"
+                ,false,Arrays.asList("insult")));
+        this.kickReasons.add(new KickReason(3,5,"bugusing","&4Bugusing","dkbans.kick.reason.bugusing"
+                ,false, Arrays.asList("bug","bugging")));
+        this.kickReasons.add(new KickReason(4,0,"annoy","&4Annoy","dkbans.kick.reason.annoy"
+                ,false, Arrays.asList("annoy")));
+
+        new Document().append("reasons",this.kickReasons).saveData(new File(this.platform.getFolder(),"kick-reasons.json"));
     }
 }

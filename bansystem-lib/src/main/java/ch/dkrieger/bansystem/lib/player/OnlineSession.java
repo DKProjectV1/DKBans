@@ -2,26 +2,22 @@ package ch.dkrieger.bansystem.lib.player;
 
 public class OnlineSession {
 
-    private String client,clientVersion, ip, country, lastServer, proxy, clientLanguage;
+    private String ip, country, lastServer, proxy, clientLanguage;
+    private int clientVersion;
     private long connected, disconnected;
 
-    public OnlineSession(String client, String clientVersion, String ip, String country, String lastServer, String proxy, String clientLanguage, long connected, long disconnected) {
-        this.client = client;
-        this.clientVersion = clientVersion;
+    public OnlineSession(String ip, String country, String lastServer, String proxy, String clientLanguage,int clientVersion, long connected, long disconnected) {
         this.ip = ip;
         this.country = country;
         this.lastServer = lastServer;
         this.proxy = proxy;
         this.clientLanguage = clientLanguage;
+        this.clientVersion = clientVersion;
         this.connected = connected;
         this.disconnected = disconnected;
     }
 
-    public String getClient() {
-        return client;
-    }
-
-    public String getClientVersion() {
+    public int getClientVersion() {
         return clientVersion;
     }
 

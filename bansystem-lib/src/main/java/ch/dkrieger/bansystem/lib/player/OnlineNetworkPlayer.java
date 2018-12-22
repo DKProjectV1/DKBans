@@ -28,13 +28,7 @@ public interface OnlineNetworkPlayer {
 
     public void executeCommand(String command);
 
-    public void kickForBan(Ban ban);
-
-    public void kick(String reason, int reasonID);
-
-    public void kick(NetworkPlayer staff,int reasonID);
-
-    public void kick(NetworkPlayer staff, String reason, int reasonID);
+    public void sendBan(Ban ban);
 
     public void kick(Kick kick);
 

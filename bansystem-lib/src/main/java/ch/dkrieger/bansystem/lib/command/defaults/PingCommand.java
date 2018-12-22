@@ -13,6 +13,7 @@ public class PingCommand extends NetworkCommand {
 
     public PingCommand() {
         super("ping");
+        setPrefix(Messages.PREFIX_NETWORK);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {

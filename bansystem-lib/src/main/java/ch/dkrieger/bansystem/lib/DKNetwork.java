@@ -12,7 +12,7 @@ public interface DKNetwork {
 
     public JoinMe getJoinMe(NetworkPlayer player);
 
-    public JoinMe getJoinMe(UUID player);
+    public JoinMe getJoinMe(UUID uuid);
 
     public void broadcast(String message);
 
