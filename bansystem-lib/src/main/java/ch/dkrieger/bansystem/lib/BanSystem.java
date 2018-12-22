@@ -12,7 +12,9 @@ import ch.dkrieger.bansystem.lib.reason.ReasonProvider;
 import ch.dkrieger.bansystem.lib.report.ReportManager;
 import ch.dkrieger.bansystem.lib.stats.NetworkStats;
 import ch.dkrieger.bansystem.lib.storage.DKBansStorage;
+import ch.dkrieger.bansystem.lib.storage.StorageType;
 import ch.dkrieger.bansystem.lib.storage.mongodb.MongoDBDKBansStorage;
+import ch.dkrieger.bansystem.lib.storage.sql.SQLDKBansStorage;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.Properties;
@@ -88,7 +90,8 @@ public class BanSystem {
 
         this.reasonProvider = new ReasonProvider(this.platform);
 
-        this.storage = new MongoDBDKBansStorage(this.config);
+        if(this.config.storageType == StorageType.MONGODB) this.storage = new MongoDBDKBansStorage(this.config);
+        else if(this.config.storageType == StorageType.SQLITE || this.config.storageType == StorageType.MYSQL)this.storage = new SQLDKBansStorage(config);
 
         if(!storage.connect()){
 

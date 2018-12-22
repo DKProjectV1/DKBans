@@ -24,9 +24,11 @@ public class MessageConfig extends SimpleConfig{
         Messages.HELP = addAndGetMessageValue("help","[prefix]&6Information\n&8» &e/hub &8| &7Connect to the Hub-Server" +
                 "\n&8» &e/report &8| &7Report a player\n&7&8\n&8» &eTeamSpeak&8: &bts.example.net\n&8» &eForum&8: &bforum.example.net\n&8» &eShop&8: &bshop.example.net");
 
+        /*
         Messages.TIME_WEEK_SINGULAR = addAndGetMessageValue("time.week.singular","Week");
         Messages.TIME_WEEK_PLURAL = addAndGetMessageValue("time.week.plural","Weeks");
         Messages.TIME_WEEK_SHORTCUT = addAndGetMessageValue("time.week.shortcut","W");
+         */
 
         Messages.TIME_DAY_SINGULAR = addAndGetMessageValue("time.day.singular","Day");
         Messages.TIME_DAY_PLURAL = addAndGetMessageValue("time.day.plural","Days");

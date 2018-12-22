@@ -15,10 +15,21 @@ public class History {
     private Map<Integer,HistoryEntry> entries;
 
     public History(){
-        this.entries = new TreeMap<>();
+        this.entries = new HashMap<>();
     }
     public History(Map<Integer, HistoryEntry> entries) {
-        this.entries = new TreeMap<>(entries);
+        this.entries = entries;
+    }
+    public void sort(){
+        entries = this.entries.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(new Comparator<HistoryEntry>() {
+                    @Override
+                    public int compare(HistoryEntry o1, HistoryEntry o2) {
+                        return o1.getTimeStamp() > o2.getTimeStamp()?-1:1;
+                    }
+                }))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
     }
     public int size(){
         return this.entries.size();

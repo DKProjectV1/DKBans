@@ -62,8 +62,8 @@ public class GeneralUtil {
         return h+1;
     }
 
-    public static String calculateRemaining(long durationMillis, boolean shortcut){
-        if(durationMillis < 1) return Messages.TIME_FINISH;
+    public static String calculateRemaining(long duration, boolean shortcut){
+        if(duration < 1) return Messages.TIME_FINISH;
         /*
         long seconds = duration % 60;
         long minutes = (duration % 3600) / 60;
@@ -71,14 +71,11 @@ public class GeneralUtil {
         Instant timeout = Instant.
 
         Duration duration2 = Duration.between(i1,i1);
+        */
         long secondsInMillis = 1000;
         long minutesInMillis = secondsInMillis * 60;
         long hoursInMillis = minutesInMillis *60;
         long daysInMillis = hoursInMillis *24;
-        long weeksInMillis = daysInMillis * 7;
-
-        long weeks = duration / weeksInMillis;
-        duration = duration % weeksInMillis;
 
         long days = duration / daysInMillis;
         duration = duration % daysInMillis;
@@ -90,26 +87,6 @@ public class GeneralUtil {
         duration = duration % minutesInMillis;
 
         long seconds = duration / secondsInMillis;
-
-        LocalDateTime d1 = LocalDateTime.now();
-        LocalDateTime d2 = LocalDateTime.parse("25/11/17 09:00:00", DateTimeFormatter.ofPattern("yy/MM/dd HH:mm:ss"));
-
-        days = d1.until(d2, ChronoUnit.DAYS);
-        d1 = d1.plusDays(days);
-        long hours = d1.until(d2, ChronoUnit.HOURS);
-        d1 = d1.plusHours(hours);
-        long minutes = d1.until(d2, ChronoUnit.MINUTES);
-        d1 = d1.plusMinutes(minutes);
-        long seconds = d1.until(d2, ChronoUnit.SECONDS);
-         */
-
-        Duration duration = Duration.ofMillis(durationMillis);
-        long days = duration.toDays();
-        long hours = duration.toHours();
-        long minutes = duration.toMinutes();
-        long seconds = duration.tose;
-
-        Period
 
         if(shortcut) return days+Messages.TIME_DAY_SHORTCUT+" "+
                 hours+Messages.TIME_HOUR_SHORTCUT+" "+
@@ -123,17 +100,17 @@ public class GeneralUtil {
     public static String calculateDuration(long duration){
         if(duration <= 0) return Messages.TIME_PERMANENTLY_NORMAL;
         duration = duration/1000;
-        if(duration < 60) return duration+(duration==1?Messages.TIME_SECOND_SINGULAR:Messages.TIME_SECOND_PLURAL);
+        if(duration < 60) return duration+" "+(duration==1?Messages.TIME_SECOND_SINGULAR:Messages.TIME_SECOND_PLURAL);
         else if(duration <3600){
             duration = Math.round((float)duration/60);
-            return duration+(duration==1?Messages.TIME_MINUTE_SINGULAR:Messages.TIME_MINUTE_PLURAL);
+            return duration+" "+(duration==1?Messages.TIME_MINUTE_SINGULAR:Messages.TIME_MINUTE_PLURAL);
         }
         else if(duration < 86400){
             duration = Math.round((float) (duration/60)/60);
-            return duration+(duration==1?Messages.TIME_HOUR_SINGULAR:Messages.TIME_HOUR_PLURAL);
+            return duration+" "+(duration==1?Messages.TIME_HOUR_SINGULAR:Messages.TIME_HOUR_PLURAL);
         }
         duration = Math.round((float)((duration/60)/60)/24);
-        return duration+(duration==1?Messages.TIME_DAY_SINGULAR:Messages.TIME_DAY_PLURAL);
+        return duration+" "+(duration==1?Messages.TIME_DAY_SINGULAR:Messages.TIME_DAY_PLURAL);
     }
 
     public static boolean isNumber(String value){

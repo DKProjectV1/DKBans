@@ -3,24 +3,34 @@ package ch.dkrieger.bansystem.lib.stats;
 public class Stats {
 
     //all
-    private int logins, reports, reportsAccepted, messages;
+    private long logins, reports, reportsAccepted, messages;
 
-    public int getLogins() {
+    public Stats(){
+        this(0,0,0,0);
+    }
+    public Stats(long logins, long reports, long reportsAccepted, long messages) {
+        this.logins = logins;
+        this.reports = reports;
+        this.reportsAccepted = reportsAccepted;
+        this.messages = messages;
+    }
+
+    public long getLogins() {
         return logins;
     }
 
-    public int getReports() {
+    public long getReports() {
         return reports;
     }
 
-    public int getReportsAccepted() {
+    public long getReportsAccepted() {
         return reportsAccepted;
     }
-    public int getReportsDenied() {
+    public long getReportsDenied() {
         return reports-reportsAccepted;
     }
 
-    public int getMessages() {
+    public long getMessages() {
         return messages;
     }
 }

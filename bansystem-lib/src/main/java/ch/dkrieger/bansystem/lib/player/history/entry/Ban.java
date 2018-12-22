@@ -24,7 +24,7 @@ public class Ban extends HistoryEntry {
         return timeOut;
     }
     public long getDuration(){
-        return getTimeStamp()-timeOut;
+        return timeOut-System.currentTimeMillis();
     }
     public long getRemaining(){
         return timeOut-System.currentTimeMillis();

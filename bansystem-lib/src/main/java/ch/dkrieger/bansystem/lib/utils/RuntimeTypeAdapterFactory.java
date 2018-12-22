@@ -193,7 +193,6 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
   }
 
   public <R> TypeAdapter<R> create(Gson gson, TypeToken<R> type) {
-    System.out.println("create");
     if (type.getRawType() != baseType) {
       return null;
     }

@@ -2,22 +2,34 @@ package ch.dkrieger.bansystem.lib.stats;
 
 public class NetworkStats extends Stats{
 
-    private int bans,mutes, unbans, kicks;
-    private long loadTime;
+    private long bans,mutes, unbans, kicks,loadTime;
 
-    public int getBans() {
+    public NetworkStats() {
+        this(0,0,0,0,0,0,0,0,0);
+    }
+
+    public NetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks, long loadTime) {
+        super(logins, reports, reportsAccepted, messages);
+        this.bans = bans;
+        this.mutes = mutes;
+        this.unbans = unbans;
+        this.kicks = kicks;
+        this.loadTime = loadTime;
+    }
+
+    public long getBans() {
         return bans;
     }
 
-    public int getMutes() {
+    public long getMutes() {
         return mutes;
     }
 
-    public int getUnbans() {
+    public long getUnbans() {
         return unbans;
     }
 
-    public int getKicks() {
+    public long getKicks() {
         return kicks;
     }
     public long getLoadTime() {

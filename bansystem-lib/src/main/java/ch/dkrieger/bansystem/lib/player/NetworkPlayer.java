@@ -53,6 +53,27 @@ public class NetworkPlayer {
         this.onlineSessions = new ArrayList<>();
         this.reports = new ArrayList<>();
     }
+
+    public NetworkPlayer(int id, UUID uuid, String name, String color, String lastIP, String lastCountry, long lastLogin, long firstLogin, long onlineTime, boolean bypass, boolean teamChatLogin, boolean reportLogin, History history, Document properties, PlayerStats stats, List<OnlineSession> onlineSessions, List<Report> reports) {
+        this.id = id;
+        this.uuid = uuid;
+        this.name = name;
+        this.color = color;
+        this.lastIP = lastIP;
+        this.lastCountry = lastCountry;
+        this.lastLogin = lastLogin;
+        this.firstLogin = firstLogin;
+        this.onlineTime = onlineTime;
+        this.bypass = bypass;
+        this.teamChatLogin = teamChatLogin;
+        this.reportLogin = reportLogin;
+        this.history = history;
+        this.properties = properties;
+        this.stats = stats;
+        this.onlineSessions = onlineSessions;
+        this.reports = reports;
+    }
+
     public int getID() {
         return id;
     }

@@ -51,6 +51,7 @@ public class HistoryCommand extends NetworkCommand {
                 .replace("[player]",player.getColoredName())
                 .replace("[size]",""+history.size())
                 .replace("[prefix]",getPrefix()));
+        //history.sort();
         for(HistoryEntry value : history.getEntries()){
             TextComponent component = value.getListMessage();
             component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/history "+player.getUUID()+" "+value.getID()));
