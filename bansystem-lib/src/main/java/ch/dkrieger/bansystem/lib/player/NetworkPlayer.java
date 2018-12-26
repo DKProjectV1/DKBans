@@ -15,6 +15,7 @@ import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.stats.PlayerStats;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
+import net.md_5.bungee.api.ChatColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,6 @@ public class NetworkPlayer {
         this.onlineSessions = new ArrayList<>();
         this.reports = new ArrayList<>();
     }
-
     public NetworkPlayer(int id, UUID uuid, String name, String color, String lastIP, String lastCountry, long lastLogin, long firstLogin, long onlineTime, boolean bypass, boolean teamChatLogin, boolean reportLogin, History history, Document properties, PlayerStats stats, List<OnlineSession> onlineSessions, List<Report> reports) {
         this.id = id;
         this.uuid = uuid;
@@ -83,7 +83,7 @@ public class NetworkPlayer {
     public String getColor() {
         String color = BanSystem.getInstance().getPlatform().getColor(this);
         if(color == null) color = this.color;
-        return color;
+        return ChatColor.translateAlternateColorCodes('&',color);
     }
     public String getColoredName(){
         return getColor()+this.name;
@@ -125,7 +125,17 @@ public class NetworkPlayer {
         return firstLogin;
     }
 
-    public long getOnlineTime() {
+    public long getOnlineTime(){
+        return getOnlineTime(false);
+    }
+    public long getOnlineTime(boolean live) {
+        if(live){
+            OnlineNetworkPlayer player = getOnlinePlayer();
+            if(player != null){
+                long yet = (System.currentTimeMillis()-lastLogin);
+                if(yet > 0) return onlineTime+yet;
+            }
+        }
         return onlineTime;
     }
 
@@ -274,7 +284,12 @@ public class NetworkPlayer {
     public Kick kick(String reason, String message){
         return kick(reason,message,0);
     }
-
+    public Kick kick(String reason, String message, UUID staff){
+        return kick(reason,message,0,1,staff==null?"Console":staff.toString());
+    }
+    public Kick kick(String reason, String message, String staff){
+        return kick(reason,message,0,1,staff);
+    }
     public Kick kick(String reason, String message,int points){
         return kick(reason,message,points,-1);
     }
@@ -310,13 +325,26 @@ public class NetworkPlayer {
     }
 
     public Kick kick(KickReason reason){
-        return kick(reason.toKick(this,null));
+        return kick(reason,(String)null);
     }
-    public Kick kick(KickReason reason, UUID staff){
+    public Kick kick(KickReason reason,UUID staff){
         return kick(reason,staff==null?"Console":staff.toString());
     }
     public Kick kick(KickReason reason, String staff){
-        return kick(reason.toKick(this,staff));
+        return kick(reason,"",staff);
+    }
+    public Kick kick(KickReason reason,String message, UUID staff){
+        return kick(reason,message,staff==null?"Console":staff.toString());
+    }
+    public Kick kick(KickReason reason,String message, String staff){
+        OnlineNetworkPlayer online = getOnlinePlayer();
+        return kick(reason.toKick(this,message,staff,online!=null?online.getServer():"Unknown"));
+    }
+    public Kick kick(KickReason reason,String message, UUID staff, String server){
+        return kick(reason,message,staff==null?"Console":staff.toString(),server);
+    }
+    public Kick kick(KickReason reason,String message, String staff, String server){
+        return kick(reason.toKick(this,message,staff,server));
     }
     public Kick kick(Kick kick){
         kick.setID(addToHistory(kick,NetworkPlayerUpdateCause.KICK));
@@ -424,6 +452,8 @@ public class NetworkPlayer {
         if(report.getUUID() != this.uuid) throw new IllegalArgumentException("This reports ist not from this player");
         this.reports.add(report);
         BanSystem.getInstance().getStorage().createReport(report);
+        stats.addReportsReceived();
+        updatePlayerStats();
         update(NetworkPlayerUpdateCause.REPORTSEND,new Document().append("report",report));
         return report;
     }
@@ -459,9 +489,12 @@ public class NetworkPlayer {
         return addToHistory(entry, cause,new Document());
     }
     public int addToHistory(HistoryEntry entry,NetworkPlayerUpdateCause cause,Document properties) {
-        this.history.getRawEntries().put(entry.getID(),entry);
+        int id = BanSystem.getInstance().getStorage().createHistoryEntry(this,entry);
+        entry.setID(id);
+        System.out.println(id);
+        this.history.getRawEntries().put(id,entry);
         update(cause,properties);
-        return BanSystem.getInstance().getStorage().createHistoryEntry(this,entry);
+        return id;
     }
     private void saveStaffSettings(){
         BanSystem.getInstance().getStorage().saveStaffSettings(this.uuid,reportLogin,teamChatLogin);
@@ -491,23 +524,50 @@ public class NetworkPlayer {
     public void setReports(List<Report> reports) {
         this.reports = reports;
     }
+    public void setOnlineSessions(List<OnlineSession> sessions) {
+        this.onlineSessions = sessions;
+    }
     public void playerLogin(String name, String ip,int clientVersion, String clientLanguage, String proxy, String color ,boolean bypass){
         this.reports.clear();
         this.name = name;
-        this.color = color;
+        if(color != null) this.color = color;
         this.bypass = bypass;
         this.lastIP = ip;
+        this.lastCountry = BanSystem.getInstance().getPlayerManager().getCountry(ip);
+        if(!BanSystem.getInstance().getConfig().playerSaveIP) this.lastIP = "Unknown";
         this.lastLogin = System.currentTimeMillis();
-        this.onlineSessions.add(new OnlineSession(ip,"Unknown","Unknown",proxy,clientLanguage,clientVersion
-                ,System.currentTimeMillis(),System.currentTimeMillis()));
+        if(BanSystem.getInstance().getConfig().playerOnlineSessionSaving){
+            OnlineSession session = new OnlineSession(ip,lastCountry,"Unknown",proxy,clientLanguage,clientVersion,lastLogin,lastLogin);
+            this.onlineSessions.add(session);
+            BanSystem.getInstance().getStorage().createOnlineSession(this,session);
+        }
+        BanSystem.getInstance().getStorage().updatePlayerLoginInfos(this.uuid,name,this.lastLogin,this.color,bypass,ip,lastCountry,stats.getLogins()+1);
         BanSystem.getInstance().getStorage().deleteReports(this);
         update(NetworkPlayerUpdateCause.LOGIN);
     }
-    public void playerLogout(String color ,boolean bypass,String lastServer){
-        this.color = color;
+    public void playerLogout(String color ,boolean bypass,String lastServer,int messages){
+        if(color != null) this.color = color;
         this.bypass = bypass;
+        OnlineSession session = GeneralUtil.iterateOne(this.onlineSessions, object -> object.getConnected() == lastLogin);
+        if(session!= null){
+            session.setDisconnected(System.currentTimeMillis());
+            session.setLastServer(lastServer);
+        }
+        if(BanSystem.getInstance().getConfig().playerOnlineSessionSaving){
+            BanSystem.getInstance().getStorage().finishStartedOnlineSession(uuid,lastLogin,System.currentTimeMillis(),lastServer);
+        }
+        this.onlineTime += (System.currentTimeMillis()-lastLogin);
         this.lastLogin = System.currentTimeMillis();
+        BanSystem.getInstance().getStorage().updatePlayerLogoutInfos(this.uuid,this.lastLogin,onlineTime,this.color,bypass,stats.getMessages()+messages);
         BanSystem.getInstance().getStorage().deleteReports(this);
+        stats.setMessages(stats.getMessages()+messages);
         update(NetworkPlayerUpdateCause.LOGOUT,new Document().append("reports",reports));
+        this.reports.clear();
+    }
+    public void updatePlayerStatsAsync(){
+        BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(this::updatePlayerStats);
+    }
+    public void updatePlayerStats(){
+        BanSystem.getInstance().getStorage().updatePlayerStats(this.uuid,stats);
     }
 }

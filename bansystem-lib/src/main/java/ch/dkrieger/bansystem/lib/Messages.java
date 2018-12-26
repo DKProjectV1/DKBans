@@ -26,12 +26,6 @@ public class Messages {
     public static String NOPERMISSIONS;
     public static String HELP;
 
-   /*
-    public static String TIME_WEEK_SINGULAR;
-    public static String TIME_WEEK_PLURAL;
-    public static String TIME_WEEK_SHORTCUT;
-    */
-
     public static String TIME_DAY_SINGULAR;
     public static String TIME_DAY_PLURAL;
     public static String TIME_DAY_SHORTCUT;
@@ -72,6 +66,9 @@ public class Messages {
     public static String PLAYER_INFO_HELP;
     public static String PLAYER_INFO_ONLINE;
     public static String PLAYER_INFO_OFFLINE;
+    public static String PLAYER_INFO_HISTORY;
+    public static String PLAYER_INFO_SESSIONS;
+    public static String PLAYER_INFO_IPS;
     public static String PLAYER_INFO_SESSIONS_HEADER;
     public static String PLAYER_INFO_SESSIONS_LIST;
 
@@ -84,17 +81,18 @@ public class Messages {
 
     public static String REASON_NOT_FOUND;
     public static String REASON_NO_PERMISSION;
-    public static String REASON_HELP;
 
     public static String BAN_HELP_HEADER;
     public static String BAN_HELP_REASON;
     public static String BAN_HELP_HELP;
     public static String BAN_TYPE_NETWORK;
     public static String BAN_TYPE_CHAT;
+    public static String BAN_SELF;
     public static String BAN_BYPASS;
     public static String BAN_SUCCESS;
     public static String BAN_OVERWRITE_INFO;
     public static String BAN_OVERWRITE_NOTALLOWED;
+    public static String BAN_NOTFOUND;
 
     public static String BAN_MESSAGE_NETWORK_PERMANENT;
     public static String BAN_MESSAGE_NETWORK_TEMPORARY;
@@ -103,30 +101,34 @@ public class Messages {
 
     public static String KICK_HELP_HEADER;
     public static String KICK_HELP_HELP;
+    public static String KICK_HELP_REASON;
+    public static String KICK_SELF;
     public static String KICK_BYPASS;
     public static String KICK_SUCCESS;
+    public static String KICK_MESSAGE;
 
     public static String PING_SELF;
     public static String PING_OTHER;
 
     public static String BROADCAST_HELP;
+    public static String BROADCAST_RELOADED;
     public static String BROADCAST_CREATED;
     public static String BROADCAST_DELETED;
+    public static String BROADCAST_LIST_HEADER;
+    public static String BROADCAST_LIST_LIST;
+    public static String BROADCAST_INFO;
     public static String BROADCAST_CHANGED_CLICK;
     public static String BROADCAST_CHANGED_HOVER;
     public static String BROADCAST_CHANGED_MESSAGE;
+    public static String BROADCAST_CHANGED_PERMISSION;
     public static String BROADCAST_CHANGED_AUTO_DISABLED;
     public static String BROADCAST_CHANGED_AUTO_ENABLED;
     public static String BROADCAST_NOTFOUND_CLICKTYPE;
     public static String BROADCAST_NOTFOUND_BROADCAST;
     public static String BROADCAST_FORMAT_DIRECT;
     public static String BROADCAST_FORMAT_SEND;
-    public static String BROADCAST_FORMAT_AUTO;
 
     public static String JUMPTO_HELP;
-
-    public static String JOINME_COOLDOWN;
-    public static String JOINME_NOTFOUND;
 
     public static String TEAMCHAT_HELP;
     public static String TEAMCHAT_MESSAGE_COLOR;
@@ -153,14 +155,17 @@ public class Messages {
     public static String ONLINE_TIME;
 
     public static String UNBAN_HELP_HEADER;
+    public static String UNBAN_HELP_REASON;
     public static String UNBAN_HELP_HELP;
 
     public static String REPORT_HELP_HEADER;
     public static String REPORT_HELP_REASON;
     public static String REPORT_HELP_HELP;
+    public static String REPORT_SELF;
     public static String REPORT_SUCCESS;
     public static String REPORT_BYPASS;
     public static String REPORT_ACCEPTED;
+    public static String REPORT_OTHERREASON;
     public static String REPORT_DENIED_STAFF;
     public static String REPORT_DENIED_USER;
     public static String REPORT_LEAVED_STAFF;
@@ -188,7 +193,6 @@ public class Messages {
 
     public static String FILTER_HELP;
     public static String FILTER_RELOAD;
-    public static String FILTER_ADD;
     public static String FILTER_DELETE;
     public static String FILTER_CREATE;
     public static String FILTER_NOTFOUND;
@@ -197,7 +201,7 @@ public class Messages {
     public static String FILTER_LIST_HEADER;
     public static String FILTER_LIST_LIST;
 
-    public static String IPINFO_HEADER;
+    public static String IPINFO_HELP;
     public static String IPINFO_IP_HEADER;
     public static String IPINFO_IP_LIST;
     public static String IPINFO_PLAYER_HEADER;
@@ -217,4 +221,19 @@ public class Messages {
     public static String CHATLOG_SERVER_LIST_BLOCKED;
 
     public static String NETWORK_STATS;
+
+    public static boolean JOINME_HEAD;
+    public static String JOINME_COOLDOWN;
+    public static String JOINME_NOTFOUND;
+    public static String JOINME_NOTALLOWEDONSERVER;
+    public static String JOINME_LINE1;
+    public static String JOINME_LINE2;
+    public static String JOINME_LINE3;
+    public static String JOINME_LINE4;
+    public static String JOINME_LINE5;
+    public static String JOINME_LINE6;
+    public static String JOINME_LINE7;
+    public static String JOINME_LINE8;
+
+
 }

@@ -1,5 +1,6 @@
 package ch.dkrieger.bansystem.lib;
 
+import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.broadcast.BroadcastManager;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandManager;
 import ch.dkrieger.bansystem.lib.command.defaults.*;
@@ -30,6 +31,7 @@ public class BanSystem {
     private ReportManager reportManager;
     private BroadcastManager broadcastManager;
     private FilterManager filterManager;
+    private BanManager banManager;
     private ReasonProvider reasonProvider;
     private DKBansStorage storage;
     private DKNetwork network;
@@ -77,11 +79,8 @@ public class BanSystem {
         systemBootstrap();
 
         System.out.println(Messages.SYSTEM_PREFIX+"plugin successfully started");
-
     }
     private void systemBootstrap(){
-
-
         this.config = new Config(this.platform);
         this.config.loadConfig();
 
@@ -93,16 +92,26 @@ public class BanSystem {
         if(this.config.storageType == StorageType.MONGODB) this.storage = new MongoDBDKBansStorage(this.config);
         else if(this.config.storageType == StorageType.SQLITE || this.config.storageType == StorageType.MYSQL)this.storage = new SQLDKBansStorage(config);
 
-        if(!storage.connect()){
-
+        if(storage != null && storage.connect()){
+            System.out.println(Messages.SYSTEM_PREFIX + "Used Storage: " + this.config.storageType.toString());
+        }else{
+            System.out.println(Messages.SYSTEM_PREFIX + "Used Backup Storage: " + StorageType.SQLITE.toString());
+            this.config.storageType = StorageType.SQLITE;
+            this.storage = new SQLDKBansStorage(config);
+            if(!this.storage.connect()){
+                System.out.println(Messages.SYSTEM_PREFIX +"Could not enable DKBans, no storage is working.");
+                return;
+            }
         }
 
         this.broadcastManager = new BroadcastManager();
         this.filterManager = new FilterManager();
         this.reportManager = new ReportManager();
 
+        if(this.config.bungeecord && !(platform.getPlatformName().equalsIgnoreCase("bungeecord"))) return;
+
         if(this.config.commandBan) getCommandManager().registerCommand(new BanCommand());
-        //if(this.config.commandBaninfo) getCommandManager().registerCommand(new BanCommand());
+        if(this.config.commandBaninfo) getCommandManager().registerCommand(new BaninfoCommand());
         if(this.config.commandBroadcast) getCommandManager().registerCommand(new BroadcastCommand());
         if(this.config.commandChatlog) getCommandManager().registerCommand(new ChatLogCommand());
         if(this.config.commandFilter) getCommandManager().registerCommand(new FilterCommand());
@@ -125,6 +134,17 @@ public class BanSystem {
         if(this.config.commandTempmute) getCommandManager().registerCommand(new TempmuteCommand());
         if(this.config.commandUnban) getCommandManager().registerCommand(new UnbanCommand());
         getCommandManager().registerCommand(new DKBansCommand());
+
+        if(config.autobroadcastEnabled)
+            this.platform.getTaskManager().scheduleTask(() -> {
+                Broadcast broadcast = getBroadcastManager().getNext();
+                getNetwork().broadcastLocal(broadcast);
+            },(long)config.autobroadcastDelay,TimeUnit.MINUTES);
+        if(config.chatlogAutoDeleteEnabled){
+            this.platform.getTaskManager().scheduleTask(()->{
+                this.storage.deleteOldChatLog(System.currentTimeMillis()-TimeUnit.DAYS.toMillis(config.chatlogAutoDeleteInDays));
+            },5L,TimeUnit.MINUTES);
+        }
     }
     public void shutdown(){
         if(this.storage != null) this.storage.disconnect();
@@ -140,6 +160,10 @@ public class BanSystem {
 
     public Config getConfig() {
         return config;
+    }
+
+    public MessageConfig getMessageConfig() {
+        return messageConfig;
     }
 
     public PlayerManager getPlayerManager() {
@@ -160,6 +184,10 @@ public class BanSystem {
 
     public ReasonProvider getReasonProvider() {
         return reasonProvider;
+    }
+
+    public BanManager getBanManager() {
+        return banManager;
     }
 
     public DKBansStorage getStorage() {
@@ -183,6 +211,7 @@ public class BanSystem {
     public void setPlayerManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
     }
+
 
     public void setStorage(DKBansStorage storage) {
         this.storage = storage;

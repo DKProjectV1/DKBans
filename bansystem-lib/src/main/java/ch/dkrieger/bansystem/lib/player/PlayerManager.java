@@ -7,10 +7,10 @@ import ch.dkrieger.bansystem.lib.player.chatlog.ChatLogEntry;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.*;
 
 public abstract class PlayerManager {
 
@@ -74,23 +74,19 @@ public abstract class PlayerManager {
     }
     public NetworkPlayer getPlayer(UUID uuid){
         NetworkPlayer player = loadedPlayers.get(uuid);
-        long start = System.currentTimeMillis();
         if(player == null){
             try{
                 player = getPlayerSave(uuid);
             }catch (Exception exception){}
         }
-        System.out.println("Loaded player in "+(System.currentTimeMillis()-start)+"ms");
         return player;
     }
     public NetworkPlayer getPlayerSave(UUID uuid) throws Exception{
-        System.out.println("get save");
         NetworkPlayer player = BanSystem.getInstance().getStorage().getPlayer(uuid);
         if(player != null) this.loadedPlayers.put(uuid,player);
         return player;
     }
     public NetworkPlayer getPlayer(String name){
-        long start = System.currentTimeMillis();
         NetworkPlayer player = GeneralUtil.iterateOne(this.loadedPlayers.values(), object -> object.getName().equalsIgnoreCase(name));
         if(player == null){
             try{
@@ -98,7 +94,6 @@ public abstract class PlayerManager {
                 if(player != null) this.loadedPlayers.put(player.getUUID(),player);
             }catch (Exception exception){}
         }
-        System.out.println("Loaded player in "+(System.currentTimeMillis()-start)+"ms");
         return player;
     }
     public ChatLog getChatLog(NetworkPlayer player){
@@ -112,7 +107,7 @@ public abstract class PlayerManager {
     }
 
     public NetworkPlayer createPlayer(UUID uuid, String name, String ip){
-        NetworkPlayer player = new NetworkPlayer(uuid,name,ip,"//Implement");
+        NetworkPlayer player = new NetworkPlayer(uuid,name,ip,getCountry(ip));
         player.setID(BanSystem.getInstance().getStorage().createPlayer(player));
         this.loadedPlayers.put(uuid,player);
         return player;
@@ -137,6 +132,15 @@ public abstract class PlayerManager {
     public void resetCachedCounts(){
         this.cachedRegisteredCount = -1;
         this.cachedCountryCount = -1;
+    }
+    public String getCountry(String ip){
+        try{
+            InputStream stream = new URL("http://ip-api.com/json/"+ip+"?fields=country").openStream();
+            Scanner scanner = new Scanner(stream, "UTF-8").useDelimiter("\\A");
+            Document document = Document.loadData(scanner.next());
+            return document.contains("country")?document.getString("country"):"Unknown";
+        }catch (Exception exception){}
+        return "Unknown";
     }
 
     public abstract OnlineNetworkPlayer getOnlinePlayer(int id);

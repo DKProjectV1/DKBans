@@ -1,19 +1,23 @@
 package ch.dkrieger.bansystem.lib.broadcast;
 
+import ch.dkrieger.bansystem.lib.BanSystem;
+import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class Broadcast {
 
     private int id;
-    private String message, hover;
+    private String message, hover, permission;
     private long created, lastChange;
     private boolean auto;
     private Click click;
 
-    public Broadcast(int id, String message, String hover, long created, long lastChange, boolean auto, Click click) {
+    public Broadcast(int id, String message, String permission, String hover, long created, long lastChange, boolean auto, Click click) {
         this.id = id;
         this.message = message;
+        this.permission = permission;
         this.hover = hover;
         this.created = created;
         this.lastChange = lastChange;
@@ -26,11 +30,13 @@ public class Broadcast {
     }
 
     public String getMessage() {
-        return message;
+        return message!=null?ChatColor.translateAlternateColorCodes('&',message):"";
     }
-
+    public String getPermission() {
+        return permission!=null?permission:"";
+    }
     public String getHover() {
-        return hover;
+        return hover!=null?ChatColor.translateAlternateColorCodes('&',hover):"";
     }
 
     public long getCreated() {
@@ -75,8 +81,15 @@ public class Broadcast {
         this.click = click;
     }
 
+    public void setPermission(String permission) {
+        this.permission = permission;
+    }
+
     public TextComponent build(){
-        return null;
+        return build(null);
+    }
+    public TextComponent build(NetworkPlayer player){
+        return BanSystem.getInstance().getBroadcastManager().build(this,player);
     }
 
     public static class Click {
@@ -89,7 +102,7 @@ public class Broadcast {
             this.type = type;
         }
         public String getMessage() {
-            return message;
+            return message!=null?ChatColor.translateAlternateColorCodes('&',message):"";
         }
         public ClickType getType() {
             return type;

@@ -1,9 +1,11 @@
 package ch.dkrieger.bansystem.lib;
 
+import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import net.md_5.bungee.api.chat.TextComponent;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface DKNetwork {
@@ -14,9 +16,15 @@ public interface DKNetwork {
 
     public JoinMe getJoinMe(UUID uuid);
 
+    public List<String> getPlayersOnServer(String server);
+
     public void broadcast(String message);
 
     public void broadcast(TextComponent component);
+
+    public void broadcast(Broadcast broadcast);
+
+    public void broadcastLocal(Broadcast broadcast);
 
     public void sendJoinMe(JoinMe joinMe);
 

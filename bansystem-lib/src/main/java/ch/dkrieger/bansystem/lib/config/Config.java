@@ -21,8 +21,10 @@ import java.util.List;
 
 public class Config extends SimpleConfig{
 
+    public boolean bungeecord;
+
     public StorageType storageType;
-    public File storageFile;
+    public File storageFolder;
     public String storageHost, storagePort, storageUser, storagePassword, storageDatabase, mongoDbAuthDB;
     public boolean storageSSL, mongoDbSrv, mongoDbAuthentication;
 
@@ -58,13 +60,14 @@ public class Config extends SimpleConfig{
     public boolean chatFilterEnabled;
     public int chatFilterAutobanCount;
     public boolean chatFilterAutobanEnabled;
-    public boolean chatFilterAutobanMessageBanID;
-    public boolean chatFilterAutobanPromotionBanID;
+    public int chatFilterAutobanMessageBanID;
+    public int chatFilterAutobanPromotionBanID;
 
     public int banPointsTime;
     public int banPointsMaxHistory;
 
     public boolean playerSaveIP;
+    public boolean playerOnlineSessionSaving;
     public int playerIPDeletionInDays;
     public boolean playerColorLiveUpdate;
     public String playerColorDefault;
@@ -101,13 +104,17 @@ public class Config extends SimpleConfig{
     public boolean commandTempban;
     public boolean commandTempmute;
 
+    private DKBansPlatform platform;
+
     public Config(DKBansPlatform platform) {
         super(new File(platform.getFolder(),"config.yml"));
+        this.platform = platform;
     }
     @Override
     public void onLoad() {
+        this.bungeecord = addAndGetBooleanValue("bungeecord",false);
         this.storageType = StorageType.parse(addAndGetStringValue("storage.type",StorageType.SQLITE.toString()));
-        this.storageFile = new File(addAndGetStringValue("storage.file","/data/"));
+        this.storageFolder = new File(addAndGetStringValue("storage.folder",platform.getFolder().getAbsolutePath()+"/data/"));
         this.storageHost = addAndGetStringValue("storage.host","localhost");
         this.storagePort = addAndGetStringValue("storage.port","3306");
         this.storageUser = addAndGetStringValue("storage.user","root");
@@ -118,15 +125,15 @@ public class Config extends SimpleConfig{
         this.mongoDbAuthDB = addAndGetStringValue("storage.mongodb.authdb","admin");
         this.mongoDbSrv = addAndGetBooleanValue("storage.mongodb.srv",false);
 
-        this.banMode = BanMode.parse(addAndGetStringValue("ban.mode", BanMode.TEMPLATE.toString()));
-        this.unbanMode = UnbanMode.parse(addAndGetStringValue("unban.mode", BanMode.SELF.toString()));
-        this.kickMode = KickMode.parse(addAndGetStringValue("kick.mode", BanMode.SELF.toString()));
+        this.banMode = BanMode.parse(addAndGetStringValue("ban.mode",BanMode.TEMPLATE.toString()));
+        this.unbanMode = UnbanMode.parse(addAndGetStringValue("unban.mode",BanMode.SELF.toString()));
+        this.kickMode = KickMode.parse(addAndGetStringValue("kick.mode",BanMode.SELF.toString()));
 
         this.reportMode = ReportMode.parse(addAndGetStringValue("report.mode", ReportMode.TEMPLATE.toString()));
         this.reportControls = addAndGetBooleanValue("report.controls",true);
         this.reportDelay = addAndGetLongValue("report.delay",900000);
         this.reportAutoCommandExecuteOnProxy = addAndGetBooleanValue("report.autocommand.onproxy",false);
-        this.reportAutoCommandEnter = addAndGetStringListValue("report.autocommand.enter", Arrays.asList("v","tp [player]"));
+        this.reportAutoCommandEnter = addAndGetStringListValue("report.autocommand.enter", Arrays.asList("tp [player]"));
         this.reportAutoCommandExit = addAndGetStringListValue("report.autocommand.exit", Arrays.asList("spawn"));
 
         this.dateFormat = new SimpleDateFormat(addAndGetStringValue("date.format","dd.MM.yyyy HH:mm"));
@@ -143,13 +150,15 @@ public class Config extends SimpleConfig{
         this.onJoinReportSize = addAndGetBooleanValue("onjoin.reportsize",true);
 
         this.tabCompleteBlockEnabled = addAndGetBooleanValue("tabcomplet.block.enabled",true);
-        List<String> tabOptions = addAndGetStringListValue("tabcomplet.options",Arrays.asList("dkbans.ban:/ban","dkbans.kick:/kick"));
+        List<String> tabOptions = addAndGetStringListValue("tabcomplet.options",Arrays.asList("dkbans.ban:/ban","dkbans.kick:/kick","report"));
         this.tabCompleteOptions = new ArrayList<>();
         for(String tabOption : tabOptions){
             try{
                 String[] split = tabOption.split(":");
                 this.tabCompleteOptions.add(new TabCompleteOption(split[0],split[1]));
-            }catch (Exception exception){}
+            }catch (Exception exception){
+                this.tabCompleteOptions.add(new TabCompleteOption(null,tabOption));
+            }
         }
 
         this.chatBlockPlugin = addAndGetBooleanValue("chat.block.plugin",true);
@@ -157,11 +166,12 @@ public class Config extends SimpleConfig{
         this.chatFilterEnabled = addAndGetBooleanValue("chat.filter.enabled",true);
         this.chatFilterAutobanEnabled = addAndGetBooleanValue("chat.autoban.enabled",true);
         this.chatFilterAutobanCount = addAndGetIntValue("chat.filter.autoban.count",8);
-        this.chatFilterAutobanMessageBanID = addAndGetBooleanValue("chat.autoban.banid.message",3);
-        this.chatFilterAutobanPromotionBanID = addAndGetBooleanValue("chat.autoban.banid.promotion",4);
+        this.chatFilterAutobanMessageBanID = addAndGetIntValue("chat.autoban.banid.message",3);
+        this.chatFilterAutobanPromotionBanID = addAndGetIntValue("chat.autoban.banid.promotion",4);
 
         this.playerSaveIP = addAndGetBooleanValue("player.saveip",true);
-        this.playerIPDeletionInDays = addAndGetIntValue("player.ipautodeleteindays",-1);
+        //this.playerIPDeletionInDays = addAndGetIntValue("player.ipautodeleteindays",-1);
+        this.playerOnlineSessionSaving = addAndGetBooleanValue("player.save.onlinesession",true);
         this.playerColorLiveUpdate = addAndGetBooleanValue("player.color.liveupdate",true);
         this.playerColorDefault = addAndGetMessageValue("player.color.default","&8");
         this.playerColorConsole = addAndGetMessageValue("player.color.console","&4");
@@ -169,16 +179,16 @@ public class Config extends SimpleConfig{
         List<String> colors = addAndGetStringListValue("player.color.colors",Arrays.asList("dkbans.color.admin:&4"
                 ,"dkbans.color.developer:&b","dkbans.color.mod:&c","dkbans.color.supporter:&9","dkbans.color.builder:&3"
                 ,"dkbans.color.youtuber:&5","dkbans.color.premium:&6"));
-        for(String tabOption : tabOptions){
+        for(String color : colors){
             try{
-                String[] split = tabOption.split(":");
+                String[] split = color.split(":");
                 this.playerColorColors.add(new PlayerColor(split[0], ChatColor.translateAlternateColorCodes('&',split[1])));
             }catch (Exception exception){}
         }
 
         this.chatlogEnabled = addAndGetBooleanValue("chat.log.enabled",true);
         this.chatlogAutoDeleteEnabled = addAndGetBooleanValue("chat.log.autodelete.enabled",true);
-        this.chatlogAutoDeleteInDays = addAndGetIntValue("chat.log.autodelete.indays",30);
+        this.chatlogAutoDeleteInDays = addAndGetIntValue("chat.log.autodelete.indays",7);
 
         this.autobroadcastEnabled = addAndGetBooleanValue("autobroadcast.enabled",true);
         this.autobroadcastSorted = addAndGetBooleanValue("autobroadcast.sorted",true);

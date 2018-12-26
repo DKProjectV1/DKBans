@@ -61,6 +61,18 @@ public class Kick extends HistoryEntry {
     }
 
     public TextComponent toMessage(){
-        return new TextComponent();
+        return new TextComponent(Messages.KICK_MESSAGE
+                .replace("[prefix]",Messages.PREFIX_BAN)
+                .replace("[id]",""+getID())
+                .replace("[reason]",getReason())
+                .replace("[type]",getTypeName())
+                .replace("[points]",""+getPoints())
+                .replace("[reasonID]",""+getReasonID())
+                .replace("[message]",getMessage())
+                .replace("[time]",BanSystem.getInstance().getConfig().dateFormat.format(getTimeStamp()))
+                .replace("[ip]",getIp())
+                .replace("[server]",getServer())
+                .replace("[staff]",getStaffName())
+                .replace("[player]",getPlayer().getColoredName()));
     }
 }

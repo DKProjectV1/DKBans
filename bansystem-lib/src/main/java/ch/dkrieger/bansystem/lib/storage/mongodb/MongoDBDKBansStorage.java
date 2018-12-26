@@ -10,6 +10,7 @@ import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.config.Config;
 import ch.dkrieger.bansystem.lib.filter.Filter;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.OnlineSession;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLog;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLogEntry;
 import ch.dkrieger.bansystem.lib.player.history.History;
@@ -18,6 +19,7 @@ import ch.dkrieger.bansystem.lib.player.history.entry.HistoryEntry;
 import ch.dkrieger.bansystem.lib.reason.UnbanReason;
 import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.stats.NetworkStats;
+import ch.dkrieger.bansystem.lib.stats.PlayerStats;
 import ch.dkrieger.bansystem.lib.storage.DKBansStorage;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import ch.dkrieger.bansystem.lib.utils.RuntimeTypeAdapterFactory;
@@ -125,7 +127,10 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     public int getCountryCount() {
         return 0;
     }
-
+    @Override
+    public Ban getBan(int id) {
+        return null;
+    }
     @Override
     public int createPlayer(NetworkPlayer player) {
         player.setID(getRegisteredPlayerCount()+1);
@@ -258,5 +263,35 @@ public class MongoDBDKBansStorage implements DKBansStorage {
         List<NetworkStats> stats = MongoDBUtil.findALL(this.networkStatsCollection,NetworkStats.class);
         if(stats.size() > 0) return stats.get(0);
         return new NetworkStats();
+    }
+
+    @Override
+    public void createOnlineSession(NetworkPlayer player, OnlineSession session) {
+
+    }
+
+    @Override
+    public void finishStartedOnlineSession(UUID uuid, long login, long logout, String server) {
+
+    }
+
+    @Override
+    public void updatePlayerLoginInfos(UUID player, String name, long lastLogin, String color, boolean bypass, String lastIP, String lastCountry, long logins) {
+
+    }
+
+    @Override
+    public void updatePlayerLogoutInfos(UUID player, long lastLogin, long onlineTime, String color, boolean bypass, long messages) {
+
+    }
+
+    @Override
+    public void updatePlayerStats(UUID uuid, PlayerStats stats) {
+
+    }
+
+    @Override
+    public void deleteOldChatLog(long before) {
+
     }
 }

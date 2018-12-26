@@ -3,10 +3,11 @@ package ch.dkrieger.bansystem.lib.command.defaults;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
-import ch.dkrieger.bansystem.lib.broadcast.BroadcastManager;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.List;
 
@@ -25,21 +26,39 @@ public class BroadcastCommand extends NetworkCommand {
         }
         if(args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl")){
             BanSystem.getInstance().getNetwork().reloadBroadcast();
+            sender.sendMessage(Messages.BROADCAST_RELOADED.replace("[prefix]",getPrefix()));
+            return;
+        }else if(args[0].equalsIgnoreCase("list")){
+            sender.sendMessage(Messages.BROADCAST_LIST_HEADER.replace("[prefix]",getPrefix()));
+            for(Broadcast broadcast : BanSystem.getInstance().getBroadcastManager().getBroadcasts()){
+                TextComponent component = new TextComponent(Messages.BROADCAST_LIST_LIST
+                        .replace("[id]",""+broadcast.getID())
+                        .replace("[hover]",broadcast.getMessage())
+                        .replace("[message]",broadcast.getMessage())
+                        .replace("[prefix]",getPrefix()));
+                component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/broadcast "+broadcast.getID()+" info"));
+                sender.sendMessage(component);
+            }
             return;
         }else if(args.length < 2){
-            sender.sendMessage(Messages.BROADCAST_HELP
-                    .replace("[prefix]",getPrefix()));
+            sender.sendMessage(Messages.BROADCAST_HELP.replace("[prefix]",getPrefix()));
             return;
         }else if(args[0].equalsIgnoreCase("direct")){
-            String message = "";
-            for(int i = 1;i < args.length;i++) message = args[i];
+            String message = null;
+            for(int i = 1;i < args.length;i++){
+                if(message == null) message = args[i];
+                else message += " " +args[i];
+            }
             BanSystem.getInstance().getNetwork().broadcast(Messages.BROADCAST_FORMAT_DIRECT
                     .replace("[message]",message)
                     .replace("[prefix]",getPrefix()));
             return;
         }else if(args[0].equalsIgnoreCase("create")){
-            String message = "";
-            for(int i = 1;i < args.length;i++) message = args[i];
+            String message = null;
+            for(int i = 1;i < args.length;i++){
+                if(message == null) message = args[i];
+                else message += " "+args[i];
+            }
             Broadcast broadcast = BanSystem.getInstance().getBroadcastManager().createBroadcast(message);
             sender.sendMessage(Messages.BROADCAST_CREATED
                     .replace("[id]",""+broadcast.getID())
@@ -61,9 +80,16 @@ public class BroadcastCommand extends NetworkCommand {
                     .replace("[prefix]",getPrefix()));
             return;
         }else if(args[1].equalsIgnoreCase("send")){
-            BanSystem.getInstance().getNetwork().broadcast(
-                    GeneralUtil.replaceTextComponent(Messages.BROADCAST_FORMAT_SEND
-                            .replace("[prefix]",getPrefix()),"[message]",broadcast.build()));
+            BanSystem.getInstance().getNetwork().broadcast(broadcast);
+            return;
+        }else if(args[1].equalsIgnoreCase("info")){
+            sender.sendMessage(Messages.BROADCAST_INFO.replace("[prefix]",getPrefix())
+                    .replace("[message]",broadcast.getMessage())
+                    .replace("[id]",""+broadcast.getID())
+                    .replace("[hover]",broadcast.getHover())
+                    .replace("[auto]",""+broadcast.isAuto())
+                    .replace("[clickType]",broadcast.getClick().getType().toString())
+                    .replace("[clickMessage]",broadcast.getClick().getMessage()));
             return;
         }else if(args.length < 3){
             sender.sendMessage(Messages.BROADCAST_HELP
@@ -75,10 +101,12 @@ public class BroadcastCommand extends NetworkCommand {
                         .replace("[prefix]",getPrefix()));
                 return;
             }
-            String message = "";
-            for(int i = 2;i < args.length;i++) message = args[i];
+            String message = null;
+            for(int i = 3;i < args.length;i++){
+                if(message == null) message = args[i];
+                else message += " " +args[i];
+            }
 
-            BanSystem.getInstance().getBroadcastManager().createBroadcast(message);
             Broadcast.Click click = new Broadcast.Click(message,null);
             try{
                 click.setType(Broadcast.ClickType.valueOf(args[2].toUpperCase()));
@@ -92,13 +120,16 @@ public class BroadcastCommand extends NetworkCommand {
             sender.sendMessage(Messages.BROADCAST_CHANGED_CLICK
                     .replace("[id]",""+broadcast.getID())
                     .replace("[clickType]",""+broadcast.getClick().getType())
-                    .replace("[click]",""+broadcast.getClick().getMessage())
+                    .replace("[clickMessage]",""+broadcast.getClick().getMessage())
                     .replace("[message]",broadcast.getMessage())
                     .replace("[prefix]",getPrefix()));
             return;
         }else if(args[1].equalsIgnoreCase("sethover")){
-            String message = "";
-            for(int i = 2;i < args.length;i++) message = args[i];
+            String message = null;
+            for(int i = 2;i < args.length;i++){
+                if(message == null) message = args[i];
+                else message += " " +args[i];
+            }
             broadcast.setHover(message);
             BanSystem.getInstance().getBroadcastManager().updateBroadcast(broadcast);
             sender.sendMessage(Messages.BROADCAST_CHANGED_HOVER
@@ -108,28 +139,47 @@ public class BroadcastCommand extends NetworkCommand {
                     .replace("[prefix]",getPrefix()));
             return;
         }else if(args[1].equalsIgnoreCase("setmessage")){
-            String message = "";
-            for(int i = 2;i < args.length;i++) message = args[i];
+            String message = null;
+            for(int i = 2;i < args.length;i++){
+                if(message == null) message = args[i];
+                else message += " " +args[i];
+            }
             broadcast.setMessage(message);
             BanSystem.getInstance().getBroadcastManager().updateBroadcast(broadcast);
             sender.sendMessage(Messages.BROADCAST_CHANGED_MESSAGE
                     .replace("[message]",broadcast.getMessage())
+                    .replace("[id]",""+broadcast.getID())
                     .replace("[prefix]",getPrefix()));
             return;
         }else if(args[1].equalsIgnoreCase("addmessage")){
-            String message = "";
-            for(int i = 2;i < args.length;i++) message = args[i];
+            String message = null;
+            for(int i = 2;i < args.length;i++){
+                if(message == null) message = args[i];
+                else message += " " +args[i];
+            }
             broadcast.setMessage(broadcast.getMessage()+" "+message);
             BanSystem.getInstance().getBroadcastManager().updateBroadcast(broadcast);
             sender.sendMessage(Messages.BROADCAST_CHANGED_MESSAGE
                     .replace("[message]",broadcast.getMessage())
+                    .replace("[id]",""+broadcast.getID())
                     .replace("[prefix]",getPrefix()));
+            return;
+        }else if(args[1].equalsIgnoreCase("setpermission")){
+            broadcast.setPermission(args[2]);
+            BanSystem.getInstance().getBroadcastManager().updateBroadcast(broadcast);
+            sender.sendMessage(Messages.BROADCAST_CHANGED_PERMISSION
+                    .replace("[id]",""+broadcast.getID())
+                    .replace("[permission]",args[2]).replace("[prefix]",getPrefix()));
             return;
         }else if(args[1].equalsIgnoreCase("setauto")){
             broadcast.setAuto(Boolean.valueOf(args[2]));
             BanSystem.getInstance().getBroadcastManager().updateBroadcast(broadcast);
-            if(broadcast.isAuto()) sender.sendMessage(Messages.BROADCAST_CHANGED_AUTO_ENABLED.replace("[prefix]",getPrefix()));
-            else sender.sendMessage(Messages.BROADCAST_CHANGED_AUTO_DISABLED.replace("[prefix]",getPrefix()));
+            if(broadcast.isAuto()) sender.sendMessage(Messages.BROADCAST_CHANGED_AUTO_ENABLED
+                    .replace("[id]",""+broadcast.getID())
+                    .replace("[prefix]",getPrefix()));
+            else sender.sendMessage(Messages.BROADCAST_CHANGED_AUTO_DISABLED
+                    .replace("[id]",""+broadcast.getID())
+                    .replace("[prefix]",getPrefix()));
             return;
         }
         sender.sendMessage(Messages.BROADCAST_HELP

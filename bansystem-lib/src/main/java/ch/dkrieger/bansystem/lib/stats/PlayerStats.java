@@ -7,13 +7,14 @@ public class PlayerStats extends Stats{
     public PlayerStats() {
         this.reportsReceived = 0;
     }
-
     public PlayerStats(long logins, long reports, long reportsAccepted, long messages, long reportsReceived) {
         super(logins, reports, reportsAccepted, messages);
         this.reportsReceived = reportsReceived;
     }
-
     public long getReportsReceived() {
         return reportsReceived;
+    }
+    public void addReportsReceived(){
+        this.reportsReceived++;
     }
 }

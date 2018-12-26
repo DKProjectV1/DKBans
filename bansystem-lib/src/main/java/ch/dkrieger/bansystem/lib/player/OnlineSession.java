@@ -49,6 +49,18 @@ public class OnlineSession {
         return disconnected;
     }
     public long getDuration(){
-        return this.connected-disconnected;
+        return disconnected-connected;
+    }
+
+    public void setLastServer(String lastServer) {
+        this.lastServer = lastServer;
+    }
+
+    public void setClientLanguage(String clientLanguage) {
+        this.clientLanguage = clientLanguage;
+    }
+
+    public void setDisconnected(long disconnected) {
+        this.disconnected = disconnected;
     }
 }

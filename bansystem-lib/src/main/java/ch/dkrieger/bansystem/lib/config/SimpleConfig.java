@@ -112,7 +112,9 @@ public abstract class SimpleConfig {
     }
     public String addAndGetMessageValue(String path,Object object){
         addValue(path,object);
-        return ChatColor.translateAlternateColorCodes('&',getStringValue(path));
+        String result = getStringValue(path);
+        if(result == null) return "";
+        return ChatColor.translateAlternateColorCodes('&',result);
     }
     public int addAndGetIntValue(String path,Object object){
         addValue(path,object);

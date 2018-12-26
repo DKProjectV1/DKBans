@@ -14,6 +14,7 @@ public class FilterManager {
 
     public FilterManager() {
         this.filters = new HashMap<>();
+        reloadLocal();
     }
     public Filter getFilter(int id){
         return filters.get(id);
@@ -33,6 +34,7 @@ public class FilterManager {
         Filter filter = new Filter(-1,message,operation,type);
         filter.setID(BanSystem.getInstance().getStorage().createFilter(filter));
         this.filters.put(filter.getID(),filter);
+        BanSystem.getInstance().getNetwork().reloadFilter();
         return filter;
     }
     public void deleteFilter(Filter filter){
@@ -41,6 +43,7 @@ public class FilterManager {
     public void deleteFilter(int id){
         this.filters.remove(id);
         BanSystem.getInstance().getStorage().deleteFilter(id);
+        BanSystem.getInstance().getNetwork().reloadFilter();
     }
     public void reloadLocal(){
         this.filters.clear();

@@ -4,7 +4,7 @@ public enum FilterOperation {
 
     CONTAINS(),
     EQUALS(),
-    STARTWITH(),
+    STARTSWITH(),
     ENDSWITH();
 
 }

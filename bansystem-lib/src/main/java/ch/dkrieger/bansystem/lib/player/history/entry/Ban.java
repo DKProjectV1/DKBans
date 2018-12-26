@@ -47,7 +47,7 @@ public class Ban extends HistoryEntry {
                 .replace("[reason]",getReason())
                 .replace("[reasonID]",""+getReasonID())
                 .replace("[time]",BanSystem.getInstance().getConfig().dateFormat.format(getTimeStamp()))
-                .replace("[timeout]",BanSystem.getInstance().getConfig().dateFormat.format(getTimeStamp()))
+                .replace("[timeout]",BanSystem.getInstance().getConfig().dateFormat.format(getTimeOut()))
                 .replace("[message]",getMessage())
                 .replace("[type]",getTypeName())
                 .replace("[staff]",getStaffName())

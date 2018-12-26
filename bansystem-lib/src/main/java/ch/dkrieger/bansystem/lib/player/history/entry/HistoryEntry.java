@@ -106,7 +106,7 @@ public abstract class HistoryEntry {
         RuntimeTypeAdapterFactory<HistoryEntry> adapter = RuntimeTypeAdapterFactory.of(HistoryEntry.class, "historyAdapterType");
         for(Map.Entry<String,Class<? extends HistoryEntry>> entry : GSONTYPEADAPTER.entrySet()) adapter.registerSubtype(entry.getValue(),entry.getKey());
         GeneralUtil.GSON_BUILDER.registerTypeAdapterFactory(adapter);
+        GeneralUtil.GSON_BUILDER_NOT_PRETTY.registerTypeAdapterFactory(adapter);
         GeneralUtil.createGSON();
-        System.out.println("test----------------------------------\n-\n-\n-");
     }
 }

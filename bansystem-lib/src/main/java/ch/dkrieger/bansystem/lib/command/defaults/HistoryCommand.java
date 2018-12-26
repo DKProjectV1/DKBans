@@ -51,7 +51,6 @@ public class HistoryCommand extends NetworkCommand {
                 .replace("[player]",player.getColoredName())
                 .replace("[size]",""+history.size())
                 .replace("[prefix]",getPrefix()));
-        //history.sort();
         for(HistoryEntry value : history.getEntries()){
             TextComponent component = value.getListMessage();
             component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/history "+player.getUUID()+" "+value.getID()));
@@ -62,6 +61,7 @@ public class HistoryCommand extends NetworkCommand {
     }
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
+        if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],sender.getName(),BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));
         return null;
     }
 }

@@ -82,6 +82,12 @@ public class BungeeCordCommandManager implements NetworkCommandManager {
             return sender.getName();
         }
         @Override
+        public String getServer() {
+           if(sender instanceof ProxiedPlayer) return ((ProxiedPlayer) sender).getServer().getInfo().getName();
+           return "";
+        }
+
+        @Override
         public UUID getUUID() {
             if(sender instanceof ProxiedPlayer) return ((ProxiedPlayer) sender).getUniqueId();
             else return null;
@@ -111,6 +117,13 @@ public class BungeeCordCommandManager implements NetworkCommandManager {
         public OnlineNetworkPlayer getAsOnlineNetworkPlayer() {
             if(this.sender instanceof  ProxiedPlayer) return BanSystem.getInstance().getPlayerManager().getOnlinePlayer(getUUID());
             return null;
+        }
+
+        @Override
+        public void executeCommandOnServer(String message) {
+            if(!message.startsWith("/")) message = "/"+message;
+            if(this.sender instanceof  ProxiedPlayer) ((ProxiedPlayer) sender).chat(message);
+            else executeCommand(message);
         }
     }
 }

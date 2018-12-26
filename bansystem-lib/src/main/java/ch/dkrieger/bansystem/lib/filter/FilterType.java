@@ -8,4 +8,10 @@ public enum FilterType {
     COMMAND(),
     MUTECOMMAND();
 
+    public static FilterType ParseNull(String parse){
+        try{
+            return valueOf(parse);
+        }catch (Exception e){}
+        return null;
+    }
 }

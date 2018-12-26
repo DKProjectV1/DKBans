@@ -55,7 +55,7 @@ public class UnbanCommand extends NetworkCommand {
                     .replace("[player]",args[0]));
             return;
         }
-        BanType type = null;//unban dkrieger network das ist ein test
+        BanType type = null;
         if((unbanMode == UnbanMode.SELF && args.length >= 2) || (unbanMode == UnbanMode.TEMPLATE && args.length >= 3)){//unban dkrieger 1 network das war ein test
             type = BanType.parse(args[messageStart].toUpperCase());
             messageStart++;
@@ -101,7 +101,7 @@ public class UnbanCommand extends NetworkCommand {
             return;
         }
 
-        if(player.isBanned(BanType.NETWORK)){
+        if((type == null || type == BanType.NETWORK) &&  player.isBanned(BanType.NETWORK)){
             Unban unban;
             if(this.unbanMode == UnbanMode.SELF) unban = player.unban(BanType.NETWORK,message,sender.getUUID());
             else unban = player.unban(BanType.NETWORK,reason,message,sender.getUUID());
@@ -132,7 +132,7 @@ public class UnbanCommand extends NetworkCommand {
             sender.sendMessage(Messages.UNBAN_HELP_HEADER);
             for(UnbanReason reason : BanSystem.getInstance().getReasonProvider().getUnbanReasons()){
                 if(!sender.hasPermission(reason.getPermission())) continue;
-                sender.sendMessage(Messages.REASON_HELP
+                sender.sendMessage(Messages.UNBAN_HELP_REASON
                         .replace("[prefix]",getPrefix())
                         .replace("[id]",""+reason.getID())
                         .replace("[name]",reason.getDisplay())
@@ -145,6 +145,7 @@ public class UnbanCommand extends NetworkCommand {
     }
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
+        if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],sender.getName(),BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));
         return null;
     }
 }

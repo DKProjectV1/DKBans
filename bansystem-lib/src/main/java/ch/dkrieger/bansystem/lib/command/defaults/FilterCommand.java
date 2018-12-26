@@ -36,16 +36,20 @@ public class FilterCommand extends NetworkCommand {
                         return;
                     }
                 }else filters = BanSystem.getInstance().getFilterManager().getFilters();
-                sender.sendMessage(Messages.FILTER_LIST_HEADER.replace("[prefix]",getPrefix()));
+                System.out.println(filters.size());
+                sender.sendMessage(Messages.FILTER_LIST_HEADER
+                        .replace("[type]",type==null?"ALL":type.toString())
+                        .replace("[prefix]",getPrefix()));
                 for(Filter filter : filters){
-                    sender.sendMessage(Messages.FILTER_LIST_HEADER
+                    sender.sendMessage(Messages.FILTER_LIST_LIST
                             .replace("[type]",filter.getType().toString())
                             .replace("[operation]",filter.getOperation().toString())
                             .replace("[id]",""+filter.getID())
-                            .replace("[word]",args[2])
+                            .replace("[word]",filter.getMessage())
                             .replace("[prefix]",getPrefix()));
                 }
-            }else if(args[0].equalsIgnoreCase("add")){
+                return;
+            }else if(args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("create")){
                 FilterType type = null;
                 FilterOperation operation = FilterOperation.CONTAINS;
                 try{
@@ -70,14 +74,17 @@ public class FilterCommand extends NetworkCommand {
                         .replace("[word]",args[2])
                         .replace("[prefix]",getPrefix()));
                 return;
-            }else if(args[0].equalsIgnoreCase("remove")){
+            }else if(args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("delete")){
                 Filter filter = BanSystem.getInstance().getFilterManager().getFilter(Integer.valueOf(args[1]));
                 if(filter == null){
                     sender.sendMessage(Messages.FILTER_NOTFOUND.replace("[prefix]",getPrefix()));
                     return;
                 }
                 BanSystem.getInstance().getFilterManager().deleteFilter(filter);
-                sender.sendMessage(Messages.FILTER_DELETE.replace("[id]",args[1]).replace("[prefix]",getPrefix()));
+                sender.sendMessage(Messages.FILTER_DELETE
+                        .replace("[type]",filter.getType().toString())
+                        .replace("[word]",filter.getMessage())
+                        .replace("[id]",args[1]).replace("[prefix]",getPrefix()));
                 return;
             }
         }

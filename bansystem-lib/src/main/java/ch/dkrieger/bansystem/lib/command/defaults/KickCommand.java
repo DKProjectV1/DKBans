@@ -8,6 +8,7 @@ import ch.dkrieger.bansystem.lib.config.mode.KickMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 import ch.dkrieger.bansystem.lib.reason.KickReason;
+import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.util.List;
 
@@ -24,6 +25,10 @@ public class KickCommand extends NetworkCommand {
             sendReasons(sender);
             return;
         }//kick dkrieger 1
+        if(sender.getName().equalsIgnoreCase(args[0])){
+            sender.sendMessage(Messages.KICK_SELF.replace("[prefix]",getPrefix()));
+            return;
+        }
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
         if(player == null){
             sender.sendMessage(Messages.PLAYER_NOT_FOUND
@@ -61,8 +66,9 @@ public class KickCommand extends NetworkCommand {
         for(int i = 2;i < args.length;i++) message += args[i]+" ";
 
         Kick kick = null;
-        if(BanSystem.getInstance().getConfig().kickMode == KickMode.TEMPLATE) kick = player.kick(reason,message);
-        else kick = player.kick(args[1],message);
+        if(BanSystem.getInstance().getConfig().kickMode == KickMode.TEMPLATE) kick = player.kick(reason,message,sender.getUUID());
+        else kick = player.kick(args[1],message,sender.getUUID());
+
         sender.sendMessage(Messages.KICK_SUCCESS
                 .replace("[prefix]",getPrefix())
                 .replace("[server]",kick.getServer())
@@ -71,19 +77,23 @@ public class KickCommand extends NetworkCommand {
                 .replace("[player]",player.getColoredName()));
     }
     private void sendReasons(NetworkCommandSender sender){
-        sender.sendMessage(Messages.KICK_HELP_HEADER);
-        for(KickReason reason : BanSystem.getInstance().getReasonProvider().getKickReasons()){
-            if(!sender.hasPermission(reason.getPermission())) continue;
-            sender.sendMessage(Messages.REASON_HELP
-                    .replace("[prefix]",getPrefix())
-                    .replace("[id]",""+reason.getID())
-                    .replace("[name]",reason.getDisplay())
-                    .replace("[points]",""+reason.getPoints()));
+        if(BanSystem.getInstance().getConfig().kickMode == KickMode.TEMPLATE) {
+            sender.sendMessage(Messages.KICK_HELP_HEADER.replace("[prefix]",getPrefix()));
+            for (KickReason reason : BanSystem.getInstance().getReasonProvider().getKickReasons()) {
+                if (!sender.hasPermission(reason.getPermission())) continue;
+                sender.sendMessage(Messages.KICK_HELP_REASON
+                        .replace("[prefix]", getPrefix())
+                        .replace("[id]", "" + reason.getID())
+                        .replace("[reason]", reason.getDisplay())
+                        .replace("[name]", reason.getDisplay())
+                        .replace("[points]", "" + reason.getPoints()));
+            }
         }
-        sender.sendMessage(Messages.KICK_HELP_HELP);
+        sender.sendMessage(Messages.KICK_HELP_HELP.replace("[prefix]",getPrefix()));
     }
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
+        if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],sender.getName(),BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));
         return null;
     }
 }

@@ -70,7 +70,6 @@ public class BanReason extends KickReason {
         BanType type = null;
         if(BanSystem.getInstance().getConfig().banMode == BanMode.TEMPLATE){
             BanReasonValue value = getNextDuration(player);
-            System.out.println(System.currentTimeMillis()+value.getDuration().getMillisTime());
             timeOut = value.getDuration().getTime() > 0?System.currentTimeMillis()+value.getDuration().getMillisTime():-1;
             type = value.getType();
         }else{

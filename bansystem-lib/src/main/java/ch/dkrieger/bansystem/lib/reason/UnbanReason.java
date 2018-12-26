@@ -24,8 +24,6 @@ public class UnbanReason extends KickReason{
         this.removeDuration = removeDuration;
         this.durationDivider = durationDivider;
     }
-
-
     public Duration getMaxDuration() {
         return maxDuration;
     }
@@ -37,7 +35,16 @@ public class UnbanReason extends KickReason{
     public List<Integer> getNotForBanID() {
         return notForBanID;
     }
-    public Unban toUnban(BanType type, NetworkPlayer player,String message, String staff){
-        return new Unban(player.getUUID(),player.getIP(),getDisplay(),message,System.currentTimeMillis(),-1,getPoints(),getID(),staff,new Document(),type);
+    public Duration getRemoveDuration() {
+        return removeDuration;
+    }
+    public double getDurationDivider() {
+        return durationDivider;
+    }
+    public Unban toUnban(BanType type, NetworkPlayer player, String message, String staff){
+        if(removeDuration == null || durationDivider == 0) return new Unban(player.getUUID(),player.getIP(),getDisplay(),message,System.currentTimeMillis(),-1,getPoints(),getID(),staff,new Document(),type);
+        else{
+            return new Unban(player.getUUID(),player.getIP(),getDisplay(),message,System.currentTimeMillis(),-1,getPoints(),getID(),staff,new Document(),type);
+        }
     }
 }

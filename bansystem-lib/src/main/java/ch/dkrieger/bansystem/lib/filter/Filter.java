@@ -46,7 +46,7 @@ public class Filter {
             else words = new String[]{message};
             if(this.operation == FilterOperation.EQUALS) {
                 for(String word : words) if (word.equalsIgnoreCase(this.message)) return true;
-            }else if(this.operation == FilterOperation.STARTWITH){
+            }else if(this.operation == FilterOperation.STARTSWITH){
                 for(String word : words) if (word.startsWith(this.message)) return true;
             }else if(this.operation == FilterOperation.ENDSWITH){
                 for(String word : words) if (word.endsWith(this.message)) return true;

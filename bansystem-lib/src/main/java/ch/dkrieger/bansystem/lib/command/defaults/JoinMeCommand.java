@@ -29,14 +29,16 @@ public class JoinMeCommand extends NetworkCommand {
             if(player != null){
                 JoinMe joinMe  = BanSystem.getInstance().getNetwork().getJoinMe(player);
                 if(joinMe != null){
-                    sender.sendMessage(Messages.SERVER_CONNECTING
-                            .replace("[server]",joinMe.getServer())
-                            .replace("[prefix]",getPrefix()));
                     OnlineNetworkPlayer online = sender.getAsOnlineNetworkPlayer();
                     if(online.getServer().equalsIgnoreCase(joinMe.getServer())) sender.sendMessage(Messages.SERVER_ALREADY
                             .replace("[server]",joinMe.getServer())
                             .replace("[prefix]",getPrefix()));
-                    else online.connect(joinMe.getServer());
+                    else{
+                        sender.sendMessage(Messages.SERVER_CONNECTING
+                                .replace("[server]",joinMe.getServer())
+                                .replace("[prefix]",getPrefix()));
+                        online.connect(joinMe.getServer());
+                    }
                     return;
                 }
             }
@@ -45,6 +47,14 @@ public class JoinMeCommand extends NetworkCommand {
             if(this.cooldown.containsKey(sender.getUUID()) && this.cooldown.get(sender.getUUID()) > (System.currentTimeMillis())){
                 sender.sendMessage(Messages.JOINME_COOLDOWN.replace("[prefix]",getPrefix()));
                 return;
+            }
+            for(String server : BanSystem.getInstance().getConfig().joinMeDisabledServerList){
+                if((BanSystem.getInstance().getConfig().joinMeDisabledServerEquals && sender.getServer().equalsIgnoreCase(server))
+                        || (!BanSystem.getInstance().getConfig().joinMeDisabledServerEquals && sender.getServer().contains(server))){
+                    sender.sendMessage(Messages.JOINME_NOTALLOWEDONSERVER.replace("[server]",sender.getServer())
+                            .replace("[prefix]",getPrefix()));
+                    return;
+                }
             }
             OnlineNetworkPlayer player = sender.getAsOnlineNetworkPlayer();
             BanSystem.getInstance().getNetwork().sendJoinMe(new JoinMe(sender.getUUID(),player.getServer()
@@ -59,5 +69,4 @@ public class JoinMeCommand extends NetworkCommand {
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
         return null;
     }
-
 }

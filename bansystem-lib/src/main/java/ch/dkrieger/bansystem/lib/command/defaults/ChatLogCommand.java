@@ -34,13 +34,15 @@ public class ChatLogCommand extends NetworkCommand {
                     sender.sendMessage(Messages.CHATLOG_NOTFOUND.replace("[prefix]",getPrefix()));
                     return;
                 }
-                sender.sendMessage(Messages.CHATLOG_PLAYER_HEADER.replace("[prefix]",getPrefix()));
+                sender.sendMessage(Messages.CHATLOG_PLAYER_HEADER
+                        .replace("[player]",player.getColoredName())
+                        .replace("[prefix]",getPrefix()));
                 GeneralUtil.iterateForEach(chatlog.getEntries(filter(args)), object -> {
                     String message = Messages.CHATLOG_PLAYER_LIST_NORMAL;
                     if(object.isBlocked()) message = Messages.CHATLOG_PLAYER_LIST_BLOCKED;
                     sender.sendMessage(message
                             .replace("[message]",object.getMessage())
-                            .replace("[time]",""+object.getTime())
+                            .replace("[time]",""+BanSystem.getInstance().getConfig().dateFormat.format(object.getTime()))
                             .replace("[server]",object.getServer())
                             .replace("[filter]",(object.getFilter()!=null?object.getFilter().toString():"No"))
                             .replace("[prefix]",getPrefix()));
@@ -52,13 +54,15 @@ public class ChatLogCommand extends NetworkCommand {
                     sender.sendMessage(Messages.CHATLOG_NOTFOUND.replace("[prefix]",getPrefix()));
                     return;
                 }
-                sender.sendMessage(Messages.CHATLOG_SERVER_HEADER.replace("[prefix]",getPrefix()));
+                sender.sendMessage(Messages.CHATLOG_SERVER_HEADER
+                        .replace("[server]",args[1])
+                        .replace("[prefix]",getPrefix()));
                 GeneralUtil.iterateForEach(chatlog.getEntries(filter(args)), object -> {
                     String message = Messages.CHATLOG_SERVER_LIST_NORMAL;
                     if(object.isBlocked()) message = Messages.CHATLOG_SERVER_LIST_BLOCKED;
                     sender.sendMessage(message
                             .replace("[message]",object.getMessage())
-                            .replace("[time]",""+object.getTime())
+                            .replace("[time]",BanSystem.getInstance().getConfig().dateFormat.format(object.getTime()))
                             .replace("[player]",""+object.getPlayer().getColoredName())
                             .replace("[server]",object.getServer())
                             .replace("[filter]",(object.getFilter()!=null?object.getFilter().toString():"No"))
@@ -107,6 +111,7 @@ public class ChatLogCommand extends NetworkCommand {
     }
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
+        if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],sender.getName(),BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));
         return null;
     }
 }

@@ -6,6 +6,7 @@ import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
+import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.util.List;
 
@@ -45,6 +46,9 @@ public class PingCommand extends NetworkCommand {
     }
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
+        if(sender.hasPermission("dkbans.ping.other") && args.length == 1){
+            return GeneralUtil.calculateTabComplete(args[0],sender.getName(),BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));
+        }
         return null;
     }
 }

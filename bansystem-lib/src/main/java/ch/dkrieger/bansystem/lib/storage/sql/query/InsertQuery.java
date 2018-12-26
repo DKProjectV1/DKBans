@@ -31,12 +31,9 @@ public class InsertQuery extends ExecuteQuery {
         return this;
     }
 
-    public void executeAndGetKeyAsIntAsync(Consumer<Integer> consumer) {
-        consumer.accept((Integer) executeAndGetKey());
-    }
 
     public Object executeAndGetKey() {
-        return execute(PreparedStatement.RETURN_GENERATED_KEYS);
+        return Integer.parseInt(execute(PreparedStatement.RETURN_GENERATED_KEYS).toString());
     }
     public int executeAndGetKeyAsInt(){
         return (int) executeAndGetKey();

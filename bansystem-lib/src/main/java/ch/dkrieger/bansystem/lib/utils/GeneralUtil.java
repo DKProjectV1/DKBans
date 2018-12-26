@@ -1,5 +1,6 @@
 package ch.dkrieger.bansystem.lib.utils;
 
+import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
 import com.google.gson.Gson;
@@ -34,12 +35,14 @@ public class GeneralUtil {
 
     public static final Random RANDOM = new Random();
     public static final GsonBuilder GSON_BUILDER = new GsonBuilder().setPrettyPrinting();
+    public static final GsonBuilder GSON_BUILDER_NOT_PRETTY = new GsonBuilder();
     public static Gson GSON = GSON_BUILDER.create();
-    public static Gson GSON_NOT_PRETTY = new Gson();
+    public static Gson GSON_NOT_PRETTY = GSON_BUILDER_NOT_PRETTY.create();
     public static final JsonParser PARSER = new JsonParser();
 
     public static void createGSON(){
         GSON = GSON_BUILDER.create();
+        GSON_NOT_PRETTY = GSON_BUILDER_NOT_PRETTY.create();
     }
     public static String getRandomString(final int size){
         char data = ' ';
@@ -216,9 +219,10 @@ public class GeneralUtil {
             }
             text.setExtra(components);
         }
-        if(text.getText() != null && !(text.getText().equalsIgnoreCase(""))){
+        if(text.getText() != null && !(text.getText().equalsIgnoreCase("null") )&& !(text.getText().equalsIgnoreCase(""))){
             TextComponent newTC = replaceTextComponent(text.getText(),replacement,component);
             text.setText("");
+            newTC.setText("");
             if(text.getExtra() == null) text.setExtra(new ArrayList<>());
             text.getExtra().addAll(newTC.getExtra());
         }
@@ -233,6 +237,7 @@ public class GeneralUtil {
             text = text.substring(index).replace(replacement,"");
         }
         if(text.length() > 0) message.addExtra(text);
+        message.setText("");
         return message;
     }
 
@@ -256,6 +261,12 @@ public class GeneralUtil {
         }catch (NumberFormatException exception){
             return false;
         }
+    }
+    public static List<String> calculateTabComplete(String search, String not, List<String> options){
+        search = search.toLowerCase();
+        List<String> result = new LinkedList<>();
+        for(String name : options) if(name.toLowerCase().startsWith(search) && !(name.equalsIgnoreCase(not))) result.add(name);
+        return result;
     }
 
     public interface AcceptAble<T> {

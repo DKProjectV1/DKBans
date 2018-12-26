@@ -25,7 +25,7 @@ public class DKBansCommand extends NetworkCommand {
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
-        sender.sendMessage(GeneralUtil.createLinkedMCText(Messages.PREFIX_NETWORK+"§7BanSystem §cv"+ BanSystem.getInstance().getVersion()+" §7by §cDavide Wietlisbach","https://www.spigotmc.org/resources/dkbans-bansystem-playermangement-bungeecord-english-german.52570/"));
+        sender.sendMessage(GeneralUtil.createLinkedMCText(Messages.PREFIX_NETWORK+"§7BanSystem §cv"+ BanSystem.getInstance().getVersion()+" §7by §cDavide Wietlisbach","https://www.spigotmc.org/resources/dkbans-bansystem-playermangement-bukkit-english-german.52570/"));
     }
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {

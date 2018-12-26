@@ -14,6 +14,7 @@ import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class BanCommand extends NetworkCommand {
@@ -30,6 +31,10 @@ public class BanCommand extends NetworkCommand {
         }//ban dkrieger 1
         if(BanSystem.getInstance().getConfig().banMode == BanMode.SELF){
             sender.executeCommand("tempban "+GeneralUtil.arrayToString(args," "));
+            return;
+        }
+        if(sender.getName().equalsIgnoreCase(args[0])){
+            sender.sendMessage(Messages.BAN_SELF.replace("[prefix]",getPrefix()));
             return;
         }
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
@@ -131,6 +136,7 @@ public class BanCommand extends NetworkCommand {
     }
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
+        if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],sender.getName(),BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));
         return null;
     }
 }

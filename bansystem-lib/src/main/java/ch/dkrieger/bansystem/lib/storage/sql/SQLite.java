@@ -6,6 +6,8 @@ package ch.dkrieger.bansystem.lib.storage.sql;
  *
  */
 
+import ch.dkrieger.bansystem.lib.storage.sql.query.ColumnType;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -18,9 +20,9 @@ public class SQLite extends SQL {
     private File file;
     private Connection connection;
 
-    public SQLite(String path, String child) {
-        this.path = new File(path);
-        this.file = new File(path, child);
+    public SQLite(File path, String database) {
+        this.path = path;
+        this.file = new File(path,database);
     }
 
     @Override
@@ -49,6 +51,7 @@ public class SQLite extends SQL {
         try {
             loadDriver();
             this.connection = DriverManager.getConnection("jdbc:sqlite:" + this.file.getPath());
+            ColumnType.INT = "Integer";
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

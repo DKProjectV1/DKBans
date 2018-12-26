@@ -3,8 +3,10 @@ package ch.dkrieger.bansystem.lib.storage.sql;
 import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.config.Config;
 import ch.dkrieger.bansystem.lib.filter.Filter;
+import ch.dkrieger.bansystem.lib.filter.FilterOperation;
 import ch.dkrieger.bansystem.lib.filter.FilterType;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.OnlineSession;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLog;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLogEntry;
 import ch.dkrieger.bansystem.lib.player.history.History;
@@ -17,21 +19,21 @@ import ch.dkrieger.bansystem.lib.storage.DKBansStorage;
 import ch.dkrieger.bansystem.lib.storage.StorageType;
 import ch.dkrieger.bansystem.lib.storage.sql.query.ColumnType;
 import ch.dkrieger.bansystem.lib.storage.sql.query.QueryOption;
+import ch.dkrieger.bansystem.lib.storage.sql.query.SelectQuery;
 import ch.dkrieger.bansystem.lib.storage.sql.table.Table;
 import ch.dkrieger.bansystem.lib.utils.Document;
+import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
+import com.google.gson.reflect.TypeToken;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class SQLDKBansStorage implements DKBansStorage {
 
     private Config config;
     private SQL sql;
-    private Table players, chatlogs, histories, reports, filters, broadcasts, networkstats;
+    private Table players, chatlogs, histories, reports, filters, broadcasts,onlineSessions, networkstats;
 
     public SQLDKBansStorage(Config config) {
         this.config = config;
@@ -39,7 +41,9 @@ public class SQLDKBansStorage implements DKBansStorage {
     @Override
     public boolean connect() {
         if(config.storageType==StorageType.MYSQL) sql = new MySQL(config.storageHost,config.storagePort,config.storageDatabase,config.storageUser,config.storagePassword);
+        else sql = new SQLite(config.storageFolder,"dkabns.db");
         boolean connect = sql.connect();
+        System.out.println(connect);
 
         if(connect){
             players = new Table(sql,"DKBans_players");
@@ -49,6 +53,7 @@ public class SQLDKBansStorage implements DKBansStorage {
             filters = new Table(sql,"DKBans_filters");
             broadcasts = new Table(sql,"DKBans_broadcasts");
             networkstats = new Table(sql,"DKBans_networkstats");
+            onlineSessions = new Table(sql,"DKBans_onlinesessions");
             try{
                 players.create().create("id",ColumnType.INT,QueryOption.NOT_NULL,QueryOption.PRIMARY_KEY,QueryOption.AUTO_INCREMENT)
                         .create("uuid",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
@@ -56,35 +61,36 @@ public class SQLDKBansStorage implements DKBansStorage {
                         .create("color",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
                         .create("lastIp",ColumnType.VARCHAR,20,QueryOption.NOT_NULL)
                         .create("lastCountry",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
-                        .create("lastLogin",ColumnType.INT,30,QueryOption.NOT_NULL)
-                        .create("firstLogin",ColumnType.INT,30,QueryOption.NOT_NULL)
-                        .create("onlineTime",ColumnType.INT,QueryOption.NOT_NULL)
+                        .create("lastLogin",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("firstLogin",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("onlineTime",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("bypass",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
                         .create("teamChatLogin",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
                         .create("reportLogin",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
-                        .create("statsLogins",ColumnType.INT,30,QueryOption.NOT_NULL)
-                        .create("statsMessages",ColumnType.INT,30,QueryOption.NOT_NULL)
-                        .create("statsReports",ColumnType.INT,30,QueryOption.NOT_NULL)
-                        .create("statsReportsAccepted",ColumnType.INT,30,QueryOption.NOT_NULL)
-                        .create("statsReportsReceived",ColumnType.INT,30,QueryOption.NOT_NULL)
+                        .create("statsLogins",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("statsMessages",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("statsReports",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("statsReportsAccepted",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("statsReportsReceived",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("properties",ColumnType.TEXT,QueryOption.NOT_NULL).execute();
                 this.chatlogs.create().create("uuid",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
                         .create("message",ColumnType.VARCHAR,500,QueryOption.NOT_NULL)
                         .create("server",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
-                        .create("time",ColumnType.INT,30,QueryOption.NOT_NULL)
+                        .create("time",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("filter",ColumnType.VARCHAR,20,QueryOption.NOT_NULL).execute();
-                this.filters.create().create("id",ColumnType.INT,QueryOption.NOT_NULL,QueryOption.PRIMARY_KEY)
+                this.filters.create().create("id",ColumnType.INT,QueryOption.NOT_NULL,QueryOption.PRIMARY_KEY,QueryOption.AUTO_INCREMENT)
                         .create("message",ColumnType.VARCHAR,100,QueryOption.NOT_NULL)
                         .create("operation",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
                         .create("type",ColumnType.VARCHAR,50,QueryOption.NOT_NULL).execute();
-                this.broadcasts.create().create("id",ColumnType.INT,QueryOption.NOT_NULL,QueryOption.PRIMARY_KEY)
+                this.broadcasts.create().create("id",ColumnType.INT,QueryOption.NOT_NULL,QueryOption.PRIMARY_KEY,QueryOption.AUTO_INCREMENT)
                         .create("message",ColumnType.VARCHAR,1000,QueryOption.NOT_NULL)
                         .create("hover",ColumnType.VARCHAR,500,QueryOption.NOT_NULL)
                         .create("clickType",ColumnType.VARCHAR,30,QueryOption.NOT_NULL)
                         .create("clickMessage",ColumnType.VARCHAR,500,QueryOption.NOT_NULL)
+                        .create("permission",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
                         .create("auto",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
-                        .create("created",ColumnType.INT,QueryOption.NOT_NULL)
-                        .create("lastChange",ColumnType.INT,QueryOption.NOT_NULL).execute();
+                        .create("created",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("lastChange",ColumnType.BIG_INT,QueryOption.NOT_NULL).execute();
                 this.reports.create() .create("uuid",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
                         .create("reporter",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
                         .create("staff",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
@@ -92,26 +98,37 @@ public class SQLDKBansStorage implements DKBansStorage {
                         .create("message",ColumnType.VARCHAR,200,QueryOption.NOT_NULL)
                         .create("reportedServer",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
                         .create("reasonID",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
-                        .create("time",ColumnType.INT,30,QueryOption.NOT_NULL).execute();
-                this.networkstats.create().create("logins",ColumnType.INT,30,QueryOption.NOT_NULL)
-                        .create("reports",ColumnType.INT,30,QueryOption.NOT_NULL)
-                        .create("reportsAccepted",ColumnType.INT,30,QueryOption.NOT_NULL)
-                        .create("messages",ColumnType.INT,30,QueryOption.NOT_NULL)
-                        .create("bans",ColumnType.INT,30,QueryOption.NOT_NULL)
-                        .create("mutes",ColumnType.INT,30,QueryOption.NOT_NULL)
-                        .create("unbans",ColumnType.INT,30,QueryOption.NOT_NULL)
-                        .create("kicks",ColumnType.INT,30,QueryOption.NOT_NULL)
-                        .create("uptime",ColumnType.INT,30,QueryOption.NOT_NULL).execute();
-                this.histories.create().create("id",ColumnType.INT,QueryOption.NOT_NULL,QueryOption.PRIMARY_KEY)
+                        .create("time",ColumnType.BIG_INT,QueryOption.NOT_NULL).execute();
+                this.networkstats.create().create("logins",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("reports",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("reportsAccepted",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("messages",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("bans",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("mutes",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("unbans",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("kicks",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("uptime",ColumnType.BIG_INT,QueryOption.NOT_NULL).execute();
+                this.histories.create().create("id",ColumnType.INT,QueryOption.NOT_NULL,QueryOption.PRIMARY_KEY,QueryOption.AUTO_INCREMENT)
                         .create("uuid",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
                         .create("ip",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
                         .create("reason",ColumnType.VARCHAR,200,QueryOption.NOT_NULL)
                         .create("message",ColumnType.VARCHAR,200,QueryOption.NOT_NULL)
-                        .create("time",ColumnType.INT,QueryOption.NOT_NULL)
+                        .create("time",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("points",ColumnType.INT,QueryOption.NOT_NULL)
                         .create("reasonID",ColumnType.INT,QueryOption.NOT_NULL)
                         .create("staff",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
+                        .create("type",ColumnType.VARCHAR,15,QueryOption.NOT_NULL)
                         .create("jsonEntryObject",ColumnType.TEXT,QueryOption.NOT_NULL).execute();
+                this.onlineSessions.create()
+                        .create("uuid",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
+                        .create("ip",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
+                        .create("country",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
+                        .create("lastServer",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
+                        .create("proxy",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
+                        .create("clientLanguage",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
+                        .create("clientVersion",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
+                        .create("connected",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("disconnected",ColumnType.BIG_INT,QueryOption.NOT_NULL).execute();
             }catch (Exception exception){
                 exception.printStackTrace();
                 connect = false;
@@ -145,34 +162,91 @@ public class SQLDKBansStorage implements DKBansStorage {
         return getPlayer("uuid",uuid.toString());
     }
     public NetworkPlayer getPlayer(String key, Object value){
-        ResultSet result = players.select().where(key,value).execute();
-        //public NetworkPlayer(int id, UUID uuid, String name, String color, String lastIP, String lastCountry, long lastLogin, long firstLogin, long onlineTime, boolean bypass
-        // , boolean teamChatLogin, boolean reportLogin, History history, Document properties, PlayerStats stats, List<OnlineSession> onlineSessions, List<Report> reports) {
-        try {
-            if(result.next()){
-                UUID uuid = UUID.fromString(result.getString("uuid"));
-                return new NetworkPlayer(result.getInt("id"),uuid
-                        ,result.getString("name"),result.getString("color"),result.getString("lastIp")
-                        ,result.getString("lastCountry"),result.getLong("lastLogin"),result.getLong("firstLogin")
-                        ,result.getLong("onlineTime"),result.getBoolean("bypass"),result.getBoolean("teamChatLogin")
-                        ,result.getBoolean("reportLogin"),getHistory(uuid),Document.loadData(result.getString("properties"))
-                        ,new PlayerStats(result.getLong("statsLogins")
-                        ,result.getLong("statsMessages") ,result.getLong("statsReports"),result.getLong("statsReportsAccepted")
-                        ,result.getLong("statsReportsReceived")),new ArrayList<>(),null);
+        NetworkPlayer player = players.select().where(key,value).execute(result -> {
+            try{
+               if(result.next()){
+                   UUID uuid = UUID.fromString(result.getString("uuid"));
+                   return new NetworkPlayer(result.getInt("id"),uuid
+                           ,result.getString("name"),result.getString("color"),result.getString("lastIp")
+                           ,result.getString("lastCountry"),result.getLong("lastLogin"),result.getLong("firstLogin")
+                           ,result.getLong("onlineTime"),result.getBoolean("bypass"),result.getBoolean("teamChatLogin")
+                           ,result.getBoolean("reportLogin"),null,Document.loadData(result.getString("properties"))
+                           ,new PlayerStats(result.getLong("statsLogins")
+                           ,result.getLong("statsMessages") ,result.getLong("statsReports"),result.getLong("statsReportsAccepted")
+                           ,result.getLong("statsReportsReceived")),new ArrayList<>(),null);
+               }
+            }catch (Exception exception){
+                exception.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return null;
+        });
+        if(player != null){
+            player.setHistory(getHistory(player.getUUID()));
+            player.setReports(getReports(player.getUUID()));
+            player.setOnlineSessions(getSessions(player.getUUID()));
         }
+        return player;
+    }
+    public List<OnlineSession> getSessions(UUID uuid){
+        return onlineSessions.select().where("uuid",uuid.toString()).execute(result -> {
+            List<OnlineSession> sessions = new ArrayList<>();
+            try{
+                while(result.next()){
+                    sessions.add(new OnlineSession(result.getString("ip"),result.getString("country")
+                            ,result.getString("lastServer"),result.getString("proxy"),result.getString("clientLanguage")
+                            ,result.getInt("clientVersion"),result.getLong("connected"),result.getLong("disconnected")));
+                }
+            }catch (Exception e){}
+            return sessions;
+        });
+    }
+
+    @Override
+    public Ban getBan(int id) {
         return null;
     }
 
     @Override
     public List<NetworkPlayer> getPlayersByIp(String ip) {
-        return null;
+        List<NetworkPlayer> player = players.select().where("lastIp",ip).execute(result -> {
+            List<NetworkPlayer> players = new ArrayList<>();
+            try{
+                while(result.next()){
+                    UUID uuid = UUID.fromString(result.getString("uuid"));
+                    players.add(new NetworkPlayer(result.getInt("id"),uuid
+                            ,result.getString("name"),result.getString("color"),result.getString("lastIp")
+                            ,result.getString("lastCountry"),result.getLong("lastLogin"),result.getLong("firstLogin")
+                            ,result.getLong("onlineTime"),result.getBoolean("bypass"),result.getBoolean("teamChatLogin")
+                            ,result.getBoolean("reportLogin"),null,Document.loadData(result.getString("properties"))
+                            ,new PlayerStats(result.getLong("statsLogins")
+                            ,result.getLong("statsMessages") ,result.getLong("statsReports"),result.getLong("statsReportsAccepted")
+                            ,result.getLong("statsReportsReceived")),new ArrayList<>(),null));
+                }
+            }catch (Exception exception){}
+            return players;
+        });
+        GeneralUtil.iterateForEach(player, object -> {
+            object.setHistory(getHistory(object.getUUID()));
+            object.setReports(getReports(object.getUUID()));
+            object.setOnlineSessions(getSessions(object.getUUID()));
+        });
+        return player;
     }
-
+    public List<Report> getReports(UUID player){
+        return reports.select().where("uuid",player.toString()).execute(result -> {
+            List<Report> reports = new ArrayList<>();
+            try{
+                while(result.next()) reports.add(new Report(UUID.fromString(result.getString("uuid")),
+                        UUID.fromString(result.getString("staff")),UUID.fromString(result.getString("reporter"))
+                        ,result.getString("reason"),result.getString("message"),result.getString("reportedServer")
+                        ,result.getLong("time"),result.getInt("reasonID")));
+            }catch (Exception e){}
+            return reports;
+        });
+    }
     @Override
     public int getRegisteredPlayerCount() {
+        //select count(*) from
         return 0;
     }
 
@@ -182,7 +256,6 @@ public class SQLDKBansStorage implements DKBansStorage {
     }
     @Override
     public int createPlayer(NetworkPlayer player) {
-        System.out.println("create player");
         return players.insert().insert("uuid").insert("name").insert("color").insert("lastIp").insert("lastCountry")
                 .insert("lastLogin").insert("firstLogin").insert("onlineTime").insert("bypass").insert("teamChatLogin")
                 .insert("reportLogin").insert("statsLogins").insert("statsMessages").insert("statsReports")
@@ -191,27 +264,32 @@ public class SQLDKBansStorage implements DKBansStorage {
                 .value(player.getCountry()).value(player.getLastLogin()).value(player.getFirstLogin())
                 .value(player.getOnlineTime()).value(player.hasBypass()).value(player.isTeamChatLoggedIn())
                 .value(player.isReportLoggedIn()).value(1).value(0).value(0).value(0).value(0).value(player.getProperties().toJson()).executeAndGetKeyAsInt();
-                /*
+    }
+    @Override
+    public void createOnlineSession(NetworkPlayer player, OnlineSession session) {
+        this.onlineSessions.insert().insert("uuid").insert("ip").insert("country").insert("lastServer")
+                .insert("proxy").insert("clientLanguage").insert("clientVersion").insert("connected").insert("disconnected")
+                .value(player.getUUID().toString()).value(session.getIp()).value(session.getCountry()).value(session.getLastServer())
+                .value(session.getProxy()).value(session.getClientLanguage()).value(session.getClientVersion()).value(session.getConnected())
+                .value(session.getDisconnected()).execute();
+    }
 
-        players.create().create("id",ColumnType.INT,QueryOption.NOT_NULL,QueryOption.PRIMARY_KEY).
-                        .create("uuid",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
-                        .create("name",ColumnType.VARCHAR,20,QueryOption.NOT_NULL)
-                        .create("color",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
-                        .create("lastIp",ColumnType.VARCHAR,20,QueryOption.NOT_NULL)
-                        .create("lastCountry",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
-                        .create("lastLogin",ColumnType.VARCHAR,QueryOption.NOT_NULL)
-                        .create("firstLogin",ColumnType.VARCHAR,QueryOption.NOT_NULL)
-                        .create("onlineTime",ColumnType.VARCHAR,QueryOption.NOT_NULL)
-                        .create("bypass",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
-                        .create("teamChatLogin",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
-                        .create("reportLogin",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
-                        .create("statsLogins",ColumnType.INT,QueryOption.NOT_NULL)
-                        .create("statsMessages",ColumnType.INT,QueryOption.NOT_NULL)
-                        .create("statsReports",ColumnType.INT,QueryOption.NOT_NULL)
-                        .create("statsReportsAccepted",ColumnType.INT,QueryOption.NOT_NULL)
-                        .create("statsReportsReceived",ColumnType.INT,QueryOption.NOT_NULL)
-                        .create("properties",ColumnType.TEXT,QueryOption.NOT_NULL).execute();
-         */
+    @Override
+    public void finishStartedOnlineSession(UUID uuid, long login, long logout, String server) {
+        this.onlineSessions.update().set("uuid",uuid.toString()).set("disconnected",logout).set("lastServer",server)
+                .where("connected",login).where("uuid",uuid.toString()).execute();
+    }
+
+    @Override
+    public void updatePlayerLoginInfos(UUID player, String name, long lastLogin, String color, boolean bypass, String lastIP, String lastCountry, long logins) {
+        this.players.update().set("name",name).set("lastLogin",lastLogin).set("color",color).set("bypass",bypass).set("lastIp",lastIP)
+                .set("lastCountry",lastCountry).set("statsLogins",logins).where("uuid",player.toString()).execute();
+    }
+
+    @Override
+    public void updatePlayerLogoutInfos(UUID player, long lastLogin, long onlineTime, String color, boolean bypass, long messages) {
+        this.players.update().set("lastLogin",lastLogin).set("color",color).set("bypass",bypass).set("onlineTime",onlineTime)
+                .set("statsMessages",messages).where("uuid",player.toString()).execute();
     }
 
     @Override
@@ -221,127 +299,243 @@ public class SQLDKBansStorage implements DKBansStorage {
 
     @Override
     public ChatLog getChatLog(UUID player) {
-        List<ChatLogEntry> entries = new LinkedList<>();
-        try{
-            ResultSet result = chatlogs.select().where("uuid",player).execute();
-            while(result.next()){
-                entries.add(new ChatLogEntry(UUID.fromString(result.getString("uuid")),result.getString("message")
-                ,result.getString("server"),result.getLong("time"), FilterType.valueOf(result.getString("filter"))));
-            }
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-
-        return new ChatLog(entries);
+        return getChatLog("uuid",player.toString());
     }
 
     @Override
     public ChatLog getChatLog(String server) {
-        return null;
+        return getChatLog("server",server);
     }
+    public ChatLog getChatLog(String key, String value){
+        return chatlogs.select().where(key,value).execute(result -> {
+            List<ChatLogEntry> entries = new LinkedList<>();
+            try{
+                while(result.next()){
+                    entries.add(new ChatLogEntry(UUID.fromString(result.getString("uuid")),result.getString("message")
+                            ,result.getString("server"),result.getLong("time"), FilterType.ParseNull(result.getString("filter"))));
+                }
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+            return new ChatLog(entries);
+        });
+    }
+
 
     @Override
     public void createChatLogEntry(ChatLogEntry entry) {
-
+        chatlogs.insert().insert("uuid").insert("message").insert("server").insert("time").insert("filter")
+                .value(entry.getUUID().toString()).value(entry.getMessage()).value(entry.getServer())
+                .value(entry.getTime()).value(entry.getFilter()==null?"NULL":entry.getFilter().toString()).execute();
     }
 
     @Override
     public History getHistory(UUID player) {
-        return new History();
+        return histories.select().where("uuid",player.toString()).execute(result -> {
+            Map<Integer,HistoryEntry> entries = new HashMap<>();
+            try{
+                while(result.next()){
+                    HistoryEntry entry = GeneralUtil.GSON.fromJson(result.getString("jsonEntryObject"),HistoryEntry.class);
+                    entry.setID(result.getInt("id"));
+                    entries.put(result.getInt("id"),entry);
+                }
+                return new History(entries);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return null;
+        });
     }
 
     @Override
     public void clearHistory(NetworkPlayer player) {
-
+        histories.delete().where("uuid",player.getUUID().toString()).execute();
     }
 
     @Override
     public int createHistoryEntry(NetworkPlayer player, HistoryEntry entry) {
-        return 0;
+        return this.histories.insert().insert("uuid").insert("ip").insert("reason").insert("message")
+                .insert("time").insert("points").insert("reasonID").insert("staff").insert("type").insert("jsonEntryObject")
+                .value(player.getUUID().toString()).value(entry.getIp()).value(entry.getReason())
+                .value(entry.getMessage()).value(entry.getTimeStamp()).value(entry.getPoints()).value(entry.getReasonID())
+                .value(entry.getStaff()).value(entry.getTypeName())
+                .value(GeneralUtil.GSON_NOT_PRETTY.toJson(entry,new TypeToken<HistoryEntry>(){}.getType())).executeAndGetKeyAsInt();
     }
 
     @Override
     public void deleteHistoryEntry(NetworkPlayer player, int id) {
-
+        histories.delete().where("uuid",player.getUUID().toString()).where("id",id).execute();
     }
 
     @Override
     public List<Report> getReports() {
-        return null;
+        return reports.select().execute(result -> {
+            List<Report> reports = new ArrayList<>();
+            try{
+                while(result.next()) reports.add(new Report(UUID.fromString(result.getString("uuid")),
+                        UUID.fromString(result.getString("staff")),UUID.fromString(result.getString("reporter"))
+                        ,result.getString("reason"),result.getString("message"),result.getString("reportedServer")
+                        ,result.getLong("time"),result.getInt("reasonID")));
+            }catch (Exception e){}
+            return reports;
+        });
     }
 
     @Override
     public void createReport(Report report) {
-
+        reports.insert().insert("uuid").insert("reporter").insert("staff").insert("reason").insert("message")
+                .insert("reportedServer").insert("reasonID").insert("time")
+                .value(report.getUUID().toString()).value(report.getReporteUUID().toString())
+                .value(report.getStaff()==null?"":report.getStaff().toString()).value(report.getReason()).value(report.getMessage())
+                .value(report.getReportedServer()).value(report.getReasonID()).value(report.getTimeStamp()).execute();
     }
 
     @Override
     public void processReports(NetworkPlayer player, NetworkPlayer staff) {
-
+        reports.update().set("staff",staff.getUUID().toString()).where("uuid",player.getUUID().toString()).execute();
     }
 
     @Override
     public void deleteReports(NetworkPlayer player) {
-
+        reports.delete().where("uuid",player.getUUID().toString()).execute();
     }
 
     @Override
     public List<Ban> getBans() {
-        return null;
+        return this.histories.select().where("type","ban").execute(result -> {
+            List<Ban> bans = new ArrayList<>();
+            try {
+                while(result.next()){
+                    bans.add((Ban) GeneralUtil.GSON.fromJson(result.getString("jsonEntryObject"),HistoryEntry.class));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return bans;
+        });
+    }
+
+    @Override
+    public void updatePlayerStats(UUID uuid, PlayerStats stats) {
+        this.players.update().set("statsLogins",stats.getLogins()).set("statsMessages",stats.getMessages())
+                .set("statsReports",stats.getReports()).set("statsReportsAccepted",stats.getReportsAccepted())
+                .set("statsReportsReceived",stats.getReportsReceived()).where("uuid",uuid.toString()).execute();
+    }
+    @Override
+    public void deleteOldChatLog(long before) {
+        this.chatlogs.delete().whereLower("time",before).execute();
     }
 
     @Override
     public List<Ban> getBans(int reasonID) {
-        return null;
+        return this.histories.select().where("type","ban").where("reasonID",reasonID).execute(result -> {
+            List<Ban> bans = new ArrayList<>();
+            try {
+                while(result.next()){
+                    bans.add((Ban) GeneralUtil.GSON.fromJson(result.getString("jsonEntryObject"),HistoryEntry.class));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return bans;
+        });
     }
 
     @Override
     public List<Ban> getBans(String reason) {
-        return null;
+        return this.histories.select().where("type","ban").where("reason",reason).execute(result -> {
+            List<Ban> bans = new ArrayList<>();
+            try {
+                while(result.next()){
+                    bans.add((Ban) GeneralUtil.GSON.fromJson(result.getString("jsonEntryObject"),HistoryEntry.class));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return bans;
+        });
     }
-
     @Override
     public List<Ban> getBansFromStaff(String staff) {
-        return null;
+        return this.histories.select().where("type","ban").where("staff",staff).execute(result -> {
+            List<Ban> bans = new ArrayList<>();
+            try {
+                while(result.next()){
+                    bans.add((Ban) GeneralUtil.GSON.fromJson(result.getString("jsonEntryObject"),HistoryEntry.class));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return bans;
+        });
     }
 
     @Override
     public List<Filter> loadFilters() {
-        return new ArrayList<>();
+        return this.filters.select().execute(result -> {
+            List<Filter> filters = new ArrayList<>();
+            try{
+                while(result.next()){
+                    filters.add(new Filter(result.getInt("id"),result.getString("message")
+                            ,FilterOperation.valueOf(result.getString("operation"))
+                            ,FilterType.valueOf(result.getString("type"))));
+                }
+            }catch (Exception exception){}
+            return filters;
+        });
     }
-
     @Override
     public int createFilter(Filter filter) {
-        return 0;
+        return  filters.insert().insert("message").insert("operation").insert("type")
+                .value(filter.getMessage()).value(filter.getOperation().toString())
+                .value(filter.getType().toString()).executeAndGetKeyAsInt();
     }
 
     @Override
     public void deleteFilter(int id) {
-
+        this.filters.delete().where("id",id).execute();
     }
 
     @Override
     public List<Broadcast> loadBroadcasts() {
-        return new ArrayList<>();
+        return broadcasts.select().execute(result -> {
+            List<Broadcast> broadcasts = new ArrayList<>();
+            try{
+                while(result.next()){
+                    broadcasts.add(new Broadcast(result.getInt("id"),result.getString("message")
+                            ,result.getString("permission")
+                            ,result.getString("hover"),result.getLong("created"),result.getLong("lastChange")
+                            ,result.getBoolean("auto"),new Broadcast.Click(result.getString("clickMessage")
+                            ,Broadcast.ClickType.valueOf(result.getString("clickType")))));
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return broadcasts;
+        });
     }
-
     @Override
     public int createBroadcast(Broadcast broadcast) {
-        return 0;
+        return broadcasts.insert().insert("message").insert("permission").insert("hover").insert("clickType").insert("clickMessage")
+                .insert("auto").insert("created").insert("lastChange").value(broadcast.getMessage()).value(broadcast.getPermission()).value(broadcast.getHover())
+                .value(broadcast.getClick().getType().toString()).value(broadcast.getClick().getMessage()).value(broadcast.isAuto())
+                .value(broadcast.getCreated()).value(broadcast.getLastChange()).executeAndGetKeyAsInt();
     }
 
     @Override
     public void updateBroadcast(Broadcast broadcast) {
-
+        broadcasts.update().set("permission",broadcast.getPermission()).set("message",broadcast.getMessage()).set("hover",broadcast.getHover())
+                .set("clickType",broadcast.getClick().getType().toString()).set("clickMessage",broadcast.getClick().getMessage())
+                .set("auto",broadcast.isAuto()).set("lastChange",broadcast.getLastChange()).where("id",broadcast.getID()).execute();
     }
 
     @Override
     public void deleteBroadcast(int id) {
-
+        this.broadcasts.delete().where("id",id);
     }
 
     @Override
     public NetworkStats getNetworkStats() {
-        return null;
+        return new NetworkStats();
     }
 }

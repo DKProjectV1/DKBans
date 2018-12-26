@@ -22,6 +22,8 @@ public interface NetworkCommandSender {
 
     public OnlineNetworkPlayer getAsOnlineNetworkPlayer();
 
+    public String getServer();
+
     public boolean hasPermission(String permission);
 
     public void sendMessage(String message);
@@ -29,6 +31,8 @@ public interface NetworkCommandSender {
     public void sendMessage(TextComponent component);
 
     public void executeCommand(String command);
+
+    public void executeCommandOnServer(String message);
 
 
 }

@@ -1,6 +1,7 @@
 package ch.dkrieger.bansystem.lib.storage.sql.query;
 
 import ch.dkrieger.bansystem.lib.storage.sql.SQL;
+import ch.dkrieger.bansystem.lib.storage.sql.SQLite;
 
 /*
  * Copyright (c) 2018 Dkrieger on 16.05.18 15:49
@@ -31,6 +32,7 @@ public class CreateQuery extends ExecuteQuery {
         builder.append("`").append(field).append("` ").append(type);
         if(size != 0) builder.append("(").append(size).append(")");
         for(String option : options) {
+            if(sql instanceof SQLite && option.equalsIgnoreCase("AUTO_INCREMENT")) option = "AUTOINCREMENT";
             if(this.sql.isOptionsOnEnd() && DEFAULT_END_OPTIONS.contains(option.toUpperCase())) this.endOptions.put(field, option);
             else builder.append(" ").append(option);
         }

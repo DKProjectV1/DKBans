@@ -20,7 +20,8 @@ public class OnlinetimeCommand extends NetworkCommand {
         NetworkPlayer player = sender.getAsNetworkPlayer();
         sender.sendMessage(Messages.ONLINE_TIME
                 .replace("[player]",player.getColoredName())
-                .replace("[time]",""+TimeUnit.MILLISECONDS.toHours(player.getOnlineTime()))
+                .replace("[time-short]",""+GeneralUtil.calculateRemaining(player.getOnlineTime(true),true))
+                .replace("[time]",""+GeneralUtil.calculateRemaining(player.getOnlineTime(true),false))
                 .replace("[prefix]",getPrefix()));
     }
     @Override

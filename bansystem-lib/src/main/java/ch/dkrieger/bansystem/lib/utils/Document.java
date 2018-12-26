@@ -41,11 +41,6 @@ public class Document {
         if(this.datas.has(key)) return this.datas.get(key).getAsBoolean();
         return false;
     }
-    public Document getDocument(String key){
-        JsonObject value = this.datas.get(key).getAsJsonObject();
-        if(value != null) return new Document(value);
-        return new Document();
-    }
     public <T> T getObject(String key,Class<T> classof){
         if(!this.datas.has(key)) return null;
         return GeneralUtil.GSON.fromJson(this.datas.get(key),classof);
@@ -70,10 +65,6 @@ public class Document {
     }
     public Document append(String key, Number value){
         if(value != null) this.datas.addProperty(key,value);
-        return this;
-    }
-    public Document append(String key, Document value){
-        if(value != null) return append(key,value.toJson());
         return this;
     }
     public Document append(String key, Object value){

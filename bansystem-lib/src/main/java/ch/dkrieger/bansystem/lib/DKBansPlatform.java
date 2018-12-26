@@ -21,6 +21,8 @@ public interface DKBansPlatform {
 
     public NetworkCommandManager getCommandManager();
 
+    public NetworkTaskManager getTaskManager();
+
     public String getColor(NetworkPlayer player);
 
 }

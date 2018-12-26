@@ -14,7 +14,7 @@ public class ColumnType {
     public static final String BIG_INT = "bigint";
     public static final String BIT = "bit";
     public static final String DECIMAL = "decimal";
-    public static final String INT = "int";
+    public static String INT = "int";
     public static final String MONEY = "money";
     public static final String NUMERIC = "numeric";
     public static final String SMALL_INT = "smallint";

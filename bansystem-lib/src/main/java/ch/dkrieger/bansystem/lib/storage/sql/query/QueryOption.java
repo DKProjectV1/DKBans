@@ -16,7 +16,7 @@ public enum QueryOption {
     PRIMARY_KEY("PRIMARY KEY", true),
     AUTO_INCREMENT("AUTO_INCREMENT",false);
 
-    private String code;
+    private String code, extraForSqlite;
     private boolean possibleEndOfQuery;
 
     QueryOption(String code, boolean possibleEndOfQuery) {

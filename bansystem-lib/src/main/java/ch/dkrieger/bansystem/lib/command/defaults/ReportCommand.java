@@ -15,6 +15,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ReportCommand extends NetworkCommand {
 
@@ -46,7 +47,6 @@ public class ReportCommand extends NetworkCommand {
                 return;
             }else if(args[0].equalsIgnoreCase("deny")){
                 NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[1]);
-                System.out.println(player.getReportStaff());
                 if(player == null || !(sender.getUUID().equals(player.getReportStaff()))){
                     sender.sendMessage(Messages.REPORT_NOTFOUND
                             .replace("[player]",player==null?args[1]:player.getColoredName())
@@ -68,11 +68,35 @@ public class ReportCommand extends NetworkCommand {
                 }
                 Report report = player.getProcessingReport();
                 ReportReason reason = BanSystem.getInstance().getReasonProvider().getReportReason(report.getReasonID());
-                sender.executeCommand("ban "+report.getReporteUUID()+" "+reason.getForBan());
+                sender.executeCommand("ban "+report.getUUID()+" "+reason.getForBan());
+                return;
+            }else if(args[0].equalsIgnoreCase("other")){
+                NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[1]);
+                if(player == null || !(sender.getUUID().equals(player.getReportStaff()))){
+                    sender.sendMessage(Messages.REPORT_NOTFOUND
+                            .replace("[player]",player==null?args[1]:player.getColoredName())
+                            .replace("[prefix]",getPrefix()));
+                    return;
+                }
+                sender.sendMessage(Messages.REPORT_OTHERREASON
+                        .replace("[player]",player.getColoredName())
+                        .replace("[prefix]",getPrefix()));
+                for(BanReason reason : BanSystem.getInstance().getReasonProvider().getBanReasons()){
+                    if(!sender.hasPermission(reason.getPermission())) continue;
+                    TextComponent component = new TextComponent(Messages.BAN_HELP_REASON
+                            .replace("[prefix]",getPrefix())
+                            .replace("[id]",""+reason.getID())
+                            .replace("[name]",reason.getDisplay())
+                            .replace("[historyType]",reason.getHistoryType().getDisplay())
+                            .replace("[banType]",reason.getBanType().getDisplay())
+                            .replace("[reason]",reason.getDisplay())
+                            .replace("[points]",""+reason.getPoints()));
+                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/ban "+player.getUUID()+" "+reason.getID()));
+                    sender.sendMessage(component);
+                }
                 return;
             }else if(args[0].equalsIgnoreCase("jump") || args[0].equalsIgnoreCase("goto") || args[0].equalsIgnoreCase("take")) {
                 NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[1]);
-                System.out.println(player);
                 if(player == null){
                     sender.sendMessage(Messages.PLAYER_NOT_FOUND.replace("[prefix]",getPrefix()));
                     return;
@@ -126,11 +150,22 @@ public class ReportCommand extends NetworkCommand {
                     message = GeneralUtil.replaceTextComponent(message,"[otherReason]",other);
                     sender.sendMessage(message);
                 }
+                if(BanSystem.getInstance().getConfig().reportAutoCommandExecuteOnProxy){
+                    for(String command :  BanSystem.getInstance().getConfig().reportAutoCommandEnter) sender.executeCommand(command.replace("[player]",player.getName()));
+                }else{
+                    BanSystem.getInstance().getPlatform().getTaskManager().runTaskLater(()->{
+                        for(String command :  BanSystem.getInstance().getConfig().reportAutoCommandEnter) sender.executeCommandOnServer(command.replace("[player]",player.getName()));
+                    },1L, TimeUnit.SECONDS);
+                }
                 return;
             }
         }
         if(args.length < 2){
             sendHelp(sender);
+            return;
+        }
+        if(sender.getName().equalsIgnoreCase(args[0])){
+            sender.sendMessage(Messages.REPORT_SELF.replace("[prefix]",getPrefix()));
             return;
         }
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
@@ -206,6 +241,7 @@ public class ReportCommand extends NetworkCommand {
     }
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
+        if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],sender.getName(),BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));
         return null;
     }
 }

@@ -6,20 +6,23 @@ import java.util.List;
 
 public class BanManager {
 
+    public Ban getBan(int id){
+        return BanSystem.getInstance().getStorage().getBan(id);
+    }
     @SuppressWarnings("This methode is dangerous, it (can) return many datas and have a long delay.")
     public List<Ban> getBans(){
-        return null;
+        return BanSystem.getInstance().getStorage().getBans();
     }
     @SuppressWarnings("This methode is dangerous, it (can) return many datas and have a long delay.")
     public List<Ban> getBans(int reasonID){
-        return null;
+        return BanSystem.getInstance().getStorage().getBans(reasonID);
     }
     @SuppressWarnings("This methode is dangerous, it (can) return many datas and have a long delay.")
     public List<Ban> getBans(String reason){
-        return null;
+        return BanSystem.getInstance().getStorage().getBans(reason);
     }
     @SuppressWarnings("This methode is dangerous, it (can) return many datas and have a long delay.")
-    public List<Ban> getBansFromStaff(String staff){
-        return null;
+    public List<Ban> getBansFromStaff(String staff) {
+        return BanSystem.getInstance().getBanManager().getBansFromStaff(staff);
     }
 }

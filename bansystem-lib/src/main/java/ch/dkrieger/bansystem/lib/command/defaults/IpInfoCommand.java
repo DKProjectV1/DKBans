@@ -15,19 +15,21 @@ import java.util.List;
 public class IpInfoCommand extends NetworkCommand {
 
     public IpInfoCommand() {
-        super("ipinfo");
+        super("ipinfo","","dkperms.ipinfo");
         setPrefix(Messages.PREFIX_BAN);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
-        if(args.length > 1){
-            sender.sendMessage(Messages.IPINFO_HEADER.replace("[prefix]",getPrefix()));
+        if(args.length < 1){
+            sender.sendMessage(Messages.IPINFO_HELP.replace("[prefix]",getPrefix()));
             return;
         }
         if(GeneralUtil.isIP4Address(args[0])){
-            sender.sendMessage(Messages.IPINFO_IP_HEADER.replace("[prefix]",getPrefix()));
+            sender.sendMessage(Messages.IPINFO_PLAYER_HEADER
+                    .replace("[ip]",args[0])
+                    .replace("[prefix]",getPrefix()));
             GeneralUtil.iterateForEach(BanSystem.getInstance().getPlayerManager().getPlayers(args[0]), object -> {
-                TextComponent component = new TextComponent(Messages.IPINFO_IP_LIST
+                TextComponent component = new TextComponent(Messages.IPINFO_PLAYER_LIST
                         .replace("[status]",(object.isBanned(BanType.NETWORK)?Messages.IPINFO_PLAYER_BANNED
                                 :(object.isBanned(BanType.CHAT)?Messages.IPINFO_PLAYER_MUTED
                                 :object.isOnline()?Messages.IPINFO_PLAYER_ONLINE:Messages.IPINFO_PLAYER_OFFLINE)))
@@ -37,12 +39,12 @@ public class IpInfoCommand extends NetworkCommand {
             });
             return;
         }else{
-            sender.sendMessage(Messages.IPINFO_PLAYER_HEADER.replace("[prefix]",getPrefix()));
             NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
             if(player == null){
                 sender.sendMessage(Messages.PLAYER_NOT_FOUND.replace("[player]",args[0]).replace("[prefix]",getPrefix()));
                 return;
             }
+            sender.sendMessage(Messages.IPINFO_IP_HEADER.replace("[player]",player.getColoredName()).replace("[prefix]",getPrefix()));
             for(String ip : player.getIPs()){
                 TextComponent component = new TextComponent(Messages.IPINFO_IP_LIST.replace("[ip]",ip).replace("[prefix]",getPrefix()));
                 component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/ipinfo "+ip));
@@ -53,6 +55,7 @@ public class IpInfoCommand extends NetworkCommand {
     }
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
+        if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],sender.getName(),BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));
         return null;
     }
 }

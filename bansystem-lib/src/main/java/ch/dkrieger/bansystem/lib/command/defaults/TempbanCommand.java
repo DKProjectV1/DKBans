@@ -24,6 +24,10 @@ public class TempbanCommand extends NetworkCommand {
             sender.sendMessage(Messages.TEMPBAN_HELP.replace("[prefix]",getPrefix()));
             return;
         }
+        if(sender.getName().equalsIgnoreCase(args[0])){
+            sender.sendMessage(Messages.BAN_SELF.replace("[prefix]",getPrefix()));
+            return;
+        }
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
         if(player != null){
             sender.sendMessage(Messages.PLAYER_NOT_FOUND
@@ -63,6 +67,7 @@ public class TempbanCommand extends NetworkCommand {
 
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
+        if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],sender.getName(),BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));
         return null;
     }
 }
