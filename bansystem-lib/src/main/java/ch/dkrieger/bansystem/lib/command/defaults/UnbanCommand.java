@@ -115,7 +115,7 @@ public class UnbanCommand extends NetworkCommand {
                     .replace("[player]",args[0]));
         }else{
             Unban unban;
-            if(this.unbanMode == UnbanMode.SELF) unban = player.unban(BanType.CHAT,message);
+            if(this.unbanMode == UnbanMode.SELF) unban = player.unban(BanType.CHAT,message,sender.getUUID());
             else unban = player.unban(BanType.CHAT,reason,message,sender.getUUID());
             sender.sendMessage(Messages.PLAYER_UNMUTED
                     .replace("[prefix]",getPrefix())

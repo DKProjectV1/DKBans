@@ -1,18 +1,17 @@
 package ch.dkrieger.bansystem.lib.reason;
 
 import ch.dkrieger.bansystem.lib.DKBansPlatform;
-import ch.dkrieger.bansystem.lib.DKNetwork;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.Duration;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import com.google.gson.reflect.TypeToken;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class ReasonProvider {
@@ -30,7 +29,7 @@ public class ReasonProvider {
         this.reportReasons = new ArrayList<>();
         this.unbanReasons = new ArrayList<>();
         loadBanReasons();
-        loadUnbanReasons();
+        //loadUnbanReasons();
         loadReportReasons();
         loadKickReasons();
     }
@@ -103,86 +102,198 @@ public class ReasonProvider {
         return GeneralUtil.iterateOne(this.unbanReasons,reason -> reason.hasAlias(name));
     }
     public void loadBanReasons(){
-        File file = new File(this.platform.getFolder(),"ban-reasons.json");
+        File file = new File(this.platform.getFolder(),"ban-reasons.yml");
+        Configuration config = null;
         if(file.exists()){
             try{
-                this.banReasons = Document.loadData(file).getObject("reasons",new TypeToken<List<BanReason>>(){}.getType());
+                config = YamlConfiguration.getProvider(YamlConfiguration.class).load(file);
+                Configuration reasons = config.getSection("reasons");
+                this.banReasons = new ArrayList<>();
+                if(reasons != null){
+                    for(String key : reasons.getKeys()){
+                        try{
+                            Map<Integer,BanReasonEntry> durations = new HashMap<>();
+                            Configuration durationConfig = config.getSection("reasons."+key+".durations");
+                            for(String DKey : durationConfig.getKeys()){
+                                durations.put(Integer.valueOf(DKey),new BanReasonEntry(
+                                        BanType.valueOf(config.getString("reasons."+key+".durations."+DKey+".type"))
+                                        ,config.getLong("reasons."+key+".durations."+DKey+".time")
+                                        ,TimeUnit.valueOf(config.getString("reasons."+key+".durations."+DKey+".unit"))));
+                            }
+                            this.banReasons.add(new BanReason(Integer.valueOf(key)
+                                    ,config.getInt("reasons."+key+".points.points")
+                                    ,config.getString("reasons."+key+".name")
+                                    ,config.getString("reasons."+key+".display")
+                                    ,config.getString("reasons."+key+".permission")
+                                    ,config.getBoolean("reasons."+key+".hidden")
+                                    ,config.getStringList("reasons."+key+".points.aliases")
+                                    ,config.getDouble("reasons."+key+".points.divider")
+                                    ,BanType.valueOf(config.getString("reasons."+key+".historytype"))
+                                    ,durations));
+                        }catch (Exception exception){
+                            exception.printStackTrace();
+                            System.out.println(Messages.SYSTEM_PREFIX+"Could not load ban-reason "+key);
+                            System.out.println(Messages.SYSTEM_PREFIX+"Error: "+exception.getMessage());
+                        }
+                    }
+                }
                 if(this.banReasons.size() > 0) return;
             }catch (Exception exception){
                 if(file.exists()){
-                    file.renameTo(new File(this.platform.getFolder(),"ban-reasons-old-"+GeneralUtil.getRandomString(15)));
+                    file.renameTo(new File(this.platform.getFolder(),"ban-reasons-old-"+GeneralUtil.getRandomString(15)+".yml"));
                     System.out.println(Messages.SYSTEM_PREFIX+"Could not load ban-reasons, generating new (Saved als old)");
+                    System.out.println(Messages.SYSTEM_PREFIX+"Error: "+exception.getMessage());
                 }
             }
         }
+        config = new Configuration();
         this.banReasons.add(new BanReason(1,30,"hacking","&4Hacking","dkbans.ban.reason.hacking"
                 ,false, Arrays.asList("hacks","hacker"),0.0, BanType.NETWORK
-                ,new BanReasonValue(BanType.NETWORK,30, TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.NETWORK,60, TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.NETWORK,90, TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.NETWORK,-1, TimeUnit.DAYS)));
+                ,new BanReasonEntry(BanType.NETWORK,30, TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.NETWORK,60, TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.NETWORK,90, TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.NETWORK,-1, TimeUnit.DAYS)));
         this.banReasons.add(new BanReason(2,15,"provocation","&4Provocation","dkbans.ban.reason.provocation"
                 ,false, Arrays.asList("provocation","provo"),0.5,BanType.CHAT
-                ,new BanReasonValue(BanType.CHAT,30,TimeUnit.MINUTES)
-                ,new BanReasonValue(BanType.CHAT,4,TimeUnit.HOURS)
-                ,new BanReasonValue(BanType.CHAT,10,TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.CHAT,30,TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.NETWORK,10,TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.NETWORK,30,TimeUnit.DAYS)));
+                ,new BanReasonEntry(BanType.CHAT,30,TimeUnit.MINUTES)
+                ,new BanReasonEntry(BanType.CHAT,4,TimeUnit.HOURS)
+                ,new BanReasonEntry(BanType.CHAT,10,TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.CHAT,30,TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.NETWORK,10,TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.NETWORK,30,TimeUnit.DAYS)));
 
         this.banReasons.add(new BanReason(3,12,"insult","&4Insult","dkbans.ban.reason.insult"
                 ,false, Arrays.asList("insult"),0.5,BanType.CHAT
-                ,new BanReasonValue(BanType.CHAT,5,TimeUnit.HOURS)
-                ,new BanReasonValue(BanType.CHAT,1,TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.CHAT,10,TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.CHAT,30,TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.NETWORK,10,TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.NETWORK,30,TimeUnit.DAYS)));
+                ,new BanReasonEntry(BanType.CHAT,5,TimeUnit.HOURS)
+                ,new BanReasonEntry(BanType.CHAT,1,TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.CHAT,10,TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.CHAT,30,TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.NETWORK,10,TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.NETWORK,30,TimeUnit.DAYS)));
 
         this.banReasons.add(new BanReason(4,20,"spam/promotion","&4Spam/Promotion","dkbans.ban.reason.promotion"
                 ,false, Arrays.asList("spam","spamming"),0.0,BanType.NETWORK
-                ,new BanReasonValue(BanType.NETWORK,3,TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.NETWORK,10,TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.NETWORK,30,TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.NETWORK,-1,TimeUnit.DAYS)));
+                ,new BanReasonEntry(BanType.NETWORK,3,TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.NETWORK,10,TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.NETWORK,30,TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.NETWORK,-1,TimeUnit.DAYS)));
 
         this.banReasons.add(new BanReason(5,300,"permanent","&4Permanent","dkbans.ban.reason.permanent"
                 ,false, Arrays.asList("spam","spamming"),0.0,BanType.NETWORK
-                ,new BanReasonValue(BanType.NETWORK,-1,TimeUnit.DAYS)));
-        new Document().append("reasons",this.banReasons).saveData(new File(this.platform.getFolder(),"ban-reasons.json"));
+                ,new BanReasonEntry(BanType.NETWORK,-1,TimeUnit.DAYS)));
+        for(BanReason reason : this.banReasons){
+            config.set("reasons."+reason.getID()+".name",reason.getName());
+            config.set("reasons."+reason.getID()+".display",reason.getRawDisplay());
+            config.set("reasons."+reason.getID()+".permission",reason.getPermission());
+            config.set("reasons."+reason.getID()+".aliases",reason.getAliases());
+            config.set("reasons."+reason.getID()+".hidden",reason.isHidden());
+            config.set("reasons."+reason.getID()+".historytype",reason.getHistoryType().toString());
+            config.set("reasons."+reason.getID()+".points.points",reason.getPoints());
+            config.set("reasons."+reason.getID()+".points.divider",reason.getDivider());
+            for(Map.Entry<Integer, BanReasonEntry> entry : reason.getDurations().entrySet()){
+                config.set("reasons."+reason.getID()+".durations."+entry.getKey()+".type",entry.getValue().getType().toString());
+                config.set("reasons."+reason.getID()+".durations."+entry.getKey()+".time",entry.getValue().getDuration().getTime());
+                config.set("reasons."+reason.getID()+".durations."+entry.getKey()+".unit",entry.getValue().getDuration().getUnit().toString());
+            }
+        }
+        try{
+            YamlConfiguration.getProvider(YamlConfiguration.class).save(config,file);
+        }catch (Exception e){}
     }
     public void loadUnbanReasons(){
-        File file = new File(this.platform.getFolder(),"unban-reasons.json");
+        /*
+        File file = new File(this.platform.getFolder(),"unban-reasons.yml");
+        Configuration config = null;
         if(file.exists()){
             try{
-                this.unbanReasons = Document.loadData(file).getObject("reasons",new TypeToken<List<UnbanReason>>(){}.getType());
+                config = YamlConfiguration.getProvider(YamlConfiguration.class).load(file);
+                Configuration reasons = config.getSection("reasons");
+                this.unbanReasons = new ArrayList<>();
+                if(reasons != null){
+                    for(String key : reasons.getKeys()){
+                        try{
+                            this.unbanReasons.add(new UnbanReason(Integer.valueOf(key),config.getInt("points"   )))
+                                    //int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, int maxPoints, boolean removeAllPoints
+                            // , List<Integer> notForBanID, Duration maxDuration, Duration removeDuration, double durationDivider
+                        }catch (Exception exception){
+                            exception.printStackTrace();
+                            System.out.println(Messages.SYSTEM_PREFIX+"Could not load unban-reason "+key);
+                            System.out.println(Messages.SYSTEM_PREFIX+"Error: "+exception.getMessage());
+                        }
+                    }
+                }
                 if(this.unbanReasons.size() > 0) return;
             }catch (Exception exception){
                 if(file.exists()){
-                    file.renameTo(new File(this.platform.getFolder(),"unban-reasons-old-"+GeneralUtil.getRandomString(15)));
+                    file.renameTo(new File(this.platform.getFolder(),"unban-reasons-old-"+GeneralUtil.getRandomString(15)+".yml"));
                     System.out.println(Messages.SYSTEM_PREFIX+"Could not load unban-reasons, generating new (Saved als old)");
                 }
             }
-        }
+        } //int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, int maxPoints, boolean removeAllPoints, List<Integer> notForBanID, Duration maxDuration, Duration removeDuration, double durationDivider
+        config = new Configuration();
         this.unbanReasons.add(new UnbanReason(1,30,"falseban","&4False ban","dkbans.unban.reason.falsban"
-                ,false, Arrays.asList("fals","hacker"),null,100,null,null,0D));
-        this.unbanReasons.add(new UnbanReason(2,10,"acceptedrequest","&4Accepted unban request","dkbans.unban.reason.acceptedrequest"
-                ,false, Arrays.asList("accepted","unbanrequest","request"),new Duration(90,TimeUnit.DAYS),60,Arrays.asList(5),null,2D));
-        new Document().append("reasons",this.unbanReasons).saveData(new File(this.platform.getFolder(),"unban-reasons.json"));
+                ,false, Arrays.asList("fals","hacker"),100,true,Arrays.asList(),new Duration(-1,TimeUnit.DAYS),new Duration(-1,TimeUnit.DAYS),0D));
+        this.unbanReasons.add(new UnbanReason(1,10,"acceptedrequest","&4Accepted unban request","dkbans.unban.reason.acceptedrequest"
+                ,false, Arrays.asList("fals","hacker"),100,true,Arrays.asList(),new Duration(-1,TimeUnit.DAYS),new Duration(-1,TimeUnit.DAYS),0D));
+        this.unbanReasons.add(new UnbanReason(1,30,"falseban","&4False ban","dkbans.unban.reason.falsban"
+                ,false, Arrays.asList("fals","hacker"),100,true,Arrays.asList(),new Duration(-1,TimeUnit.DAYS),new Duration(-1,TimeUnit.DAYS),0D));
+
+
+        for(UnbanReason reason : this.unbanReasons){
+            config.set("reasons."+reason.getID()+".name",reason.getName());
+            config.set("reasons."+reason.getID()+".display",reason.getRawDisplay());
+            config.set("reasons."+reason.getID()+".permission",reason.getPermission());
+            config.set("reasons."+reason.getID()+".aliases",reason.getAliases());
+            config.set("reasons."+reason.getID()+".hidden",reason.isHidden());
+            config.set("reasons."+reason.getID()+".points.remove.points",reason.getPoints());
+            config.set("reasons."+reason.getID()+".points.remove.all",reason.isRemoveAllPoints());
+            config.set("reasons."+reason.getID()+".points.maximal",reason.getMaxPoints());
+            config.set("reasons."+reason.getID()+".duration.divider",reason.getDurationDivider());
+            config.set("reasons."+reason.getID()+".duration.remove.time",reason.getRemoveDuration().getTime());
+            config.set("reasons."+reason.getID()+".duration.remove.unit",reason.getRemoveDuration().getUnit());
+            config.set("reasons."+reason.getID()+".duration.maximal.time",reason.getMaxDuration().getTime());
+            config.set("reasons."+reason.getID()+".duration.maximal.unit",reason.getMaxDuration().getUnit());
+        }
+        try{
+            YamlConfiguration.getProvider(YamlConfiguration.class).save(config,file);
+        }catch (Exception e){}
+         */
     }
     public void loadReportReasons(){
-        File file = new File(this.platform.getFolder(),"report-reasons.json");
+        File file = new File(this.platform.getFolder(),"report-reasons.yml");
+        Configuration config = null;
         if(file.exists()){
             try{
-                this.reportReasons = Document.loadData(file).getObject("reasons",new TypeToken<List<ReportReason>>(){}.getType());
+                config = YamlConfiguration.getProvider(YamlConfiguration.class).load(file);
+                Configuration reasons = config.getSection("reasons");
+                this.reportReasons = new ArrayList<>();
+                if(reasons != null) {
+                    for (String key : reasons.getKeys()) {
+                        try{
+                            this.reportReasons.add(new ReportReason(Integer.valueOf(key),0
+                                    ,config.getString("reasons."+key+".name")
+                                    ,config.getString("reasons."+key+".display")
+                                    ,config.getString("reasons."+key+".permission")
+                                    ,config.getBoolean("reasons."+key+".hidden")
+                                    ,config.getStringList("reasons."+key+".aliases")
+                                    ,config.getInt("reasons."+key+".forbanreason")));
+                        }catch (Exception exception){
+                            exception.printStackTrace();
+                            System.out.println(Messages.SYSTEM_PREFIX+"Could not load report-reason "+key);
+                            System.out.println(Messages.SYSTEM_PREFIX+"Error: "+exception.getMessage());
+                        }
+                    }
+                }
                 if(this.reportReasons.size() > 0) return;
             }catch (Exception exception){
                 if(file.exists()){
-                    file.renameTo(new File(this.platform.getFolder(),"report-reasons-old-"+GeneralUtil.getRandomString(15)));
+                    file.renameTo(new File(this.platform.getFolder(),"report-reasons-old-"+GeneralUtil.getRandomString(15)+".yml"));
                     System.out.println(Messages.SYSTEM_PREFIX+"Could not load report-reasons, generating new (Saved als old)");
+                    System.out.println(Messages.SYSTEM_PREFIX+"Error: "+exception.getMessage());
                 }
             }
-        }//int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, int forban
+        }
+        config = new Configuration();
         this.reportReasons.add(new ReportReason(1,0,"hacking","&4Hacking","dkbans.report.reason.hacking"
                 ,false,Arrays.asList("hacks","hacker"),1));
         this.reportReasons.add(new ReportReason(2,0,"provocation","&4Provocation","dkbans.report.reason.provocation"
@@ -192,21 +303,52 @@ public class ReasonProvider {
         this.reportReasons.add(new ReportReason(4,0,"spam/provocation","&4Spam/Promotion","dkbans.report.reason.promotion"
                 ,false,Arrays.asList("spam","spamming"),4));
 
-        new Document().append("reasons",this.reportReasons).saveData(new File(this.platform.getFolder(),"report-reasons.json"));
+        for(ReportReason reason : this.reportReasons){
+            config.set("reasons."+reason.getID()+".name",reason.getName());
+            config.set("reasons."+reason.getID()+".display",reason.getRawDisplay());
+            config.set("reasons."+reason.getID()+".permission",reason.getPermission());
+            config.set("reasons."+reason.getID()+".aliases",reason.getAliases());
+            config.set("reasons."+reason.getID()+".hidden",reason.isHidden());
+            config.set("reasons."+reason.getID()+".forbanreason",reason.getForBan());
+        }
+        try{
+            YamlConfiguration.getProvider(YamlConfiguration.class).save(config,file);
+        }catch (Exception e){}
     }
     public void loadKickReasons(){
-        File file = new File(this.platform.getFolder(),"kick-reasons.json");
+        File file = new File(this.platform.getFolder(),"kick-reasons.yml");
+        Configuration config = null;
         if(file.exists()){
             try{
-                this.kickReasons = Document.loadData(file).getObject("reasons",new TypeToken<List<ReportReason>>(){}.getType());
+                config = YamlConfiguration.getProvider(YamlConfiguration.class).load(file);
+                Configuration reasons = config.getSection("reasons");
+                this.kickReasons= new ArrayList<>();
+                if(reasons != null) {
+                    for (String key : reasons.getKeys()) {
+                        try{
+                            this.kickReasons.add(new KickReason(Integer.valueOf(key)
+                                    ,config.getInt("reasons."+key+".points")
+                                    ,config.getString("reasons."+key+".name")
+                                    ,config.getString("reasons."+key+".display")
+                                    ,config.getString("reasons."+key+".permission")
+                                    ,config.getBoolean("reasons."+key+".hidden")
+                                    ,config.getStringList("reasons."+key+".aliases")));
+                        }catch (Exception exception){
+                            exception.printStackTrace();
+                            System.out.println(Messages.SYSTEM_PREFIX+"Could not load kick-reason "+key);
+                            System.out.println(Messages.SYSTEM_PREFIX+"Error: "+exception.getMessage());
+                        }
+                    }
+                }
                 if(this.kickReasons.size() > 0) return;
             }catch (Exception exception){
                 if(file.exists()){
-                    file.renameTo(new File(this.platform.getFolder(),"kick-reasons-old-"+GeneralUtil.getRandomString(15)));
+                    file.renameTo(new File(this.platform.getFolder(),"kick-reasons-old-"+GeneralUtil.getRandomString(15)+".yml"));
                     System.out.println(Messages.SYSTEM_PREFIX+"Could not load kick-reasons, generating new (Saved als old)");
                 }
             }
         }//int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, int forban
+        config = new Configuration();
         this.kickReasons.add(new KickReason(1,2,"provocation","&4Provocation","dkbans.kick.reason.provocation"
                 ,false,Arrays.asList("provocation","provo")));
         this.kickReasons.add(new KickReason(2,2,"insult","&4Insult","dkbans.kick.reason.insult"
@@ -216,6 +358,16 @@ public class ReasonProvider {
         this.kickReasons.add(new KickReason(4,0,"annoy","&4Annoy","dkbans.kick.reason.annoy"
                 ,false, Arrays.asList("annoy")));
 
-        new Document().append("reasons",this.kickReasons).saveData(new File(this.platform.getFolder(),"kick-reasons.json"));
+        for(KickReason reason : this.kickReasons){
+            config.set("reasons."+reason.getID()+".name",reason.getName());
+            config.set("reasons."+reason.getID()+".display",reason.getRawDisplay());
+            config.set("reasons."+reason.getID()+".permission",reason.getPermission());
+            config.set("reasons."+reason.getID()+".aliases",reason.getAliases());
+            config.set("reasons."+reason.getID()+".hidden",reason.isHidden());
+            config.set("reasons."+reason.getID()+".points",reason.getPoints());
+        }
+        try{
+            YamlConfiguration.getProvider(YamlConfiguration.class).save(config,file);
+        }catch (Exception e){}
     }
 }

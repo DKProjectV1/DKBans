@@ -15,20 +15,20 @@ public class BanReason extends KickReason {
 
     private double divider;
     private BanType historyType;
-    private Map<Integer,BanReasonValue> durations;
+    private Map<Integer, BanReasonEntry> durations;
 
-    public BanReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, double divider, BanType historyType, Map<Integer,BanReasonValue> durations) {
+    public BanReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, double divider, BanType historyType, Map<Integer, BanReasonEntry> durations) {
         super(id, points, name, display, permission, hidden, aliases);
         this.divider = divider;
         this.historyType = historyType;
         this.durations = durations;
     }
-    public BanReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases,  double divider, BanType historyType,BanReasonValue... durations) {
+    public BanReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, double divider, BanType historyType, BanReasonEntry... durations) {
         super(id, points, name, display, permission, hidden, aliases);
         this.divider = divider;
         this.historyType = historyType;
         this.durations = new LinkedHashMap<>();
-        for(BanReasonValue duration : durations) this.durations.put(this.durations.size()+1,duration);
+        for(BanReasonEntry duration : durations) this.durations.put(this.durations.size()+1,duration);
     }
     public double getDivider() {
         return divider;
@@ -39,22 +39,22 @@ public class BanReason extends KickReason {
     public BanType getBanType(){
         return getDefaultDuration().getType();
     }
-    public Map<Integer, BanReasonValue> getDurations() {
+    public Map<Integer, BanReasonEntry> getDurations() {
         return durations;
     }
-    public BanReasonValue getDefaultDuration(){
+    public BanReasonEntry getDefaultDuration(){
         return getNextDuration(0);
     }
-    public BanReasonValue getNextDuration(NetworkPlayer player){
+    public BanReasonEntry getNextDuration(NetworkPlayer player){
         return getNextDuration(player.getHistory().getBanCount(getHistoryType()));
     }
-    public BanReasonValue getNextDuration(int bans){
+    public BanReasonEntry getNextDuration(int bans){
         bans++;
         if(durations.containsKey(bans)) return durations.get(bans);
         else{
             int last = -1;
-            BanReasonValue highest = null;
-            for(Map.Entry<Integer,BanReasonValue> entry : this.durations.entrySet()){
+            BanReasonEntry highest = null;
+            for(Map.Entry<Integer, BanReasonEntry> entry : this.durations.entrySet()){
                 if(entry.getKey() == bans) return entry.getValue();
                 if(entry.getKey() > last && last < bans){
                     highest = entry.getValue();
@@ -69,7 +69,7 @@ public class BanReason extends KickReason {
         long timeOut = 0;
         BanType type = null;
         if(BanSystem.getInstance().getConfig().banMode == BanMode.TEMPLATE){
-            BanReasonValue value = getNextDuration(player);
+            BanReasonEntry value = getNextDuration(player);
             timeOut = value.getDuration().getTime() > 0?System.currentTimeMillis()+value.getDuration().getMillisTime():-1;
             type = value.getType();
         }else{

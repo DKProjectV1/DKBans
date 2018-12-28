@@ -7,6 +7,7 @@ import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
+import ch.dkrieger.bansystem.lib.player.history.entry.HistoryEntry;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -26,12 +27,15 @@ public class BaninfoCommand extends NetworkCommand {
             return;
         }
         if(GeneralUtil.isNumber(args[0])){
-            Ban ban = BanSystem.getInstance().getBanManager().getBan(Integer.valueOf(args[0]));
-            if(ban == null){
-                sender.sendMessage(Messages.BAN_NOTFOUND.replace("[prefix]",getPrefix()));
-                return;
+            HistoryEntry entry = BanSystem.getInstance().getHistoryManager().getHistoryEntry(Integer.valueOf(args[0]));
+            if(entry instanceof Ban){
+                NetworkPlayer player = entry.getPlayer();
+                if(player != null && player.getBan(((Ban) entry).getBanType()).equals(entry)){
+                    sender.sendMessage(entry.getInfoMessage());
+                    return;
+                }
             }
-            sender.sendMessage(ban.getInfoMessage());
+            sender.sendMessage(Messages.BAN_NOTFOUND.replace("[prefix]",getPrefix()));
         }else{
             NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
             if(player == null){

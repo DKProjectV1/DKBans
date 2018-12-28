@@ -20,26 +20,34 @@ public class CloudNetV3OnlinePlayer implements OnlineNetworkPlayer {
     static{
         PINGGETTER = new HashMap<>();
     }
-    private de.dytanic.cloudnet.ext.bridge.player.NetworkPlayer player;
+    private UUID uuid;
+    private String name, server, proxy;
+
+    public CloudNetV3OnlinePlayer(UUID uuid, String name, String server, String proxy) {
+        this.uuid = uuid;
+        this.name = name;
+        this.server = server;
+        this.proxy = proxy;
+    }
 
     @Override
     public UUID getUUID() {
-        return player.getUniqueId();
+        return uuid;
     }
 
     @Override
     public String getName() {
-        return player.getName();
+        return name;
     }
 
     @Override
     public String getProxy() {
-        return player.getProxy().getServerName();
+        return proxy;
     }
 
     @Override
     public String getServer() {
-        return player.getServer().getServerName();
+        return server;
     }
 
     @Override
@@ -48,8 +56,13 @@ public class CloudNetV3OnlinePlayer implements OnlineNetworkPlayer {
         Wrapper.getInstance().sendChannelMessage("DKBans","getPing"
                 ,new Document().append("uuid",getUUID()));
         int timeOut = 0;
-        while(!PINGGETTER.containsKey(getUUID()) && timeOut < 600) timeOut++;
+
+        while(!PINGGETTER.containsKey(getUUID()) && timeOut < 1000){
+            timeOut++;
+            System.out.println("waiting");
+        }
         if(PINGGETTER.containsKey(getUUID())) return PINGGETTER.get(getUUID());
+        System.out.println("return ping");
         return -1;
     }
 
@@ -66,30 +79,34 @@ public class CloudNetV3OnlinePlayer implements OnlineNetworkPlayer {
     @Override
     public void sendMessage(TextComponent component) {
         Wrapper.getInstance().sendChannelMessage("DKBans","sendMessage",new Document()
-                .append("message",component));
+                .append("uuid",getUUID()).append("message",component));
     }
 
     @Override
     public void connect(String server) {
         Wrapper.getInstance().sendChannelMessage("DKBans","connect",new Document()
-                .append("server",server));
+                .append("uuid",getUUID()).append("server",server));
     }
 
     @Override
     public void executeCommand(String command) {
         Wrapper.getInstance().sendChannelMessage("DKBans","executeCommand",new Document()
-                .append("command",command));
+                .append("uuid",getUUID()).append("command",command));
     }
 
     @Override
     public void sendBan(Ban ban) {
         Wrapper.getInstance().sendChannelMessage("DKBans","sendBan",new Document()
-                .append("ban",ban));
+                .append("uuid",getUUID()).append("ban",ban));
     }
 
     @Override
     public void kick(Kick kick) {
         Wrapper.getInstance().sendChannelMessage("DKBans","sendKick",new Document()
-                .append("kick",kick));
+                .append("uuid",getUUID()).append("kick",kick));
+    }
+
+    public void setServer(String server) {
+        this.server = server;
     }
 }

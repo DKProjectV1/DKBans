@@ -14,5 +14,7 @@ public enum NetworkPlayerUpdateCause {
     REPORTSEND(),
     REPORTDENY(),
     REPORTDELETE(),
-    REPORTPROCESS();
+    REPORTPROCESS(),
+    PLAYERSTATS(),
+    PROPERTIES();
 }

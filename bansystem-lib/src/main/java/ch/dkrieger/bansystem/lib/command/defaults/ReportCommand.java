@@ -40,7 +40,7 @@ public class ReportCommand extends NetworkCommand {
                 return;
             }
             else if(args[0].equalsIgnoreCase("toggle")){
-                changeLogin(sender,networkSender,!networkSender.isReportLogin());
+                changeLogin(sender,networkSender,!networkSender.isReportLoggedIn());
                 return;
             }else if(args[0].equalsIgnoreCase("list")){
                 sender.executeCommand("/reports");
@@ -228,7 +228,7 @@ public class ReportCommand extends NetworkCommand {
         sender.sendMessage(Messages.REPORT_HELP_HELP.replace("[prefix]",getPrefix()));
     }
     private void changeLogin(NetworkCommandSender sender, NetworkPlayer player, boolean login){
-        if(player.isReportLogin() == login){
+        if(player.isReportLoggedIn() == login){
             sender.sendMessage(Messages.STAFF_STATUS_ALREADY
                     .replace("[status]",(login?Messages.STAFF_STATUS_LOGIN:Messages.STAFF_STATUS_LOGOUT))
                     .replace("[prefix]",getPrefix()));

@@ -21,8 +21,8 @@ public class Reflection {
 
     // Deduce the net.minecraft.server.v* package
     private static String OBC_PREFIX = Bukkit.getServer().getClass().getPackage().getName();
-    private static String NMS_PREFIX = OBC_PREFIX.replace("org.bungeecord.craftbukkit", "net.minecraft.server");
-    private static String VERSION = OBC_PREFIX.replace("org.bungeecord.craftbukkit", "").replace(".", "");
+    private static String NMS_PREFIX = OBC_PREFIX.replace("org.bukkit.craftbukkit", "net.minecraft.server");
+    private static String VERSION = OBC_PREFIX.replace("org.bukkit.craftbukkit", "").replace(".", "");
     // Variable replacement
     private static Pattern MATCH_VARIABLE = Pattern.compile("\\{([^\\}]+)\\}");
     public static Field MODIFIERES = getField( Field.class, "modifiers" );
@@ -88,7 +88,7 @@ public class Reflection {
      * </tr>
      * <tr>
      * <td>{obc}</td>
-     * <td>Actual pacakge name of org.bungeecord.craftbukkit.VERSION</td>
+     * <td>Actual pacakge name of org.bukkit.craftbukkit.VERSION</td>
      * </tr>
      * <tr>
      * <td>{version}</td>
@@ -159,10 +159,10 @@ public class Reflection {
     public static Class<?> reflectCraftClazz(String suffix){
         try{
             String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-            return Class.forName("org.bungeecord.craftbukkit." + version + suffix);
+            return Class.forName("org.bukkit.craftbukkit." + version + suffix);
         }catch (Exception ex){
             try{
-                return Class.forName("org.bungeecord.craftbukkit." + suffix);
+                return Class.forName("org.bukkit.craftbukkit." + suffix);
             }catch (ClassNotFoundException localClassNotFoundException){}
         }
         return null;

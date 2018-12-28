@@ -4,7 +4,7 @@ import ch.dkrieger.bansystem.lib.DKBansPlatform;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
-import ch.dkrieger.bansystem.lib.reason.BanReasonValue;
+import ch.dkrieger.bansystem.lib.reason.BanReasonEntry;
 import ch.dkrieger.bansystem.lib.reason.ReasonProvider;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import com.google.gson.reflect.TypeToken;
@@ -56,18 +56,18 @@ public class ReasonLoader {
         List<BanReason> reasons = new LinkedList<>();
         reasons.add(new BanReason(1,30,"hacking","&4Hacking","dkbans.ban.reason.hacking"
                 ,false, Arrays.asList("cheating"),0,BanType.NETWORK
-                ,new BanReasonValue(BanType.NETWORK,30, TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.NETWORK,60, TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.NETWORK,-1, TimeUnit.DAYS)));
+                ,new BanReasonEntry(BanType.NETWORK,30, TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.NETWORK,60, TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.NETWORK,-1, TimeUnit.DAYS)));
 
         reasons.add(new BanReason(1,30,"Provocation","&4Provocation","dkbans.ban.reason.provocation"
                 ,false, Arrays.asList("provo","pr"),0,BanType.CHAT
-                ,new BanReasonValue(BanType.CHAT,12, TimeUnit.HOURS)
-                ,new BanReasonValue(BanType.CHAT,3, TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.CHAT,30, TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.CHAT,60, TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.CHAT,90, TimeUnit.DAYS)
-                ,new BanReasonValue(BanType.NETWORK,60, TimeUnit.DAYS)));
+                ,new BanReasonEntry(BanType.CHAT,12, TimeUnit.HOURS)
+                ,new BanReasonEntry(BanType.CHAT,3, TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.CHAT,30, TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.CHAT,60, TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.CHAT,90, TimeUnit.DAYS)
+                ,new BanReasonEntry(BanType.NETWORK,60, TimeUnit.DAYS)));
         new Document().append("reasons",reasons).saveData(file);
         return reasons;
     }

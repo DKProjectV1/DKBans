@@ -10,6 +10,7 @@ import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -41,7 +42,7 @@ public class BungeeCordNetwork implements DKNetwork {
     }
     @Override
     public void broadcast(String message) {
-        broadcast(new TextComponent(message));
+        broadcast(new TextComponent(ChatColor.translateAlternateColorCodes('&',message)));
     }
     @Override
     public void broadcast(TextComponent component) {
@@ -55,14 +56,7 @@ public class BungeeCordNetwork implements DKNetwork {
 
     @Override
     public void broadcastLocal(Broadcast broadcast) {
-        if(broadcast == null) return;
-        for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
-            if(broadcast.getPermission() == null || broadcast.getPermission().length() == 0|| player.hasPermission(broadcast.getPermission())){
-                NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
-                player.sendMessage(GeneralUtil.replaceTextComponent(Messages.BROADCAST_FORMAT_SEND.replace("[prefix]",Messages.PREFIX_NETWORK)
-                        ,"[message]",broadcast.build(networkPlayer)));
-            }
-        }
+        BungeeCordBanSystemBootstrap.getInstance().broadcastLocal(broadcast);
     }
 
     @Override

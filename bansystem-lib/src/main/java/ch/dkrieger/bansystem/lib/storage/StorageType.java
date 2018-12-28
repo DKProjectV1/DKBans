@@ -2,6 +2,7 @@ package ch.dkrieger.bansystem.lib.storage;
 
 public enum StorageType {
 
+    JSON(),
     MYSQL(),
     SQLITE(),
     POSTGRESQL(),

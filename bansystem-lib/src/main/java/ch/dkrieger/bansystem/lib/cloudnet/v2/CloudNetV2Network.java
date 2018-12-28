@@ -8,6 +8,7 @@ import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import de.dytanic.cloudnet.api.CloudAPI;
 import de.dytanic.cloudnet.lib.server.info.ServerInfo;
 import de.dytanic.cloudnet.lib.utility.document.Document;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.*;
@@ -19,7 +20,7 @@ public abstract class CloudNetV2Network implements DKNetwork {
     public CloudNetV2Network() {
         this.joinmes = new HashMap<>();
     }
-    public void inserJoinMe(JoinMe joinme){
+    public void insertJoinMe(JoinMe joinme){
         this.joinmes.put(joinme.getUUID(),joinme);
     }
 
@@ -47,7 +48,7 @@ public abstract class CloudNetV2Network implements DKNetwork {
 
     @Override
     public void broadcast(String message) {
-        broadcast(new TextComponent(message));
+        broadcast(new TextComponent(ChatColor.translateAlternateColorCodes('&',message)));
     }
 
     @Override

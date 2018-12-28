@@ -8,14 +8,17 @@ import ch.dkrieger.bansystem.lib.config.Config;
 import ch.dkrieger.bansystem.lib.config.MessageConfig;
 import ch.dkrieger.bansystem.lib.filter.FilterManager;
 import ch.dkrieger.bansystem.lib.player.PlayerManager;
+import ch.dkrieger.bansystem.lib.player.history.HistoryManager;
 import ch.dkrieger.bansystem.lib.player.history.entry.HistoryEntry;
 import ch.dkrieger.bansystem.lib.reason.ReasonProvider;
 import ch.dkrieger.bansystem.lib.report.ReportManager;
 import ch.dkrieger.bansystem.lib.stats.NetworkStats;
 import ch.dkrieger.bansystem.lib.storage.DKBansStorage;
 import ch.dkrieger.bansystem.lib.storage.StorageType;
+import ch.dkrieger.bansystem.lib.storage.json.JsonDKBansStorage;
 import ch.dkrieger.bansystem.lib.storage.mongodb.MongoDBDKBansStorage;
 import ch.dkrieger.bansystem.lib.storage.sql.SQLDKBansStorage;
+import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.Properties;
@@ -31,7 +34,7 @@ public class BanSystem {
     private ReportManager reportManager;
     private BroadcastManager broadcastManager;
     private FilterManager filterManager;
-    private BanManager banManager;
+    private HistoryManager historyManager;
     private ReasonProvider reasonProvider;
     private DKBansStorage storage;
     private DKNetwork network;
@@ -39,7 +42,7 @@ public class BanSystem {
     private Config config;
     private MessageConfig messageConfig;
 
-    private NetworkStats cachedNetworkStats;
+    private NetworkStats cachedNetworkStats, tempSyncStats;
 
     public BanSystem(DKBansPlatform platform, DKNetwork network, PlayerManager playerManager) {
         if(instance != null) throw new IllegalArgumentException("DKBans is already initialised");
@@ -88,25 +91,34 @@ public class BanSystem {
         this.messageConfig.loadConfig();
 
         this.reasonProvider = new ReasonProvider(this.platform);
+        this.historyManager = new HistoryManager();
 
         if(this.config.storageType == StorageType.MONGODB) this.storage = new MongoDBDKBansStorage(this.config);
         else if(this.config.storageType == StorageType.SQLITE || this.config.storageType == StorageType.MYSQL)this.storage = new SQLDKBansStorage(config);
+        else if(this.config.storageType == StorageType.JSON) this.storage = new JsonDKBansStorage(this.config);
 
         if(storage != null && storage.connect()){
             System.out.println(Messages.SYSTEM_PREFIX + "Used Storage: " + this.config.storageType.toString());
         }else{
-            System.out.println(Messages.SYSTEM_PREFIX + "Used Backup Storage: " + StorageType.SQLITE.toString());
             this.config.storageType = StorageType.SQLITE;
             this.storage = new SQLDKBansStorage(config);
             if(!this.storage.connect()){
-                System.out.println(Messages.SYSTEM_PREFIX +"Could not enable DKBans, no storage is working.");
-                return;
+                this.storage = new JsonDKBansStorage(config);
+                this.config.storageType = StorageType.JSON;
+                if(!this.storage.connect()){
+                    System.out.println(Messages.SYSTEM_PREFIX +"Could not enable DKBans, no storage is working.");
+                    return;
+                }
+                System.out.println(Messages.SYSTEM_PREFIX + "Used Backup Storage: " + config.storageType.toString());
             }
         }
 
         this.broadcastManager = new BroadcastManager();
         this.filterManager = new FilterManager();
         this.reportManager = new ReportManager();
+
+        this.tempSyncStats = new NetworkStats();
+        getPlatform().getTaskManager().scheduleTask(this::saveStats,(long)GeneralUtil.getRandom(60, 240),TimeUnit.SECONDS);
 
         if(this.config.bungeecord && !(platform.getPlatformName().equalsIgnoreCase("bungeecord"))) return;
 
@@ -147,7 +159,17 @@ public class BanSystem {
         }
     }
     public void shutdown(){
+        saveStats();
         if(this.storage != null) this.storage.disconnect();
+    }
+    private void saveStats(){
+        NetworkStats stats = getStorage().getNetworkStats();
+        this.cachedNetworkStats = stats;
+        getStorage().updateNetworkStats((stats.getLogins()+tempSyncStats.getLogins()),(stats.getReports()+tempSyncStats.getReports())
+                ,(stats.getReportsAccepted()+tempSyncStats.getReportsAccepted()),(stats.getMutes()+tempSyncStats.getMessages())
+                ,(stats.getBans()+tempSyncStats.getBans()),(stats.getMutes()+tempSyncStats.getMutes())
+                ,(stats.getUnbans()+tempSyncStats.getUnbans()),(stats.getKicks()+tempSyncStats.getKicks()));
+        this.tempSyncStats = new NetworkStats();
     }
 
     public DKBansPlatform getPlatform() {
@@ -186,8 +208,8 @@ public class BanSystem {
         return reasonProvider;
     }
 
-    public BanManager getBanManager() {
-        return banManager;
+    public HistoryManager getHistoryManager() {
+        return historyManager;
     }
 
     public DKBansStorage getStorage() {
@@ -203,9 +225,11 @@ public class BanSystem {
     }
 
     public NetworkStats getNetworkStats(){
-        if(cachedNetworkStats == null || cachedNetworkStats.getLoadTime()+TimeUnit.MINUTES.toMillis(2) < System.currentTimeMillis())
-            this.cachedNetworkStats = getStorage().getNetworkStats();
+        if(this.cachedNetworkStats == null) this.cachedNetworkStats = getStorage().getNetworkStats();
         return this.cachedNetworkStats;
+    }
+    public NetworkStats getTempSyncStats() {
+        return tempSyncStats;
     }
 
     public void setPlayerManager(PlayerManager playerManager) {

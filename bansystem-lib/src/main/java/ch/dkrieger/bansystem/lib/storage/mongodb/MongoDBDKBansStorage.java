@@ -16,13 +16,11 @@ import ch.dkrieger.bansystem.lib.player.chatlog.ChatLogEntry;
 import ch.dkrieger.bansystem.lib.player.history.History;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.HistoryEntry;
-import ch.dkrieger.bansystem.lib.reason.UnbanReason;
 import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.stats.NetworkStats;
 import ch.dkrieger.bansystem.lib.stats.PlayerStats;
 import ch.dkrieger.bansystem.lib.storage.DKBansStorage;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-import ch.dkrieger.bansystem.lib.utils.RuntimeTypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
@@ -114,6 +112,11 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     }
 
     @Override
+    public void updatePlayerProperties(UUID uuid, ch.dkrieger.bansystem.lib.utils.Document properties) {
+
+    }
+
+    @Override
     public List<NetworkPlayer> getPlayersByIp(String ip) {
         return null;//"$in
     }
@@ -124,17 +127,20 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     }
 
     @Override
-    public int getCountryCount() {
-        return 0;
-    }
-    @Override
-    public Ban getBan(int id) {
+    public HistoryEntry getHistoryEntry(int id) {
         return null;
     }
+
     @Override
     public int createPlayer(NetworkPlayer player) {
         player.setID(getRegisteredPlayerCount()+1);
         MongoDBUtil.insertOne(this.playerCollection,player);
+
+        Document document = MongoDBUtil.toDocument(player);
+        document.remove("history");
+        document.remove("reports");
+
+        playerCollection.insertOne(document);
         return player.getID();
     }
     @Override
@@ -157,6 +163,11 @@ public class MongoDBDKBansStorage implements DKBansStorage {
         Map<Integer,HistoryEntry> mapEntries = new HashMap<>();
         GeneralUtil.iterateForEach(entries, object -> mapEntries.put(object.getID(),object));
         return new History(mapEntries);
+    }
+
+    @Override
+    public void setColor(UUID player, String color) {
+
     }
 
     @Override
@@ -205,17 +216,7 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     }
 
     @Override
-    public List<Ban> getBans(int reasonID) {
-        return null;
-    }
-
-    @Override
-    public List<Ban> getBans(String reason) {
-        return null;
-    }
-
-    @Override
-    public List<Ban> getBansFromStaff(String staff) {
+    public List<Ban> getNotTimeOutedBans() {
         return null;
     }
 
@@ -292,6 +293,11 @@ public class MongoDBDKBansStorage implements DKBansStorage {
 
     @Override
     public void deleteOldChatLog(long before) {
+
+    }
+
+    @Override
+    public void updateNetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks) {
 
     }
 }

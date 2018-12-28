@@ -92,6 +92,8 @@ public class PlayerInfoCommand extends NetworkCommand {
                 .replace("[reportsAccepted]",""+player.getStats().getReportsAccepted())
                 .replace("[reportsDenies]",""+player.getStats().getReportsDenied())
                 .replace("[reportsReceived]",""+player.getStats().getReportsReceived())
+                .replace("[isBanned]",""+player.isBanned(BanType.NETWORK))
+                .replace("[isMuted]",""+player.isBanned(BanType.CHAT))
                 .replace("[bans]",""+player.getHistory().getBanCount(BanType.NETWORK))
                 .replace("[mutes]",""+player.getHistory().getBanCount(BanType.CHAT))
                 .replace("[logins]",""+player.getStats().getLogins())

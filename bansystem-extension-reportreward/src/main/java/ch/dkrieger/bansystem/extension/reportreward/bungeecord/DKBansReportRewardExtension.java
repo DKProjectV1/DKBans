@@ -21,11 +21,12 @@ public class DKBansReportRewardExtension extends Plugin implements Listener {
     @Override
     public void onEnable() {
         this.config = new ReportRewardConfig();
+        BungeeCord.getInstance().getPluginManager().registerListener(this,this);
     }
     @EventHandler
     public void onAcceptedReport(ProxiedNetworkPlayerReportsAcceptEvent event){
         for(Report report : event.getReport()){
-            ProxiedPlayer player = BungeeCord.getInstance().getPlayer(report.getUUID());
+            ProxiedPlayer player = BungeeCord.getInstance().getPlayer(report.getReporteUUID());
             if(player != null){
                 player.sendMessage(new TextComponent(config.reportRewardMessage.replace("[prefix]", Messages.PREFIX_BAN)
                         .replace("[coin-prefix]",MessageManager.getInstance().prefix)

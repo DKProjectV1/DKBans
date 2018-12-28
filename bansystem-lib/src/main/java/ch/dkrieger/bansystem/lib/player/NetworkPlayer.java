@@ -29,11 +29,11 @@ public class NetworkPlayer {
     private String name, color, lastIP, lastCountry;
     private long lastLogin, firstLogin, onlineTime;
     private boolean bypass, teamChatLogin, reportLogin;
-    private transient History history;
+    private History history;
     private Document properties;
     private PlayerStats stats;
     private List<OnlineSession> onlineSessions;
-    private transient List<Report> reports;
+    private List<Report> reports;
 
     public NetworkPlayer(UUID uuid, String name, String ip, String country) {
         this.id = -1;
@@ -74,60 +74,128 @@ public class NetworkPlayer {
         this.reports = reports;
     }
 
+    /**
+     * Every player has a unique ide which is given by DKBans.
+     *
+     * @return The id of the player
+     */
     public int getID() {
         return id;
     }
+
+    /**
+     * @return The minecraft player name
+     */
     public String getName() {
         return name;
     }
+
+    /**
+     * Every player has a color which is set in the config or in the player set event. (Only for Design)
+     * The color is usually set by the rank (permission).
+     *
+     * @return The player color
+     */
     public String getColor() {
         String color = BanSystem.getInstance().getPlatform().getColor(this);
         if(color == null) color = this.color;
         return ChatColor.translateAlternateColorCodes('&',color);
     }
+
+    /**
+     *
+     * @return The minecraft name an the color before the name
+     */
     public String getColoredName(){
         return getColor()+this.name;
     }
+
+    /**
+     * Get the player's last country.
+     *
+     * @return The last country from the player
+     */
     public String getCountry(){
         return this.lastCountry;
     }
+
+    /**
+     * If the ip saving is disabled in the config, no ip will be available.
+     *
+     * @return The last ip from the player
+     */
     public String getIP(){
         return this.lastIP;
     }
+
+    /**
+     *
+     * @return The minecraft uuid from the player
+     */
     public UUID getUUID(){
         return this.uuid;
     }
+
+    /**
+     *
+     * @return The last login time from the player in milliseconds
+     */
     public long getLastLogin() {
         return lastLogin;
     }
 
-    public boolean isTeamChatLoggedIn() {
-        return teamChatLogin;
-    }
-
-    public boolean isReportLoggedIn() {
-        return reportLogin;
-    }
-
-    public boolean isTeamChatLogin() {
-        return teamChatLogin;
-    }
-
-    public boolean isReportLogin() {
-        return reportLogin;
-    }
-
-    public PlayerStats getStats() {
-        return stats;
-    }
-
+    /**
+     *
+     * @return The last login time from the player in milliseconds
+     */
     public long getFirstLogin() {
         return firstLogin;
     }
 
-    public long getOnlineTime(){
-        return getOnlineTime(false);
+    /**
+     * This is for receiving teamChat messages or disabling team messages for each player (Used for staff members).
+     *
+     * @return If the player received team messages
+     */
+    public boolean isTeamChatLoggedIn() {
+        return teamChatLogin;
     }
+
+    /**
+     * This is for disabling/enabling receiving report messages for each player (Used for staff members).
+     *
+     * @return If the player receives reports
+     */
+    public boolean isReportLoggedIn() {
+        return reportLogin;
+    }
+
+    /**
+     * Get stats from the player to show his activity
+     *
+     * @return Statistics from the player
+     */
+    public PlayerStats getStats() {
+        return stats;
+    }
+
+    /**
+     * The online time will be calculated live
+     *
+     * @return The online time from the player in milliseconds
+     */
+    public long getOnlineTime(){
+        return getOnlineTime(true);
+    }
+
+    /**
+     * Get the online time from a player which live calculating option.
+     *
+     * @param live If this is true and the player is online, the system while calculate the new online time live.
+     *             If this is false you will get the online time from the last finished online time session.
+     *
+     * @return The online time from the player in milliseconds
+     */
     public long getOnlineTime(boolean live) {
         if(live){
             OnlineNetworkPlayer player = getOnlinePlayer();
@@ -139,105 +207,275 @@ public class NetworkPlayer {
         return onlineTime;
     }
 
+    /**
+     *
+     * @return The history (bans/Mutes usw.) from the player
+     */
     public History getHistory() {
         return history;
     }
 
+    /**
+     * Add custome properties to very player, don't forget to save with @saveProperties
+     *
+     * @return The player properties
+     */
     public Document getProperties() {
         return properties;
     }
 
+    /**
+     * Get the online sessions from the player, we recommend not saving to much sessions.
+     *
+     * @return All available online sessions as list
+     */
     public List<OnlineSession> getOnlineSessions() {
         return onlineSessions;
     }
 
+    /**
+     *
+     * @param teamChatLogin If the player received team messages
+     */
     public void setTeamChatLogin(boolean teamChatLogin) {
         this.teamChatLogin = teamChatLogin;
         saveStaffSettings();
     }
 
+    /**
+     *
+     * @param reportLogin If the player receives report messages
+     */
     public void setReportLogin(boolean reportLogin) {
         this.reportLogin = reportLogin;
         saveStaffSettings();
     }
+
+    /**
+     * Get all report which are created fo this player
+     *
+     * @return All report for this player.
+     */
     public List<Report> getReports(){
         return this.reports;
     }
+
+    /**
+     * The ips are from the online sessions
+     *
+     * @return all available ips as list
+     */
     public List<String> getIPs(){
         List<String> ips = new ArrayList<>();
         GeneralUtil.iterateAcceptedForEach(this.onlineSessions, object -> !ips.contains(object.getIp()), object ->ips.add(object.getIp()));
         return ips;
     }
+
+    /**
+     * An report is open, when no staff is processing this report (staff uuid is null).
+     *
+     * @return All open reports for this player as list (No staff is checking this)
+     */
     public List<Report> getOpenReports(){
         return GeneralUtil.iterateAcceptedReturn(this.reports, object -> object.getStaff() == null);
     }
+
+    /**
+     * An report is in processing state the a stuff member is checking this player (staff uuid is not null).
+     *
+     * @return All reports which are processing by a staff member
+     */
     public List<Report> getProcessingReports(){
         return GeneralUtil.iterateAcceptedReturn(this.reports, object -> object.getStaff() != null);
     }
+
+    /**
+     * Get one random processing report.
+     *
+     * @return A random processing report
+     */
     public Report getProcessingReport(){
         List<Report> reports = getProcessingReports();
-        System.out.println(reports.size());
         if(reports.size() >= 1) return reports.get(0);
         return null;
     }
+
+    /**
+     * Get one random open report
+     *
+     * @return A random open report.
+     */
     public Report getOpenReport(){
         List<Report> reports = getOpenReports();
         if(reports.size() >= 1) return reports.get(0);
         return null;
     }
+
+    /**
+     * Get the staff, which is processing the reports for this player.
+     *
+     * @return The uuid of from the staff member
+     */
     public UUID getReportStaff(){
         Report report = getProcessingReport();
         if(report != null) return report.getStaff();
         return null;
     }
+
+    /**
+     * Returns only one open report, when no other report is in processing state.
+     *
+     * @return An open report when no other report is in processing state
+     */
     public Report getOpenReportWhenNoProcessing(){
         List<Report> reports = getReports();
         if(reports.size() >= 1 && reports.size() == this.reports.size()) return reports.get(0);
         return null;
     }
+
+    /**
+     * Get the report for this player from a player.
+     *
+     * @param reporter The reporter
+     * @return The report, which is created by this reporter
+     */
     public Report getReport(NetworkPlayer reporter) {
         return getReport(reporter.getUUID());
     }
+
+    /**
+     * Get the report for this player from a player.
+     *
+     * @param reporter The UUID of the reporter
+     * @return The report, which is created by this reporter
+     */
     public Report getReport(UUID reporter){
         return GeneralUtil.iterateOne(this.reports, object -> object.getReporteUUID().equals(reporter));
     }
+
+    /**
+     * Check if a player has created an report for this player.
+     *
+     * @param reporter the reporter
+     * @return if rhe reporter created a report
+     */
     public boolean hasReport(NetworkPlayer reporter){
         return getReport(reporter) != null;
     }
+
+    /**
+     * Check if a player has created an report for this player.
+     *
+     * @param reporter the uuid from the reporter
+     * @return if rhe reproter created a report
+     */
     public boolean hasReport(UUID reporter){
         return getReport(reporter) != null;
     }
+
+    /**
+     * Get the active ban of this player.
+     *
+     * @param type The banType (Chat or Network)
+     * @return The current Ban
+     */
     public Ban getBan(BanType type){
         return history.getBan(type);
     }
 
+    /**
+     *
+     * @return The online player which the same uuid
+     */
     public OnlineNetworkPlayer getOnlinePlayer(){
         return BanSystem.getInstance().getPlayerManager().getOnlinePlayer(this.uuid);
     }
+
+    /**
+     * If this player has bypass, this is used for ban or report bypassing.
+     *
+     * @return if the player has bypass
+     */
     public boolean hasBypass() {
         return bypass;
     }
+
+    /**
+     *
+     * @return if this player is online or not
+     */
     public boolean isOnline(){
         return getOnlinePlayer() != null;
     }
 
+    /**
+     *
+     * @return if this player is banned or not (Every type)
+     */
     public boolean isBanned(){
         return history.isBanned();
     }
+
+    /**
+     *
+     * @param type The ban type (Chat or Network)
+     * @return if this player is banned
+     */
     public boolean isBanned(BanType type){
         return getBan(type) != null;
     }
 
+    /**
+     * Ban a player
+     *
+     * @param type The type of the ban (Chat or Network)
+     * @param duration How long the player is banned
+     * @param unit Which time unit should taken to calculate the duration
+     * @param reason The reason of the ban
+     * @return The created ban
+     */
     public Ban ban(BanType type, long duration, TimeUnit unit, String reason){
         return ban(type,duration,unit,reason,-1);
     }
+
+    /**
+     *
+     * @param type The type of the ban (Chat or Network)
+     * @param duration How long the player is banned
+     * @param unit Which time unit should taken to calculate the duration
+     * @param reason The reason of the ban
+     * @param reasonID The id of the reason, this is only to identify the ban
+     * @return The created ban
+     */
     public Ban ban(BanType type, long duration, TimeUnit unit,String reason, int reasonID){
         return ban(type,duration,unit,reason,reasonID,"Console");
     }
+
+    /**
+     * Ban a player
+     *
+     * @param type The type of the ban (Chat or Network)
+     * @param duration How long the player is banned
+     * @param unit Which time unit should taken to calculate the duration
+     * @param reason The reason of the ban
+     * @param reasonID The id of the reason, this is only to identify the ban
+     * @param staff The player which has banned this player (uuid)
+     * @return The created ban
+     */
     public Ban ban(BanType type, long duration, TimeUnit unit,String reason, int reasonID, UUID staff){
         return ban(type, duration,unit,reason,reasonID,staff==null?"Console":staff.toString());
     }
-
+    /**
+     * Ban a player
+     *
+     * @param type The type of the ban (Chat or Network)
+     * @param duration How long the player is banned
+     * @param unit Which time unit should taken to calculate the duration
+     * @param reason The reason of the ban
+     * @param reasonID The id of the reason, this is only to identify the ban
+     * @param staff The instance which has banned this player, for example Console or AntiCheat (string)
+     * @return The created ban
+     */
     public Ban ban(BanType type, long duration, TimeUnit unit,String reason, int reasonID, String staff){
         return ban(type, duration,unit,reason,"",reasonID,staff);
     }
@@ -275,6 +513,21 @@ public class NetworkPlayer {
         return ban(reason.toBan(this,message,staff));
     }
     public Ban ban(Ban ban){
+        final List<Report> reports = getReports();
+        if(ban.getBanType() == BanType.CHAT) BanSystem.getInstance().getTempSyncStats().addMutes();
+        else BanSystem.getInstance().getTempSyncStats().addBans();
+        BanSystem.getInstance().getHistoryManager().clearCache();
+        BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(()->{
+            NetworkPlayer staff = ban.getStaffAsPlayer();
+            if(staff != null){
+                if(ban.getBanType() == BanType.CHAT) staff.addStatsBaned();
+                else staff.addStatsMuted();
+            }
+            for(Report report : reports){
+                BanSystem.getInstance().getTempSyncStats().addReportsAccepted();
+                report.getReporter().addStatsReportAccepted();
+            }
+        });
         ban.setID(addToHistory(ban,NetworkPlayerUpdateCause.BAN,new Document().append("ban",ban).append("reports",this.reports)));
         this.reports.clear();
         OnlineNetworkPlayer player = getOnlinePlayer();
@@ -347,6 +600,11 @@ public class NetworkPlayer {
         return kick(reason.toKick(this,message,staff,server));
     }
     public Kick kick(Kick kick){
+        BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(()->{
+            NetworkPlayer staff = kick.getStaffAsPlayer();
+            if(staff != null) staff.addStatsKicked();
+        });
+        BanSystem.getInstance().getTempSyncStats().addKicks();
         kick.setID(addToHistory(kick,NetworkPlayerUpdateCause.KICK));
         OnlineNetworkPlayer player = getOnlinePlayer();
         if(player != null) player.kick(kick);
@@ -410,6 +668,11 @@ public class NetworkPlayer {
         return unban(reason.toUnban(type,this,message,staff));
     }
     public Unban unban(Unban unban) {
+        BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(()->{
+            NetworkPlayer staff = unban.getStaffAsPlayer();
+            if(staff != null) staff.addStatsUnbanned();
+        });
+        BanSystem.getInstance().getTempSyncStats().addUnbans();
         unban.setID(addToHistory(unban,NetworkPlayerUpdateCause.UNBAN));
         return unban;
     }
@@ -450,10 +713,14 @@ public class NetworkPlayer {
     }
     public Report report(Report report) {
         if(report.getUUID() != this.uuid) throw new IllegalArgumentException("This reports ist not from this player");
+        BanSystem.getInstance().getTempSyncStats().addReports();
         this.reports.add(report);
         BanSystem.getInstance().getStorage().createReport(report);
         stats.addReportsReceived();
-        updatePlayerStats();
+        BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(() ->{
+            BanSystem.getInstance().getStorage().updatePlayerStats(uuid,stats);
+            report.getReporter().addStatsReportSent();
+        });
         update(NetworkPlayerUpdateCause.REPORTSEND,new Document().append("report",report));
         return report;
     }
@@ -500,6 +767,11 @@ public class NetworkPlayer {
         BanSystem.getInstance().getStorage().saveStaffSettings(this.uuid,reportLogin,teamChatLogin);
         update(NetworkPlayerUpdateCause.STAFFSETTINGS);
     }
+    public void setColor(String color){
+        if(color == null) return;
+        this.color = color;
+        BanSystem.getInstance().getStorage().setColor(this.uuid,color);
+    }
     public void update(){
         update(NetworkPlayerUpdateCause.NOTSET);
     }
@@ -511,6 +783,30 @@ public class NetworkPlayer {
     }
     public void update(NetworkPlayerUpdateCause cause,Document properties){
         BanSystem.getInstance().getPlayerManager().updatePlayer(this,cause,properties);
+    }
+    public void addStatsReportSent(){
+        this.stats.addReports();
+        updatePlayerStatsAsync();
+    }
+    public void addStatsReportAccepted(){
+        this.stats.addReportsAccepted();
+        updatePlayerStatsAsync();
+    }
+    public void addStatsBaned(){
+        this.stats.addBans();
+        updatePlayerStatsAsync();
+    }
+    public void addStatsMuted(){
+        this.stats.addMutes();
+        updatePlayerStatsAsync();
+    }
+    public void addStatsKicked(){
+        this.stats.addKicks();
+        updatePlayerStatsAsync();
+    }
+    public void addStatsUnbanned(){
+        this.stats.addUnbans();
+        updatePlayerStatsAsync();
     }
     @SuppressWarnings("Only for databse id creation")
     public void setID(int id) {
@@ -569,5 +865,10 @@ public class NetworkPlayer {
     }
     public void updatePlayerStats(){
         BanSystem.getInstance().getStorage().updatePlayerStats(this.uuid,stats);
+        update(NetworkPlayerUpdateCause.PLAYERSTATS);
+    }
+    public void saveProperties(){
+        BanSystem.getInstance().getStorage().updatePlayerProperties(this.uuid,this.properties);
+        update(NetworkPlayerUpdateCause.PROPERTIES);
     }
 }

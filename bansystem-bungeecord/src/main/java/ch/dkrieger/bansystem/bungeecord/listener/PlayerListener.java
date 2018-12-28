@@ -1,6 +1,7 @@
 package ch.dkrieger.bansystem.bungeecord.listener;
 
 import ch.dkrieger.bansystem.bungeecord.BungeeCordBanSystemBootstrap;
+import ch.dkrieger.bansystem.bungeecord.CloudNetExtension;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.filter.FilterType;
@@ -9,11 +10,12 @@ import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
+
 import net.md_5.bungee.BungeeCord;
-import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -21,7 +23,6 @@ import net.md_5.bungee.event.EventHandler;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class PlayerListener implements Listener {
 
@@ -37,7 +38,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onLogin(LoginEvent event){
-        CloudNetV2Fix(event.getConnection().getUniqueId());
+        if(BungeeCordBanSystemBootstrap.getInstance().isCloudNetV2()) CloudNetExtension.loginFix(event.getConnection().getUniqueId());
         if(BungeeCord.getInstance().getConfig().isOnlineMode() && !(event.getConnection().isOnlineMode())) return;
         if(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.NICKNAME,event.getConnection().getName())){
             event.setCancelled(true);
@@ -70,6 +71,7 @@ public class PlayerListener implements Listener {
     }
     @EventHandler
     public void onPostLogin(PostLoginEvent event){
+        BanSystem.getInstance().getTempSyncStats().addLogins();
         this.currentMessageCount.put(event.getPlayer().getUniqueId(),0);
         BungeeCord.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
             if(BanSystem.getInstance().getConfig().onJoinChatClear) for(int i = 1; i < 120; i++) event.getPlayer().sendMessage(new TextComponent(""));
@@ -83,13 +85,15 @@ public class PlayerListener implements Listener {
             if(event.getPlayer().hasPermission("dkbans.report.receive")){
                 if(BanSystem.getInstance().getConfig().onJoinReportInfo){
                     event.getPlayer().sendMessage(new TextComponent(Messages.STAFF_STATUS_NOW
-                            .replace("[status]",(player.isReportLogin()?Messages.STAFF_STATUS_LOGIN:Messages.STAFF_STATUS_LOGOUT))
+                            .replace("[status]",(player.isReportLoggedIn()?Messages.STAFF_STATUS_LOGIN:Messages.STAFF_STATUS_LOGOUT))
                             .replace("[prefix]",Messages.PREFIX_REPORT)));
                 }
                 if(BanSystem.getInstance().getConfig().onJoinReportSize){
-                    event.getPlayer().sendMessage(new TextComponent(Messages.REPORT_INFO
+                    TextComponent component = new TextComponent(Messages.REPORT_INFO
                             .replace("[size]",""+BanSystem.getInstance().getReportManager().getOpenReports().size())
-                            .replace("[prefix]",Messages.PREFIX_REPORT)));
+                            .replace("[prefix]",Messages.PREFIX_REPORT));
+                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/reports"));
+                    event.getPlayer().sendMessage(component);
                 }
             }//event.getPlayer().getLocale().getLanguage()
             player.playerLogin(event.getPlayer().getName(),event.getPlayer().getAddress().getAddress().getHostAddress()
@@ -103,8 +107,8 @@ public class PlayerListener implements Listener {
             NetworkPlayer player = BanSystem.getInstance().getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
             if(player == null) return;
             String server = "Unknown";
-            ServerInfo serverInfo = event.getPlayer().getServer().getInfo();
-            if(serverInfo != null) server = serverInfo.getName();
+            Server serverInfo = event.getPlayer().getServer();
+            if(serverInfo != null) server = serverInfo.getInfo().getName();
             player.playerLogout(BungeeCordBanSystemBootstrap.getInstance().getColor(player),event.getPlayer().hasPermission("dkbans.bypass")
             ,server,this.currentMessageCount.get(player.getUUID()));
         });
@@ -175,6 +179,7 @@ public class PlayerListener implements Listener {
             if(!event.isCancelled()){
                 if(!this.currentMessageCount.containsKey(player.getUniqueId())) this.currentMessageCount.put(player.getUniqueId(),1);
                 else this.currentMessageCount.put(player.getUniqueId(),this.currentMessageCount.get(player.getUniqueId())+1);
+                BanSystem.getInstance().getTempSyncStats().addMessages();
             }
             if(BanSystem.getInstance().getConfig().chatlogEnabled){
                 final FilterType finalFilter = filter;
@@ -208,13 +213,6 @@ public class PlayerListener implements Listener {
                     ,option -> (option.getPermission() == null || player.hasPermission(option.getPermission())) && option.getOption().startsWith(search)
                     ,option -> event.getSuggestions().add(option.getOption()));
         }
-    }
-    private void CloudNetV2Fix(final UUID uuid){
-        if(!BungeeCordBanSystemBootstrap.getInstance().isCloudNetV2()) return;
-        ProxyServer.getInstance().getScheduler().schedule(de.dytanic.cloudnet.bridge.CloudProxy.getInstance().getPlugin(), () -> {
-            ProxiedPlayer player = BungeeCord.getInstance().getPlayer(uuid);
-            //if(player == null) CloudNetExtension.getInstance().unregisterPlayer(uuid);
-        }, 550L, TimeUnit.MILLISECONDS);
     }
 
     private class lastMessage {

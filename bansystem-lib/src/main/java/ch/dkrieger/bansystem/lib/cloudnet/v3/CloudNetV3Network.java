@@ -1,18 +1,18 @@
 package ch.dkrieger.bansystem.lib.cloudnet.v3;
 
+import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.DKNetwork;
 import ch.dkrieger.bansystem.lib.JoinMe;
 import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
+import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import de.dytanic.cloudnet.common.document.Document;
 import de.dytanic.cloudnet.wrapper.Wrapper;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class CloudNetV3Network implements DKNetwork {
 
@@ -21,7 +21,7 @@ public abstract class CloudNetV3Network implements DKNetwork {
     public CloudNetV3Network() {
         this.joinmes = new HashMap<>();
     }
-    public void inserJoinMe(JoinMe joinme){
+    public void insertJoinMe(JoinMe joinme){
         this.joinmes.put(joinme.getUUID(),joinme);
     }
 
@@ -42,13 +42,15 @@ public abstract class CloudNetV3Network implements DKNetwork {
 
     @Override
     public List<String> getPlayersOnServer(String server) {
-        //Wrapper.getInstance().get
-        return null;
+        List<String> players = new ArrayList<>();
+        GeneralUtil.iterateAcceptedForEach(BanSystem.getInstance().getPlayerManager().getOnlinePlayers()
+                , object -> object.getServer().equalsIgnoreCase(server), object -> players.add(object.getName()));
+        return players;
     }
 
     @Override
     public void broadcast(String message) {
-        broadcast(new TextComponent(message));
+        broadcast(new TextComponent(ChatColor.translateAlternateColorCodes('&',message)));
     }
 
     @Override

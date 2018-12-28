@@ -18,6 +18,7 @@ public class ReportManager {
         return this.cachedReports;
     }
     public List<Report> getOpenReports(){
+        if(this.cachedReports == null) loadReports();
         return GeneralUtil.iterateAcceptedReturn(this.cachedReports, object -> object.getStaff() == null);
     }
     public void loadReports(){

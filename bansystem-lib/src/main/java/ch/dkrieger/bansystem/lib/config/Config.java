@@ -114,7 +114,7 @@ public class Config extends SimpleConfig{
     public void onLoad() {
         this.bungeecord = addAndGetBooleanValue("bungeecord",false);
         this.storageType = StorageType.parse(addAndGetStringValue("storage.type",StorageType.SQLITE.toString()));
-        this.storageFolder = new File(addAndGetStringValue("storage.folder",platform.getFolder().getAbsolutePath()+"/data/"));
+        this.storageFolder = new File(addAndGetStringValue("storage.folder",platform.getFolder().toString()+"/data/"));
         this.storageHost = addAndGetStringValue("storage.host","localhost");
         this.storagePort = addAndGetStringValue("storage.port","3306");
         this.storageUser = addAndGetStringValue("storage.user","root");

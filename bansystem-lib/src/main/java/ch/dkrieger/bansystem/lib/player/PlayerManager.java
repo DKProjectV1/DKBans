@@ -11,15 +11,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public abstract class PlayerManager {
 
     private Map<UUID,NetworkPlayer> loadedPlayers;
-    private int cachedRegisteredCount, cachedCountryCount;
+    private long cachedRegisteredCountTime;
+    private int cachedRegisteredCount;
 
     public PlayerManager() {
         this.loadedPlayers = new HashMap<>();
         this.cachedRegisteredCount = -1;
+        this.cachedRegisteredCountTime = -1;
     }
     public Map<UUID, NetworkPlayer> getLoadedPlayers() {
         return loadedPlayers;
@@ -51,12 +54,10 @@ public abstract class PlayerManager {
         return null;
     }
     public int getRegisteredCount(){
-        if(this.cachedRegisteredCount < 0) return this.cachedRegisteredCount;
-        else return BanSystem.getInstance().getStorage().getRegisteredPlayerCount();
-    }
-    public int getCountryCount(){
-        if(this.cachedCountryCount < 0) return this.cachedCountryCount;
-        else return BanSystem.getInstance().getStorage().getCountryCount();
+        if(this.cachedRegisteredCount > 0 && cachedRegisteredCountTime > System.currentTimeMillis()) return this.cachedRegisteredCount;
+        this.cachedRegisteredCount = BanSystem.getInstance().getStorage().getRegisteredPlayerCount();
+        cachedRegisteredCountTime = System.currentTimeMillis()+ TimeUnit.MINUTES.toMillis(15);
+        return cachedRegisteredCount;
     }
     public List<NetworkPlayer> getPlayers(String ip){
         return BanSystem.getInstance().getStorage().getPlayersByIp(ip);
@@ -107,6 +108,7 @@ public abstract class PlayerManager {
     }
 
     public NetworkPlayer createPlayer(UUID uuid, String name, String ip){
+        resetCachedCounts();
         NetworkPlayer player = new NetworkPlayer(uuid,name,ip,getCountry(ip));
         player.setID(BanSystem.getInstance().getStorage().createPlayer(player));
         this.loadedPlayers.put(uuid,player);
@@ -131,7 +133,6 @@ public abstract class PlayerManager {
 
     public void resetCachedCounts(){
         this.cachedRegisteredCount = -1;
-        this.cachedCountryCount = -1;
     }
     public String getCountry(String ip){
         try{

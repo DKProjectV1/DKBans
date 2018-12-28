@@ -56,20 +56,22 @@ public class MessageConfig extends SimpleConfig{
         Messages.PLAYER_ALREADY_MUTED = addAndGetMessageValue("player.already.muted","[prefix]&8[player] &cis already muted.");
         Messages.PLAYER_ALREADY_REPORTED = addAndGetMessageValue("player.already.reported","[prefix]&cYou have &8[player] &calready reported.");
         Messages.PLAYER_HAS_MOREBANS_HEADER = addAndGetMessageValue("player.has.morebans.header","[prefix]&8[player] &7has a chat and network ban:");
-        Messages.PLAYER_HAS_MOREBANS_NETWORK = addAndGetMessageValue("player.morebans.network","&8» &cBan &8- &4[reason] &8| &7[duration]");
-        Messages.PLAYER_HAS_MOREBANS_CHAT = addAndGetMessageValue("player.has.morebans.chat","&8» &6Mute &8- &4[reason] &8| &7[duration]");
+        Messages.PLAYER_HAS_MOREBANS_NETWORK = addAndGetMessageValue("player.morebans.network","&8» &cBan &8- &4[reason] &8| &7[remaining-short]");
+        Messages.PLAYER_HAS_MOREBANS_CHAT = addAndGetMessageValue("player.has.morebans.chat","&8» &6Mute &8- &4[reason] &8| &7[remaining-short]");
         Messages.PLAYER_UNMUTED = addAndGetMessageValue("player.unmuted","[prefix]&7The player &8[player] &7was unmuted.");
         Messages.PLAYER_UNBANNED = addAndGetMessageValue("player.unbanned","[prefix]&7The player &8[player] &7was unbanned.");
 
         Messages.PLAYER_INFO_HELP = addAndGetMessageValue("player.info.help","[prefix]&cUsage&8: &7 /playerinfo <player>");
-        Messages.PLAYER_INFO_ONLINE = addAndGetMessageValue("player.info.online","&7\n&8» &7Name&8: &c[player]&7\n&8» &7UUID&8: &c[uuid]" +
+        Messages.PLAYER_INFO_ONLINE = addAndGetMessageValue("player.info.online","&7\n&8» &7Name&8: &c[player] &8(&aOnline&8)&7\n&8» &7UUID&8: &c[uuid]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7FirstLogin&8: &c[firstLogin]\n&8» &7Server&8: &c[server]\n&8» &7onlineTime&8: &c[onlineTime-short]" +
-                "\n&8» &7IP&8: &c[ip]\n&8» &7Country&8: &c[country]\n&8» &7Bans&8: &c[bans]\n&8» &7Mutes&8: &c[mutes]" +
-                "\n&8» &7Logins&8: &c[logins]\n&8» &7Reports send&8: &a[reportsAccepted]&8/&c[reportsSent]\n&5\n&8» [history] [sessions] [ips]\n&7");
-        Messages.PLAYER_INFO_OFFLINE = addAndGetMessageValue("player.info.offline","&7\n&8» &7Name&8: &c[player]&7\n&8» &7UUID&8: &c[uuid]" +
+                "\n&8» &7IP&8: &c[ip]\n&8» &7Country&8: &c[country]\n&8» &7Banned&8: &c[isBanned]\n&8» &7Muted&8: &c[isMuted]" +
+                "\n&8» &7Bans&8: &c[bans]\n&8» &7Mutes&8: &c[mutes]\n&8» &7Logins&8: &c[logins]\n&8» &7Reports received&8: &c[reportsReceived]" +
+                "\n&8» &7Reports send&8: &a[reportsAccepted]&8/&c[reportsSent]\n&5\n&8» [history] [sessions] [ips]\n&7");
+        Messages.PLAYER_INFO_OFFLINE = addAndGetMessageValue("player.info.offline","&7\n&8» &7Name&8: &c[player] &8(&cOffline&8)&7\n&8» &7UUID&8: &c[uuid]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7FirstLogin&8: &c[firstLogin]\n&8» &7LastLogin&8: &c[lastLogin]\n&8» &7onlineTime&8: &c[onlineTime]" +
-                "\n&8» &7IP&8: &c[ip]\n&8» &7Country&8: &c[country]\n&8» &7Bans&8: &c[bans]\n&8» &7Mutes&8: &c[mutes]" +
-                "\n&8» &7Logins&8: &c[logins]\n&8» &7Reports send&8: &a[reportsAccepted]&8/&c[reportsSent]\n&5\n&8» [history] [sessions] [ips]\n&7");
+                "\n&8» &7IP&8: &c[ip]\n&8» &7Country&8: &c[country]\n&8» &7Banned&8: &c[isBanned]\n&8» &7Muted&8: &c[isMuted]" +
+                "\n&8» &7Bans&8: &c[bans]\n&8» &7Mutes&8: &c[mutes]\n&8» &7Logins&8: &c[logins]\n&8» &7Reports received&8: &c[reportsReceived]" +
+                "\n&8» &7Reports send&8: &a[reportsAccepted]&8/&c[reportsSent]\n&5\n&8» [history] [sessions] [ips]\n&7");
         Messages.PLAYER_INFO_HISTORY = addAndGetMessageValue("player.info.history","&8[&bHistory&8]");
         Messages.PLAYER_INFO_SESSIONS = addAndGetMessageValue("player.info.sessions","&8[&aSessions&8]");
         Messages.PLAYER_INFO_IPS = addAndGetMessageValue("player.info.ips","&8[&eIps&8]");
@@ -170,7 +172,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.HISTORY_LIST_BAN_NETWORK = addAndGetMessageValue("history.list.ban.network","&8» &cBan &8| &7[time] - &7[reason]");
         Messages.HISTORY_LIST_KICK = addAndGetMessageValue("history.list.kick","&8» &eKick &8| &7[time] - &7[reason]");
         Messages.HISTORY_LIST_UNBAN = addAndGetMessageValue("history.list.unban","&8» &aUnban &8| &7[time] - &7[reason]");
-        Messages.HISTORY_INFO_BAN_NETWORK = addAndGetMessageValue("history.info.ban.chat","[prefix]&7Ban &c[id] &7von [player]" +
+        Messages.HISTORY_INFO_BAN_NETWORK = addAndGetMessageValue("history.info.ban.network","[prefix]&7Ban &c[id] &7von [player]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7Reason&8: [reason] &8- &7[reasonID]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
                 "\n&8» &7Points&8: &c[points]\n&8» &7Duration&8: &c[duration]\n&8» &7Remaining&8: &c[remaining-short]\n&8» &7Time&8: &c[time]\n&8» &7TimeOut&8: &c[timeout]");
         Messages.HISTORY_INFO_BAN_CHAT = addAndGetMessageValue("history.info.ban.chat","[prefix]&7Mute &c[id] &7von [player]" +
@@ -206,8 +208,8 @@ public class MessageConfig extends SimpleConfig{
         Messages.REPORT_LEAVED_STAFF = addAndGetMessageValue("report.leaved.staff","[prefix]&8[player] &cleaved the server.");
         Messages.REPORT_LEAVED_USER = addAndGetMessageValue("report.leaved.user","[prefix]&cThe report of [player] &cwas denied, because the &cplayer &cleaved the server.");
         Messages.REPORT_LIST_NO = addAndGetMessageValue("report.list.no","[prefix]&cNo reports found.");
-        Messages.REPORT_LIST_HEADER = addAndGetMessageValue("report.list.header","[prefix]&7Open reports");
-        Messages.REPORT_LIST_LIST = addAndGetMessageValue("report.list.list","&8» &8&l>> &e[reason] &8[&7Click&8]");
+        Messages.REPORT_LIST_HEADER = addAndGetMessageValue("report.list.header","[prefix]&7Open reports Page &c[page]&8/&c[maxPage]");
+        Messages.REPORT_LIST_LIST = addAndGetMessageValue("report.list.list","&8» &8[player] &8&l>> &e[reason] &8[&7Click&8]");
         Messages.REPORT_INFO = addAndGetMessageValue("report.info","[prefix]&7At this moments are &9[size] &7Reports open.");
         Messages.REPORT_PROCESS_CONTROL_MESSAGE = addAndGetMessageValue("report.process.control.message","&8» [deny] [forReason] [otherReason]\n&7");//[deny] [forReason] [otherReason]
         Messages.REPORT_PROCESS_CONTROL_DENY = addAndGetMessageValue("report.process.control.deny","&8[&c&lDeny&8]");
@@ -259,6 +261,8 @@ public class MessageConfig extends SimpleConfig{
         Messages.CHATLOG_SERVER_LIST_NORMAL = addAndGetMessageValue("chatlog.server.list.allowed","&8» &9[time] &8| &e[player]&8: &7[message]");
         Messages.CHATLOG_SERVER_LIST_BLOCKED = addAndGetMessageValue("chatlog.server.list.allowed","&8» &9[time] &8| &e[player]&8: &c[message]");
 
-        Messages.NETWORK_STATS = addAndGetMessageValue("networkstats","[prefix]&6Network stats");
+        Messages.NETWORK_STATS = addAndGetMessageValue("networkstats","[prefix]&6Network stats&7\n&8» &7Players&8: &a[onlinePlayers]&8/&c[registeredPlayers]" +
+                "\n&8» &7Banned&8: &c[bans]\n&8» &7Muted&8: &c[mutes]\n&8» &7Kicked&8: &c[kicks]\n&8» &7Unbanned&8: &c[unbans]\n&8» &7Reported&8: &a[reportsAccepted]&8/&c[reports]" +
+                "\n&8» &7Logins&8: &c[logins]\n&8» &7Messages&8: &c[messages]");
     }
 }

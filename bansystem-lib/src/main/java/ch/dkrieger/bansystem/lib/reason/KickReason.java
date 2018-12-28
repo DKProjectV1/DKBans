@@ -42,6 +42,9 @@ public class KickReason {
     public String getDisplay() {
         return ChatColor.translateAlternateColorCodes('&',display);
     }
+    public String getRawDisplay(){
+        return display;
+    }
 
     public String getPermission() {
         return permission;
@@ -58,6 +61,7 @@ public class KickReason {
     public boolean isHidden() {
         return hidden;
     }
+
     public boolean hasAlias(String alias){
         return this.name.equalsIgnoreCase(alias) ||this.aliases.contains(alias);
     }

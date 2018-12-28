@@ -1,8 +1,6 @@
 package ch.dkrieger.bansystem.lib.utils;
 
-import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
-import ch.dkrieger.bansystem.lib.reason.BanReason;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
@@ -10,18 +8,8 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
-import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -43,6 +31,9 @@ public class GeneralUtil {
     public static void createGSON(){
         GSON = GSON_BUILDER.create();
         GSON_NOT_PRETTY = GSON_BUILDER_NOT_PRETTY.create();
+    }
+    public static int getRandom(int low, int high){
+        return RANDOM.nextInt(high-low) + low;
     }
     public static String getRandomString(final int size){
         char data = ' ';
@@ -192,7 +183,11 @@ public class GeneralUtil {
         iterateAcceptedForEach(list,acceptAble,result::add);
         return result;
     }
-
+    public static <U> void iterateAndRemove(Iterable<U> list, AcceptAble<U> acceptAble){
+        Iterator<U> iterator = list.iterator();
+        U result = null;
+        while(iterator.hasNext() && (result=iterator.next()) != null) if(acceptAble.accept(result)) iterator.remove();
+    }
     public static  TextComponent createLinkedMCText(String text, String link){
         TextComponent component = new TextComponent(text);
         component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,link));

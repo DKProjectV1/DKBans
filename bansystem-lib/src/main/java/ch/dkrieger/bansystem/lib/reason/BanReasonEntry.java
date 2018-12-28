@@ -5,16 +5,16 @@ import ch.dkrieger.bansystem.lib.utils.Duration;
 
 import java.util.concurrent.TimeUnit;
 
-public class BanReasonValue {
+public class BanReasonEntry {
 
     private BanType type;
     private Duration duration;
 
-    public BanReasonValue(BanType type, Duration duration) {
+    public BanReasonEntry(BanType type, Duration duration) {
         this.type = type;
         this.duration = duration;
     }
-    public BanReasonValue(BanType type, long time, TimeUnit unit){
+    public BanReasonEntry(BanType type, long time, TimeUnit unit){
         this.type = type;
         this.duration = new Duration(time,unit);
     }

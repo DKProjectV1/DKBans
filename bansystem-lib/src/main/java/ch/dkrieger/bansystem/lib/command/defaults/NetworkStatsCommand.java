@@ -18,20 +18,19 @@ public class NetworkStatsCommand extends NetworkCommand {
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
         NetworkStats stats = BanSystem.getInstance().getNetworkStats();
+        NetworkStats syncStats = BanSystem.getInstance().getTempSyncStats();
         sender.sendMessage(Messages.NETWORK_STATS
                 .replace("[registeredPlayers]",""+BanSystem.getInstance().getPlayerManager().getRegisteredCount())
                 .replace("[onlinePlayers]",""+BanSystem.getInstance().getPlayerManager().getOnlineCount())
-                .replace("[bans]",""+stats.getBans())
-                .replace("[mutes]",""+stats.getMutes())
-                .replace("[unbans]",""+stats.getUnbans())
-                .replace("[kicks]",""+stats.getKicks())
-                .replace("[reports]",""+stats.getReports())
-                .replace("[currentBans]","//Implement")
-                .replace("[currentMutes]","//Implement")
-                .replace("[reportsAccepted]",""+stats.getReportsAccepted())
-                .replace("[reportsDenied]",""+stats.getReportsDenied())
-                .replace("[countries]",""+BanSystem.getInstance().getPlayerManager().getCountryCount())
-                .replace("[messages]",""+stats.getMessages())
+                .replace("[bans]",""+(stats.getBans()+syncStats.getBans()))
+                .replace("[mutes]",""+(stats.getMutes()+syncStats.getMutes()))
+                .replace("[unbans]",""+(stats.getUnbans()+syncStats.getUnbans()))
+                .replace("[kicks]",""+(stats.getKicks()+syncStats.getKicks()))
+                .replace("[reports]",""+(stats.getReports()+syncStats.getReports()))
+                .replace("[reportsAccepted]",""+(stats.getReportsAccepted()+syncStats.getReportsAccepted()))
+                .replace("[reportsDenied]",""+(stats.getReportsDenied()+syncStats.getReportsDenied()))
+                .replace("[logins]",""+(stats.getLogins()+syncStats.getLogins()))
+                .replace("[messages]",""+(stats.getMessages()+syncStats.getMessages()))
                 .replace("[prefix]",getPrefix()));
     }
     @Override

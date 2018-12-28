@@ -2,7 +2,6 @@ package ch.dkrieger.bansystem.lib.storage;
 
 import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.filter.Filter;
-import ch.dkrieger.bansystem.lib.filter.FilterType;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineSession;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLog;
@@ -13,6 +12,7 @@ import ch.dkrieger.bansystem.lib.player.history.entry.HistoryEntry;
 import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.stats.NetworkStats;
 import ch.dkrieger.bansystem.lib.stats.PlayerStats;
+import ch.dkrieger.bansystem.lib.utils.Document;
 
 import java.util.List;
 import java.util.UUID;
@@ -35,8 +35,6 @@ public interface DKBansStorage {
 
     public int getRegisteredPlayerCount();
 
-    public int getCountryCount();
-
     public int createPlayer(NetworkPlayer player);
 
     public void createOnlineSession(NetworkPlayer player, OnlineSession session);
@@ -45,11 +43,15 @@ public interface DKBansStorage {
 
     public void saveStaffSettings(UUID player, boolean report,boolean teamChat);
 
+    public void setColor(UUID player, String color);
+
     public void updatePlayerLoginInfos(UUID player,String name, long lastLogin, String color, boolean bypass, String lastIP,String lastCountry, long logins);
 
     public void updatePlayerLogoutInfos(UUID player, long lastLogin, long onlineTime, String color, boolean bypass, long messages);
 
     public void updatePlayerStats(UUID uuid, PlayerStats stats);
+
+    public void updatePlayerProperties(UUID uuid, Document properties);
 
     public ChatLog getChatLog(UUID player);
 
@@ -75,18 +77,13 @@ public interface DKBansStorage {
 
     public void deleteReports(NetworkPlayer player);
 
-    public Ban getBan(int id);
+    public HistoryEntry getHistoryEntry(int id);
+
+    @SuppressWarnings("This methode is dangerous, it (can) return many datas and have a long delay.")
+    public List<Ban> getNotTimeOutedBans( );
 
     @SuppressWarnings("This methode is dangerous, it (can) return many datas and have a long delay.")
     public List<Ban> getBans();
-    @SuppressWarnings("This methode is dangerous, it (can) return many datas and have a long delay.")
-    public List<Ban> getBans(int reasonID);
-    @SuppressWarnings("This methode is dangerous, it (can) return many datas and have a long delay.")
-    public List<Ban> getBans(String reason);
-
-
-    @SuppressWarnings("This methode is dangerous, it (can) return many datas and have a long delay.")
-    public List<Ban> getBansFromStaff(String staff);
 
     public List<Filter> loadFilters();
 
@@ -103,5 +100,7 @@ public interface DKBansStorage {
     public void deleteBroadcast(int id);
 
     public NetworkStats getNetworkStats();
+
+    public void updateNetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks);
 
 }

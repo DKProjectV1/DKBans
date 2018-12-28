@@ -19,13 +19,11 @@ import ch.dkrieger.bansystem.lib.storage.DKBansStorage;
 import ch.dkrieger.bansystem.lib.storage.StorageType;
 import ch.dkrieger.bansystem.lib.storage.sql.query.ColumnType;
 import ch.dkrieger.bansystem.lib.storage.sql.query.QueryOption;
-import ch.dkrieger.bansystem.lib.storage.sql.query.SelectQuery;
 import ch.dkrieger.bansystem.lib.storage.sql.table.Table;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import com.google.gson.reflect.TypeToken;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -43,7 +41,6 @@ public class SQLDKBansStorage implements DKBansStorage {
         if(config.storageType==StorageType.MYSQL) sql = new MySQL(config.storageHost,config.storagePort,config.storageDatabase,config.storageUser,config.storagePassword);
         else sql = new SQLite(config.storageFolder,"dkabns.db");
         boolean connect = sql.connect();
-        System.out.println(connect);
 
         if(connect){
             players = new Table(sql,"DKBans_players");
@@ -72,6 +69,10 @@ public class SQLDKBansStorage implements DKBansStorage {
                         .create("statsReports",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("statsReportsAccepted",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("statsReportsReceived",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("statsStaffBans",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("statsStaffMutes",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("statsStaffKicks",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("statsStaffUnbans",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("properties",ColumnType.TEXT,QueryOption.NOT_NULL).execute();
                 this.chatlogs.create().create("uuid",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
                         .create("message",ColumnType.VARCHAR,500,QueryOption.NOT_NULL)
@@ -99,15 +100,6 @@ public class SQLDKBansStorage implements DKBansStorage {
                         .create("reportedServer",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
                         .create("reasonID",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
                         .create("time",ColumnType.BIG_INT,QueryOption.NOT_NULL).execute();
-                this.networkstats.create().create("logins",ColumnType.BIG_INT,QueryOption.NOT_NULL)
-                        .create("reports",ColumnType.BIG_INT,QueryOption.NOT_NULL)
-                        .create("reportsAccepted",ColumnType.BIG_INT,QueryOption.NOT_NULL)
-                        .create("messages",ColumnType.BIG_INT,QueryOption.NOT_NULL)
-                        .create("bans",ColumnType.BIG_INT,QueryOption.NOT_NULL)
-                        .create("mutes",ColumnType.BIG_INT,QueryOption.NOT_NULL)
-                        .create("unbans",ColumnType.BIG_INT,QueryOption.NOT_NULL)
-                        .create("kicks",ColumnType.BIG_INT,QueryOption.NOT_NULL)
-                        .create("uptime",ColumnType.BIG_INT,QueryOption.NOT_NULL).execute();
                 this.histories.create().create("id",ColumnType.INT,QueryOption.NOT_NULL,QueryOption.PRIMARY_KEY,QueryOption.AUTO_INCREMENT)
                         .create("uuid",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
                         .create("ip",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
@@ -129,6 +121,25 @@ public class SQLDKBansStorage implements DKBansStorage {
                         .create("clientVersion",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
                         .create("connected",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("disconnected",ColumnType.BIG_INT,QueryOption.NOT_NULL).execute();
+                this.networkstats.create().create("logins",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("reports",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("reportsAccepted",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("messages",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("bans",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("mutes",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("unbans",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("kicks",ColumnType.BIG_INT,QueryOption.NOT_NULL).execute();
+
+                if(networkstats.select().execute("SELECT COUNT(*) FROM "+networkstats.getName(), result -> {
+                    try{
+                        if(result.next())return result.getInt(1);
+                    }catch (Exception exception){}
+                    return 0;
+                }) == 0){
+                    this.networkstats.insert().insert("logins").insert("reports").insert("reportsAccepted").insert("messages")
+                            .insert("bans").insert("mutes").insert("unbans").insert("kicks").value(0).value(0).value(0)
+                            .value(0).value(0).value(0).value(0).value(0).execute();
+                }
             }catch (Exception exception){
                 exception.printStackTrace();
                 connect = false;
@@ -172,8 +183,10 @@ public class SQLDKBansStorage implements DKBansStorage {
                            ,result.getLong("onlineTime"),result.getBoolean("bypass"),result.getBoolean("teamChatLogin")
                            ,result.getBoolean("reportLogin"),null,Document.loadData(result.getString("properties"))
                            ,new PlayerStats(result.getLong("statsLogins")
-                           ,result.getLong("statsMessages") ,result.getLong("statsReports"),result.getLong("statsReportsAccepted")
-                           ,result.getLong("statsReportsReceived")),new ArrayList<>(),null);
+                           ,result.getLong("statsReports"),result.getLong("statsReportsAccepted")
+                           ,result.getLong("statsMessages"),result.getLong("statsReportsReceived")
+                           ,result.getLong("statsStaffBans"),result.getLong("statsStaffMutes")
+                           ,result.getLong("statsStaffUnbans"),result.getLong("statsStaffKicks")),new ArrayList<>(),null);
                }
             }catch (Exception exception){
                 exception.printStackTrace();
@@ -202,11 +215,6 @@ public class SQLDKBansStorage implements DKBansStorage {
     }
 
     @Override
-    public Ban getBan(int id) {
-        return null;
-    }
-
-    @Override
     public List<NetworkPlayer> getPlayersByIp(String ip) {
         List<NetworkPlayer> player = players.select().where("lastIp",ip).execute(result -> {
             List<NetworkPlayer> players = new ArrayList<>();
@@ -219,8 +227,10 @@ public class SQLDKBansStorage implements DKBansStorage {
                             ,result.getLong("onlineTime"),result.getBoolean("bypass"),result.getBoolean("teamChatLogin")
                             ,result.getBoolean("reportLogin"),null,Document.loadData(result.getString("properties"))
                             ,new PlayerStats(result.getLong("statsLogins")
-                            ,result.getLong("statsMessages") ,result.getLong("statsReports"),result.getLong("statsReportsAccepted")
-                            ,result.getLong("statsReportsReceived")),new ArrayList<>(),null));
+                            ,result.getLong("statsReports"),result.getLong("statsReportsAccepted")
+                            ,result.getLong("statsMessages"),result.getLong("statsReportsReceived")
+                            ,result.getLong("statsStaffBans"),result.getLong("statsStaffMutes")
+                            ,result.getLong("statsStaffUnbans"),result.getLong("statsStaffKicks")),new ArrayList<>(),null));
                 }
             }catch (Exception exception){}
             return players;
@@ -246,24 +256,27 @@ public class SQLDKBansStorage implements DKBansStorage {
     }
     @Override
     public int getRegisteredPlayerCount() {
-        //select count(*) from
-        return 0;
-    }
-
-    @Override
-    public int getCountryCount() {
-        return 0;
+        return players.select().execute("SELECT COUNT(*) FROM "+players.getName(), result -> {
+            try{
+                if(result.next()){
+                    return result.getInt(1);
+                }
+            }catch (Exception exception){}
+            return 0;
+        });
     }
     @Override
     public int createPlayer(NetworkPlayer player) {
         return players.insert().insert("uuid").insert("name").insert("color").insert("lastIp").insert("lastCountry")
                 .insert("lastLogin").insert("firstLogin").insert("onlineTime").insert("bypass").insert("teamChatLogin")
                 .insert("reportLogin").insert("statsLogins").insert("statsMessages").insert("statsReports")
-                .insert("statsReportsAccepted").insert("statsReportsReceived").insert("properties")
+                .insert("statsReportsAccepted").insert("statsReportsReceived").insert("statsStaffBans")
+                .insert("statsStaffMutes").insert("statsStaffUnbans").insert("statsStaffKicks").insert("properties")
                 .value(player.getUUID()).value(player.getName()).value(player.getColor()).value(player.getIP())
                 .value(player.getCountry()).value(player.getLastLogin()).value(player.getFirstLogin())
                 .value(player.getOnlineTime()).value(player.hasBypass()).value(player.isTeamChatLoggedIn())
-                .value(player.isReportLoggedIn()).value(1).value(0).value(0).value(0).value(0).value(player.getProperties().toJson()).executeAndGetKeyAsInt();
+                .value(player.isReportLoggedIn()).value(1).value(0).value(0).value(0).value(0).value(0).value(0)
+                .value(0).value(0).value(player.getProperties().toJson()).executeAndGetKeyAsInt();
     }
     @Override
     public void createOnlineSession(NetworkPlayer player, OnlineSession session) {
@@ -294,7 +307,12 @@ public class SQLDKBansStorage implements DKBansStorage {
 
     @Override
     public void saveStaffSettings(UUID player, boolean report, boolean teamchat) {
-        this.players.update().set("reportLogin",report).set("teamChatLogin",teamchat).where("player",player);
+        this.players.update().set("reportLogin",report).set("teamChatLogin",teamchat).where("uuid",player);
+    }
+
+    @Override
+    public void setColor(UUID player, String color) {
+        this.players.update().set("color",color).where("uuid",player);
     }
 
     @Override
@@ -321,6 +339,20 @@ public class SQLDKBansStorage implements DKBansStorage {
         });
     }
 
+
+    @Override
+    public HistoryEntry getHistoryEntry(int id) {
+        return this.histories.select().where("id",id).execute(result -> {
+            try{
+                if(result.next()){
+                    HistoryEntry entry = GeneralUtil.GSON.fromJson(result.getString("jsonEntryObject"),HistoryEntry.class);
+                    entry.setID(result.getInt("id"));
+                    return entry;
+                }
+            }catch (Exception e){}
+            return null;
+        });
+    }
 
     @Override
     public void createChatLogEntry(ChatLogEntry entry) {
@@ -419,7 +451,8 @@ public class SQLDKBansStorage implements DKBansStorage {
     public void updatePlayerStats(UUID uuid, PlayerStats stats) {
         this.players.update().set("statsLogins",stats.getLogins()).set("statsMessages",stats.getMessages())
                 .set("statsReports",stats.getReports()).set("statsReportsAccepted",stats.getReportsAccepted())
-                .set("statsReportsReceived",stats.getReportsReceived()).where("uuid",uuid.toString()).execute();
+                .set("statsStaffMutes",stats.getMutes()).set("statsStaffKicks",stats.getKicks())
+                .set("statsStaffBans",stats.getBans()).set("statsStaffUnbans",stats.getUnbans()).where("uuid",uuid.toString()).execute();
     }
     @Override
     public void deleteOldChatLog(long before) {
@@ -427,47 +460,13 @@ public class SQLDKBansStorage implements DKBansStorage {
     }
 
     @Override
-    public List<Ban> getBans(int reasonID) {
-        return this.histories.select().where("type","ban").where("reasonID",reasonID).execute(result -> {
-            List<Ban> bans = new ArrayList<>();
-            try {
-                while(result.next()){
-                    bans.add((Ban) GeneralUtil.GSON.fromJson(result.getString("jsonEntryObject"),HistoryEntry.class));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return bans;
-        });
+    public void updatePlayerProperties(UUID uuid, Document properties) {
+        this.players.update().set("properties",properties.toJson()).where("uuid",uuid.toString()).execute();
     }
 
     @Override
-    public List<Ban> getBans(String reason) {
-        return this.histories.select().where("type","ban").where("reason",reason).execute(result -> {
-            List<Ban> bans = new ArrayList<>();
-            try {
-                while(result.next()){
-                    bans.add((Ban) GeneralUtil.GSON.fromJson(result.getString("jsonEntryObject"),HistoryEntry.class));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return bans;
-        });
-    }
-    @Override
-    public List<Ban> getBansFromStaff(String staff) {
-        return this.histories.select().where("type","ban").where("staff",staff).execute(result -> {
-            List<Ban> bans = new ArrayList<>();
-            try {
-                while(result.next()){
-                    bans.add((Ban) GeneralUtil.GSON.fromJson(result.getString("jsonEntryObject"),HistoryEntry.class));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return bans;
-        });
+    public List<Ban> getNotTimeOutedBans() {
+        return getBans();
     }
 
     @Override
@@ -536,6 +535,22 @@ public class SQLDKBansStorage implements DKBansStorage {
 
     @Override
     public NetworkStats getNetworkStats() {
-        return new NetworkStats();
+        return networkstats.select().execute(result -> {
+            try{
+                if(result.next()){
+                    return new NetworkStats(result.getLong("logins"),result.getLong("reports")
+                            ,result.getLong("reportsAccepted")
+                            ,result.getLong("messages"),result.getLong("bans"),result.getLong("mutes")
+                            ,result.getLong("unbans"),result.getLong("kicks"));
+                }
+            }catch (Exception exception){}
+            return new NetworkStats();
+        });
+    }
+
+    @Override
+    public void updateNetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks) {
+        networkstats.update().set("logins",logins).set("reports",reports).set("reportsAccepted",reportsAccepted).set("messages",messages)
+                .set("bans",bans).set("mutes",mutes).set("unbans",unbans).set("kicks",kicks).execute();
     }
 }

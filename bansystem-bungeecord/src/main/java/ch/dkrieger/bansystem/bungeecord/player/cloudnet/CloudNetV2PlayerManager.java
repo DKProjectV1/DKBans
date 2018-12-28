@@ -173,7 +173,7 @@ public class CloudNetV2PlayerManager extends PlayerManager implements Listener {
                 }else BanSystem.getInstance().getNetwork().broadcastLocal(event.getDocument().getObject("broadcast", Broadcast.class));
             }else if(event.getMessage().equalsIgnoreCase("sendJoinMe")){
                 JoinMe joinme = event.getDocument().getObject("joinme", JoinMe.class);
-                ((CloudNetV2Network)BanSystem.getInstance().getNetwork()).inserJoinMe(joinme);
+                ((CloudNetV2Network)BanSystem.getInstance().getNetwork()).insertJoinMe(joinme);
                 List<TextComponent> components = joinme.create();
                 for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
                     for(TextComponent component : components) player.sendMessage(component);

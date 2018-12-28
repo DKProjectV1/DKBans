@@ -117,6 +117,7 @@ public class Document {
         GeneralUtil.GSON.toJson(this.datas,writer);
         writer.close();
     }
+
     public static Document loadData(String gsonstring){
         try{
             return loadDataSave(gsonstring);

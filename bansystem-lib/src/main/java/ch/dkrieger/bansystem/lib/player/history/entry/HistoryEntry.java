@@ -76,6 +76,12 @@ public abstract class HistoryEntry {
     public String getStaff() {
         return staff;
     }
+    public NetworkPlayer getStaffAsPlayer(){
+        try{
+            return BanSystem.getInstance().getPlayerManager().getPlayer(UUID.fromString(this.staff));
+        }catch (Exception exception){}
+        return null;
+    }
     public String getStaffName(){
         if(staff == null) return "Console";
         try{
@@ -108,5 +114,11 @@ public abstract class HistoryEntry {
         GeneralUtil.GSON_BUILDER.registerTypeAdapterFactory(adapter);
         GeneralUtil.GSON_BUILDER_NOT_PRETTY.registerTypeAdapterFactory(adapter);
         GeneralUtil.createGSON();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) return true;
+        return obj instanceof HistoryEntry && ((HistoryEntry) obj).getID() == id;
     }
 }

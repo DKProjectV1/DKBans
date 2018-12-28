@@ -50,7 +50,11 @@ public class SelectQuery extends Query {
     /*public ResultSet execute() {
 
     }*/
-
+    public <R> R execute(String query, ConsumerReturn<ResultSet,R> consumer) {
+        this.query = query;
+        this.addNoCase = false;
+        return execute(consumer);
+    }
     public <R> R execute(ConsumerReturn<ResultSet,R> consumer) {
         if(this.sql.isIgnoreCase() && addNoCase&& this.sql.supportNoCase() && !this.query.contains("COLLATE NOCASE")) noCase();
         Connection connection = getConnection();

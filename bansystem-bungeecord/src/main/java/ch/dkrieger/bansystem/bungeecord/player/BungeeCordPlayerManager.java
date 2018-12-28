@@ -99,7 +99,6 @@ public class BungeeCordPlayerManager extends PlayerManager implements Listener {
             ServerInfo server = player.getServer().getInfo();
             players.add(new PlayerUpdateObject(player.getUniqueId(),player.getName(),server==null?"Unknown":server.getName(),"Proxy-1"));
         }
-        System.out.println(players.size());
         connection.send(sendServer,"updateOnlinePlayers",new Document().append("players",players));
     }
 
@@ -114,7 +113,7 @@ public class BungeeCordPlayerManager extends PlayerManager implements Listener {
                     ,System.currentTimeMillis(),true));
         },300, TimeUnit.MILLISECONDS);
     }
-    private class PlayerUpdateObject {
+    public static class PlayerUpdateObject {
 
         private UUID uuid;
         private String name, server, proxy;

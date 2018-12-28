@@ -64,6 +64,7 @@ public class BukkitPlayerListener implements Listener {
     }
     @EventHandler
     public void onPostLogin(PlayerJoinEvent event){
+        BanSystem.getInstance().getTempSyncStats().addLogins();
         this.currentMessageCount.put(event.getPlayer().getUniqueId(),0);
         Bukkit.getScheduler().runTaskAsynchronously(BukkitBanSystemBootstrap.getInstance(),()->{
             if(BanSystem.getInstance().getConfig().onJoinChatClear) for(int i = 1; i < 120; i++) event.getPlayer().sendMessage("");
@@ -77,7 +78,7 @@ public class BukkitPlayerListener implements Listener {
             if(event.getPlayer().hasPermission("dkbans.report.receive")){
                 if(BanSystem.getInstance().getConfig().onJoinReportInfo){
                     event.getPlayer().sendMessage(Messages.STAFF_STATUS_NOW
-                            .replace("[status]",(player.isReportLogin()?Messages.STAFF_STATUS_LOGIN:Messages.STAFF_STATUS_LOGOUT))
+                            .replace("[status]",(player.isReportLoggedIn()?Messages.STAFF_STATUS_LOGIN:Messages.STAFF_STATUS_LOGOUT))
                             .replace("[prefix]",Messages.PREFIX_REPORT));
                 }
                 if(BanSystem.getInstance().getConfig().onJoinReportSize){

@@ -9,12 +9,11 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
-import ch.dkrieger.bansystem.lib.reason.BanReasonValue;
+import ch.dkrieger.bansystem.lib.reason.BanReasonEntry;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class BanCommand extends NetworkCommand {
@@ -61,7 +60,7 @@ public class BanCommand extends NetworkCommand {
                     .replace("[reason]",reason.getDisplay()));
             return;
         }
-        BanReasonValue value = reason.getNextDuration(player);
+        BanReasonEntry value = reason.getNextDuration(player);
         if(value == null){
             sender.sendMessage(Messages.ERROR
                     .replace("[prefix]",getPrefix()));

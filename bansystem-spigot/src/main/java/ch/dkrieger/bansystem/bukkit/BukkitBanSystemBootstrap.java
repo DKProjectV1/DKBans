@@ -5,12 +5,14 @@ import ch.dkrieger.bansystem.bukkit.listener.BukkitPlayerListener;
 import ch.dkrieger.bansystem.bukkit.network.BukkitBungeeCordNetwork;
 import ch.dkrieger.bansystem.bukkit.player.bungeecord.BukkitBungeeCordPlayerManager;
 import ch.dkrieger.bansystem.bukkit.player.cloudnet.CloudNetV2PlayerManager;
+import ch.dkrieger.bansystem.bukkit.player.cloudnet.CloudNetV3PlayerManager;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.DKBansPlatform;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.NetworkTaskManager;
 import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.cloudnet.v2.CloudNetV2Network;
+import ch.dkrieger.bansystem.lib.cloudnet.v3.CloudNetV3Network;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandManager;
 import ch.dkrieger.bansystem.lib.player.*;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
@@ -72,7 +74,12 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
                 BanSystem.getInstance().setPlayerManager(new CloudNetV2PlayerManager());
                 Bukkit.getPluginManager().registerEvents((CloudNetV2PlayerManager) BanSystem.getInstance().getPlayerManager(),this);
             }else if(cloudNetV3){
-
+                BanSystem.getInstance().setNetwork((new CloudNetV3Network() {
+                    @Override
+                    public void broadcastLocal(Broadcast broadcast) {sendLocalBroadcast(broadcast);}
+                }));
+                BanSystem.getInstance().setPlayerManager(new CloudNetV3PlayerManager());
+                Bukkit.getPluginManager().registerEvents((CloudNetV3PlayerManager) BanSystem.getInstance().getPlayerManager(),this);
             }else if(BanSystem.getInstance().getConfig().bungeecord){
                 this.bungeeCordConnection.enable();
                 BanSystem.getInstance().setPlayerManager(new BukkitBungeeCordPlayerManager(this.bungeeCordConnection));
@@ -220,6 +227,7 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
             });
             Bukkit.getPluginManager().callEvent(new BukkitNetworkPlayerLogoutEvent(player,System.currentTimeMillis(),onThisServer,reports));
         }else if(cause == NetworkPlayerUpdateCause.BAN){
+            BanSystem.getInstance().getHistoryManager().clearCache();
             List<Report> reports = properties.getObject("reports",new TypeToken<List<Report>>(){}.getType());
             Bukkit.getPluginManager().callEvent(new BukkitNetworkPlayerBanEvent(player
                     ,System.currentTimeMillis(),onThisServer,properties.getObject("ban", Ban.class)));

@@ -4,12 +4,14 @@ import ch.dkrieger.bansystem.bungeecord.event.*;
 import ch.dkrieger.bansystem.bungeecord.listener.PlayerListener;
 import ch.dkrieger.bansystem.bungeecord.player.BungeeCordPlayerManager;
 import ch.dkrieger.bansystem.bungeecord.player.cloudnet.CloudNetV2PlayerManager;
+import ch.dkrieger.bansystem.bungeecord.player.cloudnet.CloudNetV3PlayerManager;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.DKBansPlatform;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.NetworkTaskManager;
 import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.cloudnet.v2.CloudNetV2Network;
+import ch.dkrieger.bansystem.lib.cloudnet.v3.CloudNetV3Network;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandManager;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayerUpdateCause;
@@ -53,21 +55,17 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
             if(cloudNetV2){
                 BanSystem.getInstance().setNetwork(new CloudNetV2Network() {
                     @Override
-                    public void broadcastLocal(Broadcast broadcast) {
-                        if(broadcast == null) return;
-                        for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
-                            if(broadcast.getPermission() == null || broadcast.getPermission().length() == 0|| player.hasPermission(broadcast.getPermission())){
-                                NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
-                                player.sendMessage(GeneralUtil.replaceTextComponent(Messages.BROADCAST_FORMAT_SEND.replace("[prefix]",Messages.PREFIX_NETWORK)
-                                        ,"[message]",broadcast.build(networkPlayer)));
-                            }
-                        }
-                    }
+                    public void broadcastLocal(Broadcast broadcast) {broadcast(broadcast);}
                 });
                 BanSystem.getInstance().setPlayerManager(new CloudNetV2PlayerManager());
                 BungeeCord.getInstance().getPluginManager().registerListener(this,(CloudNetV2PlayerManager)BanSystem.getInstance().getPlayerManager());
             }else if(cloudNetV3){
-
+                BanSystem.getInstance().setNetwork(new CloudNetV3Network() {
+                    @Override
+                    public void broadcastLocal(Broadcast broadcast) {broadcast(broadcast);}
+                });
+                BanSystem.getInstance().setPlayerManager(new CloudNetV3PlayerManager());
+                BungeeCord.getInstance().getPluginManager().registerListener(this,(CloudNetV3PlayerManager)BanSystem.getInstance().getPlayerManager());
             }else {
                 BungeeCord.getInstance().getPluginManager().registerListener(this,this.subServerConnection);
                 BungeeCord.getInstance().getPluginManager().registerListener(this,(BungeeCordPlayerManager)BanSystem.getInstance().getPlayerManager());
@@ -125,6 +123,16 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
         if(event.getColor() != null) color = event.getColor();
         return color;
     }
+    public void broadcastLocal(Broadcast broadcast){
+        if(broadcast == null) return;
+        for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
+            if(broadcast.getPermission() == null || broadcast.getPermission().length() == 0|| player.hasPermission(broadcast.getPermission())){
+                NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
+                player.sendMessage(GeneralUtil.replaceTextComponent(Messages.BROADCAST_FORMAT_SEND.replace("[prefix]",Messages.PREFIX_NETWORK)
+                        ,"[message]",broadcast.build(networkPlayer)));
+            }
+        }
+    }
 
     public String getProxyName(){
         return "Proxy-1";
@@ -174,6 +182,7 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
             });
             BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerLogoutEvent(player,System.currentTimeMillis(),onThisServer,reports));
         }else if(cause == NetworkPlayerUpdateCause.BAN){
+            BanSystem.getInstance().getHistoryManager().clearCache();
             List<Report> reports = properties.getObject("reports",new TypeToken<List<Report>>(){}.getType());
             BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerBanEvent(player
                     ,System.currentTimeMillis(),onThisServer,properties.getObject("ban", Ban.class)));
