@@ -29,7 +29,7 @@ public class TempmuteCommand extends NetworkCommand {
             return;
         }
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
-        if(player != null){
+        if(player == null){
             sender.sendMessage(Messages.PLAYER_NOT_FOUND
                     .replace("[prefix]",getPrefix())
                     .replace("[player]",args[0]));

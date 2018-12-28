@@ -157,6 +157,7 @@ public class Messages {
     public static String UNBAN_HELP_HEADER;
     public static String UNBAN_HELP_REASON;
     public static String UNBAN_HELP_HELP;
+    public static String UNBAN_NOTALLOWED;
 
     public static String REPORT_HELP_HEADER;
     public static String REPORT_HELP_REASON;

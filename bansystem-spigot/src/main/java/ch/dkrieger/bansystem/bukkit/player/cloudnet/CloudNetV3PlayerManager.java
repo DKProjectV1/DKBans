@@ -49,6 +49,10 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
         return new ArrayList<>(this.externalPlayers.values());
     }
 
+    /*
+
+    If you have a good Idea for a new future, create a
+     */
     @Override
     public void removeOnlinePlayerFromCache(OnlineNetworkPlayer player) {
         this.externalPlayers.remove(player.getUUID());

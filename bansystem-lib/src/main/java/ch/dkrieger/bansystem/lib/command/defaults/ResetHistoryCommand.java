@@ -14,7 +14,7 @@ import java.util.List;
 public class ResetHistoryCommand extends NetworkCommand {
 
     public ResetHistoryCommand() {
-        super("resethistory");
+        super("resethistory","","dkbans.history.reset");
         setPrefix(Messages.PREFIX_BAN);
     }
     @Override

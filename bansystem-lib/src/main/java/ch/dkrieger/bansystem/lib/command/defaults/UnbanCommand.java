@@ -8,6 +8,7 @@ import ch.dkrieger.bansystem.lib.config.mode.BanMode;
 import ch.dkrieger.bansystem.lib.config.mode.UnbanMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
+import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
 import ch.dkrieger.bansystem.lib.reason.ReportReason;
 import ch.dkrieger.bansystem.lib.reason.UnbanReason;
@@ -99,6 +100,22 @@ public class UnbanCommand extends NetworkCommand {
             sender.sendMessage(network);
             sender.sendMessage(chat);
             return;
+        }else if(!player.isBanned(type)){
+            sender.sendMessage(Messages.PLAYER_NOT_BANNED
+                    .replace("[prefix]",getPrefix())
+                    .replace("[player]",args[0]));
+            return;
+        }
+        if(!sender.hasPermission("dkbans.unban.all")){
+            Ban ban = null;
+            if(type != null) ban = player.getBan(type);
+            else ban = player.getBan((player.isBanned(BanType.NETWORK))?BanType.NETWORK:BanType.CHAT);
+            if(!ban.getStaff().equals(sender.getUUID().toString())){
+                sender.sendMessage(Messages.UNBAN_NOTALLOWED
+                        .replace("[player]",player.getColoredName())
+                        .replace("[prefix]",getPrefix()));
+                return;
+            }
         }
 
         if((type == null || type == BanType.NETWORK) &&  player.isBanned(BanType.NETWORK)){

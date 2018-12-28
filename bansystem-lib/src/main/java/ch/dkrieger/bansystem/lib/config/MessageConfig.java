@@ -121,7 +121,8 @@ public class MessageConfig extends SimpleConfig{
                 "&8» &e/bc reload &8| &7Reload all broadcast\n&8» &e/bc list &8| &7List all broadcasts" +
                 "\n&8» &e/bc direct <message> &8| &7Send a direct message\n" +
                 "&8» &e/bc create <message> &8| &7Create a broadcast\n&8» &e/bc <id> info &8| &7Show ths broadcast\n&8» &e/bc <id> send &8| &7Send this broadcast\n" +
-                "&8» &e/bc <id> delete &8| &7Delete a message\n&8» &e/bc <id> setClick <type> <message> &8| &7Set a click to a message\n" +
+                "&8» &e/bc <id> delete &8| &7Delete a broadcast\n&8» &e/bc <id> setHover <type> <message> &8| &7Set a hover message" +
+                "\n&8» &e/bc <id> setClick <type> <message> &8| &7Set a click to a message\n" +
                 "&8» &e/bc <id> setMessage <message> &8| &7Change the message\n&8» &e/bc <id> addMessage <message> &8| &7Add a message\n" +
                 "&8» &e/bc <id> setPermission <permission> &8| &7Set a permission\n&8» &e/bc <id> setAuto <true/false> &8| &7Set a broadcast to auto");
         Messages.BROADCAST_RELOADED = addAndGetMessageValue("broadcast.reloaded","[prefix]&7Reloaded all broadcasts");
@@ -192,6 +193,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.UNBAN_HELP_HEADER = addAndGetMessageValue("unban.help.header","[prefix]&6Unban Administration");
         Messages.UNBAN_HELP_HELP = addAndGetMessageValue("unban.help.help","[prefix]&cUsage&8: &7 /unban <player> <reason> ");
         Messages.UNBAN_HELP_REASON = addAndGetMessageValue("unban.help.reason"," &8- &c[id] &8| &c[reason]");
+        Messages.UNBAN_NOTALLOWED = addAndGetMessageValue("unban.notallowed","[prefix]&cYou are not allowed to unban this player.");
 
         Messages.REPORT_HELP_HEADER = addAndGetMessageValue("report.help.header","[prefix]&6Report Administration");
         Messages.REPORT_HELP_REASON = addAndGetMessageValue("report.help.reason","&8- &c[id] &8| &c[reason]");

@@ -1,5 +1,6 @@
 package ch.dkrieger.bansystem.lib.storage.sql;
 
+import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.config.Config;
 import ch.dkrieger.bansystem.lib.filter.Filter;
@@ -9,9 +10,12 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineSession;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLog;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLogEntry;
+import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.History;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.HistoryEntry;
+import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
+import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
 import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.stats.NetworkStats;
 import ch.dkrieger.bansystem.lib.stats.PlayerStats;
@@ -19,12 +23,16 @@ import ch.dkrieger.bansystem.lib.storage.DKBansStorage;
 import ch.dkrieger.bansystem.lib.storage.StorageType;
 import ch.dkrieger.bansystem.lib.storage.sql.query.ColumnType;
 import ch.dkrieger.bansystem.lib.storage.sql.query.QueryOption;
+import ch.dkrieger.bansystem.lib.storage.sql.query.SelectQuery;
 import ch.dkrieger.bansystem.lib.storage.sql.table.Table;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import com.google.gson.reflect.TypeToken;
+import com.sun.org.apache.regexp.internal.RE;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class SQLDKBansStorage implements DKBansStorage {
@@ -32,6 +40,7 @@ public class SQLDKBansStorage implements DKBansStorage {
     private Config config;
     private SQL sql;
     private Table players, chatlogs, histories, reports, filters, broadcasts,onlineSessions, networkstats;
+    private boolean v1Detected;
 
     public SQLDKBansStorage(Config config) {
         this.config = config;
@@ -43,6 +52,7 @@ public class SQLDKBansStorage implements DKBansStorage {
         boolean connect = sql.connect();
 
         if(connect){
+
             players = new Table(sql,"DKBans_players");
             chatlogs = new Table(sql,"DKBans_chatlogs");
             histories = new Table(sql,"DKBans_histories");
@@ -51,6 +61,9 @@ public class SQLDKBansStorage implements DKBansStorage {
             broadcasts = new Table(sql,"DKBans_broadcasts");
             networkstats = new Table(sql,"DKBans_networkstats");
             onlineSessions = new Table(sql,"DKBans_onlinesessions");
+
+            if(sql instanceof MySQL) tryTranslateFromV1ToV2();
+
             try{
                 players.create().create("id",ColumnType.INT,QueryOption.NOT_NULL,QueryOption.PRIMARY_KEY,QueryOption.AUTO_INCREMENT)
                         .create("uuid",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
@@ -140,6 +153,7 @@ public class SQLDKBansStorage implements DKBansStorage {
                             .insert("bans").insert("mutes").insert("unbans").insert("kicks").value(0).value(0).value(0)
                             .value(0).value(0).value(0).value(0).value(0).execute();
                 }
+                if(v1Detected) translateFromV1ToV2();
             }catch (Exception exception){
                 exception.printStackTrace();
                 connect = false;
@@ -552,5 +566,133 @@ public class SQLDKBansStorage implements DKBansStorage {
     public void updateNetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks) {
         networkstats.update().set("logins",logins).set("reports",reports).set("reportsAccepted",reportsAccepted).set("messages",messages)
                 .set("bans",bans).set("mutes",mutes).set("unbans",unbans).set("kicks",kicks).execute();
+    }
+
+    private void tryTranslateFromV1ToV2(){
+        try{
+            this.players.select("SELECT 1 FROM DKBans_autobroadcast LIMIT 1;");
+            System.out.println(Messages.SYSTEM_PREFIX+"Translating DKbansV1 mysql tables to DKBansV2, please wait.");
+            v1Detected = true;
+            this.players.execute("RENAME TABLE `DKBans_players` TO `DKBans_playersOld`");
+
+            this.players.execute("DROP TABLE IF EXISTS `DKBans_reports`");
+            this.players.execute("DROP TABLE IF EXISTS `DKBans_chatlog`");
+
+        }catch (Exception ignored){
+            ignored.printStackTrace();
+        }
+    }
+    private void translateFromV1ToV2(){
+        Table playersOld = new Table(sql,"DKBans_playersOld");
+        Table historyOld = new Table(sql,"DKBans_history");
+        Table autobroadcastOld = new Table(sql,"DKBans_autobroadcast");
+        Table filterOld = new Table(sql,"DKBans_filter");
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy kk:mm");
+        Map<UUID,NetworkPlayer> players = new HashMap<>();
+        try{
+            playersOld.select().execute(result -> {
+                try{
+                    while(result.next()){
+                        NetworkPlayer player = new NetworkPlayer(-1,UUID.fromString(result.getString("uuid")),result.getString("name")
+                                ,result.getString("color"),result.getString("ip"),result.getString("country")
+                                ,dateFormat.parse(result.getString("lastlogin")).getTime()
+                                ,dateFormat.parse(result.getString("firstlogin")).getTime(),result.getLong("onlinetime")
+                                ,result.getBoolean("bypass"),result.getBoolean("teamchatlogin")
+                                ,result.getBoolean("reportlogin"),null,new Document(),null,null,null);
+                        players.put(player.getUUID(),player);
+                        createPlayer(player);
+                    }
+                }catch (Exception exception){
+                    System.out.println("Could not translate players");
+                    exception.printStackTrace();
+                }
+                return null;
+            });
+            List<UUID> banned = new ArrayList<>();
+            List<UUID> muted = new ArrayList<>();
+            long yet = System.currentTimeMillis();
+            historyOld.select().execute(result -> {
+                try{
+                    while(result.next()){
+                        long timeStamp = dateFormat.parse(result.getString("date")).getTime();
+                        NetworkPlayer player = players.get(UUID.fromString(result.getString("playeruuid")));
+                        if(player == null) continue;
+                        switch (result.getString("historytype")){
+                            case "KICK":
+                                createHistoryEntry(player,new Kick(player.getUUID(),player.getIP(),result.getString("reason")
+                                        ,"",timeStamp,-1,0,-1
+                                        ,result.getString("staffuuid"),new Document(),"Unknown"));
+                                break;
+                            case "NETWORKBAN":
+                                long timeOut = timeStamp+result.getLong("duration");
+                                if(timeOut > yet) banned.add(player.getUUID());
+                                createHistoryEntry(player,new Ban(player.getUUID(),player.getIP(),result.getString("reason")
+                                        ,"",timeStamp,-1,0,-1,result.getString("staffuuid")
+                                        ,new Document(),timeOut,BanType.NETWORK));
+                                break;
+                            case "CHATBAN":
+                                long timeOut2 = timeStamp+result.getLong("duration");
+                                if(timeOut2 > yet) muted.add(player.getUUID());
+                                createHistoryEntry(player,new Ban(player.getUUID(),player.getIP(),result.getString("reason")
+                                        ,"",timeStamp,-1,0,-1,result.getString("staffuuid")
+                                        ,new Document(),timeOut2,BanType.CHAT));
+                                break;
+                            case "UNBAN":
+                                if(result.getString("staffuuid").equalsIgnoreCase("AutoUnban")) continue;
+                                if(banned.contains(player.getUUID())){
+                                    createHistoryEntry(player,new Unban(player.getUUID(),player.getIP(),result.getString("reason")
+                                            ,"",timeStamp,-1,0,-1,result.getString("staffuuid")
+                                            ,new Document(),BanType.NETWORK));
+                                }
+                                if(muted.contains(player.getUUID())){
+                                    createHistoryEntry(player,new Unban(player.getUUID(),player.getIP(),result.getString("reason")
+                                            ,"",timeStamp,-1,0,-1,result.getString("staffuuid")
+                                            ,new Document(),BanType.CHAT));
+                                }
+                                break;
+                        }
+                    }
+                }catch (Exception exception){
+                    System.out.println("Could not translate history");
+                    exception.printStackTrace();
+                }
+                return null;
+            });
+            autobroadcastOld.select().execute(result -> {
+                try{
+                    while(result.next()){
+                        createBroadcast(new Broadcast(-1,result.getString("message"),null,null,System.currentTimeMillis()
+                                ,System.currentTimeMillis(),true,new Broadcast.Click("", Broadcast.ClickType.URL)));
+                    }
+                }catch (Exception exception){
+                    System.out.println("Could not translate autobroadcasts.");
+                    exception.printStackTrace();
+                }
+                return null;
+            });
+            filterOld.select().execute(result -> {
+                try{
+                    while(result.next()){
+                        createFilter(new Filter(-1,result.getString("message"),FilterOperation.CONTAINS
+                                ,FilterType.valueOf(result.getString("filtertype"))));
+                    }
+                }catch (Exception exception){
+                    System.out.println("Could not translate filters.");
+                    exception.printStackTrace();
+                }
+                return null;
+            });
+
+        }catch (Exception exception){
+            exception.printStackTrace();
+        }
+        this.players.execute("RENAME TABLE `DKBans_history` TO `DKBans_historyOld`");
+        this.players.execute("RENAME TABLE `DKBans_autobroadcast` TO `DKBans_autobroadcastOld`");
+        this.players.execute("RENAME TABLE `DKBans_filter` TO `DKBans_filterOld`");
+        this.players.execute("RENAME TABLE `DKBans_bans` TO `DKBans_bansOld`");
+
+        System.out.println(Messages.SYSTEM_PREFIX+"Translating finished.");
+
     }
 }

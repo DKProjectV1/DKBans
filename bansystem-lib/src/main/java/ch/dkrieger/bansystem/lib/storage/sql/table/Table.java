@@ -49,6 +49,9 @@ public class Table {
     public SelectQuery select(String selection){
         return new SelectQuery(sql, "SELECT "+selection+" FROM `"+this.name+"`");
     }
+    public void execute(String query){
+        new ExecuteQuery(sql,query).execute();
+    }
 
     public DeleteQuery delete(){
         return new DeleteQuery(sql, "DELETE FROM `"+this.name+"`");
