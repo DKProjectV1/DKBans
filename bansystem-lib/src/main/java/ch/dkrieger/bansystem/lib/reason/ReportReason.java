@@ -20,6 +20,6 @@ public class ReportReason extends KickReason{
     }
 
     public Report toReport(NetworkPlayer player, UUID reporter, String message, String server){
-        return new Report(player.getUUID(),null,reporter,getDisplay(),message,server,System.currentTimeMillis(),getID());
+        return new Report(player.getUUID(),null,reporter,getRawDisplay(),message,server,System.currentTimeMillis(),getID());
     }
 }

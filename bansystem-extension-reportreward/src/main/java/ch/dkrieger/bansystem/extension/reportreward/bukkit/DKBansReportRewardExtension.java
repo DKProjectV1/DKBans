@@ -25,7 +25,7 @@ public class DKBansReportRewardExtension extends JavaPlugin implements Listener 
     @EventHandler
     public void onAcceptedReport(BukkitNetworkPlayerReportsAcceptEvent event){
         for(Report report : event.getReport()){
-            Player player = Bukkit.getPlayer(report.getReporteUUID());
+            Player player = Bukkit.getPlayer(report.getReporterUUID());
             if(player != null){
                 player.sendMessage(config.reportRewardMessage.replace("[prefix]", Messages.PREFIX_BAN)
                         .replace("[coin-prefix]",MessageManager.getInstance().prefix)

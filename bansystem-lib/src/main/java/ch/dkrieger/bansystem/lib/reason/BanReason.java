@@ -76,6 +76,6 @@ public class BanReason extends KickReason {
             points = getPoints();
 
         }
-        return new Ban(player.getUUID(),player.getIP(),getDisplay(),message,System.currentTimeMillis(),-1,points,getID(),staff,new Document(),timeOut,type);
+        return new Ban(player.getUUID(),player.getIP(),getRawDisplay(),message,System.currentTimeMillis(),-1,points,getID(),staff,new Document(),timeOut,type);
     }
 }

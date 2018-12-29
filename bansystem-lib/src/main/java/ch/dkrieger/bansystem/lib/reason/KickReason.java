@@ -66,6 +66,6 @@ public class KickReason {
         return this.name.equalsIgnoreCase(alias) ||this.aliases.contains(alias);
     }
     public Kick toKick(NetworkPlayer player,String message,String server, String staff){
-        return new Kick(player.getUUID(),player.getIP(),getDisplay(),message,System.currentTimeMillis(),-1,points,getID(),staff,new Document(),server);
+        return new Kick(player.getUUID(),player.getIP(),getRawDisplay(),message,System.currentTimeMillis(),-1,points,getID(),staff,new Document(),server);
     }
 }

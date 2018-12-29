@@ -350,7 +350,7 @@ public class NetworkPlayer {
      * @return The report, which is created by this reporter
      */
     public Report getReport(UUID reporter){
-        return GeneralUtil.iterateOne(this.reports, object -> object.getReporteUUID().equals(reporter));
+        return GeneralUtil.iterateOne(this.reports, object -> object.getReporterUUID().equals(reporter));
     }
 
     /**
@@ -520,8 +520,8 @@ public class NetworkPlayer {
         BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(()->{
             NetworkPlayer staff = ban.getStaffAsPlayer();
             if(staff != null){
-                if(ban.getBanType() == BanType.CHAT) staff.addStatsBaned();
-                else staff.addStatsMuted();
+                if(ban.getBanType() == BanType.CHAT) staff.addStatsMuted();
+                else staff.addStatsBaned();
             }
             for(Report report : reports){
                 BanSystem.getInstance().getTempSyncStats().addReportsAccepted();

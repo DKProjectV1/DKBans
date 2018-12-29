@@ -42,9 +42,9 @@ public class ConsoleKickCommand extends NetworkCommand {
             }else{
                 System.out.println(Messages.SYSTEM_PREFIX+"This is a simple addon for banning, kicking or unbanning a " +
                         "player from the console with a special staff member (Example: AntiCheat)\n\n\t-> /cKick <player> <reason> <staffName> <message>" +
-                        "\n\nAs reason you can use a id or a custom reason\n\t-> Do not forgot syncing all reasons in you network (Config files).");
+                        "\n\nAs reason you can use a id or a custom reason\n\n\t-> Do not forgot syncing all reasons in you network (Config files).");
             }
-        }else sender.sendMessage(Messages.HELP.replace("[prefix]",Messages.PREFIX_NETWORK));
+        }else sender.sendMessage(Messages.CHAT_FILTER_COMMAND.replace("[prefix]",Messages.PREFIX_NETWORK));
     }
 
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {

@@ -69,7 +69,9 @@ public class BroadcastCommand extends NetworkCommand {
         Broadcast broadcast = null;
         if(GeneralUtil.isNumber(args[0])) broadcast = BanSystem.getInstance().getBroadcastManager().getBroadcast(Integer.valueOf(args[0]));
         if(broadcast == null){
-            sender.sendMessage(Messages.BROADCAST_NOTFOUND_BROADCAST.replace("[prefix]",getPrefix()));
+            sender.sendMessage(Messages.BROADCAST_NOTFOUND_BROADCAST
+                    .replace("[id]",args[0])
+                    .replace("[prefix]",getPrefix()));
             return;
         }
         if(args[1].equalsIgnoreCase("delete")){

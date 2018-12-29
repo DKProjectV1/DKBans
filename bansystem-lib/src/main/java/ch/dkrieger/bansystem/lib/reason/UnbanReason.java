@@ -53,7 +53,7 @@ public class UnbanReason extends KickReason{
     public Unban toUnban(BanType type, NetworkPlayer player, String message, String staff){
         if(removeDuration == null || durationDivider == 0) return new Unban(player.getUUID(),player.getIP(),getDisplay(),message,System.currentTimeMillis(),-1,getPoints(),getID(),staff,new Document(),type);
         else{
-            return new Unban(player.getUUID(),player.getIP(),getDisplay(),message,System.currentTimeMillis(),-1,getPoints(),getID(),staff,new Document(),type);
+            return new Unban(player.getUUID(),player.getIP(),getRawDisplay(),message,System.currentTimeMillis(),-1,getPoints(),getID(),staff,new Document(),type);
         }
     }
 }

@@ -431,7 +431,7 @@ public class SQLDKBansStorage implements DKBansStorage {
     public void createReport(Report report) {
         reports.insert().insert("uuid").insert("reporter").insert("staff").insert("reason").insert("message")
                 .insert("reportedServer").insert("reasonID").insert("time")
-                .value(report.getUUID().toString()).value(report.getReporteUUID().toString())
+                .value(report.getUUID().toString()).value(report.getReporterUUID().toString())
                 .value(report.getStaff()==null?"":report.getStaff().toString()).value(report.getReason()).value(report.getMessage())
                 .value(report.getReportedServer()).value(report.getReasonID()).value(report.getTimeStamp()).execute();
     }
@@ -572,17 +572,17 @@ public class SQLDKBansStorage implements DKBansStorage {
         try{
             this.players.select("SELECT 1 FROM DKBans_autobroadcast LIMIT 1;");
             System.out.println(Messages.SYSTEM_PREFIX+"Translating DKbansV1 mysql tables to DKBansV2, please wait.");
-            v1Detected = true;
             this.players.execute("RENAME TABLE `DKBans_players` TO `DKBans_playersOld`");
 
             this.players.execute("DROP TABLE IF EXISTS `DKBans_reports`");
             this.players.execute("DROP TABLE IF EXISTS `DKBans_chatlog`");
-
-        }catch (Exception ignored){
-            ignored.printStackTrace();
-        }
+            v1Detected = true;
+            return;
+        }catch (Exception ignored){}
+        v1Detected = false;
     }
     private void translateFromV1ToV2(){
+        if(!v1Detected) return;
         Table playersOld = new Table(sql,"DKBans_playersOld");
         Table historyOld = new Table(sql,"DKBans_history");
         Table autobroadcastOld = new Table(sql,"DKBans_autobroadcast");

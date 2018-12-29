@@ -215,7 +215,7 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
             List<Report> reports = properties.getObject("reports",new TypeToken<List<Report>>(){}.getType());
             List<UUID> sentStaffs = new ArrayList<>();
             GeneralUtil.iterateForEach(reports, object -> {
-                Player reporter = Bukkit.getPlayer(object.getReporteUUID());
+                Player reporter = Bukkit.getPlayer(object.getReporterUUID());
                 if(reporter != null) sendTextComponent(reporter,new TextComponent(Messages.REPORT_LEAVED_USER
                         .replace("[player]",object.getPlayer().getColoredName())
                         .replace("[prefix]",Messages.PREFIX_REPORT)));
@@ -239,7 +239,7 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
             if(reports.size() > 0){
                 List<UUID> sentStaffs = new ArrayList<>();
                 GeneralUtil.iterateForEach(reports, object -> {
-                    Player reporter = Bukkit.getPlayer(object.getReporteUUID());
+                    Player reporter = Bukkit.getPlayer(object.getReporterUUID());
                     if(reporter != null) sendTextComponent(reporter,new TextComponent(Messages.REPORT_ACCEPTED
                             .replace("[player]",object.getPlayer().getColoredName())
                             .replace("[prefix]",Messages.PREFIX_REPORT)));
@@ -275,7 +275,7 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
             List<Report> reports = properties.getObject("reports",new TypeToken<List<Report>>(){}.getType());
             List<UUID> sentStaffs = new ArrayList<>();
             GeneralUtil.iterateForEach(reports, object -> {
-                Player reporter = Bukkit.getPlayer(object.getReporteUUID());
+                Player reporter = Bukkit.getPlayer(object.getReporterUUID());
                 if(reporter != null) sendTextComponent(reporter,new TextComponent(Messages.REPORT_DENIED_USER
                         .replace("[player]",object.getPlayer().getColoredName())
                         .replace("[prefix]",Messages.PREFIX_REPORT)));

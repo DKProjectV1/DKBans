@@ -63,7 +63,7 @@ public class LocalBungeeCordOnlinePlayer implements OnlineNetworkPlayer {
 
     @Override
     public void connect(String server) {
-        ServerInfo serverInfo = BungeeCord.getInstance().getServerInfo(player.getName());
+        ServerInfo serverInfo = BungeeCord.getInstance().getServerInfo(server);
         if(serverInfo != null && !(player.getServer().getInfo().equals(serverInfo))) player.connect(serverInfo);
     }
 

@@ -20,42 +20,45 @@ public class ConsoleBanCommand extends NetworkCommand {
 
     public void onExecute(NetworkCommandSender sender, String[] args) {
         if(sender.getUUID() == null){
-            NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
-            if(player == null){
-                System.out.println(Messages.SYSTEM_PREFIX+"This player was not found.");
-                return;
-            }
-            if(args.length >= 5){
-                BanType type;
-                try{
-                    type = BanType.valueOf(args[1].toUpperCase());
-                }catch (Exception exception){
-                    System.out.println(Messages.SYSTEM_PREFIX+"Invalid ban type, use Chat or Network.");
+            if(args.length > 1){
+                NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
+                if(player == null){
+                    System.out.println(Messages.SYSTEM_PREFIX+"This player was not found.");
                     return;
                 }
-                String message = "";
-                for(int i = 6;i < args.length;i++) message += args[i]+" ";
-                player.ban(type,GeneralUtil.convertToMillis(Long.valueOf(args[3]),args[4]),TimeUnit.MILLISECONDS
-                        ,args[2],message,-1,args[5]);
-                System.out.println(Messages.SYSTEM_PREFIX+"The player was banned for "+args[2]);
-            }else if(args.length >= 3 && GeneralUtil.isNumber(args[1])){
-                BanReason reason = BanSystem.getInstance().getReasonProvider().getBanReason(args[1]);
-                if(reason == null){
-                    System.out.println(Messages.SYSTEM_PREFIX+"Ban reason not found.");
+                if(args.length >= 5){
+                    BanType type;
+                    try{
+                        type = BanType.valueOf(args[1].toUpperCase());
+                    }catch (Exception exception){
+                        System.out.println(Messages.SYSTEM_PREFIX+"Invalid ban type, use Chat or Network.");
+                        return;
+                    }
+                    String message = "";
+                    for(int i = 6;i < args.length;i++) message += args[i]+" ";
+                    player.ban(type,GeneralUtil.convertToMillis(Long.valueOf(args[3]),args[4]),TimeUnit.MILLISECONDS
+                            ,args[2],message,-1,args[5]);
+                    System.out.println(Messages.SYSTEM_PREFIX+"The player was banned for "+args[2]);
+                    return;
+                }else if(args.length >= 3 && GeneralUtil.isNumber(args[1])){
+                    BanReason reason = BanSystem.getInstance().getReasonProvider().searchBanReason(args[1]);
+                    if(reason == null){
+                        System.out.println(Messages.SYSTEM_PREFIX+"Ban reason not found.");
+                        return;
+                    }
+                    String message = "";
+                    for(int i = 3;i < args.length;i++) message += args[i]+" ";
+                    player.ban(reason,message,args[2]);
+                    System.out.println(Messages.SYSTEM_PREFIX+"The player was banned for "+reason.getName());
                     return;
                 }
-                String message = "";
-                for(int i = 3;i < args.length;i++) message += args[i]+" ";
-                player.ban(reason,message,args[2]);
-                System.out.println(Messages.SYSTEM_PREFIX+"The player was banned for "+reason.getName());
-                return;
             }
             System.out.println(Messages.SYSTEM_PREFIX+"This is a simple addon for banning, kicking or unbanning a " +
                     "player from the console with a special staff member (Example: AntiCheat)\n\n\t-> /cBan <player> <reasonID> <staffName> <message>" +
                     "\n\t-> /cBan <player> <banType> <reason> <duration> <unit> <staffName> <message>" +
-                    "\n\nAs reason you can use a id or a custom reason\n\t-> Do not forgot syncing all reasons in you network (Config files).");
+                    "\n\nAs reason you can use a id or a custom reason\n\n\t-> Do not forgot syncing all reasons in you network (Config files).");
 
-        }else sender.sendMessage(Messages.HELP.replace("[prefix]",Messages.PREFIX_NETWORK));
+        }else sender.sendMessage(Messages.CHAT_FILTER_COMMAND.replace("[prefix]",Messages.PREFIX_NETWORK));
     }
 
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {

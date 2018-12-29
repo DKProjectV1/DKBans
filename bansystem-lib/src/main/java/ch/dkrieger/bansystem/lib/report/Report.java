@@ -3,6 +3,7 @@ package ch.dkrieger.bansystem.lib.report;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -34,10 +35,13 @@ public class Report {
     public UUID getStaff() {
         return staff;
     }
-    public UUID getReporteUUID() {
+    public UUID getReporterUUID() {
         return reporter;
     }
     public String getReason() {
+        return ChatColor.translateAlternateColorCodes('&',reason);
+    }
+    public String getRwaReason() {
         return reason;
     }
 

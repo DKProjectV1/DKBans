@@ -5,6 +5,7 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import ch.dkrieger.bansystem.lib.utils.RuntimeTypeAdapterFactory;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.HashMap;
@@ -50,9 +51,11 @@ public abstract class HistoryEntry {
     }
 
     public String getReason() {
+        return ChatColor.translateAlternateColorCodes('&',reason);
+    }
+    public String getRawReason() {
         return reason;
     }
-
     public String getMessage() {
         return message;
     }

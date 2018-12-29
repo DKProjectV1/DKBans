@@ -45,7 +45,7 @@ public class ExecuteQuery extends Query {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }finally {
             try {
                 if(sql instanceof MySQL) connection.close();

@@ -51,7 +51,7 @@ public class JumptoCommand extends NetworkCommand {
                     .replace("[server]",online.getServer()));
             return;
         }
-        sender.sendMessage(Messages.SERVER_CONNECTING);
+        sender.sendMessage(Messages.SERVER_CONNECTING.replace("[prefix]",getPrefix()));
         sender.getAsOnlineNetworkPlayer().connect(online.getServer());
     }
     @Override

@@ -7,7 +7,7 @@
     <groupId>ch.dkrieger.bansystem</groupId>
     <artifactId>DKBans</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <modules>
         <module>bansystem-lib</module>
         <module>bansystem-bungeecord</module>
@@ -15,6 +15,7 @@
         <module>bansystem-extension-banbroadcast</module>
         <module>bansystem-extension-reportreward</module>
         <module>bansystem-extension-consolecommand</module>
+        <module>bansystem-extension-restapi</module>
     </modules>
 
     <build>

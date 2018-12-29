@@ -26,6 +26,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -42,13 +44,13 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     private MongoClient mongoClient;
     private MongoDatabase database;
 
-    private MongoCollection playerCollection, chatlogCollection, historyCollection, reportCollection, filterCollection, broadcastCollection, networkStatsCollection;
+    private MongoCollection<Document> playerCollection, chatlogCollection, historyCollection, reportCollection, filterCollection, broadcastCollection, networkStatsCollection;
 
     public MongoDBDKBansStorage(Config config) {
         this.config = config;
     }
     @Override
-    public boolean connect() {
+    public boolean connect() {//Indexes.descending("name")
         String uri = "mongodb"+(config.mongoDbSrv?"+srv":"")+"://";
         if(config.mongoDbAuthentication) uri += config.storageUser+":"+config.storagePassword+"@";
         uri += config.storageHost+"/";
@@ -58,14 +60,34 @@ public class MongoDBDKBansStorage implements DKBansStorage {
 
         this.mongoClient = new MongoClient(new MongoClientURI(uri));
         this.database = this.mongoClient.getDatabase(config.storageDatabase);
-        this.playerCollection = database.getCollection("DKBans_players");
-        this.chatlogCollection = database.getCollection("DKBans_chatlogs");
-        this.broadcastCollection = database.getCollection("DKBans_broadcasts");
-        this.historyCollection = database.getCollection("DKBans_historys");
-        this.reportCollection = database.getCollection("DKBans_reports");
-        this.filterCollection = database.getCollection("DKBans_filters");
-        this.networkStatsCollection = database.getCollection("DKBans_networkstats");
+        this.playerCollection = database.getCollection("DKBans_players",Document.class);
+        this.chatlogCollection = database.getCollection("DKBans_chatlogs",Document.class);
+        this.broadcastCollection = database.getCollection("DKBans_broadcasts",Document.class);
+        this.historyCollection = database.getCollection("DKBans_historys",Document.class);
+        this.reportCollection = database.getCollection("DKBans_reports",Document.class);
+        this.filterCollection = database.getCollection("DKBans_filters",Document.class);
+        this.networkStatsCollection = database.getCollection("DKBans_networkstats",Document.class);
 
+        try{this.playerCollection.createIndex(Indexes.descending("id"),new IndexOptions().unique(true)); }catch (Exception exception){}
+        try{this.historyCollection.createIndex(Indexes.descending("id"),new IndexOptions().unique(true)); }catch (Exception exception){}
+        try{this.filterCollection.createIndex(Indexes.descending("id"),new IndexOptions().unique(true)); }catch (Exception exception){}
+        try{this.broadcastCollection.createIndex(Indexes.descending("id"),new IndexOptions().unique(true)); }catch (Exception exception){}
+
+        if(this.playerCollection.countDocuments() == 0)
+            this.playerCollection.insertOne(new Document("name","DKBansUniquePlayerIDCounter").append("counterNext",1));
+
+        if(this.historyCollection.countDocuments() == 0)
+            this.historyCollection.insertOne(new Document("name","DKBansUniqueHistoryIDCounter").append("counterNext",1));
+
+        if(this.filterCollection.countDocuments() == 0)
+            this.filterCollection.insertOne(new Document("name","DKBansUniqueFilterIDCounter").append("counterNext",1));
+
+        if(this.broadcastCollection.countDocuments() == 0)
+            this.broadcastCollection.insertOne(new Document("name","DKBansUniqueBroadcastIDCounter").append("counterNext",1));
+
+        if(this.networkStatsCollection.countDocuments() == 0){
+            MongoDBUtil.insertOne(networkStatsCollection,new NetworkStats());
+        }
         return true;
     }
     @Override
@@ -74,12 +96,11 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     }
     @Override
     public boolean isConnected() {
-        MongoDatabase database = mongoClient.getDatabase(config.storageDatabase);
-        org.bson.Document serverStatus = database.runCommand(new org.bson.Document("serverStatus", 1));
-        Map connections = (Map) serverStatus.get("connections");
-        Integer current = (Integer) connections.get("current");
-        System.out.println(current);
-        return true;
+        try{
+            playerCollection.countDocuments();
+            return true;
+        }catch (Exception exception){}
+        return false;
     }
 
     @Override
@@ -104,42 +125,48 @@ public class MongoDBDKBansStorage implements DKBansStorage {
         }
         return player;
     }
-
     @Override
     public void saveStaffSettings(UUID player, boolean report, boolean teamchat) {
+        System.out.println("update staff login");
         this.playerCollection.updateOne(eq("uuid",player.toString()),new Document("$set"
                 ,new Document("teamChatLogin",teamchat).append("reportLogin",report)));
     }
 
     @Override
     public void updatePlayerProperties(UUID uuid, ch.dkrieger.bansystem.lib.utils.Document properties) {
-
+        this.playerCollection.updateOne(eq("uuid",uuid.toString()),new Document("$set"
+                ,new Document("properties",properties)));
     }
 
     @Override
     public List<NetworkPlayer> getPlayersByIp(String ip) {
-        return null;//"$in
+        List<NetworkPlayer> players = MongoDBUtil.find(this.playerCollection,eq("lastIP",ip),NetworkPlayer.class);
+        GeneralUtil.iterateForEach(players, player -> {
+            player.setHistory(getHistory(player.getUUID()));
+            player.setReports(MongoDBUtil.find(reportCollection,eq("uuid",player.getUUID().toString()),Report.class));
+        });
+        return players;
     }
 
     @Override
     public int getRegisteredPlayerCount() {
-        return Integer.valueOf(String.valueOf(playerCollection.countDocuments()));
+        return Integer.valueOf(String.valueOf(playerCollection.countDocuments()-1));
     }
 
     @Override
     public HistoryEntry getHistoryEntry(int id) {
-        return null;
+        return MongoDBUtil.findFirst(this.historyCollection,eq("id",id),HistoryEntry.class);
     }
 
     @Override
     public int createPlayer(NetworkPlayer player) {
-        player.setID(getRegisteredPlayerCount()+1);
-        MongoDBUtil.insertOne(this.playerCollection,player);
-
+        Document result = playerCollection.findOneAndUpdate(eq("name","DKBansUniquePlayerIDCounter")
+                ,new Document("$inc",new Document("counterNext",1)));
+        int id = result.getInteger("counterNext");
+        player.setID(id);
         Document document = MongoDBUtil.toDocument(player);
         document.remove("history");
         document.remove("reports");
-
         playerCollection.insertOne(document);
         return player.getID();
     }
@@ -167,7 +194,7 @@ public class MongoDBDKBansStorage implements DKBansStorage {
 
     @Override
     public void setColor(UUID player, String color) {
-
+        this.playerCollection.updateOne(eq("uuid",player.toString()),new Document("$set",new Document("color",color)));
     }
 
     @Override
@@ -177,8 +204,9 @@ public class MongoDBDKBansStorage implements DKBansStorage {
 
     @Override
     public int createHistoryEntry(NetworkPlayer player, HistoryEntry entry) {
-        entry.setID(Integer.valueOf(String.valueOf(this.historyCollection.countDocuments()+1)));
-        //MongoDBUtil.insertOne(this.historyCollection,entry);
+        Document result = historyCollection.findOneAndUpdate(eq("name","DKBansUniqueHistoryIDCounter")
+                ,new Document("$inc",new Document("counterNext",1)));
+        entry.setID(result.getInteger("counterNext"));
         historyCollection.insertOne(Document.parse(GeneralUtil.GSON.toJson(entry,new TypeToken<HistoryEntry>(){}.getType())));
         return entry.getID();
     }
@@ -191,7 +219,6 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     @Override
     public List<Report> getReports() {
         return MongoDBUtil.findALL(this.reportCollection,Report.class);
-
     }
 
     @Override
@@ -212,22 +239,25 @@ public class MongoDBDKBansStorage implements DKBansStorage {
 
     @Override
     public List<Ban> getBans() {
-        return null;
+        return MongoDBUtil.find(this.historyCollection,eq("historyAdapterType","BAN"),Ban.class);
     }
 
     @Override
     public List<Ban> getNotTimeOutedBans() {
-        return null;
+        return MongoDBUtil.find(this.historyCollection,and(eq("historyAdapterType","BAN")
+                ,gt("timeOut",System.currentTimeMillis())),Ban.class);
     }
 
     @Override
     public List<Filter> loadFilters() {
-        return MongoDBUtil.findALL(this.filterCollection,Filter.class);
+        return MongoDBUtil.find(this.filterCollection,not(eq("name","DKBansUniqueFilterIDCounter")),Filter.class);
     }
 
     @Override
     public int createFilter(Filter filter) {
-        filter.setID(Integer.valueOf(String.valueOf(filterCollection.countDocuments()+1)));
+        Document result = filterCollection.findOneAndUpdate(eq("name","DKBansUniqueFilterIDCounter")
+                ,new Document("$inc",new Document("counterNext",1)));
+        filter.setID(result.getInteger("counterNext"));
         MongoDBUtil.insertOne(this.filterCollection,filter);
         return filter.getID();
     }
@@ -239,12 +269,14 @@ public class MongoDBDKBansStorage implements DKBansStorage {
 
     @Override
     public List<Broadcast> loadBroadcasts() {
-        return MongoDBUtil.findALL(this.filterCollection,Broadcast.class);
+        return MongoDBUtil.find(this.broadcastCollection,not(eq("name","DKBansUniqueBroadcastIDCounter")),Broadcast.class);
     }
 
     @Override
     public int createBroadcast(Broadcast broadcast) {
-        broadcast.setID(Integer.valueOf(String.valueOf(broadcastCollection.countDocuments()+1)));
+        Document result = broadcastCollection.findOneAndUpdate(eq("name","DKBansUniqueBroadcastIDCounter")
+                ,new Document("$inc",new Document("counterNext",1)));
+        broadcast.setID(result.getInteger("counterNext"));
         MongoDBUtil.insertOne(this.broadcastCollection,broadcast);
         return broadcast.getID();
     }
@@ -268,36 +300,43 @@ public class MongoDBDKBansStorage implements DKBansStorage {
 
     @Override
     public void createOnlineSession(NetworkPlayer player, OnlineSession session) {
-
+        this.playerCollection.updateOne(eq("uuid",player.getUUID().toString()),new Document("$push"
+                ,new Document("onlineSessions",MongoDBUtil.toDocument(session))));
     }
 
     @Override
     public void finishStartedOnlineSession(UUID uuid, long login, long logout, String server) {
-
+        this.playerCollection.updateOne(and(eq("uuid",uuid.toString()),eq("onlineSessions.connected",login))
+                ,new Document("$set",new Document("onlineSessions.$.disconnected",logout).append("onlineSessions.$.lastServer",server)));
     }
 
     @Override
     public void updatePlayerLoginInfos(UUID player, String name, long lastLogin, String color, boolean bypass, String lastIP, String lastCountry, long logins) {
-
+        this.playerCollection.updateOne(eq("uuid",player.toString()),new Document("$set"
+                ,new Document("lastLogin",lastLogin).append("lastIP",lastIP).append("lastCountry",lastCountry).append("color",color)
+                .append("bypass",bypass).append("lastCountry",lastCountry).append("stats.logins",logins)));
     }
 
     @Override
     public void updatePlayerLogoutInfos(UUID player, long lastLogin, long onlineTime, String color, boolean bypass, long messages) {
-
+        this.playerCollection.updateOne(eq("uuid",player.toString()),new Document("$set"
+                ,new Document("lastLogin",lastLogin).append("onlineTime",onlineTime).append("color",color)
+                .append("bypass",bypass).append("stats.messages",messages)));
     }
 
     @Override
     public void updatePlayerStats(UUID uuid, PlayerStats stats) {
-
+       playerCollection.updateOne(eq("uuid",uuid.toString()),new Document("$set",new Document("stats",MongoDBUtil.toDocument(stats))));
     }
 
     @Override
     public void deleteOldChatLog(long before) {
-
+        chatlogCollection.deleteMany(lt("time",before));
     }
 
     @Override
     public void updateNetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks) {
-
+        MongoDBUtil.replaceOne(networkStatsCollection,new Document(),new NetworkStats(logins, reports, reportsAccepted
+                , messages, bans, mutes, bans, kicks));
     }
 }

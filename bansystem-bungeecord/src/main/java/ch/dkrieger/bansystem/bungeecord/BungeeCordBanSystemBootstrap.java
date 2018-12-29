@@ -165,7 +165,7 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
             List<Report> reports = properties.getObject("reports",new TypeToken<List<Report>>(){}.getType());
             List<UUID> sentStaffs = new ArrayList<>();
             GeneralUtil.iterateForEach(reports, object -> {
-                ProxiedPlayer reporter = BungeeCord.getInstance().getPlayer(object.getReporteUUID());
+                ProxiedPlayer reporter = BungeeCord.getInstance().getPlayer(object.getReporterUUID());
                 if(reporter != null) reporter.sendMessage(new TextComponent(Messages.REPORT_LEAVED_USER
                         .replace("[player]",object.getPlayer().getColoredName())
                         .replace("[prefix]",Messages.PREFIX_REPORT)));
@@ -189,7 +189,7 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
             if(reports.size() > 0){
                 List<UUID> sentStaffs = new ArrayList<>();
                 GeneralUtil.iterateForEach(reports, object -> {
-                    ProxiedPlayer reporter = BungeeCord.getInstance().getPlayer(object.getReporteUUID());
+                    ProxiedPlayer reporter = BungeeCord.getInstance().getPlayer(object.getReporterUUID());
                     if(reporter != null) reporter.sendMessage(new TextComponent(Messages.REPORT_ACCEPTED
                             .replace("[player]",object.getPlayer().getColoredName())
                             .replace("[prefix]",Messages.PREFIX_REPORT)));
@@ -225,7 +225,7 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
             List<Report> reports = properties.getObject("reports",new TypeToken<List<Report>>(){}.getType());
             List<UUID> sentStaffs = new ArrayList<>();
             GeneralUtil.iterateForEach(reports, object -> {
-                ProxiedPlayer reporter = BungeeCord.getInstance().getPlayer(object.getReporteUUID());
+                ProxiedPlayer reporter = BungeeCord.getInstance().getPlayer(object.getReporterUUID());
                 if(reporter != null) reporter.sendMessage(new TextComponent(Messages.REPORT_DENIED_USER
                         .replace("[player]",object.getPlayer().getColoredName())
                         .replace("[prefix]",Messages.PREFIX_REPORT)));

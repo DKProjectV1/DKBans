@@ -232,6 +232,7 @@ public class BanSystem {
         return this.cachedNetworkStats;
     }
     public NetworkStats getTempSyncStats() {
+        if(this.tempSyncStats == null) this.tempSyncStats = new NetworkStats();
         return tempSyncStats;
     }
 

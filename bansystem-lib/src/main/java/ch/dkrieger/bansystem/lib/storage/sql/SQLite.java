@@ -35,7 +35,7 @@ public class SQLite extends SQL {
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("Driver is not available ("+e.getMessage()+")");
         }
     }
 

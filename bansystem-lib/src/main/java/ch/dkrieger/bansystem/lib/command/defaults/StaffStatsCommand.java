@@ -12,6 +12,7 @@ public class StaffStatsCommand extends NetworkCommand {
 
     public StaffStatsCommand() {
         super("staffstats","","dkbans.staffstats");
+        setPrefix(Messages.PREFIX_BAN);
     }
 
     @Override
