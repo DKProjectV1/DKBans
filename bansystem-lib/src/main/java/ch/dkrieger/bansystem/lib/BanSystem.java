@@ -54,14 +54,20 @@ public class BanSystem {
 
         Properties properties = new Properties();
         try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("dkperms.properties"));
+            properties.load(getClass().getClassLoader().getResourceAsStream("dkbans.properties"));
             this.version = properties.getProperty("version");
         } catch (Exception exception) {
-            System.out.println(Messages.SYSTEM_PREFIX+"Could not load DKBans plugin build information");
+            System.out.println(Messages.SYSTEM_PREFIX+"Could not load DKBans plugin build information.");
             this.version = "Unknown";
         }
         System.out.println(Messages.SYSTEM_PREFIX+"plugin is starting");
         System.out.println(Messages.SYSTEM_PREFIX+"BanSystem "+this.version+" by Davide Wietlisbach");
+
+        systemBootstrap();
+
+        System.out.println(Messages.SYSTEM_PREFIX+"plugin successfully started");
+
+
         new HistoryEntry(UUID.randomUUID(), "", "", "", 0L, 0, 0, 1, "", null) {
             @Override
             public String getTypeName() {
@@ -78,10 +84,6 @@ public class BanSystem {
                 return null;
             }
         };
-
-        systemBootstrap();
-
-        System.out.println(Messages.SYSTEM_PREFIX+"plugin successfully started");
     }
     private void systemBootstrap(){
         this.config = new Config(this.platform);
@@ -145,6 +147,7 @@ public class BanSystem {
         if(this.config.commandTempban) getCommandManager().registerCommand(new TempbanCommand());
         if(this.config.commandTempmute) getCommandManager().registerCommand(new TempmuteCommand());
         if(this.config.commandUnban) getCommandManager().registerCommand(new UnbanCommand());
+        if(this.config.commandStaffstats) getCommandManager().registerCommand(new StaffStatsCommand());
         getCommandManager().registerCommand(new DKBansCommand());
 
         if(config.autobroadcastEnabled)

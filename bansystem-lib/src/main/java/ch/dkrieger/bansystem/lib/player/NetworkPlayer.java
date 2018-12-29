@@ -625,6 +625,14 @@ public class NetworkPlayer {
         return unban(type,reason,message,0,-1);
     }
 
+    public Unban unban(BanType type, String reason, String message, UUID staff) {
+        return unban(type,reason,message,0,-1,staff==null?"Console":staff.toString());
+    }
+
+    public Unban unban(BanType type, String reason, String message,String staff) {
+        return unban(type,reason,message,0,-1,staff);
+    }
+
     public Unban unban(BanType type, String reason, String message, int points) {
         return unban(type,reason,message,points,-1);
     }

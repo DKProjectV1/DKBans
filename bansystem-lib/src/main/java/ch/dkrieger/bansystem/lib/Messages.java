@@ -223,6 +223,9 @@ public class Messages {
 
     public static String NETWORK_STATS;
 
+    public static String STAFFSTATS_HELP;
+    public static String STAFFSTATS_INFO;
+
     public static boolean JOINME_HEAD;
     public static String JOINME_COOLDOWN;
     public static String JOINME_NOTFOUND;

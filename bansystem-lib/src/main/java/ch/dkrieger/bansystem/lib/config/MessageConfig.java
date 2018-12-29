@@ -45,7 +45,7 @@ public class MessageConfig extends SimpleConfig{
 
         Messages.TIME_FINISH = addAndGetMessageValue("time.finish","-");
 
-        Messages.SERVER_NOT_FOUND = addAndGetMessageValue("server.notfound","[prefix]&cThe server &9[server] &cwas not found.");
+        Messages.SERVER_NOT_FOUND = addAndGetMessageValue("server.notfound","[prefix]&cThe server &c[server] &cwas not found.");
         Messages.SERVER_ALREADY = addAndGetMessageValue("server.already","[prefix]&cYou are already connected to this server.");
         Messages.SERVER_CONNECTING = addAndGetMessageValue("server.connecting","[prefix]&7Connecting to server...");
 
@@ -126,8 +126,8 @@ public class MessageConfig extends SimpleConfig{
                 "&8» &e/bc <id> setMessage <message> &8| &7Change the message\n&8» &e/bc <id> addMessage <message> &8| &7Add a message\n" +
                 "&8» &e/bc <id> setPermission <permission> &8| &7Set a permission\n&8» &e/bc <id> setAuto <true/false> &8| &7Set a broadcast to auto");
         Messages.BROADCAST_RELOADED = addAndGetMessageValue("broadcast.reloaded","[prefix]&7Reloaded all broadcasts");
-        Messages.BROADCAST_CREATED = addAndGetMessageValue("broadcast.created","[prefix]&7Create broadcast &9[id] &7with the message &9[message]");
-        Messages.BROADCAST_DELETED = addAndGetMessageValue("broadcast.deleted","[prefix]&7Deleted broadcast ");
+        Messages.BROADCAST_CREATED = addAndGetMessageValue("broadcast.created","[prefix]&7Create broadcast &c[id] &7with the message &c[message]");
+        Messages.BROADCAST_DELETED = addAndGetMessageValue("broadcast.deleted","[prefix]&7Broadcast &c[id] &7was deleted.");
         Messages.BROADCAST_LIST_HEADER = addAndGetMessageValue("broadcast.list.header","[prefix]&7Available broadcasts");
         Messages.BROADCAST_LIST_LIST = addAndGetMessageValue("broadcast.list.list","&8» &7[id] &8| &7[message]");
         Messages.BROADCAST_INFO = addAndGetMessageValue("broadcast.info","[prefix]&7Broadcast &c[id]" +
@@ -186,7 +186,7 @@ public class MessageConfig extends SimpleConfig{
                 "\n&8» &7ID&8: &c[id]\n&8» &7For type&8: &c[banType]\n&8» &7Reason&8: [reason] &8- &7[reasonID]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
                 "\n&8» &7Points&8: &c[points]\n&8» &7Time&8: &c[time]");
         Messages.HISTORY_RESET_ALL = addAndGetMessageValue("history.reset.all","[prefix]&7The history from &8[player] &7was reset.");
-        Messages.HISTORY_RESET_ONE = addAndGetMessageValue("history.reset.one","[prefix]&7The history entry &9[id] from [player] &7was reset.");
+        Messages.HISTORY_RESET_ONE = addAndGetMessageValue("history.reset.one","[prefix]&7The history entry &c[id] from [player] &7was reset.");
 
         Messages.ONLINE_TIME = addAndGetMessageValue("onlinetime","[prefix]&7Your online time is &c[time-short]");
 
@@ -212,7 +212,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.REPORT_LIST_NO = addAndGetMessageValue("report.list.no","[prefix]&cNo reports found.");
         Messages.REPORT_LIST_HEADER = addAndGetMessageValue("report.list.header","[prefix]&7Open reports Page &c[page]&8/&c[maxPage]");
         Messages.REPORT_LIST_LIST = addAndGetMessageValue("report.list.list","&8» &8[player] &8&l>> &e[reason] &8[&7Click&8]");
-        Messages.REPORT_INFO = addAndGetMessageValue("report.info","[prefix]&7At this moments are &9[size] &7Reports open.");
+        Messages.REPORT_INFO = addAndGetMessageValue("report.info","[prefix]&7At this moments are &c[size] &7Reports open.");
         Messages.REPORT_PROCESS_CONTROL_MESSAGE = addAndGetMessageValue("report.process.control.message","&8» [deny] [forReason] [otherReason]\n&7");//[deny] [forReason] [otherReason]
         Messages.REPORT_PROCESS_CONTROL_DENY = addAndGetMessageValue("report.process.control.deny","&8[&c&lDeny&8]");
         Messages.REPORT_PROCESS_CONTROL_FORREASON = addAndGetMessageValue("report.process.accept","&8[&a&lAccept&8]");
@@ -230,7 +230,8 @@ public class MessageConfig extends SimpleConfig{
 
         Messages.FILTER_HELP = addAndGetMessageValue("filter.help","[prefix] &6Filter Administration\n&8» &e/filter reload &8| &7Reload all filters" +
                 "\n&8» &e/filter list {type} &8| &7List all filters\n&8» &e/filter create <type> <message> {operation} &8| &7Create a filter" +
-                "\n&8» &e/filter delete <id> &8| &7Delete a filter");
+                "\n&8» &e/filter delete <id> &8| &7Delete a filter\n&8» &eTypes&8: &7Message, Promotion, Nickname, Command, MuteCommand" +
+                "\n&8» &eOperation&8: &7Contains, Equals, StartsWith, EndsWith");
         Messages.FILTER_RELOAD = addAndGetMessageValue("filter.reload","[prefix]&7Reloaded all filters.");
         Messages.FILTER_DELETE = addAndGetMessageValue("filter.delete","[prefix]&7The filter &c[id] &8- &c[word] &7for the type &c[type] &7was deleted.");
         Messages.FILTER_CREATE = addAndGetMessageValue("filter.create","[prefix]&7Created filter &c[id] &8- &c[word] &8(&c[operation]&8) &7for the type &c[type]&7.");
@@ -262,6 +263,10 @@ public class MessageConfig extends SimpleConfig{
         Messages.CHATLOG_SERVER_HEADER = addAndGetMessageValue("chatlog.server.header","[prefix]&7Chatlog from &9[server]");
         Messages.CHATLOG_SERVER_LIST_NORMAL = addAndGetMessageValue("chatlog.server.list.allowed","&8» &9[time] &8| &e[player]&8: &7[message]");
         Messages.CHATLOG_SERVER_LIST_BLOCKED = addAndGetMessageValue("chatlog.server.list.allowed","&8» &9[time] &8| &e[player]&8: &c[message]");
+
+        Messages.STAFFSTATS_HELP = addAndGetMessageValue("staffstats.help","[prefix]&cUsage&8: &7/staffStats <player>");
+        Messages.STAFFSTATS_INFO = addAndGetMessageValue("staffstats.info","[prefix]&cStaffStats from [player]"+
+                "\n&8» &7Bans&8: &c[bans]\n&8» &7Mutes&8: &c[mutes]\n&8» &7KIcks&8: &c[kicks]\n&8» &7Unbans&8: &c[unbans]");
 
         Messages.NETWORK_STATS = addAndGetMessageValue("networkstats","[prefix]&6Network stats&7\n&8» &7Players&8: &a[onlinePlayers]&8/&c[registeredPlayers]" +
                 "\n&8» &7Banned&8: &c[bans]\n&8» &7Muted&8: &c[mutes]\n&8» &7Kicked&8: &c[kicks]\n&8» &7Unbanned&8: &c[unbans]\n&8» &7Reported&8: &a[reportsAccepted]&8/&c[reports]" +

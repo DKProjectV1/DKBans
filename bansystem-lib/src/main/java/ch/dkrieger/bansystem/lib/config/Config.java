@@ -103,6 +103,7 @@ public class Config extends SimpleConfig{
     public boolean commandTeamchat;
     public boolean commandTempban;
     public boolean commandTempmute;
+    public boolean commandStaffstats;
 
     private DKBansPlatform platform;
 
@@ -215,5 +216,6 @@ public class Config extends SimpleConfig{
         this.commandTeamchat = addAndGetBooleanValue("command.teamchat.enabled",true);
         this.commandTempban = addAndGetBooleanValue("command.tempban.enabled",true);
         this.commandTempmute = addAndGetBooleanValue("command.tempmute.enabled",true);
+        this.commandStaffstats = addAndGetBooleanValue("command.staffstats.enabled",true);
     }
 }

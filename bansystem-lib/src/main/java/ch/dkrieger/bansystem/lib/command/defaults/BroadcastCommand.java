@@ -149,6 +149,7 @@ public class BroadcastCommand extends NetworkCommand {
             sender.sendMessage(Messages.BROADCAST_CHANGED_MESSAGE
                     .replace("[message]",broadcast.getMessage())
                     .replace("[id]",""+broadcast.getID())
+                    .replace("[id]",""+broadcast.getID())
                     .replace("[prefix]",getPrefix()));
             return;
         }else if(args[1].equalsIgnoreCase("addmessage")){

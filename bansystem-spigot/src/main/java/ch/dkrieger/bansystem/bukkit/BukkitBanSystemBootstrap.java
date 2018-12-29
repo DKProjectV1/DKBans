@@ -1,6 +1,7 @@
 package ch.dkrieger.bansystem.bukkit;
 
 import ch.dkrieger.bansystem.bukkit.event.*;
+import ch.dkrieger.bansystem.bukkit.hook.PlaceHolderApiHook;
 import ch.dkrieger.bansystem.bukkit.listener.BukkitPlayerListener;
 import ch.dkrieger.bansystem.bukkit.network.BukkitBungeeCordNetwork;
 import ch.dkrieger.bansystem.bukkit.player.bungeecord.BukkitBungeeCordPlayerManager;
@@ -87,6 +88,10 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
             }else{
                 Bukkit.getPluginManager().registerEvents(new BukkitPlayerListener(),this);
             }
+
+            Plugin placeHolderAPI = getServer().getPluginManager().getPlugin("PlaceholderAPI");
+            if(placeHolderAPI != null && placeHolderAPI.getDescription() != null) new PlaceHolderApiHook().hook();
+
             for(WaitingRunnable runnable : this.waitingRunnables){
                 if(runnable.type == WaitingRunnableType.ASYNC){
                     Bukkit.getScheduler().runTaskAsynchronously(this,runnable.runnable);
