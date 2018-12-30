@@ -4,10 +4,10 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.restapi.handler.RestApiHandler;
 
-public class NetworkInfo extends RestApiHandler {
+public class NetworkInfoHandler extends RestApiHandler {
 
-    public NetworkInfo() {
-        super("network");
+    public NetworkInfoHandler() {
+        super("networkinfo/");
     }
 
     @Override

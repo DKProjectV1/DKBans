@@ -106,6 +106,9 @@ public abstract class PlayerManager {
     public ChatLog getChatLog(String server){
         return BanSystem.getInstance().getStorage().getChatLog(server);
     }
+    public ChatLog getChatLog(UUID uuid, String server){
+        return BanSystem.getInstance().getStorage().getChatLog(uuid,server);
+    }
 
     public NetworkPlayer createPlayer(UUID uuid, String name, String ip){
         resetCachedCounts();

@@ -10,7 +10,7 @@ public enum FilterType {
 
     public static FilterType ParseNull(String parse){
         try{
-            return valueOf(parse);
+            return valueOf(parse.toUpperCase());
         }catch (Exception e){}
         return null;
     }

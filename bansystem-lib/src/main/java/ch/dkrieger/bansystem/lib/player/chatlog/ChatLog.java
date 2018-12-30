@@ -36,10 +36,10 @@ public class ChatLog {
     }
     public List<ChatLogEntry> getEntries(Filter filter){
         return GeneralUtil.iterateAcceptedReturn(this.entries, object ->
-                (filter.getServer() == null || object.getServer().equalsIgnoreCase(filter.getServer())
-                && (filter.getFilter() == null || object.getFilter().equals(filter.getFilter()))
-                && (filter.getFrom()) <= 0 || object.getTime() >= filter.getFrom())
-                && (filter.getTo() <= 0|| object.getTime() <= filter.getTo()));
+                (filter.getServer() == null || object.getServer().equalsIgnoreCase(filter.getServer()))
+                        && (filter.getFilter() == null || (object.getFilter() == null || object.getFilter().equals(filter.getFilter())))
+                        && (filter.getFrom() <= 0 || object.getTime() >= filter.getFrom())
+                        && (filter.getTo() <= 0|| object.getTime() <= filter.getTo()) );
     }
     public static class Filter {
 
@@ -48,6 +48,10 @@ public class ChatLog {
         private FilterType filter;
 
         public Filter() {}
+
+        public Filter(long from, long to, FilterType filtered) {
+            this(null,from,to,filtered);
+        }
 
         public Filter(String server, long from, long to, FilterType filtered) {
             this.server = server;

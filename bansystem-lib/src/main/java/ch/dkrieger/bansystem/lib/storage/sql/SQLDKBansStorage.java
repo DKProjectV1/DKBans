@@ -331,15 +331,19 @@ public class SQLDKBansStorage implements DKBansStorage {
 
     @Override
     public ChatLog getChatLog(UUID player) {
-        return getChatLog("uuid",player.toString());
+        return getChatLog(chatlogs.select().where("player",player.toString()));
     }
 
     @Override
     public ChatLog getChatLog(String server) {
-        return getChatLog("server",server);
+        return getChatLog(chatlogs.select().where("server",server));
     }
-    public ChatLog getChatLog(String key, String value){
-        return chatlogs.select().where(key,value).execute(result -> {
+    @Override
+    public ChatLog getChatLog(UUID player, String server) {
+        return getChatLog(chatlogs.select().where("server",server).where("player",player.toString()));
+    }
+    public ChatLog getChatLog(SelectQuery query){
+        return query.execute(result -> {
             List<ChatLogEntry> entries = new LinkedList<>();
             try{
                 while(result.next()){
@@ -352,7 +356,6 @@ public class SQLDKBansStorage implements DKBansStorage {
             return new ChatLog(entries);
         });
     }
-
 
     @Override
     public HistoryEntry getHistoryEntry(int id) {

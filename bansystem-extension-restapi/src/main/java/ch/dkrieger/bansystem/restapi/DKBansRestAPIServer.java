@@ -3,6 +3,9 @@ package ch.dkrieger.bansystem.restapi;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.restapi.handler.RestApiHandler;
+import ch.dkrieger.bansystem.restapi.handler.defaults.ChatLogHandler;
+import ch.dkrieger.bansystem.restapi.handler.defaults.FilterHandler;
+import ch.dkrieger.bansystem.restapi.handler.defaults.NetworkInfoHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
@@ -45,6 +48,11 @@ public class DKBansRestAPIServer {
                 .childOption(ChannelOption.AUTO_READ, true)
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childHandler(new DKBansChannelInitializer());
+
+        //Register default handlers
+        registerRestApiHandler(new FilterHandler());
+        registerRestApiHandler(new NetworkInfoHandler());
+        registerRestApiHandler(new ChatLogHandler());
     }
     public void registerRestApiHandler(RestApiHandler handler){
         this.handlers.put(handler.getPath(),handler);
@@ -93,8 +101,7 @@ public class DKBansRestAPIServer {
     private class DKBansChannelInitializer extends ChannelInitializer<Channel> {
         @Override
         protected void initChannel(Channel channel) throws Exception {
-            System.out.println(channel.remoteAddress()+" | "+channel.localAddress());
-            if(config.ipWhitelist.contains(channel.remoteAddress().toString())){
+            if(config.ipWhitelist.contains(channel.remoteAddress().toString().split(":")[0].replace("/",""))){
                 if(sslContext != null) channel.pipeline().addLast(sslContext.newHandler(channel.alloc()));
                 channel.pipeline().addLast("HttpServerCodec",new HttpServerCodec());
                 channel.pipeline().addLast("HttpObjectAggregator",new HttpObjectAggregator(Integer.MAX_VALUE));

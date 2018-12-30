@@ -143,6 +143,12 @@ public class JsonDKBansStorage implements DKBansStorage {
     }
 
     @Override
+    public ChatLog getChatLog(UUID player, String server) {
+        return new ChatLog(GeneralUtil.iterateAcceptedReturn(this.chatLogEntries, object -> object.getServer().equalsIgnoreCase(server)
+                && object.getUUID().equals(player)));
+    }
+
+    @Override
     public void createChatLogEntry(ChatLogEntry entry) {
         this.chatLogEntries.add(entry);
     }

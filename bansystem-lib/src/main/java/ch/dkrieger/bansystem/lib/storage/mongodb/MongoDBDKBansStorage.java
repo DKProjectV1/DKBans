@@ -184,6 +184,13 @@ public class MongoDBDKBansStorage implements DKBansStorage {
         List<ChatLogEntry> entries = MongoDBUtil.find(this.chatlogCollection,eq("server",server),ChatLogEntry.class);
         return new ChatLog(entries);
     }
+
+    @Override
+    public ChatLog getChatLog(UUID player, String server) {
+        List<ChatLogEntry> entries = MongoDBUtil.find(this.chatlogCollection,and(eq("server",server),eq("uuid",player.toString())),ChatLogEntry.class);
+        return new ChatLog(entries);
+    }
+
     @Override
     public History getHistory(UUID uuid) {
         List<HistoryEntry> entries = MongoDBUtil.find(this.historyCollection,eq("uuid",uuid.toString()),HistoryEntry.class);

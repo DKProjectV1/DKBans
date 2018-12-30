@@ -12,6 +12,7 @@ public abstract class RestApiHandler {
 
     public RestApiHandler(String path) {
         if(path.contains(".")) path = path.substring(0,path.indexOf("."));
+        if(!path.startsWith("/")) path = "/"+path;
         this.path = path;
     }
     public String getPath() {

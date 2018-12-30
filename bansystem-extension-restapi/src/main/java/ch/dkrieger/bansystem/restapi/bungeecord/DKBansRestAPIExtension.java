@@ -11,6 +11,7 @@ public class DKBansRestAPIExtension extends Plugin {
     @Override
     public void onEnable() {
         this.server = new DKBansRestAPIServer(new DKBansRestApiConfig());
+
         this.server.startAsync();
     }
     @Override

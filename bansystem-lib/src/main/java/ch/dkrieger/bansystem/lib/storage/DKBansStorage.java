@@ -57,6 +57,8 @@ public interface DKBansStorage {
 
     public ChatLog getChatLog(String server);
 
+    public ChatLog getChatLog(UUID player, String server);
+
     public void createChatLogEntry(ChatLogEntry entry);
 
     public void deleteOldChatLog(long before);

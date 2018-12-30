@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 **Version**
-Which version of DKBans are you using (example: 2.0.1)
+Which version of DKBans are you using (example: 2.0.0)
 
 **Platform**
 On which platform is DKBans running? (example: BungeeCord)

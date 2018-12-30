@@ -9,8 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ch.dkrieger.bansystem.extension.webinterface</groupId>
-    <artifactId>bansystem-extension-webinterface</artifactId>
+    <groupId>ch.dkrieger.bansystem.extension.gui</groupId>
+    <artifactId>bansystem-gui</artifactId>
 
 
 </project>
