@@ -11,15 +11,18 @@ public abstract class RestApiHandler {
     private final String path;
 
     public RestApiHandler(String path) {
+        if(path.contains(".")) path = path.substring(0,path.indexOf("."));
         this.path = path;
     }
-
+    public String getPath() {
+        return this.path;
+    }
     public abstract void onRequest(Query query, Document response);
 
-    public class Query {
+    public static class Query {
         private final Map<String,String> values;
 
-        private Query(URI uri){
+        public Query(URI uri){
             this.values = new LinkedHashMap<>();
             try{
                 String[] query = uri.getQuery().split("&");

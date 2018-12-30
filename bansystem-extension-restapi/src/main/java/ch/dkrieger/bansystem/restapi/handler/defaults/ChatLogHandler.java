@@ -24,17 +24,16 @@ public class ChatLogHandler extends RestApiHandler {
             if(chatLog == null){
                 response.append("code", ResponseCode.NO_CONTENT);
                 response.append("message","ChatLog not found");
-            }else{
-                response.append("entries",chatLog.getEntries());
-            }
+            }else response.append("entries",chatLog.getEntries());
+            return;
         }else if(query.contains("server")){
             ChatLog chatLog = BanSystem.getInstance().getPlayerManager().getChatLog(query.get("server"));
             if(chatLog == null){
                 response.append("code", ResponseCode.NO_CONTENT);
                 response.append("message","ChatLog not found");
-            }else{
-                response.append("entries",chatLog.getEntries());
-            }
+            }else response.append("entries",chatLog.getEntries());
+            return;
         }
+        response.append("code", ResponseCode.BAD_REQUEST).append("message","Invalid request");
     }
 }

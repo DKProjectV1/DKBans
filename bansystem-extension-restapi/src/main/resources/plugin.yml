@@ -1,0 +1,8 @@
+name: DKBansRestApiServer
+author: Davide Wietlisbach
+description: 
+version: ${project.version}
+api-version: 1.13
+
+main: ch.dkrieger.bansystem.restapi.bukkit.DKBansRestAPIExtension
+commands:
