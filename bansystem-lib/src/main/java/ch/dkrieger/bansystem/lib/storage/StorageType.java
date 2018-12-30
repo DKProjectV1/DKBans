@@ -10,9 +10,8 @@ public enum StorageType {
 
     public static StorageType parse(String name){
         try{
-            return valueOf(name);
+            return valueOf(name.toUpperCase());
         }catch (Exception exception){}
         return null;
     }
-
 }

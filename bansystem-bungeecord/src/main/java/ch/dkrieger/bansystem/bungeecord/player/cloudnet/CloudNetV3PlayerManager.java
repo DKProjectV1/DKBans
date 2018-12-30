@@ -143,13 +143,11 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
                 ProxiedPlayer player = BungeeCord.getInstance().getPlayer(uuid);
                 if(player != null){
                     int ping = player.getPing();
-                    System.out.println("get ping");
                     Wrapper.getInstance().sendChannelMessage("DKBans","pingResult",new de.dytanic.cloudnet.common.document.Document()
                             .append("uuid",uuid).append("ping",ping));
                 }
             }else if(event.getMessage().equalsIgnoreCase("pingResult")){
                 UUID uuid = event.getData().get("uuid",UUID.class);
-                System.out.println("ping result");
                 CloudNetV3OnlinePlayer.PINGGETTER.put(uuid,event.getData().getInt("ping"));
             }else if(event.getMessage().equalsIgnoreCase("connect")){
                 ProxiedPlayer player = BungeeCord.getInstance().getPlayer(event.getData().get("uuid",UUID.class));
@@ -167,7 +165,6 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
                     player.disconnect(kick.toMessage());
                 }
             }else if(event.getMessage().equalsIgnoreCase("sendBan")){
-                System.out.println("sending Ban");
                 ProxiedPlayer player = BungeeCord.getInstance().getPlayer(event.getData().get("uuid",UUID.class));
                 if(player != null){
                     Ban ban = event.getData().get("ban", Ban.class);

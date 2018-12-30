@@ -146,6 +146,7 @@ public class MessageConfig extends SimpleConfig{
 
         Messages.JUMPTO_HELP = addAndGetMessageValue("jumpto.help","[prefix]&cUsage&8: &7 /jumpto <player>");
 
+        Messages.JOINME_HEAD = addAndGetBooleanValue("joinme.head","joinme.head");
         Messages.JOINME_COOLDOWN = addAndGetMessageValue("joinme.cooldown","[prefix]&cWait a moment before sending the next joinme.");
         Messages.JOINME_NOTFOUND = addAndGetMessageValue("joinme.notfound","[prefix]&cThis Joinme was not found.");
         Messages.JOINME_NOTALLOWEDONSERVER = addAndGetMessageValue("joinme.notallowedonserver","[prefix]&cYou can not send a joinme on this server.");

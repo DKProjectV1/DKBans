@@ -16,6 +16,7 @@
         <module>bansystem-extension-reportreward</module>
         <module>bansystem-extension-consolecommand</module>
         <module>bansystem-extension-restapi</module>
+        <module>bansystem-extension-webinterface</module>
     </modules>
 
     <build>
