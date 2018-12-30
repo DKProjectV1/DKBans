@@ -22,6 +22,7 @@ package ch.dkrieger.bansystem.lib.storage;
 
 import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.filter.Filter;
+import ch.dkrieger.bansystem.lib.player.IPBan;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineSession;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLog;
@@ -106,6 +107,14 @@ public interface DKBansStorage {
 
     @SuppressWarnings("This methode is dangerous, it (can) return many datas and have a long delay.")
     public List<Ban> getBans();
+
+    public IPBan getIpBan(String ip);
+
+    public void banIp(IPBan ipBan);
+
+    public void unbanIp(String ip);
+
+    public void unbanIp(UUID lastPlayer);
 
     public List<Filter> loadFilters();
 

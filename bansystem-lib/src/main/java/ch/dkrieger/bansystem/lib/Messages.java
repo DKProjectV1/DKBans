@@ -226,6 +226,15 @@ public class Messages {
     public static String IPINFO_PLAYER_MUTED;
     public static String IPINFO_PLAYER_BANNED;
 
+    public static String IPBAN_HELP;
+    public static String IPBAN_SUCCESS;
+    public static String IPBAN_INFO;
+    public static String IPBAN_NOT_BANNED;
+    public static String IPBAN_ALREADY_BANNED;
+
+    public static String IPUNBAN_HELP;
+    public static String IPUNBAN_SUCCESS;
+
     public static String CHATLOG_HELP;
     public static String CHATLOG_NOTFOUND;
     public static String CHATLOG_PLAYER_HEADER;
@@ -252,6 +261,8 @@ public class Messages {
     public static String JOINME_LINE6;
     public static String JOINME_LINE7;
     public static String JOINME_LINE8;
+    public static String JOINME_LINE9;
+    public static String JOINME_LINE10;
 
 
 }

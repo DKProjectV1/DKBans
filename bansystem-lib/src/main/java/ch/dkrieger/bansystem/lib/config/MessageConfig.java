@@ -166,18 +166,20 @@ public class MessageConfig extends SimpleConfig{
 
         Messages.JUMPTO_HELP = addAndGetMessageValue("jumpto.help","[prefix]&cUsage&8: &7 /jumpto <player>");
 
-        Messages.JOINME_HEAD = addAndGetBooleanValue("joinme.head","joinme.head");
+        Messages.JOINME_HEAD = addAndGetBooleanValue("joinme.head",true);
         Messages.JOINME_COOLDOWN = addAndGetMessageValue("joinme.cooldown","[prefix]&cWait a moment before sending the next joinme.");
         Messages.JOINME_NOTFOUND = addAndGetMessageValue("joinme.notfound","[prefix]&cThis Joinme was not found.");
         Messages.JOINME_NOTALLOWEDONSERVER = addAndGetMessageValue("joinme.notallowedonserver","[prefix]&cYou can not send a joinme on this server.");
         Messages.JOINME_LINE1 = addAndGetMessageValue("joinme.line.1","&6");
         Messages.JOINME_LINE2 = addAndGetMessageValue("joinme.line.2","&6");
         Messages.JOINME_LINE3 = addAndGetMessageValue("joinme.line.3","&6");
-        Messages.JOINME_LINE4 = addAndGetMessageValue("joinme.line.4","  [player] &7is playing on &e[server]");
-        Messages.JOINME_LINE5= addAndGetMessageValue("joinme.line.5","           &7Click to join");
-        Messages.JOINME_LINE6 = addAndGetMessageValue("joinme.line.6","&6");
+        Messages.JOINME_LINE4 = addAndGetMessageValue("joinme.line.4","&6");
+        Messages.JOINME_LINE5 = addAndGetMessageValue("joinme.line.5","  [player] &7is playing on &e[server]");
+        Messages.JOINME_LINE6= addAndGetMessageValue("joinme.line.6","           &7Click to join");
         Messages.JOINME_LINE7 = addAndGetMessageValue("joinme.line.7","&6");
         Messages.JOINME_LINE8 = addAndGetMessageValue("joinme.line.8","&6");
+        Messages.JOINME_LINE9 = addAndGetMessageValue("joinme.line.9","&6");
+        Messages.JOINME_LINE10 = addAndGetMessageValue("joinme.line.10","&6");
 
         Messages.TEAMCHAT_HELP = addAndGetMessageValue("teamchat.help","[prefix]&cUsage&8: &7 /teamchat <message>");
         Messages.TEAMCHAT_MESSAGE_COLOR = addAndGetMessageValue("teamchat.message.color","&7");
@@ -275,6 +277,16 @@ public class MessageConfig extends SimpleConfig{
         Messages.IPINFO_PLAYER_OFFLINE = addAndGetMessageValue("ipinfo.player.offline","&cOffline");
         Messages.IPINFO_PLAYER_MUTED = addAndGetMessageValue("ipinfo.player.muted","&6Muted");
         Messages.IPINFO_PLAYER_BANNED = addAndGetMessageValue("ipinfo.player.banned","&cBanned");
+
+        Messages.IPBAN_HELP = addAndGetMessageValue("ipban.help","[prefix]&cUsage&8: &7/ipban <ip/player> {duration} {unit}");
+        Messages.IPBAN_SUCCESS = addAndGetMessageValue("ipban.success","[prefix]&7The ip &c[ip] &7was banned.");
+        Messages.IPBAN_INFO = addAndGetMessageValue("ipban.info","[prefix]&7Ipban from &c[ip]" +
+                "\n&8» &7Duration&8: &c[duration]\n&8» &7Remaining&8: &c[remaining-short]\n&8» &7Time&8: &c[time]\n&8» &7TimeOut&8: &c[timeOut]");
+        Messages.IPBAN_NOT_BANNED = addAndGetMessageValue("ipban.notbanned","[prefix]&7This ip is not banned.");
+        Messages.IPBAN_ALREADY_BANNED = addAndGetMessageValue("ipban.alreadybanned","[prefix]&7This ip is already banned.");
+
+        Messages.IPUNBAN_HELP = addAndGetMessageValue("ipunban.help","[prefix]&cUsage&8: &7/ipunban <ip>");
+        Messages.IPUNBAN_SUCCESS = addAndGetMessageValue("ipunban.success","[prefix]&7The ip &c[ip] &7was unbanned.");
 
         Messages.CHATLOG_HELP = addAndGetMessageValue("chatlog.help","[prefix]&cUsage&8: &7/chatlog player/server <player/server>");
         Messages.CHATLOG_NOTFOUND = addAndGetMessageValue("chatlog.notfound","[prefix]&cThe chatlog was not found.");

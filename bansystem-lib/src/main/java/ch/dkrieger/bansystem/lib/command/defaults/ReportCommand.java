@@ -190,7 +190,9 @@ public class ReportCommand extends NetworkCommand {
         }
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
         if(player == null){
-            sender.sendMessage(Messages.PLAYER_NOT_FOUND.replace("[prefix]",getPrefix()));
+            sender.sendMessage(Messages.PLAYER_NOT_FOUND
+                    .replace("[player]",args[0])
+                    .replace("[prefix]",getPrefix()));
             return;
         }
         if(player.hasBypass() && !(sender.hasPermission("dkbans.bypass.ignore"))){

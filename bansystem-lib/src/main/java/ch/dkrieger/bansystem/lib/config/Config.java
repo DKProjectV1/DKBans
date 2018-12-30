@@ -25,10 +25,14 @@ import ch.dkrieger.bansystem.lib.config.mode.BanMode;
 import ch.dkrieger.bansystem.lib.config.mode.KickMode;
 import ch.dkrieger.bansystem.lib.config.mode.ReportMode;
 import ch.dkrieger.bansystem.lib.config.mode.UnbanMode;
+import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.PlayerColor;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
+import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.storage.StorageType;
+import ch.dkrieger.bansystem.lib.utils.Document;
+import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import ch.dkrieger.bansystem.lib.utils.TabCompleteOption;
 import net.md_5.bungee.api.ChatColor;
 
@@ -38,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Config extends SimpleConfig{
 
@@ -102,6 +107,13 @@ public class Config extends SimpleConfig{
     public boolean autobroadcastSorted;
     public int autobroadcastDelay;
 
+    public long ipBanBanDuration;
+    public String ipBanBanReason;
+    public String ipBanBanSraff;
+    public int ipBanBanPoints;
+    public boolean ipBanOnBanEnabled;
+    public long ipBanOnBanDuration;
+
     public boolean commandBan;
     public boolean commandUnban;
     public boolean commandBaninfo;
@@ -124,6 +136,8 @@ public class Config extends SimpleConfig{
     public boolean commandTempban;
     public boolean commandTempmute;
     public boolean commandStaffstats;
+    public boolean commandIPban;
+    public boolean commandIPUnban;
 
     private DKBansPlatform platform;
 
@@ -215,6 +229,15 @@ public class Config extends SimpleConfig{
         this.autobroadcastSorted = addAndGetBooleanValue("autobroadcast.sorted",true);
         this.autobroadcastDelay = addAndGetIntValue("autobroadcast.delay",10);
 
+        this.ipBanBanDuration = GeneralUtil.convertToMillis(addAndGetLongValue("ipban.reason.duration.time",365)
+                , addAndGetStringValue("ipban.reason.duration.unit",TimeUnit.DAYS.toString()));
+        this.ipBanBanReason = addAndGetStringValue("ipban.reason.reason","AltAccount");
+        this.ipBanBanSraff = addAndGetStringValue("ipban.reason.staff","AltManager");
+        this.ipBanBanPoints = addAndGetIntValue("ipban.reason.points",40);
+        this.ipBanOnBanEnabled = addAndGetBooleanValue("ipban.onban.enabled",true);
+        this.ipBanOnBanDuration = GeneralUtil.convertToMillis(addAndGetLongValue("ipban.onban.duration.time",24)
+                , addAndGetStringValue("ipban.onban.duration.unit",TimeUnit.HOURS.toString()));
+
         this.commandBan = addAndGetBooleanValue("command.ban.enabled",true);
         this.commandUnban = addAndGetBooleanValue("command.unban.enabled",true);
         this.commandBaninfo = addAndGetBooleanValue("command.baninfo.enabled",true);
@@ -237,5 +260,11 @@ public class Config extends SimpleConfig{
         this.commandTempban = addAndGetBooleanValue("command.tempban.enabled",true);
         this.commandTempmute = addAndGetBooleanValue("command.tempmute.enabled",true);
         this.commandStaffstats = addAndGetBooleanValue("command.staffstats.enabled",true);
+        this.commandIPban = addAndGetBooleanValue("command.ipban.enabled",true);
+        this.commandIPUnban = addAndGetBooleanValue("command.ipunban.enabled",true);
+    }
+    public Ban createAltAccountBan(NetworkPlayer player, String ip){
+        return new Ban(player.getUUID(),ip,ipBanBanReason,"",System.currentTimeMillis(),-1,ipBanBanPoints,666
+                ,ipBanBanSraff,new Document(),System.currentTimeMillis()+ipBanBanDuration,BanType.NETWORK);
     }
 }

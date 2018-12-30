@@ -86,6 +86,14 @@ public class PlayerListener implements Listener {
             if(ban != null){
                 event.setCancelled(true);
                 event.setCancelReason(ban.toMessage());
+            }else{
+                if(BanSystem.getInstance().getPlayerManager().isIPBanned(event.getConnection().getAddress().getAddress().getHostAddress())){
+                    ban = BanSystem.getInstance().getConfig().createAltAccountBan(player,event.getConnection().getAddress().getAddress().getHostAddress());
+                    player.ban(ban,true);
+                    event.setCancelled(true);
+                    event.setCancelReason(new TextComponent(ban.toMessage()));
+                    return;
+                }
             }
         }
     }

@@ -23,6 +23,7 @@ package ch.dkrieger.bansystem.lib.storage.mongodb;
 import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.config.Config;
 import ch.dkrieger.bansystem.lib.filter.Filter;
+import ch.dkrieger.bansystem.lib.player.IPBan;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineSession;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLog;
@@ -58,7 +59,8 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     private MongoClient mongoClient;
     private MongoDatabase database;
 
-    private MongoCollection<Document> playerCollection, chatlogCollection, historyCollection, reportCollection, filterCollection, broadcastCollection, networkStatsCollection;
+    private MongoCollection<Document> playerCollection, chatlogCollection, historyCollection, reportCollection
+            , filterCollection, broadcastCollection, networkStatsCollection , ipBanCollection;
 
     public MongoDBDKBansStorage(Config config) {
         this.config = config;
@@ -81,6 +83,7 @@ public class MongoDBDKBansStorage implements DKBansStorage {
         this.reportCollection = database.getCollection("DKBans_reports",Document.class);
         this.filterCollection = database.getCollection("DKBans_filters",Document.class);
         this.networkStatsCollection = database.getCollection("DKBans_networkstats",Document.class);
+        this.ipBanCollection = database.getCollection("DKBans_ipbans",Document.class);
 
         try{this.playerCollection.createIndex(Indexes.descending("id"),new IndexOptions().unique(true)); }catch (Exception exception){}
         try{this.historyCollection.createIndex(Indexes.descending("id"),new IndexOptions().unique(true)); }catch (Exception exception){}
@@ -359,5 +362,25 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     public void updateNetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks) {
         MongoDBUtil.replaceOne(networkStatsCollection,new Document(),new NetworkStats(logins, reports, reportsAccepted
                 , messages, bans, mutes, bans, kicks));
+    }
+
+    @Override
+    public IPBan getIpBan(String ip) {
+        return MongoDBUtil.findFirst(this.ipBanCollection,eq("ip",ip),IPBan.class);
+    }
+
+    @Override
+    public void banIp(IPBan ipBan) {
+        MongoDBUtil.insertOne(ipBanCollection,ipBan);
+    }
+
+    @Override
+    public void unbanIp(String ip) {
+        MongoDBUtil.deleteOne(ipBanCollection,eq("ip",ip));
+    }
+
+    @Override
+    public void unbanIp(UUID lastPlayer) {
+        MongoDBUtil.deleteOne(ipBanCollection,eq("lastPlayer",lastPlayer.toString()));
     }
 }

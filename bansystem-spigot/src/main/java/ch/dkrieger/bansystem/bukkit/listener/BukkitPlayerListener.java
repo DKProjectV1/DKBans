@@ -79,6 +79,13 @@ public class BukkitPlayerListener implements Listener {
             Ban ban = player.getBan(BanType.NETWORK);
             if(ban != null){
                 event.disallow(PlayerLoginEvent.Result.KICK_BANNED,ban.toMessage().toLegacyText());
+            }else{
+                if(BanSystem.getInstance().getPlayerManager().isIPBanned(event.getPlayer().getAddress().getAddress().getHostAddress())){
+                    ban = BanSystem.getInstance().getConfig().createAltAccountBan(player,event.getPlayer().getAddress().getAddress().getHostAddress());
+                    player.ban(ban,true);
+                    event.disallow(PlayerLoginEvent.Result.KICK_BANNED,ban.toMessage().toLegacyText());
+                    return;
+                }
             }
         }
     }

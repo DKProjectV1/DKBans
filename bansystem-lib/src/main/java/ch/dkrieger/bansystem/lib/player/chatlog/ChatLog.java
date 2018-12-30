@@ -57,7 +57,7 @@ public class ChatLog {
     public List<ChatLogEntry> getEntries(Filter filter){
         return GeneralUtil.iterateAcceptedReturn(this.entries, object ->
                 (filter.getServer() == null || object.getServer().equalsIgnoreCase(filter.getServer()))
-                        && (filter.getFilter() == null || (object.getFilter() == null || object.getFilter().equals(filter.getFilter())))
+                        && (filter.getFilter() == null || (object.getFilter() != null && object.getFilter().equals(filter.getFilter())))
                         && (filter.getFrom() <= 0 || object.getTime() >= filter.getFrom())
                         && (filter.getTo() <= 0|| object.getTime() <= filter.getTo()) );
     }

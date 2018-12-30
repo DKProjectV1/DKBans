@@ -26,6 +26,7 @@ import ch.dkrieger.bansystem.lib.config.Config;
 import ch.dkrieger.bansystem.lib.filter.Filter;
 import ch.dkrieger.bansystem.lib.filter.FilterOperation;
 import ch.dkrieger.bansystem.lib.filter.FilterType;
+import ch.dkrieger.bansystem.lib.player.IPBan;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineSession;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLog;
@@ -59,7 +60,7 @@ public class SQLDKBansStorage implements DKBansStorage {
 
     private Config config;
     private SQL sql;
-    private Table players, chatlogs, histories, reports, filters, broadcasts,onlineSessions, networkstats;
+    private Table players, chatlogs, histories, reports, filters, broadcasts,onlineSessions, networkstats, ipbans;
     private boolean v1Detected;
 
     public SQLDKBansStorage(Config config) {
@@ -81,6 +82,7 @@ public class SQLDKBansStorage implements DKBansStorage {
             broadcasts = new Table(sql,"DKBans_broadcasts");
             networkstats = new Table(sql,"DKBans_networkstats");
             onlineSessions = new Table(sql,"DKBans_onlinesessions");
+            ipbans = new Table(sql,"DKBans_ipbans");
 
             if(sql instanceof MySQL) tryTranslateFromV1ToV2();
 
@@ -162,6 +164,11 @@ public class SQLDKBansStorage implements DKBansStorage {
                         .create("mutes",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("unbans",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("kicks",ColumnType.BIG_INT,QueryOption.NOT_NULL).execute();
+
+                this.ipbans.create().create("ip",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
+                        .create("lastPlayer",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
+                        .create("timeStamp",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                        .create("timeOut",ColumnType.BIG_INT,QueryOption.NOT_NULL).execute();
 
                 if(networkstats.select().execute("SELECT COUNT(*) FROM "+networkstats.getName(), result -> {
                     try{
@@ -591,6 +598,38 @@ public class SQLDKBansStorage implements DKBansStorage {
                 .set("bans",bans).set("mutes",mutes).set("unbans",unbans).set("kicks",kicks).execute();
     }
 
+    @Override
+    public IPBan getIpBan(String ip) {
+        return ipbans.select().where("ip",ip).execute(result -> {
+            try{
+                while(result.next()){
+                    return new IPBan(result.getString("lastPlayer").equalsIgnoreCase("NULL")?null
+                            :UUID.fromString(result.getString("lastPlayer"))
+                            ,result.getString("ip"),result.getLong("timeStamp")
+                            ,result.getLong("timeOut"));
+                }
+            }catch (Exception exception){}
+            return null;
+        });
+    }
+
+    @Override
+    public void banIp(IPBan ipBan) {
+        ipbans.insert().insert("ip").insert("timeStamp").insert("timeOut").insert("lastPlayer")
+                .value(ipBan.getIp()).value(ipBan.getTimeStamp()).value(ipBan.getTimeOut())
+                .value((ipBan.getLastPlayer()==null?"NULL":ipBan.getLastPlayer())).execute();
+    }
+
+    @Override
+    public void unbanIp(String ip) {
+        ipbans.delete().where("ip",ip).execute();
+    }
+
+    @Override
+    public void unbanIp(UUID lastPlayer) {
+        ipbans.delete().where("lastPlayer",lastPlayer.toString()).execute();
+    }
+
     private void tryTranslateFromV1ToV2(){
         try{
             this.players.select("SELECT 1 FROM DKBans_autobroadcast LIMIT 1;");
@@ -716,6 +755,5 @@ public class SQLDKBansStorage implements DKBansStorage {
         this.players.execute("RENAME TABLE `DKBans_bans` TO `DKBans_bansOld`");
 
         System.out.println(Messages.SYSTEM_PREFIX+"Translating finished.");
-
     }
 }

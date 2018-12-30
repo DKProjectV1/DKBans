@@ -141,6 +141,13 @@ public class Broadcast {
         COMMAND(),
         OPENCHAT();
 
+        public static ClickType parseNull(String parse){
+            try{
+                return valueOf(parse);
+            }catch (Exception exception){}
+            return null;
+        }
+
         public ClickEvent.Action toClickAction(){
             return (this==URL?ClickEvent.Action.OPEN_URL:(this==OPENCHAT?ClickEvent.Action.SUGGEST_COMMAND:ClickEvent.Action.RUN_COMMAND));
         }

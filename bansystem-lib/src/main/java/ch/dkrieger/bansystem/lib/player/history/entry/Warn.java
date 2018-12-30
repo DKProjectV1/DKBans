@@ -2,7 +2,7 @@
  * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 30.12.18 19:42
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -18,21 +18,31 @@
  * under the License.
  */
 
-package ch.dkrieger.bansystem.restapi.handler.defaults;
+package ch.dkrieger.bansystem.lib.player.history.entry;
 
-import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.utils.Document;
-import ch.dkrieger.bansystem.restapi.handler.RestApiHandler;
+import net.md_5.bungee.api.chat.TextComponent;
 
-public class NetworkInfoHandler extends RestApiHandler {
+import java.util.UUID;
 
-    public NetworkInfoHandler() {
-        super("networkinfo/");
+public class Warn extends HistoryEntry{
+
+    public Warn(UUID uuid, String ip, String reason, String message, long timeStamp, int id, int points, int reasonID, String staff, Document properties) {
+        super(uuid, ip, reason, message, timeStamp, id, points, reasonID, staff, properties);
     }
 
     @Override
-    public void onRequest(Query query, Document response) {
-        response.append("stats", BanSystem.getInstance().getNetworkStats())
-                .append("onlineCount",BanSystem.getInstance().getPlayerManager().getOnlineCount());
+    public String getTypeName() {
+        return "Warn";
+    }
+
+    @Override
+    public TextComponent getListMessage() {
+        return null;
+    }
+
+    @Override
+    public TextComponent getInfoMessage() {
+        return null;
     }
 }

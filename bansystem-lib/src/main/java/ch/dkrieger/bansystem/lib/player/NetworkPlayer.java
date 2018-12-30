@@ -533,6 +533,9 @@ public class NetworkPlayer {
         return ban(reason.toBan(this,message,staff));
     }
     public Ban ban(Ban ban){
+        return ban(ban,false);
+    }
+    public Ban ban(Ban ban, boolean noAltBan){
         final List<Report> reports = getReports();
         if(ban.getBanType() == BanType.CHAT) BanSystem.getInstance().getTempSyncStats().addMutes();
         else BanSystem.getInstance().getTempSyncStats().addBans();
@@ -548,6 +551,12 @@ public class NetworkPlayer {
                 report.getReporter().addStatsReportAccepted();
             }
         });
+        if(ban.getBanType() == BanType.NETWORK && !(noAltBan) && BanSystem.getInstance().getConfig().ipBanOnBanEnabled && !(lastIP.equalsIgnoreCase("Unknown"))){
+            BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(()->{
+                if(!BanSystem.getInstance().getPlayerManager().isIPBanned(lastIP))
+                    BanSystem.getInstance().getPlayerManager().banIp(lastIP,BanSystem.getInstance().getConfig().ipBanOnBanDuration,TimeUnit.MILLISECONDS,uuid);
+            });
+        }
         ban.setID(addToHistory(ban,NetworkPlayerUpdateCause.BAN,new Document().append("ban",ban).append("reports",this.reports)));
         this.reports.clear();
         OnlineNetworkPlayer player = getOnlinePlayer();
@@ -699,6 +708,9 @@ public class NetworkPlayer {
         BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(()->{
             NetworkPlayer staff = unban.getStaffAsPlayer();
             if(staff != null) staff.addStatsUnbanned();
+        });
+        BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(()->{
+            BanSystem.getInstance().getPlayerManager().unbanIp(uuid);
         });
         BanSystem.getInstance().getTempSyncStats().addUnbans();
         unban.setID(addToHistory(unban,NetworkPlayerUpdateCause.UNBAN));
