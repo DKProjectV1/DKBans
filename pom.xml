@@ -17,7 +17,7 @@
         <module>bansystem-extension-consolecommand</module>
         <module>bansystem-extension-restapi</module>
         <module>bansystem-extension-webinterface</module>
-        <module>bansystem-gui</module>
+        <module>bansystem-extension-gui</module>
     </modules>
 
     <build>
