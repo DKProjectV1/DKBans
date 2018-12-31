@@ -1,0 +1,13 @@
+name: DKBansGuiExtension
+author: Philipp Elvin Friedhoff
+version: ${guiextension.version}
+api-version: 1.13
+main: de.fridious.bansystem.extension.gui.DKBansGuiExtension
+softdepend:
+- DKBans
+commands:
+  dkbansguiextension:
+  playerinfo:
+    aliases: [pinfo]
+  ban:
+    aliases: [mute]

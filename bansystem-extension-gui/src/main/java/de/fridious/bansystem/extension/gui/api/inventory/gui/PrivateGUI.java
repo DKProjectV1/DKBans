@@ -1,8 +1,12 @@
+package de.fridious.bansystem.extension.gui.api.inventory.gui;
+
+import org.bukkit.entity.Player;
+
 /*
  * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
  *
- * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @author Philipp Elvin Friedhoff
+ * @since 30.12.18 20:25
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -18,5 +22,20 @@
  * under the License.
  */
 
-public class test {
+public abstract class PrivateGUI extends GUI {
+
+    private final Player owner;
+
+    public PrivateGUI(String name, int size, Player owner) {
+        super(name, size);
+        this.owner = owner;
+    }
+
+    public Player getOwner() {
+        return owner;
+    }
+
+    public void open(){
+        open(this.owner);
+    }
 }
