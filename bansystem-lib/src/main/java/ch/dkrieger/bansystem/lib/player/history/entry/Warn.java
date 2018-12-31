@@ -20,6 +20,8 @@
 
 package ch.dkrieger.bansystem.lib.player.history.entry;
 
+import ch.dkrieger.bansystem.lib.BanSystem;
+import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -38,11 +40,46 @@ public class Warn extends HistoryEntry{
 
     @Override
     public TextComponent getListMessage() {
-        return null;
+        return new TextComponent(Messages.HISTORY_LIST_WARN
+                .replace("[player]",getPlayer().getColoredName())
+                .replace("[id]",""+getID())
+                .replace("[reason]",getReason())
+                .replace("[reasonID]",""+getReasonID())
+                .replace("[message]",getMessage())
+                .replace("[type]",getTypeName())
+                .replace("[staff]",getStaffName())
+                .replace("[points]",""+getPoints())
+                .replace("[time]", BanSystem.getInstance().getConfig().dateFormat.format(getTimeStamp()))
+                .replace("[prefix]",Messages.PREFIX_BAN));
     }
 
     @Override
     public TextComponent getInfoMessage() {
-        return null;
+        return new TextComponent(Messages.HISTORY_INFO_KICK
+                .replace("[prefix]",Messages.PREFIX_BAN)
+                .replace("[id]",""+getID())
+                .replace("[reason]",getReason())
+                .replace("[type]",getTypeName())
+                .replace("[points]",""+getPoints())
+                .replace("[reasonID]",""+getReasonID())
+                .replace("[message]",getMessage())
+                .replace("[time]", BanSystem.getInstance().getConfig().dateFormat.format(getTimeStamp()))
+                .replace("[ip]",getIp())
+                .replace("[staff]",getStaffName())
+                .replace("[player]",getPlayer().getColoredName()));
+    }
+    public TextComponent toMessage(){
+        return new TextComponent(Messages.WARN_MESSAGE
+                .replace("[prefix]",Messages.PREFIX_BAN)
+                .replace("[id]",""+getID())
+                .replace("[reason]",getReason())
+                .replace("[type]",getTypeName())
+                .replace("[points]",""+getPoints())
+                .replace("[reasonID]",""+getReasonID())
+                .replace("[message]",getMessage())
+                .replace("[time]", BanSystem.getInstance().getConfig().dateFormat.format(getTimeStamp()))
+                .replace("[ip]",getIp())
+                .replace("[staff]",getStaffName())
+                .replace("[player]",getPlayer().getColoredName()));
     }
 }

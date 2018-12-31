@@ -2,7 +2,7 @@
  * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 31.12.18 14:11
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -20,12 +20,12 @@
 
 package ch.dkrieger.bansystem.lib.config.mode;
 
-public enum ReportMode {
+public enum ReasonMode {
 
     SELF(),
     TEMPLATE();
 
-    public static ReportMode parse(String name){
+    public static ReasonMode parse(String name){
         try {
             return valueOf(name);
         }catch (Exception exception){}

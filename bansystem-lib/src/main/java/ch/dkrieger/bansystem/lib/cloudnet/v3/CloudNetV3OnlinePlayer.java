@@ -25,6 +25,7 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
+import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 import de.dytanic.cloudnet.common.document.Document;
 import de.dytanic.cloudnet.wrapper.Wrapper;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -121,9 +122,14 @@ public class CloudNetV3OnlinePlayer implements OnlineNetworkPlayer {
     }
 
     @Override
-    public void kick(Kick kick) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","sendKick",new Document()
+    public void sendKick(Kick kick) {
+        Wrapper.getInstance().sendChannelMessage("DKBans","kick",new Document()
                 .append("uuid",getUUID()).append("kick",kick));
+    }
+    @Override
+    public void sendWarn(Warn warn) {
+        Wrapper.getInstance().sendChannelMessage("DKBans","warn",new Document()
+                .append("uuid",getUUID()).append("warn",warn));
     }
 
     public void setServer(String server) {

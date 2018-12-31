@@ -40,6 +40,7 @@ public abstract class HistoryEntry {
         GSONTYPEADAPTER.put("BAN",Ban.class);
         GSONTYPEADAPTER.put("KICK",Kick.class);
         GSONTYPEADAPTER.put("UNBAN",Unban.class);
+        GSONTYPEADAPTER.put("WARN",Warn.class);
         buildAdapter();
     }
 
@@ -106,11 +107,11 @@ public abstract class HistoryEntry {
         return null;
     }
     public String getStaffName(){
-        if(staff == null) return "Console";
+        if(staff == null) return BanSystem.getInstance().getConfig().playerColorConsole+"Console";
         try{
             return BanSystem.getInstance().getPlayerManager().getPlayer(UUID.fromString(this.staff)).getColoredName();
         }catch (Exception exception){}
-        return this.staff;
+        return BanSystem.getInstance().getConfig().playerColorConsole+this.staff;
     }
     public Document getProperties() {
         return properties;

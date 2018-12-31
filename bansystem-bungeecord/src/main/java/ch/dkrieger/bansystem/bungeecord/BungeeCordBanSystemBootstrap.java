@@ -224,6 +224,8 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
             }
         }else if(cause == NetworkPlayerUpdateCause.KICK){
             BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerKickEvent(player,System.currentTimeMillis(),onThisServer));
+        }else if(cause == NetworkPlayerUpdateCause.WARN){
+            BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerWarnEvent(player,System.currentTimeMillis(),onThisServer));
         }else if(cause == NetworkPlayerUpdateCause.UNBAN){
             BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerUnbanEvent(player,System.currentTimeMillis(),onThisServer));
         }else if(cause == NetworkPlayerUpdateCause.REPORTSEND){

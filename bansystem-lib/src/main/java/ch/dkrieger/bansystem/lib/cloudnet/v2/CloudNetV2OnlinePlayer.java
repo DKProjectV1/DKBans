@@ -25,6 +25,7 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
+import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 import de.dytanic.cloudnet.api.CloudAPI;
 import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import de.dytanic.cloudnet.lib.utility.document.Document;
@@ -114,11 +115,15 @@ public class CloudNetV2OnlinePlayer implements OnlineNetworkPlayer {
     }
 
     @Override
-    public void kick(Kick kick) {
+    public void sendKick(Kick kick) {
         CloudAPI.getInstance().sendCustomSubProxyMessage("DKBans","kick"
                 ,new Document().append("uuid",getUUID()).append("kick",kick),getProxy());
     }
-
+    @Override
+    public void sendWarn(Warn warn) {
+        CloudAPI.getInstance().sendCustomSubProxyMessage("DKBans","warn",new Document()
+                .append("uuid",getUUID()).append("warn",warn));
+    }
     public void setCloudPlayer(CloudPlayer player) {
         this.player = player;
     }

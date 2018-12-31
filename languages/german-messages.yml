@@ -179,8 +179,8 @@ kick:
     &cDu wurdest vom Netzwerk gekickt
     &3Grund&8: &4&l[reason]
 ping:
-  self: '[prefix]&7Dein ping ist &a[ping]&cms'
-  other: '[prefix]&7der Ping von [player] &7ist &a[ping]&cms'
+  self: '[prefix]&7Dein Ping beträgt &a[ping]&cms'
+  other: '[prefix]&7Der Ping von [player] &7beträgt &a[ping]&cms'
 broadcast:
   help: |-
     [prefix]&7Broadcast help
@@ -211,7 +211,7 @@ broadcast:
     &8» &7Hover&8: &c[hover]
     &8» &7Click&8: &c[clickType] &8| &c[clickMessage]
   changed:
-    clicked: '[prefix]&7Die Click option from Broadcast &c[id] &7wurde zu &c[clickType] &8|
+    clicked: '[prefix]&7Die Klick option from Broadcast &c[id] &7wurde zu &c[clickType] &8|
       &c[clickMessage] &7geändert.'
     hover: '[prefix]&7Die Hover Nachricht vom Broadcast &c[id] &7wurde zu &c[hover] &7geändert.'
     message: '[prefix]&7Changed message from broadcast &c[id] &7to &c[message]'
@@ -238,6 +238,7 @@ broadcast:
 jumpto:
   help: '[prefix]&cBenutze&8: &7 /jumpto <player>'
 joinme:
+  head: true
   cooldown: '[prefix]&cWarte einen Moment befor du das nächste Joinme sendest.'
   notfound: '[prefix]&cDieses Joinme wurde nicht gefunden.'
   notallowedonserver: '[prefix]&cAuf diesem Server kann kein Joinme gesendet werden.'
@@ -245,11 +246,13 @@ joinme:
     '1': '&6'
     '2': '&6'
     '3': '&6'
-    '4': '  [player] &7Spielt auf &e[server]'
-    '5': '       &7Klicke zum betreten'
-    '6': '&6'
+    '4': '&6'
+    '5': '  [player] &7Spielt auf &e[server]'
+    '6': '       &7Klicke zum betreten'
     '7': '&6'
     '8': '&6'
+    '9': '&6'
+    '10': '&6'
 teamchat:
   help: '[prefix]&cBenutze&8: &7 /teamchat <message>'
   message:

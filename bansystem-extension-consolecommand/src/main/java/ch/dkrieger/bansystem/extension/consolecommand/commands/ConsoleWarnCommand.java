@@ -2,7 +2,7 @@
  * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 31.12.18 18:14
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -27,50 +27,38 @@ import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
+import ch.dkrieger.bansystem.lib.reason.WarnReason;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class ConsoleBanCommand extends NetworkCommand {
+public class ConsoleWarnCommand extends NetworkCommand {
 
-    public ConsoleBanCommand() {
-        super("cban");
+    public ConsoleWarnCommand() {
+        super("cwarn");
     }
 
     public void onExecute(NetworkCommandSender sender, String[] args) {
         if(sender.getUUID() == null){
-            if(args.length > 1){
+            if(args.length >= 3){
                 NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
                 if(player == null){
                     System.out.println(Messages.SYSTEM_PREFIX+"This player was not found.");
                     return;
                 }
-                if(args.length >= 5){
-                    BanType type;
-                    try{
-                        type = BanType.valueOf(args[1].toUpperCase());
-                    }catch (Exception exception){
-                        System.out.println(Messages.SYSTEM_PREFIX+"Invalid ban type, use Chat or Network.");
+                String message = "";
+                for(int i = 3;i < args.length;i++) message += args[i]+" ";
+                if(GeneralUtil.isNumber(args[1])){
+                    WarnReason reason = BanSystem.getInstance().getReasonProvider().searchWarnReason(args[1]);
+                    if(reason != null){
+                        player.warn(reason,message,args[2]);
+                        System.out.println(Messages.SYSTEM_PREFIX+player.getName()+" was warned for "+reason.getName());
                         return;
                     }
-                    String message = "";
-                    for(int i = 6;i < args.length;i++) message += args[i]+" ";
-                    player.ban(type,GeneralUtil.convertToMillis(Long.valueOf(args[3]),args[4]),TimeUnit.MILLISECONDS
-                            ,args[2],message,-1,args[5]);
-                    System.out.println(Messages.SYSTEM_PREFIX+player.getName()+" was banned for "+args[2]);
-                    return;
-                }else if(args.length >= 3 && GeneralUtil.isNumber(args[1])){
-                    BanReason reason = BanSystem.getInstance().getReasonProvider().searchBanReason(args[1]);
-                    if(reason == null){
-                        System.out.println(Messages.SYSTEM_PREFIX+"Ban reason not found.");
-                        return;
-                    }
-                    String message = "";
-                    for(int i = 3;i < args.length;i++) message += args[i]+" ";
-                    player.ban(reason,message,args[2]);
-                    System.out.println(Messages.SYSTEM_PREFIX+player.getName()+" was banned for "+reason.getName());
-                    return;
+                }else{
+                    player.warn(args[1],message,args[2]);
+                    System.out.println(Messages.SYSTEM_PREFIX+player.getName()+" was warned for "+args[1]);
                 }
             }
             System.out.println(Messages.SYSTEM_PREFIX+"This is a simple addon for banning, kicking or unbanning a " +

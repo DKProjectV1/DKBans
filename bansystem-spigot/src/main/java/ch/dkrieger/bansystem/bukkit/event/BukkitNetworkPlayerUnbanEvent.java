@@ -24,7 +24,7 @@ import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
 
 import java.util.UUID;
 
-public class BukkitNetworkPlayerUnbanEvent extends BukkitNetworkPlayerEvent {
+public class BukkitNetworkPlayerUnbanEvent extends BukkitDKBansEvent {
 
     public BukkitNetworkPlayerUnbanEvent(UUID uuid, long timeStamp, boolean onThisServer) {
         super(uuid, timeStamp,onThisServer);

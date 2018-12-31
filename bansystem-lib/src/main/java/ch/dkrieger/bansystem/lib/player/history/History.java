@@ -20,10 +20,7 @@
 
 package ch.dkrieger.bansystem.lib.player.history;
 
-import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
-import ch.dkrieger.bansystem.lib.player.history.entry.HistoryEntry;
-import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
-import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
+import ch.dkrieger.bansystem.lib.player.history.entry.*;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.util.*;
@@ -117,6 +114,52 @@ public class History {
         return bans;
     }
 
+    public int getWarnCount(){
+        return getWarns().size();
+    }
+    public int getWarnCountSinceLastBan(){
+        return getWarnsSinceLastBan().size();
+    }
+    public int getWarnCountSinceLastBan(int reasonId){
+        return getWarnsSinceLastBan(reasonId).size();
+    }
+    public Warn getLastWarn(){
+        final Warn[] warn = new Warn[1];
+        final long[] timeStamp = {0};
+        GeneralUtil.iterateAcceptedForEach(this.entries.values(),object -> object instanceof Warn && object.getTimeStamp() > timeStamp[0], object -> {
+            warn[0] = (Warn) object;
+            timeStamp[0] = object.getTimeStamp();
+        });
+        return warn[0];
+    }
+
+    public List<Warn> getWarns(){
+       List<Warn> warns = new ArrayList<>();
+       GeneralUtil.iterateAcceptedForEach(this.entries.values(), object -> object instanceof Warn, object -> warns.add((Warn) object));
+       return warns;
+    }
+    public List<Warn> getWarnsSinceLastBan(int reasonId){
+        final List<Warn> warns = getWarnsSinceLastBan();
+        GeneralUtil.iterateAndRemove(warns, object -> object.getReasonID() != reasonId);
+        return warns;
+    }
+    public List<Warn> getWarnsSinceLastBan(){
+        final List<Warn> warns = getWarns();
+        Ban ban = getLastBan();
+        final long lastBanTimeStamp = ban!= null?ban.getTimeStamp():0;
+        GeneralUtil.iterateAndRemove(warns, object -> object.getTimeStamp() < lastBanTimeStamp);
+        return warns;
+    }
+
+    public Ban getLastBan(){
+        final Ban[] ban = new Ban[1];
+        final long[] timeStamp = {0};
+        GeneralUtil.iterateAcceptedForEach(this.entries.values(),object -> object instanceof Ban && object.getTimeStamp() > timeStamp[0], object -> {
+            ban[0] = (Ban) object;
+            timeStamp[0] = object.getTimeStamp();
+        });
+        return ban[0];
+    }
     public Unban getLastUnban(){
         final Unban[] unban = new Unban[1];
         final long[] timeStamp = {0};

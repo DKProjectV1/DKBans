@@ -153,6 +153,7 @@ public class BanSystem {
         if(this.config.commandStaffstats) getCommandManager().registerCommand(new StaffStatsCommand());
         if(this.config.commandIPban) getCommandManager().registerCommand(new IpBanCommand());
         if(this.config.commandIPUnban) getCommandManager().registerCommand(new IpUnbanCommand());
+        if(this.config.commandWarn) getCommandManager().registerCommand(new WarnCommand());
         getCommandManager().registerCommand(new DKBansCommand());
 
         if(config.autobroadcastEnabled)

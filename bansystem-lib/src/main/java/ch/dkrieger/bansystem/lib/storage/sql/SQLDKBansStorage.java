@@ -348,7 +348,7 @@ public class SQLDKBansStorage implements DKBansStorage {
 
     @Override
     public void saveStaffSettings(UUID player, boolean report, boolean teamchat) {
-        this.players.update().set("reportLogin",report).set("teamChatLogin",teamchat).where("uuid",player);
+        this.players.update().set("reportLogin",report).set("teamChatLogin",teamchat).where("uuid",player).execute();
     }
 
     @Override

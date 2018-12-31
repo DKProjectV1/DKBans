@@ -24,7 +24,7 @@ import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 
 import java.util.UUID;
 
-public class BukkitNetworkPlayerBanEvent extends BukkitNetworkPlayerEvent {
+public class BukkitNetworkPlayerBanEvent extends BukkitDKBansEvent {
 
     private final Ban ban;
 

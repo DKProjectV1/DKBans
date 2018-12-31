@@ -24,7 +24,7 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
-import ch.dkrieger.bansystem.lib.config.mode.ReportMode;
+import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
@@ -218,7 +218,7 @@ public class ReportCommand extends NetworkCommand {
         String message = "";
         for(int i = 2;i < args.length;i++) message += args[i]+" ";
 
-        if(BanSystem.getInstance().getConfig().reportMode == ReportMode.SELF){
+        if(BanSystem.getInstance().getConfig().reportMode == ReasonMode.SELF){
             report = player.report(sender.getUUID(),message,args[1],-1,online.getServer());
         }else{
             ReportReason reason = BanSystem.getInstance().getReasonProvider().searchReportReason(args[1]);
@@ -245,7 +245,7 @@ public class ReportCommand extends NetworkCommand {
     private void sendHelp(NetworkCommandSender sender){
         sender.sendMessage(Messages.REPORT_HELP_HEADER.replace("[prefix]",getPrefix()));
         for(ReportReason reason : BanSystem.getInstance().getReasonProvider().getReportReasons()){
-            if(!sender.hasPermission(reason.getPermission()) && !sender.hasPermission("dkbans.*")) continue;
+            if(!reason.isHidden() &&!sender.hasPermission(reason.getPermission()) && !sender.hasPermission("dkbans.*")) continue;
             sender.sendMessage(Messages.REPORT_HELP_REASON
                     .replace("[prefix]",getPrefix())
                     .replace("[id]",""+reason.getID())

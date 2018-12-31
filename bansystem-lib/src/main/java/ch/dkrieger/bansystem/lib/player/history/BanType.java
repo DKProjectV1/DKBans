@@ -21,26 +21,22 @@
 package ch.dkrieger.bansystem.lib.player.history;
 
 import ch.dkrieger.bansystem.lib.Messages;
+import com.google.common.graph.Network;
 
 public enum BanType {
 
-    NETWORK(Messages.BAN_TYPE_NETWORK),
-    CHAT(Messages.BAN_TYPE_CHAT);
-
-    private String display;
-
-    BanType(String display){
-        this.display = display;
-    }
+    NETWORK(),
+    CHAT();
 
     public String getDisplay(){
-        return display;
+        if(this == CHAT) return Messages.BAN_TYPE_CHAT;
+        else return Messages.BAN_TYPE_NETWORK;
     }
 
     public static BanType parse(String parse){
         try{
             return valueOf(parse.toUpperCase());
         }catch (Exception exception){}
-        return null;
+        return NETWORK;
     }
 }

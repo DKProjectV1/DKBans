@@ -278,6 +278,8 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
             }
         }else if(cause == NetworkPlayerUpdateCause.KICK){
             Bukkit.getPluginManager().callEvent(new BukkitNetworkPlayerKickEvent(player,System.currentTimeMillis(),onThisServer));
+        }else if(cause == NetworkPlayerUpdateCause.WARN){
+            Bukkit.getPluginManager().callEvent(new BukkitNetworkPlayerWarnEvent(player,System.currentTimeMillis(),onThisServer));
         }else if(cause == NetworkPlayerUpdateCause.UNBAN){
             Bukkit.getPluginManager().callEvent(new BukkitNetworkPlayerUnbanEvent(player,System.currentTimeMillis(),onThisServer));
         }else if(cause == NetworkPlayerUpdateCause.REPORTSEND){

@@ -37,6 +37,7 @@ import ch.dkrieger.bansystem.lib.player.PlayerManager;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
+import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import com.google.gson.reflect.TypeToken;
@@ -183,6 +184,12 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
                 if(player != null){
                     Kick kick = event.getData().get("kick", Kick.class);
                     player.disconnect(kick.toMessage());
+                }
+            }else if(event.getMessage().equalsIgnoreCase("warn")){
+                ProxiedPlayer player = BungeeCord.getInstance().getPlayer(event.getData().get("uuid",UUID.class));
+                if(player != null){
+                    Warn warn = event.getData().get("warn",Warn.class);
+                    player.disconnect(warn.toMessage());
                 }
             }else if(event.getMessage().equalsIgnoreCase("sendBan")){
                 ProxiedPlayer player = BungeeCord.getInstance().getPlayer(event.getData().get("uuid",UUID.class));

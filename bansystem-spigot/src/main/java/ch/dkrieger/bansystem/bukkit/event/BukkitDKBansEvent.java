@@ -28,7 +28,7 @@ import org.bukkit.event.HandlerList;
 
 import java.util.UUID;
 
-public class BukkitNetworkPlayerEvent extends Event {
+public class BukkitDKBansEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
 
@@ -36,7 +36,7 @@ public class BukkitNetworkPlayerEvent extends Event {
     private long timeStamp;
     private boolean onThisServer;
 
-    public BukkitNetworkPlayerEvent(UUID uuid, long timeStamp, boolean onThisServer) {
+    public BukkitDKBansEvent(UUID uuid, long timeStamp, boolean onThisServer) {
         this.uuid = uuid;
         this.timeStamp = timeStamp;
         this.onThisServer = onThisServer;

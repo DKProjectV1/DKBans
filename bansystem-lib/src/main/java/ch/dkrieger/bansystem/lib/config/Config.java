@@ -22,14 +22,11 @@ package ch.dkrieger.bansystem.lib.config;
 
 import ch.dkrieger.bansystem.lib.DKBansPlatform;
 import ch.dkrieger.bansystem.lib.config.mode.BanMode;
-import ch.dkrieger.bansystem.lib.config.mode.KickMode;
-import ch.dkrieger.bansystem.lib.config.mode.ReportMode;
-import ch.dkrieger.bansystem.lib.config.mode.UnbanMode;
+import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.PlayerColor;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
-import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.storage.StorageType;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
@@ -54,8 +51,8 @@ public class Config extends SimpleConfig{
     public boolean storageSSL, mongoDbSrv, mongoDbAuthentication;
 
     public BanMode banMode;
-    public UnbanMode unbanMode;
-    public KickMode kickMode;
+    public ReasonMode unbanMode;
+    public ReasonMode kickMode;
 
     public DateFormat dateFormat;
 
@@ -66,11 +63,20 @@ public class Config extends SimpleConfig{
     public List<String> joinMeDisabledServerList;
 
     public boolean reportControls;
-    public ReportMode reportMode;
+    public ReasonMode reportMode;
     public long reportDelay;
     public boolean reportAutoCommandExecuteOnProxy;
     public List<String> reportAutoCommandEnter;
     public List<String> reportAutoCommandExit;
+
+    public ReasonMode warnMode;
+    public String  warnStaffName;
+    public int warnAutoBanCount;
+    public boolean warnAutoBanBanForLastReason;
+    public long warnAutoBanCustomDuration;
+    public String warnAutoBanCustomReason;
+    public int warnAutoBanCustomPoints;
+    public BanType warnAutoBanBanType;
 
     public boolean onJoinChatClear;
     public boolean onJoinTeamChatInfo;
@@ -138,6 +144,7 @@ public class Config extends SimpleConfig{
     public boolean commandStaffstats;
     public boolean commandIPban;
     public boolean commandIPUnban;
+    public boolean commandWarn;
 
     private DKBansPlatform platform;
 
@@ -161,15 +168,25 @@ public class Config extends SimpleConfig{
         this.mongoDbSrv = addAndGetBooleanValue("storage.mongodb.srv",false);
 
         this.banMode = BanMode.parse(addAndGetStringValue("ban.mode",BanMode.TEMPLATE.toString()));
-        this.unbanMode = UnbanMode.parse(addAndGetStringValue("unban.mode",BanMode.SELF.toString()));
-        this.kickMode = KickMode.parse(addAndGetStringValue("kick.mode",BanMode.SELF.toString()));
+        this.unbanMode = ReasonMode.parse(addAndGetStringValue("unban.mode",BanMode.SELF.toString()));
+        this.kickMode = ReasonMode.parse(addAndGetStringValue("kick.mode",BanMode.SELF.toString()));
 
-        this.reportMode = ReportMode.parse(addAndGetStringValue("report.mode", ReportMode.TEMPLATE.toString()));
+        this.reportMode = ReasonMode.parse(addAndGetStringValue("report.mode",ReasonMode.TEMPLATE.toString()));
         this.reportControls = addAndGetBooleanValue("report.controls",true);
         this.reportDelay = addAndGetLongValue("report.delay",900000);
         this.reportAutoCommandExecuteOnProxy = addAndGetBooleanValue("report.autocommand.onproxy",false);
         this.reportAutoCommandEnter = addAndGetStringListValue("report.autocommand.enter", Arrays.asList());//"tp [player]"
         this.reportAutoCommandExit = addAndGetStringListValue("report.autocommand.exit", Arrays.asList());
+
+        this.warnMode = ReasonMode.parse(addAndGetStringValue("report.warn",ReasonMode.TEMPLATE.toString()));
+        this.warnStaffName = addAndGetStringValue("warn.staffname","WarnManager");
+        this.warnAutoBanCount = addAndGetIntValue("warn.autoban.count",5);
+        this.warnAutoBanBanForLastReason = addAndGetBooleanValue("warn.autoban.banforlastreason",true);
+        this.warnAutoBanCustomReason = addAndGetStringValue("warn.autoban.reason","Warns");
+        this.warnAutoBanCustomDuration = GeneralUtil.convertToMillis(addAndGetLongValue("warn.autoban.duration.time",30)
+                ,addAndGetStringValue("warn.autoban.duration.unit",TimeUnit.DAYS.toString()));
+        this.warnAutoBanCustomPoints = addAndGetIntValue("warn.autoban.points",20);
+        this.warnAutoBanBanType  = BanType.parse(addAndGetStringValue("warn.autoban.type",BanType.NETWORK.toString()));
 
         this.dateFormat = new SimpleDateFormat(addAndGetStringValue("date.format","dd.MM.yyyy HH:mm"));
 
@@ -227,7 +244,7 @@ public class Config extends SimpleConfig{
 
         this.autobroadcastEnabled = addAndGetBooleanValue("autobroadcast.enabled",true);
         this.autobroadcastSorted = addAndGetBooleanValue("autobroadcast.sorted",true);
-        this.autobroadcastDelay = addAndGetIntValue("autobroadcast.delay",10);
+        this.autobroadcastDelay = addAndGetIntValue("autobroadcast.delay",8);
 
         this.ipBanBanDuration = GeneralUtil.convertToMillis(addAndGetLongValue("ipban.reason.duration.time",365)
                 , addAndGetStringValue("ipban.reason.duration.unit",TimeUnit.DAYS.toString()));
@@ -262,6 +279,7 @@ public class Config extends SimpleConfig{
         this.commandStaffstats = addAndGetBooleanValue("command.staffstats.enabled",true);
         this.commandIPban = addAndGetBooleanValue("command.ipban.enabled",true);
         this.commandIPUnban = addAndGetBooleanValue("command.ipunban.enabled",true);
+        this.commandWarn = addAndGetBooleanValue("command.warn.enabled",true);
     }
     public Ban createAltAccountBan(NetworkPlayer player, String ip){
         return new Ban(player.getUUID(),ip,ipBanBanReason,"",System.currentTimeMillis(),-1,ipBanBanPoints,666

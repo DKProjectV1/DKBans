@@ -116,6 +116,8 @@ public class PlayerInfoCommand extends NetworkCommand {
                 .replace("[isMuted]",""+player.isBanned(BanType.CHAT))
                 .replace("[bans]",""+player.getHistory().getBanCount(BanType.NETWORK))
                 .replace("[mutes]",""+player.getHistory().getBanCount(BanType.CHAT))
+                .replace("[warns-since-last-ban]",""+player.getHistory().getWarnCountSinceLastBan())
+                .replace("[warns]",""+player.getHistory().getWarnCount())
                 .replace("[logins]",""+player.getStats().getLogins())
                 .replace("[uuid]",String.valueOf(player.getUUID())),"[history]",history);
         component = GeneralUtil.replaceTextComponent(component,"[sessions]",sessions);

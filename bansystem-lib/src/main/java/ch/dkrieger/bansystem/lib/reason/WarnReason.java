@@ -2,7 +2,7 @@
  * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 31.12.18 12:51
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -21,25 +21,31 @@
 package ch.dkrieger.bansystem.lib.reason;
 
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
-import ch.dkrieger.bansystem.lib.report.Report;
+import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
+import ch.dkrieger.bansystem.lib.utils.Document;
 
 import java.util.List;
-import java.util.UUID;
 
-public class ReportReason extends KickReason{
+public class WarnReason extends KickReason{
 
-    private int forBan;
+    private int autoBanCount, forBan;
 
-    public ReportReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, int forban) {
+    public WarnReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, int autoBanCount, int forBan) {
         super(id, points, name, display, permission, hidden, aliases);
-        this.forBan = forban;
+        this.autoBanCount = autoBanCount;
+        this.forBan = forBan;
+    }
+
+    public int getAutoBanCount() {
+        return autoBanCount;
     }
 
     public int getForBan() {
         return forBan;
     }
 
-    public Report toReport(NetworkPlayer player, UUID reporter, String message, String server){
-        return new Report(player.getUUID(),null,reporter,getRawDisplay(),message,server,System.currentTimeMillis(),getID());
+    public Warn toWarn(NetworkPlayer player,String message, String staff){
+        return new Warn(player.getUUID(),player.getIP(),getRawDisplay(),message,System.currentTimeMillis(),-1
+                ,getPoints(),getID(),staff,new Document());
     }
 }

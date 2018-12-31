@@ -24,7 +24,7 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 
 import java.util.UUID;
 
-public class BukkitNetworkPlayerColorSetEvent extends BukkitNetworkPlayerEvent {
+public class BukkitNetworkPlayerColorSetEvent extends BukkitDKBansEvent {
 
     private final NetworkPlayer player;
     private String color;

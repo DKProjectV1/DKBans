@@ -21,16 +21,11 @@
 package ch.dkrieger.bansystem.lib.player;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
+import ch.dkrieger.bansystem.lib.config.Config;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.History;
-import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
-import ch.dkrieger.bansystem.lib.player.history.entry.HistoryEntry;
-import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
-import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
-import ch.dkrieger.bansystem.lib.reason.BanReason;
-import ch.dkrieger.bansystem.lib.reason.KickReason;
-import ch.dkrieger.bansystem.lib.reason.ReportReason;
-import ch.dkrieger.bansystem.lib.reason.UnbanReason;
+import ch.dkrieger.bansystem.lib.player.history.entry.*;
+import ch.dkrieger.bansystem.lib.reason.*;
 import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.stats.PlayerStats;
 import ch.dkrieger.bansystem.lib.utils.Document;
@@ -636,7 +631,7 @@ public class NetworkPlayer {
         BanSystem.getInstance().getTempSyncStats().addKicks();
         kick.setID(addToHistory(kick,NetworkPlayerUpdateCause.KICK));
         OnlineNetworkPlayer player = getOnlinePlayer();
-        if(player != null) player.kick(kick);
+        if(player != null) player.sendKick(kick);
         return kick;
     }
     public Unban unban(BanType type) {
@@ -716,6 +711,67 @@ public class NetworkPlayer {
         unban.setID(addToHistory(unban,NetworkPlayerUpdateCause.UNBAN));
         return unban;
     }
+    public Warn warn(String reason){
+        return warn(reason,"");
+    }
+    public Warn warn(String reason, String message){
+        return warn(reason,message,(UUID) null);
+    }
+    public Warn warn(String reason, String message,UUID staff){
+        return warn(reason,message,staff==null?"Console":staff.toString());
+    }
+    public Warn warn(String reason, String message,String staff){
+        return warn(reason,message,0,-1,staff);
+    }
+    public Warn warn(String reason, String message, int points, int reasonID, UUID staff){
+        return warn(reason,message,points,reasonID,staff,new Document());
+    }
+    public Warn warn(String reason, String message, int points, int reasonID, String staff){
+        return warn(reason,message,points,reasonID,staff,new Document());
+    }
+    public Warn warn(String reason, String message, int points, int reasonID, UUID staff, Document properties){
+        return warn(reason,message,points,reasonID,staff==null?"Console":staff.toString(),properties);
+    }
+    public Warn warn(String reason, String message, int points, int reasonID, String staff, Document properties){
+        return warn(new Warn(uuid,lastIP,reason,message,System.currentTimeMillis(),-1,points,reasonID,staff,properties));
+    }
+    public Warn warn(WarnReason reason){
+        return warn(reason,"");
+    }
+    public Warn warn(WarnReason reason, String message){
+        return warn(reason,message,(UUID)null);
+    }
+    public Warn warn(WarnReason reason, String message, UUID staff){
+        return warn(reason,message,staff==null?"Console":staff.toString());
+    }
+    public Warn warn(WarnReason reason, String message, String staff){
+        return warn(reason.toWarn(this,message,staff));
+    }
+    public Warn warn(Warn warn){
+        //add warm stats
+        warn.setID(addToHistory(warn,NetworkPlayerUpdateCause.WARN));
+        OnlineNetworkPlayer player = getOnlinePlayer();
+        if(player != null) player.sendWarn(warn);
+        BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(()->{
+            WarnReason reason = BanSystem.getInstance().getReasonProvider().getWarnReason(warn.getReasonID());
+            if(reason != null && getHistory().getWarnCountSinceLastBan(warn.getReasonID()) >= reason.getAutoBanCount()){
+                BanReason banReason = BanSystem.getInstance().getReasonProvider().getBanReason(reason.getForBan());
+                if(banReason != null) ban(banReason.toBan(this,"",BanSystem.getInstance().getConfig().warnStaffName));
+            }else if(getHistory().getWarnCountSinceLastBan() >= BanSystem.getInstance().getConfig().warnAutoBanCount){
+                if(reason != null && BanSystem.getInstance().getConfig().warnAutoBanBanForLastReason){
+                    BanReason banReason = BanSystem.getInstance().getReasonProvider().getBanReason(reason.getForBan());
+                    if(banReason != null) ban(banReason.toBan(this,"","WarnManager"));
+                }else{
+                    Config config = BanSystem.getInstance().getConfig();
+                    ban(config.warnAutoBanBanType,config.warnAutoBanCustomDuration,TimeUnit.MILLISECONDS,config.warnAutoBanCustomReason,"",
+                            config.warnAutoBanCustomPoints,1,config.warnStaffName);
+                }
+            }
+        });
+        return warn;
+    }
+
+
     public Report report(String reason){
         return report(null,reason);
     }
@@ -798,7 +854,6 @@ public class NetworkPlayer {
     public int addToHistory(HistoryEntry entry,NetworkPlayerUpdateCause cause,Document properties) {
         int id = BanSystem.getInstance().getStorage().createHistoryEntry(this,entry);
         entry.setID(id);
-        System.out.println(id);
         this.history.getRawEntries().put(id,entry);
         update(cause,properties);
         return id;

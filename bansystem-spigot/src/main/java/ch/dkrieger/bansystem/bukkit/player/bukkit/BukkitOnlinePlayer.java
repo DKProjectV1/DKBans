@@ -27,6 +27,7 @@ import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 import ch.dkrieger.bansystem.bukkit.BukkitBanSystemBootstrap;
+import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -105,10 +106,15 @@ public class BukkitOnlinePlayer implements OnlineNetworkPlayer {
     }
 
     @Override
-    public void kick(Kick kick) {
+    public void sendKick(Kick kick) {
         kick(kick.toMessage());
     }
-    public void kick(TextComponent component){
-       Bukkit.getScheduler().runTask(BukkitBanSystemBootstrap.getInstance(),()->{ player.kickPlayer(component.toLegacyText());});
+    @Override
+    public void sendWarn(Warn warn) {
+        kick(warn.toMessage());
     }
+    public void kick(TextComponent component){
+        player.kickPlayer(component.toLegacyText());
+    }
+
 }

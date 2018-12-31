@@ -27,6 +27,7 @@ import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
+import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -99,7 +100,12 @@ public class LocalBungeeCordOnlinePlayer implements OnlineNetworkPlayer {
     }
 
     @Override
-    public void kick(Kick kick) {
+    public void sendKick(Kick kick) {
         player.disconnect(kick.toMessage());
+    }
+
+    @Override
+    public void sendWarn(Warn warn) {
+        player.sendMessage(warn.toMessage());
     }
 }
