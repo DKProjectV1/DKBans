@@ -2,7 +2,7 @@
  * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 31.12.18 15:30
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -18,18 +18,18 @@
  * under the License.
  */
 
-package ch.dkrieger.bansystem.lib.config.mode;
+package ch.dkrieger.bansystem.bungeecord.event;
 
-public enum UnbanMode {
+import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 
-    SELF(),
-    TEMPLATE();
+import java.util.UUID;
 
-    public static UnbanMode parse(String name){
-        try {
-            return valueOf(name);
-        }catch (Exception exception){}
-        return SELF;
+public class ProxiedNetworkPlayerWarnEvent extends ProxiedDKBansEvent{
+
+    public ProxiedNetworkPlayerWarnEvent(UUID uuid, long timeStamp, boolean onThisServer) {
+        super(uuid, timeStamp,onThisServer);
     }
-
+    public Warn getWarn() {
+        return getPlayer().getHistory().getLastWarn();
+    }
 }

@@ -23,6 +23,7 @@ package ch.dkrieger.bansystem.extension.banbroadcast.bukkit;
 import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerBanEvent;
 import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerKickEvent;
 import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerUnbanEvent;
+import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerWarnEvent;
 import ch.dkrieger.bansystem.extension.banbroadcast.BanBroadcastConfig;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
@@ -30,6 +31,7 @@ import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
+import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -104,6 +106,21 @@ public class DKBansBanBCExtension extends JavaPlugin implements Listener {
                     .replace("[points]",""+unban.getPoints())
                     .replace("[player]",""+unban.getPlayer().getColoredName())
                     .replace("[reason]",unban.getReason()),"dkbans.banbroadcast.receive");
+        }
+    }
+    @EventHandler
+    public void onWarn(BukkitNetworkPlayerWarnEvent event){
+        if(config.WarnMessageEnabled){
+            Warn warn = event.getWarn();
+            Bukkit.broadcast(config.WarnMessage
+                    .replace("[prefix]", Messages.PREFIX_BAN)
+                    .replace("[message]",warn.getMessage())
+                    .replace("[staff]",warn.getStaffName())
+                    .replace("[id]",""+warn.getID())
+                    .replace("[ip]",warn.getIp())
+                    .replace("[points]",""+warn.getPoints())
+                    .replace("[player]",""+warn.getPlayer().getColoredName())
+                    .replace("[reason]",warn.getReason()),"dkbans.banbroadcast.receive");
         }
     }
 }

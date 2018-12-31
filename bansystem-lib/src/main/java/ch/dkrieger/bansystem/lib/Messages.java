@@ -121,6 +121,14 @@ public class Messages {
     public static String KICK_SUCCESS;
     public static String KICK_MESSAGE;
 
+    public static String WARN_HELP_HEADER;
+    public static String WARN_HELP_REASON;
+    public static String WARN_HELP_HELP;
+    public static String WARN_SELF;
+    public static String WARN_BYPASS;
+    public static String WARN_SUCCESS;
+    public static String WARN_MESSAGE;
+
     public static String PING_SELF;
     public static String PING_OTHER;
 
@@ -159,10 +167,12 @@ public class Messages {
     public static String HISTORY_LIST_BAN_NETWORK;
     public static String HISTORY_LIST_KICK;
     public static String HISTORY_LIST_UNBAN;
+    public static String HISTORY_LIST_WARN;
     public static String HISTORY_INFO_BAN_CHAT;
     public static String HISTORY_INFO_BAN_NETWORK;
     public static String HISTORY_INFO_KICK;
     public static String HISTORY_INFO_UNBAN;
+    public static String HISTORY_INFO_WARN;
     public static String HISTORY_RESET_ALL;
     public static String HISTORY_RESET_ONE;
 
@@ -226,6 +236,15 @@ public class Messages {
     public static String IPINFO_PLAYER_MUTED;
     public static String IPINFO_PLAYER_BANNED;
 
+    public static String IPBAN_HELP;
+    public static String IPBAN_SUCCESS;
+    public static String IPBAN_INFO;
+    public static String IPBAN_NOT_BANNED;
+    public static String IPBAN_ALREADY_BANNED;
+
+    public static String IPUNBAN_HELP;
+    public static String IPUNBAN_SUCCESS;
+
     public static String CHATLOG_HELP;
     public static String CHATLOG_NOTFOUND;
     public static String CHATLOG_PLAYER_HEADER;
@@ -252,6 +271,8 @@ public class Messages {
     public static String JOINME_LINE6;
     public static String JOINME_LINE7;
     public static String JOINME_LINE8;
+    public static String JOINME_LINE9;
+    public static String JOINME_LINE10;
 
 
 }

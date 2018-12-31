@@ -24,6 +24,7 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.config.Config;
 import ch.dkrieger.bansystem.lib.filter.Filter;
+import ch.dkrieger.bansystem.lib.player.IPBan;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineSession;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLog;
@@ -50,6 +51,7 @@ public class JsonDKBansStorage implements DKBansStorage {
 
     private List<NetworkPlayer> players;
     private List<ChatLogEntry> chatLogEntries;
+    private List<IPBan> ipBans;
     private File storageFolder;
 
     private AtomicInteger nextPlayerID, nextHistoryID;
@@ -74,6 +76,10 @@ public class JsonDKBansStorage implements DKBansStorage {
             this.chatLogEntries = chatLogs.getObject("entries",new TypeToken<List<ChatLogEntry>>(){}.getType());
         }else this.chatLogEntries = new ArrayList<>();
 
+        Document ipBans = Document.loadData(new File(storageFolder,"ipbans.json"));
+        if(ipBans.contains("bans")) this.ipBans = ipBans.getObject("bans",new TypeToken<List<IPBan>>(){}.getType());
+        else this.ipBans = new ArrayList<>();
+
         BanSystem.getInstance().getPlatform().getTaskManager().scheduleTask(this::save,10L, TimeUnit.SECONDS);
         return true;
     }
@@ -91,6 +97,8 @@ public class JsonDKBansStorage implements DKBansStorage {
         new Document().append("nextPlayerID",nextPlayerID.get()).append("nextHistoryID",nextHistoryID.get()).append("players",players)
                 .saveData(new File(storageFolder,"players.json"));
         new Document().append("entries",chatLogEntries).saveData(new File(storageFolder,"chatlogs.json"));
+
+        new Document().append("bans",chatLogEntries).saveData(new File(storageFolder,"ipbans.json"));
     }
 
     @Override
@@ -241,6 +249,29 @@ public class JsonDKBansStorage implements DKBansStorage {
                 , object -> object instanceof Ban && object.getTimeStamp() > yet, object -> bans.add((Ban)object)));
         return bans;
     }
+
+    @Override
+    public IPBan getIpBan(String ip) {
+        return GeneralUtil.iterateOne(this.ipBans, object -> object.getIp().equals(ip));
+    }
+
+    @Override
+    public void banIp(IPBan ipBan) {
+        this.ipBans.add(ipBan);
+    }
+
+    @Override
+    public void unbanIp(String ip) {
+        IPBan ban = getIpBan(ip);
+        if(ban != null) this.ipBans.remove(ban);
+    }
+
+    @Override
+    public void unbanIp(UUID lastPlayer) {
+        IPBan ban = GeneralUtil.iterateOne(this.ipBans, object -> object.getLastPlayer().equals(lastPlayer));
+        if(ban != null) this.ipBans.remove(ban);
+    }
+
     @Override
     public List<Filter> loadFilters() {
         Document document = Document.loadData(new File(storageFolder,"filters.json"));

@@ -41,6 +41,7 @@ public class ReasonProvider {
     private List<BanReason> banReasons;
     private List<ReportReason> reportReasons;
     private List<UnbanReason> unbanReasons;
+    private List<WarnReason> warnReasons;
 
     public ReasonProvider(DKBansPlatform platform){
         this.platform = platform;
@@ -48,10 +49,12 @@ public class ReasonProvider {
         this.kickReasons = new ArrayList<>();
         this.reportReasons = new ArrayList<>();
         this.unbanReasons = new ArrayList<>();
+        this.warnReasons = new ArrayList<>();
         loadBanReasons();
         //loadUnbanReasons();
         loadReportReasons();
         loadKickReasons();
+        loadWarnReasons();
     }
     public ReasonProvider(DKBansPlatform platform,List<KickReason> kickReasons, List<BanReason> banReasons, List<ReportReason> reportReasons, List<UnbanReason> unbanReasons) {
         this.platform = platform;
@@ -72,7 +75,9 @@ public class ReasonProvider {
     public List<UnbanReason> getUnbanReasons() {
         return unbanReasons;
     }
-
+    public List<WarnReason> getWarnReasons() {
+        return warnReasons;
+    }
 
     public KickReason searchKickReason(String search){
         if(GeneralUtil.isNumber(search)) return getKickReason(Integer.valueOf(search));
@@ -120,6 +125,17 @@ public class ReasonProvider {
     }
     public UnbanReason getUnbanReason(String name){
         return GeneralUtil.iterateOne(this.unbanReasons,reason -> reason.hasAlias(name));
+    }
+
+    public WarnReason searchWarnReason(String search){
+        if(GeneralUtil.isNumber(search)) return getWarnReason(Integer.valueOf(search));
+        return getWarnReason(search);
+    }
+    public WarnReason getWarnReason(int id){
+        return GeneralUtil.iterateOne(this.warnReasons,reason -> reason.getID() == id);
+    }
+    public WarnReason getWarnReason(String name){
+        return GeneralUtil.iterateOne(this.warnReasons,reason -> reason.hasAlias(name));
     }
     public void loadBanReasons(){
         File file = new File(this.platform.getFolder(),"ban-reasons.yml");
@@ -385,6 +401,63 @@ public class ReasonProvider {
             config.set("reasons."+reason.getID()+".aliases",reason.getAliases());
             config.set("reasons."+reason.getID()+".hidden",reason.isHidden());
             config.set("reasons."+reason.getID()+".points",reason.getPoints());
+        }
+        try{
+            YamlConfiguration.getProvider(YamlConfiguration.class).save(config,file);
+        }catch (Exception e){}
+    }
+    public void loadWarnReasons(){
+        File file = new File(this.platform.getFolder(),"warn-reasons.yml");
+        Configuration config = null;
+        if(file.exists()){
+            try{
+                config = YamlConfiguration.getProvider(YamlConfiguration.class).load(file);
+                Configuration reasons = config.getSection("reasons");
+                this.warnReasons= new ArrayList<>();
+                if(reasons != null) {
+                    for (String key : reasons.getKeys()) {
+                        try{
+                            this.warnReasons.add(new WarnReason(Integer.valueOf(key)
+                                    ,config.getInt("reasons."+key+".points")
+                                    ,config.getString("reasons."+key+".name")
+                                    ,config.getString("reasons."+key+".display")
+                                    ,config.getString("reasons."+key+".permission")
+                                    ,config.getBoolean("reasons."+key+".hidden")
+                                    ,config.getStringList("reasons."+key+".aliases")
+                                    ,config.getInt("reasons."+key+".autoban.count")
+                                    ,config.getInt("reasons."+key+".autoban.banid")));
+                        }catch (Exception exception){
+                            exception.printStackTrace();
+                            System.out.println(Messages.SYSTEM_PREFIX+"Could not load warn-reason "+key);
+                            System.out.println(Messages.SYSTEM_PREFIX+"Error: "+exception.getMessage());
+                        }
+                    }
+                }
+                if(this.kickReasons.size() > 0) return;
+            }catch (Exception exception){
+                if(file.exists()){
+                    file.renameTo(new File(this.platform.getFolder(),"warn-reasons-old-"+GeneralUtil.getRandomString(15)+".yml"));
+                    System.out.println(Messages.SYSTEM_PREFIX+"Could not load warn-reasons, generating new (Saved als old)");
+                }
+            }
+        }
+        config = new Configuration();
+        this.warnReasons.add(new WarnReason(1,2,"provocation","&4Provocation","dkbans.warn.reason.provocation"
+                ,false,Arrays.asList("provocation","provo"),3,2));
+        this.warnReasons.add(new WarnReason(2,2,"insult","&4Insult","dkbans.warn.reason.insult"
+                ,false,Arrays.asList("insult"),3,3));
+        this.warnReasons.add(new WarnReason(3,2,"spam/promotion","&4Spam/Promotion","dkbans.warn.reason.promotion"
+                ,false,Arrays.asList("spamming","spam","promotion"),2,4));
+
+        for(WarnReason reason : this.warnReasons){
+            config.set("reasons."+reason.getID()+".name",reason.getName());
+            config.set("reasons."+reason.getID()+".display",reason.getRawDisplay());
+            config.set("reasons."+reason.getID()+".permission",reason.getPermission());
+            config.set("reasons."+reason.getID()+".aliases",reason.getAliases());
+            config.set("reasons."+reason.getID()+".hidden",reason.isHidden());
+            config.set("reasons."+reason.getID()+".points",reason.getPoints());
+            config.set("reasons."+reason.getID()+".autoban.count",reason.getAutoBanCount());
+            config.set("reasons."+reason.getID()+".autoban.banid",reason.getForBan());
         }
         try{
             YamlConfiguration.getProvider(YamlConfiguration.class).save(config,file);

@@ -39,11 +39,13 @@ public class Unban extends HistoryEntry {
     }
 
     public BanType getBanType() {
+        if(banType == null) return BanType.NETWORK;
         return banType;
     }
 
     @Override
     public TextComponent getListMessage() {
+        System.out.println(getBanType());
         return new TextComponent(Messages.HISTORY_LIST_UNBAN
                 .replace("[player]",getPlayer().getColoredName())
                 .replace("[id]",""+getID())

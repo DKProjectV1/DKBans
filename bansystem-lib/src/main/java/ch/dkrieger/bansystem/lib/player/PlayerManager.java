@@ -27,7 +27,6 @@ import ch.dkrieger.bansystem.lib.player.chatlog.ChatLogEntry;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
@@ -128,6 +127,36 @@ public abstract class PlayerManager {
     }
     public ChatLog getChatLog(UUID uuid, String server){
         return BanSystem.getInstance().getStorage().getChatLog(uuid,server);
+    }
+    public IPBan banIp(String ip){
+        return banIp(ip,-1,TimeUnit.DAYS);
+    }
+    public IPBan banIp(String ip,long duration,TimeUnit unit){
+        return banIp(ip,duration, unit,null);
+    }
+    public IPBan banIp(String ip,long duration,TimeUnit unit, UUID lastPlayer){
+        return banIp(new IPBan(lastPlayer,ip,System.currentTimeMillis(),duration<=0?-1:System.currentTimeMillis()+unit.toMillis(duration)));
+    }
+    public IPBan banIp(IPBan ipban){
+        BanSystem.getInstance().getStorage().banIp(ipban);
+        return ipban;
+    }
+    public void unbanIp(String ip){
+        BanSystem.getInstance().getStorage().unbanIp(ip);
+    }
+    public void unbanIp(UUID lastIp){
+        BanSystem.getInstance().getStorage().unbanIp(lastIp);
+    }
+    public IPBan getIpBan(String ip){
+        IPBan ban = BanSystem.getInstance().getStorage().getIpBan(ip);
+        if(ban != null && (ban.getTimeOut() > 0 && ban.getTimeOut() <= System.currentTimeMillis())){
+            BanSystem.getInstance().getStorage().unbanIp(ip);
+            return null;
+        }
+        else return ban;
+    }
+    public boolean isIPBanned(String ip){
+        return getIpBan(ip) != null;
     }
 
     public NetworkPlayer createPlayer(UUID uuid, String name, String ip){

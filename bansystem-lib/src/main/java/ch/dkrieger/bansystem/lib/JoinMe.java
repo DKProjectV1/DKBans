@@ -68,6 +68,8 @@ public class JoinMe {
         components.add(createComponent(Messages.JOINME_LINE6));
         components.add(createComponent(Messages.JOINME_LINE7));
         components.add(createComponent(Messages.JOINME_LINE8));
+        components.add(createComponent(Messages.JOINME_LINE9));
+        components.add(createComponent(Messages.JOINME_LINE10));
 
         if(Messages.JOINME_HEAD){
             try{
@@ -75,19 +77,22 @@ public class JoinMe {
                 if(image != null){
                     List<TextComponent> newComponents = new ArrayList<>();
                     ImageMessage message = new ImageMessage(image,8, '█');
-                    int i = 0;
+                    int i = -1;
                     for(TextComponent line : components){
-                        TextComponent newComp = new TextComponent(message.getLines()[i]);
-                        newComp.addExtra(line);
-                        newComp.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/joinme "+player));
-                        newComponents.add(newComp);
+                        if(i >= 0 && i <8){
+                            TextComponent newComp = new TextComponent(message.getLines()[i]);
+                            newComp.addExtra(line);
+                            newComp.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/joinme "+player));
+                            newComponents.add(newComp);
+                        }else newComponents.add(line);
                         i++;
                     }
                     return newComponents;
                 }
-            }catch (Exception exception){}
+            }catch (Exception exception){
+                exception.printStackTrace();
+            }
         }
-
         return components;
     }
     private TextComponent createComponent(String message){

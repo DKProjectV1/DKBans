@@ -1,0 +1,8 @@
+name: DKBansReportConnectExtension
+author: Davide Wietlisbach
+description: 
+version: 1.0.0
+depend: [DKBans]
+
+main: ch.dkrieger.bansystem.extension.reportconnect.bungeecord.DKBansReportConnectExtension
+commands:

@@ -23,9 +23,7 @@ package ch.dkrieger.bansystem.restapi;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.restapi.handler.RestApiHandler;
-import ch.dkrieger.bansystem.restapi.handler.defaults.ChatLogHandler;
-import ch.dkrieger.bansystem.restapi.handler.defaults.FilterHandler;
-import ch.dkrieger.bansystem.restapi.handler.defaults.NetworkInfoHandler;
+import ch.dkrieger.bansystem.restapi.handler.defaults.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
@@ -71,7 +69,9 @@ public class DKBansRestAPIServer {
 
         //Register default handlers
         registerRestApiHandler(new FilterHandler());
-        registerRestApiHandler(new NetworkInfoHandler());
+        registerRestApiHandler(new BroadcastHandler());
+        registerRestApiHandler(new PlayerHandler());
+        registerRestApiHandler(new NetworkHandler());
         registerRestApiHandler(new ChatLogHandler());
     }
     public void registerRestApiHandler(RestApiHandler handler){

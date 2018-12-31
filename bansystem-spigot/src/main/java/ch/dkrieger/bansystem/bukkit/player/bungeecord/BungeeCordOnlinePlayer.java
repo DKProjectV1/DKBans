@@ -26,6 +26,7 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
+import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -97,8 +98,14 @@ public class BungeeCordOnlinePlayer implements OnlineNetworkPlayer {
                 ,new Document().append("uuid",uuid).append("ban",ban));
     }
     @Override
-    public void kick(Kick kick) {
+    public void sendKick(Kick kick) {
         BukkitBanSystemBootstrap.getInstance().getBungeeCordConnection().send("kick"
                 ,new Document().append("uuid",uuid).append("kick",kick));
+    }
+
+    @Override
+    public void sendWarn(Warn warn) {
+        BukkitBanSystemBootstrap.getInstance().getBungeeCordConnection().send("warn"
+                ,new Document().append("uuid",uuid).append("warn",warn));
     }
 }

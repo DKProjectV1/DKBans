@@ -25,7 +25,7 @@ import ch.dkrieger.bansystem.lib.report.Report;
 import java.util.List;
 import java.util.UUID;
 
-public class BukkitNetworkPlayerReportsDenyEvent extends BukkitNetworkPlayerEvent {
+public class BukkitNetworkPlayerReportsDenyEvent extends BukkitDKBansEvent {
 
     private final List<Report> reports;
 

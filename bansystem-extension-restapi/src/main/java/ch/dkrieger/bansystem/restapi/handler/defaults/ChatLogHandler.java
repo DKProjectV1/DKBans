@@ -50,8 +50,7 @@ public class ChatLogHandler extends RestApiHandler {
         }else if(query.contains("player")){
             NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(query.get("player"));
             if(player == null){
-                response.append("code", ResponseCode.NO_CONTENT);
-                response.append("message","ChatLog not found");
+                response.append("code", ResponseCode.NO_CONTENT).append("message","ChatLog not found");
                 return;
             }
             chatLog = BanSystem.getInstance().getPlayerManager().getChatLog(player);

@@ -23,6 +23,7 @@ package ch.dkrieger.bansystem.extension.banbroadcast.bungeecord;
 import ch.dkrieger.bansystem.bungeecord.event.ProxiedNetworkPlayerBanEvent;
 import ch.dkrieger.bansystem.bungeecord.event.ProxiedNetworkPlayerKickEvent;
 import ch.dkrieger.bansystem.bungeecord.event.ProxiedNetworkPlayerUnbanEvent;
+import ch.dkrieger.bansystem.bungeecord.event.ProxiedNetworkPlayerWarnEvent;
 import ch.dkrieger.bansystem.extension.banbroadcast.BanBroadcastConfig;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
@@ -30,6 +31,7 @@ import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
+import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -112,6 +114,24 @@ public class DKBansBanBCExtension extends Plugin implements Listener {
                     .replace("[points]",""+unban.getPoints())
                     .replace("[player]",""+unban.getPlayer().getColoredName())
                     .replace("[reason]",unban.getReason()));
+            for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
+                if(player.hasPermission("dkbans.banbroadcast.receive")) player.sendMessage(component);
+            }
+        }
+    }
+    @EventHandler
+    public void onWarn(ProxiedNetworkPlayerWarnEvent event){
+        if(config.WarnMessageEnabled){
+            Warn warn = event.getWarn();
+            TextComponent component = new TextComponent(config.WarnMessage
+                    .replace("[prefix]", Messages.PREFIX_BAN)
+                    .replace("[message]",warn.getMessage())
+                    .replace("[staff]",warn.getStaffName())
+                    .replace("[id]",""+warn.getID())
+                    .replace("[ip]",warn.getIp())
+                    .replace("[points]",""+warn.getPoints())
+                    .replace("[player]",""+warn.getPlayer().getColoredName())
+                    .replace("[reason]",warn.getReason()));
             for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
                 if(player.hasPermission("dkbans.banbroadcast.receive")) player.sendMessage(component);
             }

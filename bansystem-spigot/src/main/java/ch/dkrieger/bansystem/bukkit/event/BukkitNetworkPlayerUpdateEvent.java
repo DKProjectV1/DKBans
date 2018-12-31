@@ -24,7 +24,7 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayerUpdateCause;
 
 import java.util.UUID;
 
-public class BukkitNetworkPlayerUpdateEvent extends BukkitNetworkPlayerEvent {
+public class BukkitNetworkPlayerUpdateEvent extends BukkitDKBansEvent {
 
     private NetworkPlayerUpdateCause cause;
 

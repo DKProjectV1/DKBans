@@ -27,7 +27,7 @@ import ch.dkrieger.bansystem.lib.report.Report;
 import java.util.List;
 import java.util.UUID;
 
-public class BukkitNetworkPlayerReportsProcessEvent extends BukkitNetworkPlayerEvent {
+public class BukkitNetworkPlayerReportsProcessEvent extends BukkitDKBansEvent {
 
     private final UUID staff;
 

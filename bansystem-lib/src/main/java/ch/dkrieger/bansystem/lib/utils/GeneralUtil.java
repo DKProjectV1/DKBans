@@ -208,6 +208,7 @@ public class GeneralUtil {
         return component;
     }
     public static long convertToMillis(long time, String timeType){
+        if(timeType == null) return TimeUnit.DAYS.toMillis(time);
         try{
             return TimeUnit.valueOf(timeType.toUpperCase()).toMillis(time);
         }catch (Exception exception){}

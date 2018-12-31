@@ -28,6 +28,7 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayerUpdateCause;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
+import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -102,6 +103,12 @@ public class SubServerConnection implements Listener {
                         BanSystem.getInstance().getFilterManager().reloadLocal();
                     }else if(document.getString("action").equalsIgnoreCase("reloadBroadcast")){
                         BanSystem.getInstance().getBroadcastManager().reloadLocal();
+                    }else if(document.getString("warn").equalsIgnoreCase("warn")){
+                        ProxiedPlayer player = BungeeCord.getInstance().getPlayer(document.getObject("uuid",UUID.class));
+                        if(player != null){
+                            Warn warn = document.getObject("warn",Warn.class);
+                            player.disconnect(warn.toMessage());
+                        }
                     }else BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedDKBansMessageReceiveEvent(document));
                 }catch (Exception exception){
                     exception.printStackTrace();

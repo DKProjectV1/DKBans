@@ -85,7 +85,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.PLAYER_INFO_ONLINE = addAndGetMessageValue("player.info.online","&7\n&8» &7Name&8: &c[player] &8(&aOnline&8)&7\n&8» &7UUID&8: &c[uuid]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7FirstLogin&8: &c[firstLogin]\n&8» &7Server&8: &c[server]\n&8» &7onlineTime&8: &c[onlineTime-short]" +
                 "\n&8» &7IP&8: &c[ip]\n&8» &7Country&8: &c[country]\n&8» &7Banned&8: &c[isBanned]\n&8» &7Muted&8: &c[isMuted]" +
-                "\n&8» &7Bans&8: &c[bans]\n&8» &7Mutes&8: &c[mutes]\n&8» &7Logins&8: &c[logins]\n&8» &7Reports received&8: &c[reportsReceived]" +
+                "\n&8» &7Bans&8: &c[bans]\n&8» &7Mutes&8: &c[mutes]\n&8» &7Warns&8: &c[warns-since-last-ban]\n&8» &7Logins&8: &c[logins]\n&8» &7Reports received&8: &c[reportsReceived]" +
                 "\n&8» &7Reports send&8: &a[reportsAccepted]&8/&c[reportsSent]\n&5\n&8» [history] [sessions] [ips]\n&7");
         Messages.PLAYER_INFO_OFFLINE = addAndGetMessageValue("player.info.offline","&7\n&8» &7Name&8: &c[player] &8(&cOffline&8)&7\n&8» &7UUID&8: &c[uuid]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7FirstLogin&8: &c[firstLogin]\n&8» &7LastLogin&8: &c[lastLogin]\n&8» &7onlineTime&8: &c[onlineTime]" +
@@ -132,7 +132,15 @@ public class MessageConfig extends SimpleConfig{
         Messages.KICK_SELF = addAndGetMessageValue("kick.self","[prefix]&cYou can not kick your self.");
         Messages.KICK_BYPASS = addAndGetMessageValue("kick.bypass","[prefix]&cYou can not kick &8[player]&c.");
         Messages.KICK_SUCCESS = addAndGetMessageValue("kick.success","[prefix]&8[player] &7was kicked for &4[reason]&7.");
-        Messages.KICK_MESSAGE= addAndGetMessageValue("kick.message","&e&lexample.net\n&5&6&7&8\n&cYou were kicked from the network\n&3Reason&8: &4&l[reason]\n");
+        Messages.KICK_MESSAGE = addAndGetMessageValue("kick.message","&e&lexample.net\n&5&6&7&8\n&cYou were kicked from the network\n&3Reason&8: &4&l[reason]\n");
+
+        Messages.WARN_HELP_HEADER = addAndGetMessageValue("warn.help.header","[prefix]&6Warn Administration");
+        Messages.WARN_HELP_REASON = addAndGetMessageValue("warn.help.reason"," &8- &c[id] &8| &c[reason]");
+        Messages.WARN_HELP_HELP = addAndGetMessageValue("warn.help.help","&8» &cUsage&8: &7 /warn <player> <reason> {message}");
+        Messages.WARN_SELF = addAndGetMessageValue("warn.self","[prefix]&cYou can not warn your self.");
+        Messages.WARN_BYPASS = addAndGetMessageValue("warn.bypass","[prefix]&cYou can not warn &8[player]&c.");
+        Messages.WARN_SUCCESS = addAndGetMessageValue("warn.success","[prefix] &7was warned for &4[reason]&7.");
+        Messages.WARN_MESSAGE = addAndGetMessageValue("warn.message","&5\n[prefix]&cYou were warned\n&8» &3Reason&8: &4&l[reason]\n&8» &3WarnID&8: &7[id]\n&5");
 
         Messages.PING_SELF = addAndGetMessageValue("ping.self","[prefix]&7Your ping is &a[ping]&cms");
         Messages.PING_OTHER = addAndGetMessageValue("ping.other","[prefix]&7The ping from [player] &7is &a[ping]&cms");
@@ -141,7 +149,7 @@ public class MessageConfig extends SimpleConfig{
                 "&8» &e/bc reload &8| &7Reload all broadcast\n&8» &e/bc list &8| &7List all broadcasts" +
                 "\n&8» &e/bc direct <message> &8| &7Send a direct message\n" +
                 "&8» &e/bc create <message> &8| &7Create a broadcast\n&8» &e/bc <id> info &8| &7Show ths broadcast\n&8» &e/bc <id> send &8| &7Send this broadcast\n" +
-                "&8» &e/bc <id> delete &8| &7Delete a broadcast\n&8» &e/bc <id> setHover <type> <message> &8| &7Set a hover message" +
+                "&8» &e/bc <id> delete &8| &7Delete a broadcast\n&8» &e/bc <id> setHover <message> &8| &7Set a hover message" +
                 "\n&8» &e/bc <id> setClick <type> <message> &8| &7Set a click to a message\n" +
                 "&8» &e/bc <id> setMessage <message> &8| &7Change the message\n&8» &e/bc <id> addMessage <message> &8| &7Add a message\n" +
                 "&8» &e/bc <id> setPermission <permission> &8| &7Set a permission\n&8» &e/bc <id> setAuto <true/false> &8| &7Set a broadcast to auto");
@@ -166,18 +174,20 @@ public class MessageConfig extends SimpleConfig{
 
         Messages.JUMPTO_HELP = addAndGetMessageValue("jumpto.help","[prefix]&cUsage&8: &7 /jumpto <player>");
 
-        Messages.JOINME_HEAD = addAndGetBooleanValue("joinme.head","joinme.head");
+        Messages.JOINME_HEAD = addAndGetBooleanValue("joinme.head",true);
         Messages.JOINME_COOLDOWN = addAndGetMessageValue("joinme.cooldown","[prefix]&cWait a moment before sending the next joinme.");
         Messages.JOINME_NOTFOUND = addAndGetMessageValue("joinme.notfound","[prefix]&cThis Joinme was not found.");
         Messages.JOINME_NOTALLOWEDONSERVER = addAndGetMessageValue("joinme.notallowedonserver","[prefix]&cYou can not send a joinme on this server.");
         Messages.JOINME_LINE1 = addAndGetMessageValue("joinme.line.1","&6");
         Messages.JOINME_LINE2 = addAndGetMessageValue("joinme.line.2","&6");
         Messages.JOINME_LINE3 = addAndGetMessageValue("joinme.line.3","&6");
-        Messages.JOINME_LINE4 = addAndGetMessageValue("joinme.line.4","  [player] &7is playing on &e[server]");
-        Messages.JOINME_LINE5= addAndGetMessageValue("joinme.line.5","           &7Click to join");
-        Messages.JOINME_LINE6 = addAndGetMessageValue("joinme.line.6","&6");
+        Messages.JOINME_LINE4 = addAndGetMessageValue("joinme.line.4","&6");
+        Messages.JOINME_LINE5 = addAndGetMessageValue("joinme.line.5","  [player] &7is playing on &e[server]");
+        Messages.JOINME_LINE6= addAndGetMessageValue("joinme.line.6","           &7Click to join");
         Messages.JOINME_LINE7 = addAndGetMessageValue("joinme.line.7","&6");
         Messages.JOINME_LINE8 = addAndGetMessageValue("joinme.line.8","&6");
+        Messages.JOINME_LINE9 = addAndGetMessageValue("joinme.line.9","&6");
+        Messages.JOINME_LINE10 = addAndGetMessageValue("joinme.line.10","&6");
 
         Messages.TEAMCHAT_HELP = addAndGetMessageValue("teamchat.help","[prefix]&cUsage&8: &7 /teamchat <message>");
         Messages.TEAMCHAT_MESSAGE_COLOR = addAndGetMessageValue("teamchat.message.color","&7");
@@ -190,20 +200,24 @@ public class MessageConfig extends SimpleConfig{
         Messages.HISTORY_HELP = addAndGetMessageValue("history.help","[prefix]&cUsage&8: &7 /history <player> {id}");
         Messages.HISTORY_NOTFOUND = addAndGetMessageValue("history.notfound","[prefix]&cThe history was not found.");
         Messages.HISTORY_LIST_HEADER = addAndGetMessageValue("history.list.header","[prefix]&7History from &8[player]");
-        Messages.HISTORY_LIST_BAN_CHAT = addAndGetMessageValue("history.list.ban.chat","&8» &6Mute &8| &7[time] - &7[reason]");
+        Messages.HISTORY_LIST_BAN_CHAT = addAndGetMessageValue("history.list.ban.chat","&8» &9Mute &8| &7[time] - &7[reason]");
         Messages.HISTORY_LIST_BAN_NETWORK = addAndGetMessageValue("history.list.ban.network","&8» &cBan &8| &7[time] - &7[reason]");
         Messages.HISTORY_LIST_KICK = addAndGetMessageValue("history.list.kick","&8» &eKick &8| &7[time] - &7[reason]");
         Messages.HISTORY_LIST_UNBAN = addAndGetMessageValue("history.list.unban","&8» &aUnban &8| &7[time] - &7[reason]");
-        Messages.HISTORY_INFO_BAN_NETWORK = addAndGetMessageValue("history.info.ban.network","[prefix]&7Ban &c[id] &7von [player]" +
+        Messages.HISTORY_LIST_WARN = addAndGetMessageValue("history.list.warn","&8» &6Warn &8| &7[time] - &7[reason]");
+        Messages.HISTORY_INFO_BAN_NETWORK = addAndGetMessageValue("history.info.ban.network","[prefix]&7Ban &c[id] &7from [player]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7Reason&8: [reason] &8- &7[reasonID]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
                 "\n&8» &7Points&8: &c[points]\n&8» &7Duration&8: &c[duration]\n&8» &7Remaining&8: &c[remaining-short]\n&8» &7Time&8: &c[time]\n&8» &7TimeOut&8: &c[timeout]");
-        Messages.HISTORY_INFO_BAN_CHAT = addAndGetMessageValue("history.info.ban.chat","[prefix]&7Mute &c[id] &7von [player]" +
+        Messages.HISTORY_INFO_BAN_CHAT = addAndGetMessageValue("history.info.ban.chat","[prefix]&7Mute &c[id] &7from [player]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7Reason&8: [reason] &8- &7[reasonID]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
                 "\n&8» &7Points&8: &c[points]\n&8» &7Duration&8: &c[duration]\n&8» &7Remaining&8: &c[remaining-short]\n\n&8» &7Time&8: &c[time]\n&8» &7TimeOut&8: &c[timeout]");
-        Messages.HISTORY_INFO_KICK = addAndGetMessageValue("history.info.kick","[prefix]&7Kick &c[id] &7von [player]" +
+        Messages.HISTORY_INFO_KICK = addAndGetMessageValue("history.info.kick","[prefix]&7Kick &c[id] &7from [player]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7Reason&8: [reason] &8- &7[reasonID]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
                 "\n&8» &7Points&8: &c[points]\n&8» &7Time&8: &c[time]");
-        Messages.HISTORY_INFO_UNBAN = addAndGetMessageValue("history.info.unban","[prefix]&7Unban &c[id] &7von [player]" +
+        Messages.HISTORY_INFO_WARN = addAndGetMessageValue("history.info.warn","[prefix]&7Warn &c[id] &7from [player]" +
+                "\n&8» &7ID&8: &c[id]\n&8» &7For type&8: &c[banType]\n&8» &7Reason&8: [reason] &8- &7[reasonID]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
+                "\n&8» &7Points&8: &c[points]\n&8» &7Time&8: &c[time]");
+        Messages.HISTORY_INFO_UNBAN = addAndGetMessageValue("history.info.unban","[prefix]&7Unban &c[id] &7from [player]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7For type&8: &c[banType]\n&8» &7Reason&8: [reason] &8- &7[reasonID]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
                 "\n&8» &7Points&8: &c[points]\n&8» &7Time&8: &c[time]");
         Messages.HISTORY_RESET_ALL = addAndGetMessageValue("history.reset.all","[prefix]&7The history from &8[player] &7was reset.");
@@ -275,6 +289,16 @@ public class MessageConfig extends SimpleConfig{
         Messages.IPINFO_PLAYER_OFFLINE = addAndGetMessageValue("ipinfo.player.offline","&cOffline");
         Messages.IPINFO_PLAYER_MUTED = addAndGetMessageValue("ipinfo.player.muted","&6Muted");
         Messages.IPINFO_PLAYER_BANNED = addAndGetMessageValue("ipinfo.player.banned","&cBanned");
+
+        Messages.IPBAN_HELP = addAndGetMessageValue("ipban.help","[prefix]&cUsage&8: &7/ipban <ip/player> {duration} {unit}");
+        Messages.IPBAN_SUCCESS = addAndGetMessageValue("ipban.success","[prefix]&7The ip &c[ip] &7was banned.");
+        Messages.IPBAN_INFO = addAndGetMessageValue("ipban.info","[prefix]&7Ipban from &c[ip]" +
+                "\n&8» &7Duration&8: &c[duration]\n&8» &7Remaining&8: &c[remaining-short]\n&8» &7Time&8: &c[time]\n&8» &7TimeOut&8: &c[timeOut]");
+        Messages.IPBAN_NOT_BANNED = addAndGetMessageValue("ipban.notbanned","[prefix]&7This ip is not banned.");
+        Messages.IPBAN_ALREADY_BANNED = addAndGetMessageValue("ipban.alreadybanned","[prefix]&7This ip is already banned.");
+
+        Messages.IPUNBAN_HELP = addAndGetMessageValue("ipunban.help","[prefix]&cUsage&8: &7/ipunban <ip>");
+        Messages.IPUNBAN_SUCCESS = addAndGetMessageValue("ipunban.success","[prefix]&7The ip &c[ip] &7was unbanned.");
 
         Messages.CHATLOG_HELP = addAndGetMessageValue("chatlog.help","[prefix]&cUsage&8: &7/chatlog player/server <player/server>");
         Messages.CHATLOG_NOTFOUND = addAndGetMessageValue("chatlog.notfound","[prefix]&cThe chatlog was not found.");

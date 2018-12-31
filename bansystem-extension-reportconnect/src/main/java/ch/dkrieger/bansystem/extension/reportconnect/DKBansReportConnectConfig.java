@@ -2,7 +2,7 @@
  * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 31.12.18 11:39
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -18,21 +18,23 @@
  * under the License.
  */
 
-package ch.dkrieger.bansystem.restapi.handler.defaults;
+package ch.dkrieger.bansystem.extension.reportconnect;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
-import ch.dkrieger.bansystem.lib.utils.Document;
-import ch.dkrieger.bansystem.restapi.handler.RestApiHandler;
 
-public class NetworkInfoHandler extends RestApiHandler {
+import java.util.Arrays;
+import java.util.List;
 
-    public NetworkInfoHandler() {
-        super("networkinfo/");
-    }
+public class DKBansReportConnectConfig {
 
-    @Override
-    public void onRequest(Query query, Document response) {
-        response.append("stats", BanSystem.getInstance().getNetworkStats())
-                .append("onlineCount",BanSystem.getInstance().getPlayerManager().getOnlineCount());
+    public String message;
+    public List<String> commadnsOnConnect;
+
+    public DKBansReportConnectConfig() {
+        message = BanSystem.getInstance().getMessageConfig().addAndGetMessageValue("extension.reportconnect","[prefix]&8[player] &7switched server, connecting...");
+        BanSystem.getInstance().getMessageConfig().save();
+
+        commadnsOnConnect = BanSystem.getInstance().getConfig().addAndGetStringListValue("extension.reportconnect.commands", Arrays.asList());
+        BanSystem.getInstance().getConfig().save();
     }
 }

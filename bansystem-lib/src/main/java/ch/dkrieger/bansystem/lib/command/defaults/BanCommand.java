@@ -47,13 +47,13 @@ public class BanCommand extends NetworkCommand {
         if(args.length < 2) {
             sendReasons(sender);
             return;
-        }//ban dkrieger 1
-        if(BanSystem.getInstance().getConfig().banMode == BanMode.SELF){
-            sender.executeCommand("tempban "+GeneralUtil.arrayToString(args," "));
-            return;
         }
         if(sender.getName().equalsIgnoreCase(args[0])){
-            sender.sendMessage(Messages.BAN_SELF.replace("[prefix]",getPrefix()));
+            sender.sendMessage(Messages.WARN_SELF.replace("[prefix]",getPrefix()));
+            return;
+        }
+        if(BanSystem.getInstance().getConfig().banMode == BanMode.SELF){
+            sender.executeCommand("tempban "+GeneralUtil.arrayToString(args," "));
             return;
         }
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
@@ -141,7 +141,7 @@ public class BanCommand extends NetworkCommand {
     private void sendReasons(NetworkCommandSender sender){
         sender.sendMessage(Messages.BAN_HELP_HEADER.replace("[prefix]",getPrefix()));
         for(BanReason reason : BanSystem.getInstance().getReasonProvider().getBanReasons()){
-            if(!sender.hasPermission(reason.getPermission())) continue;
+            if(!reason.isHidden() && !sender.hasPermission(reason.getPermission()) && !sender.hasPermission("dkbans.*")) continue;
             sender.sendMessage(Messages.BAN_HELP_REASON
                     .replace("[prefix]",getPrefix())
                     .replace("[id]",""+reason.getID())
@@ -151,7 +151,7 @@ public class BanCommand extends NetworkCommand {
                     .replace("[reason]",reason.getDisplay())
                     .replace("[points]",""+reason.getPoints()));
         }
-        sender.sendMessage(Messages.BAN_HELP_HELP);
+        sender.sendMessage(Messages.BAN_HELP_HELP.replace("[prefix]",getPrefix()));
     }
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {

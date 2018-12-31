@@ -24,7 +24,7 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
-import ch.dkrieger.bansystem.lib.config.mode.KickMode;
+import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 import ch.dkrieger.bansystem.lib.reason.KickReason;
@@ -63,13 +63,13 @@ public class KickCommand extends NetworkCommand {
             return;
         }
         KickReason reason = null;
-        if(BanSystem.getInstance().getConfig().kickMode == KickMode.TEMPLATE){
+        if(BanSystem.getInstance().getConfig().kickMode == ReasonMode.TEMPLATE){
             reason = BanSystem.getInstance().getReasonProvider().searchKickReason(args[1]);
             if(reason == null){
                 sendReasons(sender);
                 return;
             }
-            if(!sender.hasPermission(reason.getPermission())){
+            if(!sender.hasPermission(reason.getPermission())&& !sender.hasPermission("dkbans.*")){
                 sender.sendMessage(Messages.REASON_NO_PERMISSION
                         .replace("[prefix]",getPrefix())
                         .replace("[reason]",reason.getDisplay()));
@@ -86,7 +86,7 @@ public class KickCommand extends NetworkCommand {
         for(int i = 2;i < args.length;i++) message += args[i]+" ";
 
         Kick kick = null;
-        if(BanSystem.getInstance().getConfig().kickMode == KickMode.TEMPLATE) kick = player.kick(reason,message,sender.getUUID());
+        if(BanSystem.getInstance().getConfig().kickMode == ReasonMode.TEMPLATE) kick = player.kick(reason,message,sender.getUUID());
         else kick = player.kick(args[1],message,sender.getUUID());
 
         sender.sendMessage(Messages.KICK_SUCCESS
@@ -97,10 +97,10 @@ public class KickCommand extends NetworkCommand {
                 .replace("[player]",player.getColoredName()));
     }
     private void sendReasons(NetworkCommandSender sender){
-        if(BanSystem.getInstance().getConfig().kickMode == KickMode.TEMPLATE) {
+        if(BanSystem.getInstance().getConfig().kickMode == ReasonMode.TEMPLATE) {
             sender.sendMessage(Messages.KICK_HELP_HEADER.replace("[prefix]",getPrefix()));
             for (KickReason reason : BanSystem.getInstance().getReasonProvider().getKickReasons()) {
-                if (!sender.hasPermission(reason.getPermission())) continue;
+                if (!sender.hasPermission(reason.getPermission()) && !sender.hasPermission("dkbans.*")) continue;
                 sender.sendMessage(Messages.KICK_HELP_REASON
                         .replace("[prefix]", getPrefix())
                         .replace("[id]", "" + reason.getID())

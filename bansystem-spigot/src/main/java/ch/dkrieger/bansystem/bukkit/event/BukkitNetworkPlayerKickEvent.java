@@ -24,7 +24,7 @@ import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 
 import java.util.UUID;
 
-public class BukkitNetworkPlayerKickEvent extends BukkitNetworkPlayerEvent {
+public class BukkitNetworkPlayerKickEvent extends BukkitDKBansEvent {
 
     public BukkitNetworkPlayerKickEvent(UUID uuid, long timeStamp, boolean onThisServer) {
         super(uuid, timeStamp,onThisServer);

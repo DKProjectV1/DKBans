@@ -58,7 +58,7 @@ public class ConsoleBanCommand extends NetworkCommand {
                     for(int i = 6;i < args.length;i++) message += args[i]+" ";
                     player.ban(type,GeneralUtil.convertToMillis(Long.valueOf(args[3]),args[4]),TimeUnit.MILLISECONDS
                             ,args[2],message,-1,args[5]);
-                    System.out.println(Messages.SYSTEM_PREFIX+"The player was banned for "+args[2]);
+                    System.out.println(Messages.SYSTEM_PREFIX+player.getName()+" was banned for "+args[2]);
                     return;
                 }else if(args.length >= 3 && GeneralUtil.isNumber(args[1])){
                     BanReason reason = BanSystem.getInstance().getReasonProvider().searchBanReason(args[1]);
@@ -69,7 +69,7 @@ public class ConsoleBanCommand extends NetworkCommand {
                     String message = "";
                     for(int i = 3;i < args.length;i++) message += args[i]+" ";
                     player.ban(reason,message,args[2]);
-                    System.out.println(Messages.SYSTEM_PREFIX+"The player was banned for "+reason.getName());
+                    System.out.println(Messages.SYSTEM_PREFIX+player.getName()+" was banned for "+reason.getName());
                     return;
                 }
             }

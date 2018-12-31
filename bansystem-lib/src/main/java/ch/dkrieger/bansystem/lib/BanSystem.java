@@ -84,26 +84,9 @@ public class BanSystem {
         System.out.println(Messages.SYSTEM_PREFIX+"BanSystem "+this.version+" by Davide Wietlisbach");
 
         systemBootstrap();
+        HistoryEntry.buildAdapter();
 
         System.out.println(Messages.SYSTEM_PREFIX+"plugin successfully started");
-
-
-        new HistoryEntry(UUID.randomUUID(), "", "", "", 0L, 0, 0, 1, "", null) {
-            @Override
-            public String getTypeName() {
-                return null;
-            }
-
-            @Override
-            public TextComponent getListMessage() {
-                return null;
-            }
-
-            @Override
-            public TextComponent getInfoMessage() {
-                return null;
-            }
-        };
     }
     private void systemBootstrap(){
         this.config = new Config(this.platform);
@@ -168,6 +151,9 @@ public class BanSystem {
         if(this.config.commandTempmute) getCommandManager().registerCommand(new TempmuteCommand());
         if(this.config.commandUnban) getCommandManager().registerCommand(new UnbanCommand());
         if(this.config.commandStaffstats) getCommandManager().registerCommand(new StaffStatsCommand());
+        if(this.config.commandIPban) getCommandManager().registerCommand(new IpBanCommand());
+        if(this.config.commandIPUnban) getCommandManager().registerCommand(new IpUnbanCommand());
+        if(this.config.commandWarn) getCommandManager().registerCommand(new WarnCommand());
         getCommandManager().registerCommand(new DKBansCommand());
 
         if(config.autobroadcastEnabled)

@@ -24,13 +24,11 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
-import ch.dkrieger.bansystem.lib.config.mode.BanMode;
-import ch.dkrieger.bansystem.lib.config.mode.UnbanMode;
+import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
-import ch.dkrieger.bansystem.lib.reason.ReportReason;
 import ch.dkrieger.bansystem.lib.reason.UnbanReason;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -40,10 +38,10 @@ import java.util.List;
 
 public class UnbanCommand extends NetworkCommand {
 
-    private UnbanMode unbanMode;
+    private ReasonMode unbanMode;
 
     public UnbanCommand() {
-        super("unban","","dkperms.unban","","unmute");
+        super("unban","","dkbans.unban","","unmute");
         setPrefix(Messages.PREFIX_BAN);
         this.unbanMode = BanSystem.getInstance().getConfig().unbanMode;
     }
@@ -55,7 +53,7 @@ public class UnbanCommand extends NetworkCommand {
             return;
         }
         UnbanReason reason = null;
-        if(unbanMode != UnbanMode.SELF){
+        if(unbanMode != ReasonMode.SELF){
             if(args.length >= 2) reason = BanSystem.getInstance().getReasonProvider().searchUnbanReason(args[1]);
             if(reason == null){
                 sendReasons(sender);
@@ -77,7 +75,7 @@ public class UnbanCommand extends NetworkCommand {
             return;
         }
         BanType type = null;
-        if((unbanMode == UnbanMode.SELF && args.length >= 2) || (unbanMode == UnbanMode.TEMPLATE && args.length >= 3)){//unban dkrieger 1 network das war ein test
+        if((unbanMode ==ReasonMode.SELF && args.length >= 2) || (unbanMode == ReasonMode.TEMPLATE && args.length >= 3)){//unban dkrieger 1 network das war ein test
             type = BanType.parse(args[messageStart].toUpperCase());
             messageStart++;
         }
@@ -85,8 +83,7 @@ public class UnbanCommand extends NetworkCommand {
         for(int i = messageStart;i < args.length;i++) message += args[i]+" ";
         if(type == null && player.isBanned(BanType.NETWORK) && player.isBanned(BanType.CHAT)){
             sender.sendMessage(Messages.PLAYER_HAS_MOREBANS_HEADER
-                    .replace("[player]",player.getColoredName())
-                            .replace("[prefix]",getPrefix()));
+                    .replace("[player]",player.getColoredName()).replace("[prefix]",getPrefix()));
             TextComponent network = new TextComponent(Messages.PLAYER_HAS_MOREBANS_NETWORK
                     .replace("[prefix]",getPrefix())
                     .replace("[duration]",GeneralUtil.calculateDuration(player.getBan(BanType.NETWORK).getDuration()))
@@ -126,7 +123,7 @@ public class UnbanCommand extends NetworkCommand {
                     .replace("[player]",args[0]));
             return;
         }
-        if(!sender.hasPermission("dkbans.unban.all")){
+        if(!sender.hasPermission("dkbans.unban.all") && !sender.hasPermission("dkbans.*")){
             Ban ban = null;
             if(type != null) ban = player.getBan(type);
             else ban = player.getBan((player.isBanned(BanType.NETWORK))?BanType.NETWORK:BanType.CHAT);
@@ -140,7 +137,7 @@ public class UnbanCommand extends NetworkCommand {
 
         if((type == null || type == BanType.NETWORK) &&  player.isBanned(BanType.NETWORK)){
             Unban unban;
-            if(this.unbanMode == UnbanMode.SELF) unban = player.unban(BanType.NETWORK,message,sender.getUUID());
+            if(this.unbanMode == ReasonMode.SELF) unban = player.unban(BanType.NETWORK,message,sender.getUUID());
             else unban = player.unban(BanType.NETWORK,reason,message,sender.getUUID());
             sender.sendMessage(Messages.PLAYER_UNBANNED
                     .replace("[prefix]",getPrefix())
@@ -152,7 +149,7 @@ public class UnbanCommand extends NetworkCommand {
                     .replace("[player]",args[0]));
         }else{
             Unban unban;
-            if(this.unbanMode == UnbanMode.SELF) unban = player.unban(BanType.CHAT,message,sender.getUUID());
+            if(this.unbanMode == ReasonMode.SELF) unban = player.unban(BanType.CHAT,message,sender.getUUID());
             else unban = player.unban(BanType.CHAT,reason,message,sender.getUUID());
             sender.sendMessage(Messages.PLAYER_UNMUTED
                     .replace("[prefix]",getPrefix())
@@ -165,10 +162,10 @@ public class UnbanCommand extends NetworkCommand {
         }
     }
     private void sendReasons(NetworkCommandSender sender){
-        if(BanSystem.getInstance().getConfig().unbanMode != UnbanMode.SELF) {
+        if(BanSystem.getInstance().getConfig().unbanMode != ReasonMode.SELF) {
             sender.sendMessage(Messages.UNBAN_HELP_HEADER);
             for(UnbanReason reason : BanSystem.getInstance().getReasonProvider().getUnbanReasons()){
-                if(!sender.hasPermission(reason.getPermission())) continue;
+                if(!reason.isHidden() && !sender.hasPermission(reason.getPermission()) && !sender.hasPermission("dkbans.*")) continue;
                 sender.sendMessage(Messages.UNBAN_HELP_REASON
                         .replace("[prefix]",getPrefix())
                         .replace("[id]",""+reason.getID())
@@ -178,7 +175,7 @@ public class UnbanCommand extends NetworkCommand {
                         .replace("[points]",""+reason.getPoints()));
             }
         }
-        sender.sendMessage(Messages.UNBAN_HELP_HELP);
+        sender.sendMessage(Messages.UNBAN_HELP_HELP.replace("[prefix]",getPrefix()));
     }
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {

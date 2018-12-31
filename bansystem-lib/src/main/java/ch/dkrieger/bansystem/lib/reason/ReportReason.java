@@ -28,7 +28,7 @@ import java.util.UUID;
 
 public class ReportReason extends KickReason{
 
-    int forBan;
+    private int forBan;
 
     public ReportReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, int forban) {
         super(id, points, name, display, permission, hidden, aliases);
