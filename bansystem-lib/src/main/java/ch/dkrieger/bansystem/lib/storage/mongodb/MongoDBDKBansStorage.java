@@ -141,7 +141,6 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     }
     @Override
     public void saveStaffSettings(UUID player, boolean report, boolean teamchat) {
-        System.out.println("update staff login");
         this.playerCollection.updateOne(eq("uuid",player.toString()),new Document("$set"
                 ,new Document("teamChatLogin",teamchat).append("reportLogin",report)));
     }

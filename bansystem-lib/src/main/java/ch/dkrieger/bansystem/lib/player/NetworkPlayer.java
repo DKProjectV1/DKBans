@@ -786,7 +786,6 @@ public class NetworkPlayer {
     public int addToHistory(HistoryEntry entry,NetworkPlayerUpdateCause cause,Document properties) {
         int id = BanSystem.getInstance().getStorage().createHistoryEntry(this,entry);
         entry.setID(id);
-        System.out.println(id);
         this.history.getRawEntries().put(id,entry);
         update(cause,properties);
         return id;

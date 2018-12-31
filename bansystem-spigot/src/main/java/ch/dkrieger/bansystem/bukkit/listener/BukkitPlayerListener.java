@@ -219,9 +219,7 @@ public class BukkitPlayerListener implements Listener {
     }
     @EventHandler
     public void onTabComplete(PlayerChatTabCompleteEvent event){
-        System.out.println("tab "+event.getChatMessage());
         if(event.getChatMessage().startsWith("/") && BanSystem.getInstance().getConfig().tabCompleteBlockEnabled){
-            System.out.println("tab");
             String search = event.getChatMessage();
             if(search.contains(" ")) search = search.split(" ")[0].replace("/","");
             final String finalSearch = search;

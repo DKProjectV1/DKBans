@@ -98,7 +98,6 @@ public class BungeeCordOnlinePlayer implements OnlineNetworkPlayer {
     }
     @Override
     public void kick(Kick kick) {
-        System.out.println("kick to proxy");
         BukkitBanSystemBootstrap.getInstance().getBungeeCordConnection().send("kick"
                 ,new Document().append("uuid",uuid).append("kick",kick));
     }

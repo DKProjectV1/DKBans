@@ -44,7 +44,7 @@ public class BanCommand extends NetworkCommand {
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
-        if(args.length < 2){
+        if(args.length < 2) {
             sendReasons(sender);
             return;
         }//ban dkrieger 1
@@ -74,7 +74,7 @@ public class BanCommand extends NetworkCommand {
             sendReasons(sender);
             return;
         }
-        if(!sender.hasPermission(reason.getPermission())){
+        if(!sender.hasPermission(reason.getPermission())) {
             sender.sendMessage(Messages.REASON_NO_PERMISSION
                     .replace("[prefix]",getPrefix())
                     .replace("[reason]",reason.getDisplay()));

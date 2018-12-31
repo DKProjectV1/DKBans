@@ -64,7 +64,6 @@ public class BroadcastManager {
                     broadcast = bc;
                 }
             }
-            System.out.println(broadcast);
             nextBroadcast = broadcast.getID()+1;
             return broadcast;
         }else return broadcasts.get(GeneralUtil.RANDOM.nextInt(broadcasts.size()));

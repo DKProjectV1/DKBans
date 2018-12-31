@@ -42,7 +42,6 @@ public class Duration {
         return GeneralUtil.calculateDuration(time);
     }
     public long getMillisTime(){
-        System.out.println(unit+" "+time);
         return this.unit.toMillis(this.time);
     }
 }

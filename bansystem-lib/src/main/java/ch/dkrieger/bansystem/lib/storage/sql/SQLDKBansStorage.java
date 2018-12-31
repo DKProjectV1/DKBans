@@ -627,7 +627,7 @@ public class SQLDKBansStorage implements DKBansStorage {
                         createPlayer(player);
                     }
                 }catch (Exception exception){
-                    System.out.println("Could not translate players");
+                    System.out.println(Messages.SYSTEM_PREFIX + "Could not translate players");
                     exception.printStackTrace();
                 }
                 return null;
@@ -677,7 +677,7 @@ public class SQLDKBansStorage implements DKBansStorage {
                         }
                     }
                 }catch (Exception exception){
-                    System.out.println("Could not translate history");
+                    System.out.println(Messages.SYSTEM_PREFIX + "Could not translate history");
                     exception.printStackTrace();
                 }
                 return null;
@@ -689,7 +689,7 @@ public class SQLDKBansStorage implements DKBansStorage {
                                 ,System.currentTimeMillis(),true,new Broadcast.Click("", Broadcast.ClickType.URL)));
                     }
                 }catch (Exception exception){
-                    System.out.println("Could not translate autobroadcasts.");
+                    System.out.println(Messages.SYSTEM_PREFIX + "Could not translate autobroadcasts.");
                     exception.printStackTrace();
                 }
                 return null;
@@ -701,7 +701,7 @@ public class SQLDKBansStorage implements DKBansStorage {
                                 ,FilterType.valueOf(result.getString("filtertype"))));
                     }
                 }catch (Exception exception){
-                    System.out.println("Could not translate filters.");
+                    System.out.println(Messages.SYSTEM_PREFIX + "Could not translate filters.");
                     exception.printStackTrace();
                 }
                 return null;

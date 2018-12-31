@@ -79,10 +79,8 @@ public class CloudNetV3OnlinePlayer implements OnlineNetworkPlayer {
 
         while(!PINGGETTER.containsKey(getUUID()) && timeOut < 1000){
             timeOut++;
-            System.out.println("waiting");
         }
         if(PINGGETTER.containsKey(getUUID())) return PINGGETTER.get(getUUID());
-        System.out.println("return ping");
         return -1;
     }
 
