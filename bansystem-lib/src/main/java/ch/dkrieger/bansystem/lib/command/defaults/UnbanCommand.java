@@ -125,7 +125,7 @@ public class UnbanCommand extends NetworkCommand {
                     .replace("[player]",args[0]));
             return;
         }
-        if(!sender.hasPermission("dkbans.unban.all")){
+        if(!sender.hasPermission("dkbans.unban.all") && !sender.hasPermission("dkbans.*")){
             Ban ban = null;
             if(type != null) ban = player.getBan(type);
             else ban = player.getBan((player.isBanned(BanType.NETWORK))?BanType.NETWORK:BanType.CHAT);
@@ -167,7 +167,7 @@ public class UnbanCommand extends NetworkCommand {
         if(BanSystem.getInstance().getConfig().unbanMode != UnbanMode.SELF) {
             sender.sendMessage(Messages.UNBAN_HELP_HEADER);
             for(UnbanReason reason : BanSystem.getInstance().getReasonProvider().getUnbanReasons()){
-                if(!sender.hasPermission(reason.getPermission())) continue;
+                if(!sender.hasPermission(reason.getPermission()) && !sender.hasPermission("dkbans.*")) continue;
                 sender.sendMessage(Messages.UNBAN_HELP_REASON
                         .replace("[prefix]",getPrefix())
                         .replace("[id]",""+reason.getID())

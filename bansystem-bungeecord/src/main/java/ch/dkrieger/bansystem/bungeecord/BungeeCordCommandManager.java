@@ -65,7 +65,7 @@ public class BungeeCordCommandManager implements NetworkCommandManager {
         @Override
         public void execute(CommandSender sender, String[] args) {
             if(command.getPermission() == null || command.getPermission().equalsIgnoreCase("none")
-                    ||sender.hasPermission(command.getPermission())){
+                    || sender.hasPermission("dkbans.*") || sender.hasPermission(command.getPermission())){
                 BungeeCord.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
                     command.onExecute(new BungeeCordNetworkCommandSender(sender),args);
                 });

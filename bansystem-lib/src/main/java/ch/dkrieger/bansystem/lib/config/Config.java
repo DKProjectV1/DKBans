@@ -168,8 +168,8 @@ public class Config extends SimpleConfig{
         this.reportControls = addAndGetBooleanValue("report.controls",true);
         this.reportDelay = addAndGetLongValue("report.delay",900000);
         this.reportAutoCommandExecuteOnProxy = addAndGetBooleanValue("report.autocommand.onproxy",false);
-        this.reportAutoCommandEnter = addAndGetStringListValue("report.autocommand.enter", Arrays.asList("tp [player]"));
-        this.reportAutoCommandExit = addAndGetStringListValue("report.autocommand.exit", Arrays.asList("spawn"));
+        this.reportAutoCommandEnter = addAndGetStringListValue("report.autocommand.enter", Arrays.asList());//"tp [player]"
+        this.reportAutoCommandExit = addAndGetStringListValue("report.autocommand.exit", Arrays.asList());
 
         this.dateFormat = new SimpleDateFormat(addAndGetStringValue("date.format","dd.MM.yyyy HH:mm"));
 

@@ -226,6 +226,12 @@ public class ReportCommand extends NetworkCommand {
                 sendHelp(sender);
                 return;
             }
+            if(!sender.hasPermission(reason.getPermission())&& !sender.hasPermission("dkbans.*")){
+                sender.sendMessage(Messages.REASON_NO_PERMISSION
+                        .replace("[prefix]",getPrefix())
+                        .replace("[reason]",reason.getDisplay()));
+                return;
+            }
             report = player.report(reason,message,sender.getUUID(),online.getServer());
         }
         if(report == null) return;
@@ -239,7 +245,7 @@ public class ReportCommand extends NetworkCommand {
     private void sendHelp(NetworkCommandSender sender){
         sender.sendMessage(Messages.REPORT_HELP_HEADER.replace("[prefix]",getPrefix()));
         for(ReportReason reason : BanSystem.getInstance().getReasonProvider().getReportReasons()){
-            if(!sender.hasPermission(reason.getPermission())) continue;
+            if(!sender.hasPermission(reason.getPermission()) && !sender.hasPermission("dkbans.*")) continue;
             sender.sendMessage(Messages.REPORT_HELP_REASON
                     .replace("[prefix]",getPrefix())
                     .replace("[id]",""+reason.getID())

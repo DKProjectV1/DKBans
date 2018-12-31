@@ -141,7 +141,7 @@ public class BanCommand extends NetworkCommand {
     private void sendReasons(NetworkCommandSender sender){
         sender.sendMessage(Messages.BAN_HELP_HEADER.replace("[prefix]",getPrefix()));
         for(BanReason reason : BanSystem.getInstance().getReasonProvider().getBanReasons()){
-            if(!sender.hasPermission(reason.getPermission())) continue;
+            if(!sender.hasPermission(reason.getPermission()) && !sender.hasPermission("dkbans.*")) continue;
             sender.sendMessage(Messages.BAN_HELP_REASON
                     .replace("[prefix]",getPrefix())
                     .replace("[id]",""+reason.getID())

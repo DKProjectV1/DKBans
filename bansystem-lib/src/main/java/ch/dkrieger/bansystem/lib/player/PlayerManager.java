@@ -138,7 +138,6 @@ public abstract class PlayerManager {
         return banIp(new IPBan(lastPlayer,ip,System.currentTimeMillis(),duration<=0?-1:System.currentTimeMillis()+unit.toMillis(duration)));
     }
     public IPBan banIp(IPBan ipban){
-        System.out.println("banip "+ ipban.getIp());
         BanSystem.getInstance().getStorage().banIp(ipban);
         return ipban;
     }

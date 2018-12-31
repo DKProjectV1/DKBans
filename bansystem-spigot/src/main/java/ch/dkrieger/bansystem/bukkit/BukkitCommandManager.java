@@ -75,7 +75,7 @@ public class BukkitCommandManager implements NetworkCommandManager {
         @Override
         public boolean execute(CommandSender sender, String s, String[] args) {
             if(command.getPermission() == null || command.getPermission().equalsIgnoreCase("none")
-                    ||sender.hasPermission(command.getPermission())){
+                    || sender.hasPermission("dkbans.*")||sender.hasPermission(command.getPermission())){
                 Bukkit.getScheduler().runTaskAsynchronously(BukkitBanSystemBootstrap.getInstance(),()->{
                     command.onExecute(new BungeeCordNetworkCommandSender(sender),args);
                 });

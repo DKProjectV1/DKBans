@@ -69,7 +69,7 @@ public class KickCommand extends NetworkCommand {
                 sendReasons(sender);
                 return;
             }
-            if(!sender.hasPermission(reason.getPermission())){
+            if(!sender.hasPermission(reason.getPermission())&& !sender.hasPermission("dkbans.*")){
                 sender.sendMessage(Messages.REASON_NO_PERMISSION
                         .replace("[prefix]",getPrefix())
                         .replace("[reason]",reason.getDisplay()));
@@ -100,7 +100,7 @@ public class KickCommand extends NetworkCommand {
         if(BanSystem.getInstance().getConfig().kickMode == KickMode.TEMPLATE) {
             sender.sendMessage(Messages.KICK_HELP_HEADER.replace("[prefix]",getPrefix()));
             for (KickReason reason : BanSystem.getInstance().getReasonProvider().getKickReasons()) {
-                if (!sender.hasPermission(reason.getPermission())) continue;
+                if (!sender.hasPermission(reason.getPermission()) && !sender.hasPermission("dkbans.*")) continue;
                 sender.sendMessage(Messages.KICK_HELP_REASON
                         .replace("[prefix]", getPrefix())
                         .replace("[id]", "" + reason.getID())
