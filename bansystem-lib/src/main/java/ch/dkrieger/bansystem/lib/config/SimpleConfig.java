@@ -104,6 +104,11 @@ public abstract class SimpleConfig {
     public List<String> getStringListValue(String path){
         return this.config.getStringList(path);
     }
+    public List<String> getMessageListValue(String path) {
+        List<String> messages = new LinkedList<>();
+        getStringListValue(path).forEach((message)-> messages.add(ChatColor.translateAlternateColorCodes('&', message)));
+        return messages;
+    }
     public List<Integer> getIntListValue(String path){
         return this.config.getIntList(path);
     }
@@ -149,6 +154,10 @@ public abstract class SimpleConfig {
     public List<String> addAndGetStringListValue(String path,Object object){
         addValue(path,object);
         return this.config.getStringList(path);
+    }
+    public List<String> addAndGetMessageListValue(String path, Object object) {
+        addValue(path, object);
+        return getMessageListValue(path);
     }
     public List<Integer> addAndGetIntListValue(String path,Object object){
         addValue(path,object);

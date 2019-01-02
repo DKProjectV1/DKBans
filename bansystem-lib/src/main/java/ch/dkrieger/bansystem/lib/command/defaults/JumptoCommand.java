@@ -45,7 +45,6 @@ public class JumptoCommand extends NetworkCommand {
             return;
         }
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
-        System.out.println("JUmp "+player);
         if(player == null){
             sender.sendMessage(Messages.PLAYER_NOT_FOUND
                     .replace("[prefix]",getPrefix())

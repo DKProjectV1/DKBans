@@ -20,6 +20,7 @@
 
 package ch.dkrieger.bansystem.lib.storage.sql;
 
+import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.storage.sql.query.ColumnType;
 
 import java.io.File;
@@ -49,7 +50,7 @@ public class SQLite extends SQL {
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
-            System.out.println("Driver is not available ("+e.getMessage()+")");
+            System.out.println(Messages.SYSTEM_PREFIX + "Driver is not available ("+e.getMessage()+")");
         }
     }
 

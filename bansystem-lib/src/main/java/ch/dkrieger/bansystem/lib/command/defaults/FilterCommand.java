@@ -56,7 +56,6 @@ public class FilterCommand extends NetworkCommand {
                         return;
                     }
                 }else filters = BanSystem.getInstance().getFilterManager().getFilters();
-                System.out.println(filters.size());
                 sender.sendMessage(Messages.FILTER_LIST_HEADER
                         .replace("[type]",type==null?"ALL":type.toString())
                         .replace("[prefix]",getPrefix()));

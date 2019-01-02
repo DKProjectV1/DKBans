@@ -94,7 +94,6 @@ public class BungeeCordConnection implements PluginMessageListener {
     public void send(String action, Document document){
         if(Bukkit.getOnlineMode()) return;
         if(!active) throw new IllegalArgumentException("SubServerConnection is not enabled");
-        System.out.println("sending "+action);
         document.append("action",action);
         try {
             ByteArrayOutputStream b = new ByteArrayOutputStream();

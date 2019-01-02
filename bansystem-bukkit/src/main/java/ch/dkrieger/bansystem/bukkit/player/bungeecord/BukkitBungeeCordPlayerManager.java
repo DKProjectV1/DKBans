@@ -77,7 +77,6 @@ public class BukkitBungeeCordPlayerManager extends PlayerManager {
 
     @Override
     public void updatePlayer(NetworkPlayer player, NetworkPlayerUpdateCause cause, Document properties) {
-        System.out.println("update "+player.getColoredName());
         BukkitBanSystemBootstrap.getInstance().executePlayerUpdateEvents(player.getUUID(),cause,properties,true);
         connection.send("updatePlayer",new Document().append("uuid",player.getUUID()).append("cause",cause)
                 .append("properties",properties));

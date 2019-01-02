@@ -27,10 +27,54 @@
         <groupId>ch.dkrieger.bansystem</groupId>
         <version>2.0.5</version>
     </parent>
+    <properties>
+        <guiextension.version>1.0.0</guiextension.version>
+    </properties>
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>ch.dkrieger.bansystem.extension.gui</groupId>
-    <artifactId>bansystem-gui</artifactId>
-
-
+    <artifactId>bansystem-extension-gui</artifactId>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+    <repositories>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.dkrieger.bansystem.lib</groupId>
+            <artifactId>bansystem-lib</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.dkrieger.bansystem.spigot</groupId>
+            <artifactId>bansystem-spigot</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>
