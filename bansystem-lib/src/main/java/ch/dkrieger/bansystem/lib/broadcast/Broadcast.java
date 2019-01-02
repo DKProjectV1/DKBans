@@ -139,6 +139,7 @@ public class Broadcast {
     public static enum ClickType {
         URL(),
         COMMAND(),
+        SERVER(),
         OPENCHAT();
 
         public static ClickType parseNull(String parse){

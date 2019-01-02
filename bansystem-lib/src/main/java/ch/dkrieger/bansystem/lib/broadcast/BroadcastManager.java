@@ -22,6 +22,7 @@ package ch.dkrieger.bansystem.lib.broadcast;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
+import ch.dkrieger.bansystem.lib.command.defaults.BroadcastJumpCommand;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.chat.*;
@@ -137,7 +138,12 @@ public class BroadcastManager {
         component.setExtra(components);
         component.setText("");
         if(hover.length() > 1) component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder(hover).create()));
-        if(click.length() > 1) component.setClickEvent(new ClickEvent(broadcast.getClick().getType().toClickAction(),click));
+        if(click.length() > 1){
+            if(broadcast.getClick().getType() == Broadcast.ClickType.SERVER){
+                component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/broadcastjump "+broadcast.getClick().getMessage()));
+                BroadcastJumpCommand.SERVER_WHITELISTS.put(broadcast.getClick().getMessage(),System.currentTimeMillis());
+            }else component.setClickEvent(new ClickEvent(broadcast.getClick().getType().toClickAction(),click));
+        }
         return component;
     }
     public void reloadLocal(){

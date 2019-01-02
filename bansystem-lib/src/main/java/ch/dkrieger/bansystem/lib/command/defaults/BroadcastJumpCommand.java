@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 21:11
+ * @since 02.01.19 20:43
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -20,36 +20,33 @@
 
 package ch.dkrieger.bansystem.lib.command.defaults;
 
-import ch.dkrieger.bansystem.lib.BanSystem;
-import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-public class IpUnbanCommand extends NetworkCommand {
+public class BroadcastJumpCommand extends NetworkCommand {
 
-    public IpUnbanCommand() {
-        super("ipunban","","dkbans.ipunban");
-        getAliases().add("ipunblock");
-        getAliases().add("unbanip");
-        setPrefix(Messages.PREFIX_BAN);
+    public static Map<String,Long> SERVER_WHITELISTS;
+
+    public BroadcastJumpCommand() {
+        super("broadcastjump");
+        SERVER_WHITELISTS = new HashMap<>();
     }
-
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
-        if(args.length < 1){
-            sender.sendMessage(Messages.IPUNBAN_HELP.replace("[prefix]",getPrefix()));
-            return;
+        if(args.length > 0){
+            System.out.println(SERVER_WHITELISTS.containsKey(args[0]));
+            if(SERVER_WHITELISTS.containsKey(args[0]) && (System.currentTimeMillis()+ TimeUnit.MINUTES.toMillis(10)) > SERVER_WHITELISTS.get(args[0])){
+                System.out.println("test");
+                sender.getAsOnlineNetworkPlayer().connect(args[0]);
+                return;
+            }
+            SERVER_WHITELISTS.remove(args[0]);
         }
-        if(!BanSystem.getInstance().getPlayerManager().isIPBanned(args[0])){
-            sender.sendMessage(Messages.IPBAN_NOT_BANNED
-                    .replace("[prefix]",getPrefix())
-                    .replace("[player]",args[0]));
-            return;
-        }
-        BanSystem.getInstance().getPlayerManager().unbanIp(args[0]);
-        sender.sendMessage(Messages.IPUNBAN_SUCCESS.replace("[ip]",args[0]).replace("[prefix]",getPrefix()));
     }
 
     @Override

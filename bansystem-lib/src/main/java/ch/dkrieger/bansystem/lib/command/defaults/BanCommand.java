@@ -34,13 +34,19 @@ import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class BanCommand extends NetworkCommand {
+
+    private Map<UUID,String> lastPlayers;
 
     public BanCommand() {
         super("ban","","dkbans.ban");
         setPrefix(Messages.PREFIX_BAN);
+        this.lastPlayers = new HashMap<>();
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {

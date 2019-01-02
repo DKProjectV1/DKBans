@@ -181,7 +181,7 @@ public class Config extends SimpleConfig{
         this.reportAutoCommandEnter = addAndGetStringListValue("report.autocommand.enter", Arrays.asList());//"tp [player]"
         this.reportAutoCommandExit = addAndGetStringListValue("report.autocommand.exit", Arrays.asList());
 
-        this.warnMode = ReasonMode.parse(addAndGetStringValue("report.warn",ReasonMode.TEMPLATE.toString()));
+        this.warnMode = ReasonMode.parse(addAndGetStringValue("warn.mode",ReasonMode.TEMPLATE.toString()));
         this.warnStaffName = addAndGetStringValue("warn.staffname","WarnManager");
         this.warnAutoBanCount = addAndGetIntValue("warn.autoban.count",5);
         this.warnAutoBanBanForLastReason = addAndGetBooleanValue("warn.autoban.banforlastreason",true);
@@ -199,10 +199,10 @@ public class Config extends SimpleConfig{
         this.joinMeDisabledServerEquals = addAndGetBooleanValue("joinme.disabledservers.equals",false);
         this.joinMeDisabledServerList = addAndGetStringListValue("joinme.disabledservers.list", Arrays.asList("lobby"));
 
-        this.onJoinChatClear = addAndGetBooleanValue("onjoin.chatclear",true);
-        this.onJoinTeamChatInfo = addAndGetBooleanValue("onjoin.teamchatinfo",true);
-        this.onJoinReportInfo = addAndGetBooleanValue("onjoin.reportinfo",true);
-        this.onJoinReportSize = addAndGetBooleanValue("onjoin.reportsize",true);
+        this.onJoinChatClear = addAndGetBooleanValue("player.onjoin.chatclear",true);
+        this.onJoinTeamChatInfo = addAndGetBooleanValue("player.onjoin.teamchatinfo",true);
+        this.onJoinReportInfo = addAndGetBooleanValue("player.onjoin.reportinfo",true);
+        this.onJoinReportSize = addAndGetBooleanValue("player.onjoin.reportsize",true);
 
         this.tabCompleteBlockEnabled = addAndGetBooleanValue("tabcomplet.block.enabled",true);
         List<String> tabOptions = addAndGetStringListValue("tabcomplet.options",Arrays.asList("dkbans.ban:/ban","dkbans.kick:/kick","report"));
@@ -223,8 +223,8 @@ public class Config extends SimpleConfig{
         if(this.chatFilterRepeatMatchesPercent < 0) this.chatFilterRepeatMatchesPercent = 0;
         this.chatFilterAutobanEnabled = addAndGetBooleanValue("chat.autoban.enabled",true);
         this.chatFilterAutobanCount = addAndGetIntValue("chat.filter.autoban.count",8);
-        this.chatFilterAutobanMessageBanID = addAndGetIntValue("chat.autoban.banid.message",3);
-        this.chatFilterAutobanPromotionBanID = addAndGetIntValue("chat.autoban.banid.promotion",4);
+        this.chatFilterAutobanMessageBanID = addAndGetIntValue("chatfilter.autoban.banid.message",3);
+        this.chatFilterAutobanPromotionBanID = addAndGetIntValue("chat.filter.autoban.banid.promotion",4);
 
         this.playerSaveIP = addAndGetBooleanValue("player.saveip",true);
         //this.playerIPDeletionInDays = addAndGetIntValue("player.ipautodeleteindays",-1);

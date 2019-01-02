@@ -156,6 +156,7 @@ public class BanSystem {
         if(this.config.commandIPUnban) getCommandManager().registerCommand(new IpUnbanCommand());
         if(this.config.commandWarn) getCommandManager().registerCommand(new WarnCommand());
         getCommandManager().registerCommand(new DKBansCommand());
+        getCommandManager().registerCommand(new BroadcastJumpCommand());
 
         if(config.autobroadcastEnabled)
             this.platform.getTaskManager().scheduleTask(() -> {

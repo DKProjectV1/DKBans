@@ -73,6 +73,7 @@ player:
       &8» &7Gemutet&8: &c[isMuted]
       &8» &7Bans&8: &c[bans]
       &8» &7Mutes&8: &c[mutes]
+      &8» &7Warns&8: &c[warns-since-last-ban] 
       &8» &7Logins&8: &c[logins]
       &8» &7Reports erhalten&8: &c[reportsReceived]
       &8» &7Reports gesendet&8: &a[reportsAccepted]&8/&c[reportsSent]
@@ -93,6 +94,7 @@ player:
       &8» &7Gemutet&8: &c[isMuted]
       &8» &7Bans&8: &c[bans]
       &8» &7Mutes&8: &c[mutes]
+      &8» &7Warns&8: &c[warns-since-last-ban] 
       &8» &7Logins&8: &c[logins]
       &8» &7Reports erhaltend&8: &c[reportsReceived]
       &8» &7Reports gesendet&8: &a[reportsAccepted]&8/&c[reportsSent]
@@ -178,6 +180,20 @@ kick:
     &5&6&7&8
     &cDu wurdest vom Netzwerk gekickt
     &3Grund&8: &4&l[reason]
+warn:
+  help:
+    header: '[prefix]&6Warn Administration'
+    reason: '&8- &c[id] &8| &c[reason]'
+    help: '&8» &cBenutze&8: &7 /warn <player> <reason> {message}'
+  self: '[prefix]&cDu kannst dich nicht selbst &6verwarnen.'
+  bypass: '[prefix]&cDu kannst &7[player] &cnicht verwarnen.'
+  success: '[prefix]&8[player] &7wurde für [reason] &7verwarnt.'
+  message: |-
+    &5
+    [prefix]&cDu wurdest verwarnt
+    &8» &3Grund&8: &4&l[reason]
+    &8» &3WarnID&8: &7[id]
+    &5
 ping:
   self: '[prefix]&7Dein Ping beträgt &a[ping]&cms'
   other: '[prefix]&7Der Ping von [player] &7beträgt &a[ping]&cms'
@@ -268,10 +284,11 @@ history:
   list:
     header: '[prefix]&7History von &8[player]'
     ban:
-      chat: '&8» &6Mute &8| &7[time] - &7[reason]'
+      chat: '&8» &9Mute &8| &7[time] - &7[reason]'
       network: '&8» &cBan &8| &7[time] - &7[reason]'
     kick: '&8» &eKick &8| &7[time] - &7[reason]'
     unban: '&8» &aUnban &8| &7[time] - &7[reason]'
+    warn: '&8» &6Warn &8| &7[time] - &7[reason]'
   info:
     ban:
       network: |-
@@ -299,6 +316,15 @@ history:
     kick: |-
       [prefix]&7Kick &c[id] &7von [player]
       &8» &7ID&8: &c[id]
+      &8» &7Grund&8: [reason] &8- &7[reasonID]
+      &8» &7Nachricht&8: &c[message]
+      &8» &7Staff&8: &c[staff]
+      &8» &7Points&8: &c[points]
+      &8» &7Zeit&8: &c[time]
+    warn: |-
+      [prefix]&7Warn &c[id] &7von [player]
+      &8» &7ID&8: &c[id]
+      &8» &7Für Typ&8: &c[banType]
       &8» &7Grund&8: [reason] &8- &7[reasonID]
       &8» &7Nachricht&8: &c[message]
       &8» &7Staff&8: &c[staff]
@@ -426,6 +452,20 @@ ipinfo:
     offline: '&cOffline'
     muted: '&6Muted'
     banned: '&cBanned'
+ipban:
+  help: '[prefix]&cNutze&8: &7/ipban <ip/player> {duration} {unit}'
+  success: '[prefix]&7Die IP&c[ip] &7wurde gebannt.'
+  info: |-
+    [prefix]&7IP von &c[ip]
+    &8» &7Dauer&8: &c[duration]
+    &8» &7Grund&8: &c[remaining-short]
+    &8» &7Zeit&8: &c[time]
+    &8» &7Zeitraum&8: &c[timeOut]
+  notbanned: '[prefix]&7Diese IP ist nicht gebannt.'
+  alreadybanned: '[prefix]&7Diese IP ist bereits gebannt.'
+ipunban:
+  help: '[prefix]&cNutze&8: &7/ipunban <ip>'
+  success: '[prefix]&7Die IP &c[ip] &7wurde entbannt.'
 chatlog:
   help: '[prefix]&cBenutze&8: &7/chatlog player/server <player/server>'
   notfound: '[prefix]&cDieser Chatlog wurde nicht gefunden.'
@@ -455,7 +495,9 @@ extension:
         permanently: '[prefix]&9[player] &7wurde für &4[reason] &7von &8[staff] &cgebannt&7.'
         temporary: '[prefix]&9[player] &7wurde für &4[reason] &7von &8[staff] &cgebannt&7.'
       chat:
-        permanently: '[prefix]&9[player] &7wurde für &4[reason] &7von &8[staff] &6gemutet&7.'
+        permanently: '[prefix]&9[player] &7wurde für &4[reason] &7von &8[staff] &9gemutet&7.'
         temporary: '[prefix]&9[player] &7wurde für &4[reason] &7von &8[staff] &6gemutet&7.'
+    unban: '[prefix]&9[player] &7wurde für &4[reason] &7von &8[staff] &aentbannt&7.'
     kick: '[prefix]&9[player] &7wurde für &4[reason] &7von &8[staff] &egekickt&7.'
+    warn: '[prefix]&9[player] &7wurde für &4[reason] &7von &8[staff] &6verwarnt&7.'
   reportreward: '[coin-prefix]&7+&6[coins] &7Coins'
