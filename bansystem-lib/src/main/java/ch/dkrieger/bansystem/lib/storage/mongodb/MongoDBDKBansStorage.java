@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import static com.mongodb.client.model.Filters.*;
 
@@ -144,7 +145,6 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     }
     @Override
     public void saveStaffSettings(UUID player, boolean report, boolean teamchat) {
-        System.out.println("update staff login");
         this.playerCollection.updateOne(eq("uuid",player.toString()),new Document("$set"
                 ,new Document("teamChatLogin",teamchat).append("reportLogin",report)));
     }
@@ -152,7 +152,7 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     @Override
     public void updatePlayerProperties(UUID uuid, ch.dkrieger.bansystem.lib.utils.Document properties) {
         this.playerCollection.updateOne(eq("uuid",uuid.toString()),new Document("$set"
-                ,new Document("properties",properties)));
+                ,new Document("properties",MongoDBUtil.toDocument(properties))));
     }
 
     @Override
@@ -359,9 +359,9 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     }
 
     @Override
-    public void updateNetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks) {
+    public void updateNetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks,long warns) {
         MongoDBUtil.replaceOne(networkStatsCollection,new Document(),new NetworkStats(logins, reports, reportsAccepted
-                , messages, bans, mutes, bans, kicks));
+                , messages, bans, mutes, unbans, kicks,warns));
     }
 
     @Override

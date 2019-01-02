@@ -55,6 +55,10 @@ public class Document {
         if(this.datas.has(key)) return this.datas.get(key).getAsBoolean();
         return false;
     }
+    public JsonObject getJsonObject(String key){
+        if(this.datas.has(key)) return this.datas.get(key).getAsJsonObject();
+        return null;
+    }
     public <T> T getObject(String key,Class<T> classof){
         if(!this.datas.has(key)) return null;
         return GeneralUtil.GSON.fromJson(this.datas.get(key),classof);
@@ -82,7 +86,7 @@ public class Document {
         return this;
     }
     public Document append(String key, Object value){
-        if(value != null) this.datas.add(key, GeneralUtil.GSON.toJsonTree(value));
+        if(value != null) this.datas.add(key,GeneralUtil.GSON.toJsonTree(value));
         return this;
     }
     public Document appendDefault(String key, String value){

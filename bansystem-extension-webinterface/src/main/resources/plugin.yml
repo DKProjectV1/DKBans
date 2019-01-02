@@ -3,6 +3,8 @@ author: Davide Wietlisbach
 description: 
 version: ${project.version}
 api-version: 1.13
+depend: [DKBans, DKBansRestApiServer]
+loadbefore: [DKBans, DKBansRestApiServer]
 
 main: ch.dkrieger.bansystem.extension.webinterface.bukkit.DKBansWebinterfaceExtension
 commands:

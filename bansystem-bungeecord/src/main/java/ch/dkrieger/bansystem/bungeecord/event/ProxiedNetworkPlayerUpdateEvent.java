@@ -24,7 +24,7 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayerUpdateCause;
 
 import java.util.UUID;
 
-public class ProxiedNetworkPlayerUpdateEvent extends ProxiedDKBansEvent{
+public class ProxiedNetworkPlayerUpdateEvent extends ProxiedDKBansNetworkPlayerEvent {
 
     private NetworkPlayerUpdateCause cause;
 

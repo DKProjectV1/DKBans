@@ -24,7 +24,7 @@ import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 
 import java.util.UUID;
 
-public class ProxiedNetworkPlayerWarnEvent extends ProxiedDKBansEvent{
+public class ProxiedNetworkPlayerWarnEvent extends ProxiedDKBansNetworkPlayerEvent {
 
     public ProxiedNetworkPlayerWarnEvent(UUID uuid, long timeStamp, boolean onThisServer) {
         super(uuid, timeStamp,onThisServer);

@@ -38,11 +38,18 @@ public class Duration {
     public TimeUnit getUnit() {
         return unit;
     }
-    public String getFormatedTime(boolean shortCut){
+    public String getFormattedTime(boolean shortCut){
         return GeneralUtil.calculateDuration(time);
     }
     public long getMillisTime(){
-        System.out.println(unit+" "+time);
         return this.unit.toMillis(this.time);
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    public void setUnit(TimeUnit unit) {
+        this.unit = unit;
     }
 }

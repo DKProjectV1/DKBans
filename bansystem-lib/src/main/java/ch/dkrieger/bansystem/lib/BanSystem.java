@@ -84,7 +84,6 @@ public class BanSystem {
         System.out.println(Messages.SYSTEM_PREFIX+"BanSystem "+this.version+" by Davide Wietlisbach");
 
         systemBootstrap();
-        HistoryEntry.buildAdapter();
 
         System.out.println(Messages.SYSTEM_PREFIX+"plugin successfully started");
     }
@@ -97,6 +96,8 @@ public class BanSystem {
 
         this.reasonProvider = new ReasonProvider(this.platform);
         this.historyManager = new HistoryManager();
+
+        HistoryEntry.buildAdapter();
 
         if(this.config.storageType == StorageType.MONGODB) this.storage = new MongoDBDKBansStorage(this.config);
         else if(this.config.storageType == StorageType.SQLITE || this.config.storageType == StorageType.MYSQL)this.storage = new SQLDKBansStorage(config);
@@ -177,7 +178,7 @@ public class BanSystem {
         getStorage().updateNetworkStats((stats.getLogins()+tempSyncStats.getLogins()),(stats.getReports()+tempSyncStats.getReports())
                 ,(stats.getReportsAccepted()+tempSyncStats.getReportsAccepted()),(stats.getMutes()+tempSyncStats.getMessages())
                 ,(stats.getBans()+tempSyncStats.getBans()),(stats.getMutes()+tempSyncStats.getMutes())
-                ,(stats.getUnbans()+tempSyncStats.getUnbans()),(stats.getKicks()+tempSyncStats.getKicks()));
+                ,(stats.getUnbans()+tempSyncStats.getUnbans()),(stats.getKicks()+tempSyncStats.getKicks()),(stats.getWarns()+tempSyncStats.getWarns()));
         this.tempSyncStats = new NetworkStats();
     }
 

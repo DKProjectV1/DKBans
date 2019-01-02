@@ -25,7 +25,7 @@ import ch.dkrieger.bansystem.lib.report.Report;
 import java.util.List;
 import java.util.UUID;
 
-public class ProxiedNetworkPlayerReportsAcceptEvent extends ProxiedDKBansEvent{
+public class ProxiedNetworkPlayerReportsAcceptEvent extends ProxiedDKBansNetworkPlayerEvent {
 
     private final List<Report> reports;
 

@@ -37,14 +37,14 @@ public class BanReason extends KickReason {
     private BanType historyType;
     private Map<Integer, BanReasonEntry> durations;
 
-    public BanReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, double divider, BanType historyType, Map<Integer, BanReasonEntry> durations) {
-        super(id, points, name, display, permission, hidden, aliases);
+    public BanReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, Document properties, double divider, BanType historyType, Map<Integer, BanReasonEntry> durations) {
+        super(id, points, name, display, permission, hidden, aliases,properties);
         this.divider = divider;
         this.historyType = historyType;
         this.durations = durations;
     }
-    public BanReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, double divider, BanType historyType, BanReasonEntry... durations) {
-        super(id, points, name, display, permission, hidden, aliases);
+    public BanReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, Document properties, double divider, BanType historyType, BanReasonEntry... durations) {
+        super(id, points, name, display, permission, hidden, aliases,properties);
         this.divider = divider;
         this.historyType = historyType;
         this.durations = new LinkedHashMap<>();

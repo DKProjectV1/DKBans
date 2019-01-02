@@ -28,7 +28,7 @@ import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
-import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -84,14 +84,14 @@ public class LocalBungeeCordOnlinePlayer implements OnlineNetworkPlayer {
 
     @Override
     public void connect(String server) {
-        ServerInfo serverInfo = BungeeCord.getInstance().getServerInfo(server);
+        ServerInfo serverInfo = ProxyServer.getInstance().getServerInfo(server);
         if(serverInfo != null && !(player.getServer().getInfo().equals(serverInfo))) player.connect(serverInfo);
     }
 
     @Override
     public void executeCommand(String command) {
         if(command.startsWith("/")) command = command.substring(1);
-        BungeeCord.getInstance().getPluginManager().dispatchCommand(player,command);
+        ProxyServer.getInstance().getPluginManager().dispatchCommand(player,command);
     }
     @Override
     public void sendBan(Ban ban) {

@@ -38,7 +38,7 @@ public class PingCommand extends NetworkCommand {
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
-        if(args.length < 1 || !(sender.hasPermission("dkbans.ping.other"))){
+        if(args.length < 1 || !(sender.hasPermission("dkbans.ping.other") || sender.hasPermission("dkbans.*"))){
             sender.sendMessage(Messages.PING_SELF
                     .replace("[prefix]",getPrefix())
                     .replace("[ping]",String.valueOf(sender.getAsOnlineNetworkPlayer().getPing())));

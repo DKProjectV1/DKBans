@@ -27,7 +27,7 @@ import ch.dkrieger.bansystem.lib.report.Report;
 import java.util.List;
 import java.util.UUID;
 
-public class ProxiedNetworkPlayerReportsProcessEvent extends ProxiedDKBansEvent{
+public class ProxiedNetworkPlayerReportsProcessEvent extends ProxiedDKBansNetworkPlayerEvent {
 
     private final UUID staff;
 

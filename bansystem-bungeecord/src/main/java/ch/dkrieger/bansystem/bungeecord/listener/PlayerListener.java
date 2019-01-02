@@ -31,7 +31,8 @@ import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
-import net.md_5.bungee.BungeeCord;
+import ch.dkrieger.bansystem.lib.utils.GoogleDiffMatchPatch;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -43,23 +44,26 @@ import net.md_5.bungee.event.EventHandler;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class PlayerListener implements Listener {
 
     private Map<UUID,lastMessage> lastMessage;
     private Map<UUID,Integer> banPoints;
     private Map<UUID,Integer> currentMessageCount;
+    private GoogleDiffMatchPatch diffChecker;
 
     public PlayerListener() {
         this.lastMessage = new HashMap<>();
         this.banPoints = new HashMap<>();
         this.currentMessageCount = new HashMap<>();
+        this.diffChecker = new GoogleDiffMatchPatch();
     }
 
     @EventHandler
     public void onLogin(LoginEvent event){
         if(BungeeCordBanSystemBootstrap.getInstance().isCloudNetV2()) CloudNetExtension.loginFix(event.getConnection().getUniqueId());
-        if(BungeeCord.getInstance().getConfig().isOnlineMode() && !(event.getConnection().isOnlineMode())) return;
+        if(ProxyServer.getInstance().getConfig().isOnlineMode() && !(event.getConnection().isOnlineMode())) return;
         if(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.NICKNAME,event.getConnection().getName())){
             event.setCancelled(true);
             event.setCancelReason(new TextComponent(Messages.CHAT_FILTER_NICKNAME.replace("[prefix]",Messages.PREFIX_CHAT)));
@@ -78,30 +82,32 @@ public class PlayerListener implements Listener {
                 return;
             }
         }
+        boolean newPlayer = false;
         if(player == null){
             player =  BanSystem.getInstance().getPlayerManager().createPlayer(event.getConnection().getUniqueId()
                     ,event.getConnection().getName(),event.getConnection().getAddress().getAddress().getHostAddress());
+            newPlayer = true;
         }else{
             Ban ban = player.getBan(BanType.NETWORK);
             if(ban != null){
                 event.setCancelled(true);
                 event.setCancelReason(ban.toMessage());
-            }else{
-                if(BanSystem.getInstance().getPlayerManager().isIPBanned(event.getConnection().getAddress().getAddress().getHostAddress())){
-                    ban = BanSystem.getInstance().getConfig().createAltAccountBan(player,event.getConnection().getAddress().getAddress().getHostAddress());
-                    player.ban(ban,true);
-                    event.setCancelled(true);
-                    event.setCancelReason(new TextComponent(ban.toMessage()));
-                    return;
-                }
+                return;
             }
+        }
+        if(BanSystem.getInstance().getConfig().ipBanBanOnlyNewPlayers && !(newPlayer)) return;
+        if(BanSystem.getInstance().getPlayerManager().isIPBanned(event.getConnection().getAddress().getAddress().getHostAddress())){
+            Ban ban = BanSystem.getInstance().getConfig().createAltAccountBan(player,event.getConnection().getAddress().getAddress().getHostAddress());
+            player.ban(ban,true);
+            event.setCancelled(true);
+            event.setCancelReason(new TextComponent(ban.toMessage()));
         }
     }
     @EventHandler
     public void onPostLogin(PostLoginEvent event){
         BanSystem.getInstance().getTempSyncStats().addLogins();
         this.currentMessageCount.put(event.getPlayer().getUniqueId(),0);
-        BungeeCord.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
+        ProxyServer.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
             if(BanSystem.getInstance().getConfig().onJoinChatClear) for(int i = 1; i < 120; i++) event.getPlayer().sendMessage(new TextComponent(""));
             NetworkPlayer player = BanSystem.getInstance().getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
             if(player == null) return;
@@ -131,7 +137,7 @@ public class PlayerListener implements Listener {
     }
     @EventHandler
     public void onDisconnect(PlayerDisconnectEvent event){
-        BungeeCord.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
+        ProxyServer.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
             NetworkPlayer player = BanSystem.getInstance().getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
             if(player == null) return;
             String server = "Unknown";
@@ -176,7 +182,7 @@ public class PlayerListener implements Listener {
         }else if(!event.isCommand()){
             lastMessage lastMessage = this.lastMessage.get(player.getUniqueId());
             if(lastMessage != null){
-                if(event.getMessage().equalsIgnoreCase(lastMessage.message)){
+                if(lastMessage.time < (System.currentTimeMillis()+TimeUnit.MINUTES.toMillis(1)) && repeat(event.getMessage(),lastMessage.message)){
                     event.setCancelled(true);
                     player.sendMessage(new TextComponent(Messages.CHAT_FILTER_SPAM_REPEAT.replace("[prefix]",Messages.PREFIX_CHAT)));
                     return;
@@ -211,7 +217,7 @@ public class PlayerListener implements Listener {
             }
             if(BanSystem.getInstance().getConfig().chatlogEnabled){
                 final FilterType finalFilter = filter;
-                BungeeCord.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
+                ProxyServer.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
                     BanSystem.getInstance().getPlayerManager().createChatLogEntry(player.getUniqueId(),event.getMessage()
                             ,player.getServer().getInfo().getName(),finalFilter);
                 });
@@ -229,6 +235,19 @@ public class PlayerListener implements Listener {
             }else this.banPoints.put(player.getUUID(),bans+1);
         }else this.banPoints.put(player.getUUID(),1);
         return false;
+    }
+    private boolean repeat(String message, String lastMessage) {
+        if(lastMessage.equalsIgnoreCase(message)) return true;
+        else{
+            return false;
+            /*
+            int differences = diffChecker.diff_levenshtein(diffChecker.diff_main(lastMessage, message));
+            int size = Math.max(lastMessage.length(),message.length());
+            System.out.println(""+((differences * 100) / size));//20
+
+            return ((differences * 100) / size) <= BanSystem.getInstance().getConfig().chatFilterRepeatMatchesPercent;
+             */
+        }
     }
     @EventHandler
     public void onTabComplete(TabCompleteEvent event){

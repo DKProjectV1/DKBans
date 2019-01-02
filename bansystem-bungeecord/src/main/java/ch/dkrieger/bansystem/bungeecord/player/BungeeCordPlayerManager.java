@@ -22,21 +22,17 @@ package ch.dkrieger.bansystem.bungeecord.player;
 
 import ch.dkrieger.bansystem.bungeecord.BungeeCordBanSystemBootstrap;
 import ch.dkrieger.bansystem.bungeecord.SubServerConnection;
-import ch.dkrieger.bansystem.bungeecord.event.ProxiedNetworkPlayerLoginEvent;
-import ch.dkrieger.bansystem.bungeecord.event.ProxiedNetworkPlayerLogoutEvent;
-import ch.dkrieger.bansystem.bungeecord.event.ProxiedNetworkPlayerUpdateEvent;
 import ch.dkrieger.bansystem.bungeecord.event.ProxiedOnlineNetworkPlayerUpdateEvent;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayerUpdateCause;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.PlayerManager;
 import ch.dkrieger.bansystem.lib.utils.Document;
-import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
-import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
@@ -62,12 +58,12 @@ public class BungeeCordPlayerManager extends PlayerManager implements Listener {
 
     @Override
     public OnlineNetworkPlayer getOnlinePlayer(UUID uuid) {
-        return getOnlinePlayer(BungeeCord.getInstance().getPlayer(uuid));
+        return getOnlinePlayer(ProxyServer.getInstance().getPlayer(uuid));
     }
 
     @Override
     public OnlineNetworkPlayer getOnlinePlayer(String name) {
-        return getOnlinePlayer(BungeeCord.getInstance().getPlayer(name));
+        return getOnlinePlayer(ProxyServer.getInstance().getPlayer(name));
     }
     public OnlineNetworkPlayer getOnlinePlayer(ProxiedPlayer player){
         if(player != null){
@@ -84,7 +80,7 @@ public class BungeeCordPlayerManager extends PlayerManager implements Listener {
     @Override
     public List<OnlineNetworkPlayer> getOnlinePlayers() {
         List<OnlineNetworkPlayer> players = new ArrayList<>();
-        for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()) players.add(getOnlinePlayer(player));
+        for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) players.add(getOnlinePlayer(player));
         return players;
     }
 
@@ -107,16 +103,16 @@ public class BungeeCordPlayerManager extends PlayerManager implements Listener {
 
     @Override
     public void removeOnlinePlayerFromCache(UUID uuid) {
-        this.onlinePlayers.remove(BungeeCord.getInstance().getPlayer(uuid));
+        this.onlinePlayers.remove(ProxyServer.getInstance().getPlayer(uuid));
     }
 
     @Override
     public int getOnlineCount() {
-        return BungeeCord.getInstance().getOnlineCount();
+        return ProxyServer.getInstance().getOnlineCount();
     }
     public void sendOnlinePlayers(ServerInfo sendServer){
         List<PlayerUpdateObject> players = new ArrayList<>();
-        for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
+        for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
             Server server = player.getServer();
             players.add(new PlayerUpdateObject(player.getUniqueId(),player.getName(),server==null?"Unknown":server.getInfo().getName(),"Proxy-1"));
         }
@@ -125,12 +121,12 @@ public class BungeeCordPlayerManager extends PlayerManager implements Listener {
 
     @EventHandler
     public void onPlayerServerConnected(ServerConnectedEvent event){
-        BungeeCord.getInstance().getScheduler().schedule(BungeeCordBanSystemBootstrap.getInstance(),()->{
+        ProxyServer.getInstance().getScheduler().schedule(BungeeCordBanSystemBootstrap.getInstance(),()->{
             if(event.getServer().getInfo().getPlayers().size() <= 1) sendOnlinePlayers(event.getServer().getInfo());
             connection.sendToAll("updateOnlinePlayer",new Document().append("uuid",event.getPlayer().getUniqueId())
                     .append("name",event.getPlayer().getName())
                     .append("server",event.getServer().getInfo().getName()));
-            BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedOnlineNetworkPlayerUpdateEvent(event.getPlayer().getUniqueId()
+            ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedOnlineNetworkPlayerUpdateEvent(event.getPlayer().getUniqueId()
                     ,System.currentTimeMillis(),true));
         },300, TimeUnit.MILLISECONDS);
     }

@@ -30,8 +30,8 @@ public class WarnReason extends KickReason{
 
     private int autoBanCount, forBan;
 
-    public WarnReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, int autoBanCount, int forBan) {
-        super(id, points, name, display, permission, hidden, aliases);
+    public WarnReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, Document properties, int autoBanCount, int forBan) {
+        super(id, points, name, display, permission, hidden, aliases,properties);
         this.autoBanCount = autoBanCount;
         this.forBan = forBan;
     }

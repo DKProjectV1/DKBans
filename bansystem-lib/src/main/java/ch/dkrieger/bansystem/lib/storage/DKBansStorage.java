@@ -132,6 +132,6 @@ public interface DKBansStorage {
 
     public NetworkStats getNetworkStats();
 
-    public void updateNetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks);
+    public void updateNetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks, long warns);
 
 }

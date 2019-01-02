@@ -30,11 +30,13 @@ import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
 import ch.dkrieger.bansystem.lib.reason.UnbanReason;
+import ch.dkrieger.bansystem.lib.utils.Duration;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class UnbanCommand extends NetworkCommand {
 
@@ -48,7 +50,7 @@ public class UnbanCommand extends NetworkCommand {
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
         int messageStart = 1;
-        if(args.length < 1) {//unban dkrieger
+        if(args.length < 1) {
             sendReasons(sender);
             return;
         }
@@ -72,6 +74,7 @@ public class UnbanCommand extends NetworkCommand {
             sender.sendMessage(Messages.PLAYER_NOT_BANNED
                     .replace("[prefix]",getPrefix())
                     .replace("[player]",args[0]));
+            System.out.println("test");
             return;
         }
         BanType type = null;
@@ -117,7 +120,8 @@ public class UnbanCommand extends NetworkCommand {
             sender.sendMessage(network);
             sender.sendMessage(chat);
             return;
-        }else if(!player.isBanned(type)){
+        }else type = player.isBanned(BanType.NETWORK)?BanType.NETWORK:BanType.CHAT;
+        if(!player.isBanned(type)){
             sender.sendMessage(Messages.PLAYER_NOT_BANNED
                     .replace("[prefix]",getPrefix())
                     .replace("[player]",args[0]));
@@ -134,11 +138,34 @@ public class UnbanCommand extends NetworkCommand {
                 return;
             }
         }
+        if(this.unbanMode != ReasonMode.SELF){
+            if(reason.getBanType() != null &&! type.equals(reason.getBanType())){
+                //not for ths ban
+                return;
+            }
+            if(reason.getMaxPoints()> 0 && player.getHistory().getPoints() >= reason.getMaxPoints()){
+                //to many points
+                return;
+            }
+            Ban ban = player.getBan(type);
 
-        if((type == null || type == BanType.NETWORK) &&  player.isBanned(BanType.NETWORK)){
+            Duration newDuration = new Duration(ban.getDuration(),TimeUnit.MILLISECONDS);
+
+            /*
+            if(reason.getRemoveDuration().getTime() > 0){
+                newDuration.setTime(newDuration.getTime()-);
+            }
+             */
+        }
+
+
+        if(type == BanType.NETWORK){
             Unban unban;
             if(this.unbanMode == ReasonMode.SELF) unban = player.unban(BanType.NETWORK,message,sender.getUUID());
-            else unban = player.unban(BanType.NETWORK,reason,message,sender.getUUID());
+            else{
+
+                unban = player.unban(BanType.NETWORK,reason,message,sender.getUUID());
+            }
             sender.sendMessage(Messages.PLAYER_UNBANNED
                     .replace("[prefix]",getPrefix())
                     .replace("[reason]",unban.getReason())
@@ -171,7 +198,7 @@ public class UnbanCommand extends NetworkCommand {
                         .replace("[id]",""+reason.getID())
                         .replace("[name]",reason.getDisplay())
                         .replace("[maxPoints]",""+reason.getMaxPoints())
-                        .replace("[maxDuration]",reason.getMaxDuration().getFormatedTime(true))
+                        .replace("[maxDuration]",reason.getMaxDuration().getFormattedTime(true))
                         .replace("[points]",""+reason.getPoints()));
             }
         }

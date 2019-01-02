@@ -49,7 +49,7 @@ public class BanCommand extends NetworkCommand {
             return;
         }
         if(sender.getName().equalsIgnoreCase(args[0])){
-            sender.sendMessage(Messages.WARN_SELF.replace("[prefix]",getPrefix()));
+            sender.sendMessage(Messages.BAN_SELF.replace("[prefix]",getPrefix()));
             return;
         }
         if(BanSystem.getInstance().getConfig().banMode == BanMode.SELF){

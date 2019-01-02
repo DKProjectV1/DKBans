@@ -28,8 +28,8 @@ public class PlayerStats extends NetworkStats {
         this.reportsReceived = 0;
     }
 
-    public PlayerStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks, long reportsReceived) {
-        super(logins, reports, reportsAccepted, messages, bans, mutes, unbans, kicks);
+    public PlayerStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks, long warns, long reportsReceived) {
+        super(logins, reports, reportsAccepted, messages, bans, mutes, unbans, kicks,warns);
         this.reportsReceived = reportsReceived;
     }
 

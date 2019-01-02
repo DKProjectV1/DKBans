@@ -41,7 +41,7 @@ import de.dytanic.cloudnet.api.CloudAPI;
 import de.dytanic.cloudnet.bridge.event.proxied.ProxiedPlayerUpdateEvent;
 import de.dytanic.cloudnet.bridge.event.proxied.ProxiedSubChannelMessageEvent;
 import de.dytanic.cloudnet.lib.player.CloudPlayer;
-import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -69,14 +69,14 @@ public class CloudNetV2PlayerManager extends PlayerManager implements Listener {
 
     @Override
     public OnlineNetworkPlayer getOnlinePlayer(UUID uuid) {
-        OnlineNetworkPlayer player = getOnlinePlayer(BungeeCord.getInstance().getPlayer(uuid));
+        OnlineNetworkPlayer player = getOnlinePlayer(ProxyServer.getInstance().getPlayer(uuid));
         if(player == null) return getOnlinePlayer(CloudAPI.getInstance().getOnlinePlayer(uuid));
         return player;
     }
 
     @Override
     public OnlineNetworkPlayer getOnlinePlayer(String name) {
-        OnlineNetworkPlayer player = getOnlinePlayer(BungeeCord.getInstance().getPlayer(name));
+        OnlineNetworkPlayer player = getOnlinePlayer(ProxyServer.getInstance().getPlayer(name));
         if(player == null){
             NetworkPlayer networkPlayer = getPlayer(name);
             if(networkPlayer == null) return null;
@@ -151,11 +151,11 @@ public class CloudNetV2PlayerManager extends PlayerManager implements Listener {
                         ,event.getDocument().getObject("cause", NetworkPlayerUpdateCause.class)
                         ,event.getDocument().getObject("properties",Document.class),false);
             }else if(event.getMessage().equalsIgnoreCase("sendMesssage")){
-                ProxiedPlayer player = BungeeCord.getInstance().getPlayer(event.getDocument().getObject("uuid",UUID.class));
+                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(event.getDocument().getObject("uuid",UUID.class));
                 if(player != null) player.sendMessage(event.getDocument().getObject("message", TextComponent.class));
             }else if(event.getMessage().equalsIgnoreCase("getPing")){
                 UUID uuid = event.getDocument().getObject("uuid",UUID.class);
-                ProxiedPlayer player = BungeeCord.getInstance().getPlayer(uuid);
+                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
                 if(player != null){
                     int ping = player.getPing();
                     CloudAPI.getInstance().sendCustomSubProxyMessage("DKBans","pingResult",new de.dytanic.cloudnet.lib.utility.document.Document()
@@ -167,22 +167,22 @@ public class CloudNetV2PlayerManager extends PlayerManager implements Listener {
                 UUID uuid = event.getDocument().getObject("uuid",UUID.class);
                 CloudNetV2OnlinePlayer.PINGGETTER.put(uuid,event.getDocument().getInt("ping"));
             }else if(event.getMessage().equalsIgnoreCase("connect")){
-                ProxiedPlayer player = BungeeCord.getInstance().getPlayer(event.getDocument().getObject("uuid",UUID.class));
+                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(event.getDocument().getObject("uuid",UUID.class));
                 if(player != null){
-                    ServerInfo server = BungeeCord.getInstance().getServerInfo("server");
+                    ServerInfo server = ProxyServer.getInstance().getServerInfo("server");
                     if(server != null && player.getServer().getInfo() != server) player.connect(server);
                 }
             }else if(event.getMessage().equalsIgnoreCase("executeCommand")){
-                ProxiedPlayer player = BungeeCord.getInstance().getPlayer(event.getDocument().getObject("uuid",UUID.class));
-                if(player != null) BungeeCord.getInstance().getPluginManager().dispatchCommand(player,event.getDocument().getString("command"));
+                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(event.getDocument().getObject("uuid",UUID.class));
+                if(player != null) ProxyServer.getInstance().getPluginManager().dispatchCommand(player,event.getDocument().getString("command"));
             }else if(event.getMessage().equalsIgnoreCase("kick")){
-                ProxiedPlayer player = BungeeCord.getInstance().getPlayer(event.getDocument().getObject("uuid",UUID.class));
+                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(event.getDocument().getObject("uuid",UUID.class));
                 if(player != null){
                     Kick kick = event.getDocument().getObject("kick", Kick.class);
                     player.disconnect(kick.toMessage());
                 }
             }else if(event.getMessage().equalsIgnoreCase("sendBan")){
-                ProxiedPlayer player = BungeeCord.getInstance().getPlayer(event.getDocument().getObject("uuid",UUID.class));
+                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(event.getDocument().getObject("uuid",UUID.class));
                 if(player != null){
                     Ban ban = event.getDocument().getObject("ban", Ban.class);
                     if(ban.getBanType() == BanType.NETWORK) player.disconnect(ban.toMessage());
@@ -190,17 +190,17 @@ public class CloudNetV2PlayerManager extends PlayerManager implements Listener {
                 }
             }else if(event.getMessage().equalsIgnoreCase("broadcast")){
                 if(event.getDocument().contains("message")){
-                    BungeeCord.getInstance().broadcast(event.getDocument().getObject("message",TextComponent.class));
+                    ProxyServer.getInstance().broadcast(event.getDocument().getObject("message",TextComponent.class));
                 }else BanSystem.getInstance().getNetwork().broadcastLocal(event.getDocument().getObject("broadcast", Broadcast.class));
             }else if(event.getMessage().equalsIgnoreCase("sendJoinMe")){
                 JoinMe joinme = event.getDocument().getObject("joinme", JoinMe.class);
                 ((CloudNetV2Network)BanSystem.getInstance().getNetwork()).insertJoinMe(joinme);
                 List<TextComponent> components = joinme.create();
-                for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
+                for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
                     for(TextComponent component : components) player.sendMessage(component);
                 }
             }else if(event.getMessage().equalsIgnoreCase("sendTeamMessage")){
-                for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
+                for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
                     if(player.hasPermission("dkbans.team")){
                         NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
                         if(networkPlayer != null && (!event.getDocument().getBoolean("onlyLogin") || networkPlayer.isTeamChatLoggedIn()))
@@ -212,7 +212,7 @@ public class CloudNetV2PlayerManager extends PlayerManager implements Listener {
             }else if(event.getMessage().equalsIgnoreCase("reloadBroadcast")){
                 BanSystem.getInstance().getBroadcastManager().reloadLocal();
             }else if(event.getMessage().equalsIgnoreCase("warn")){
-                ProxiedPlayer player = BungeeCord.getInstance().getPlayer(event.getDocument().getObject("uuid",UUID.class));
+                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(event.getDocument().getObject("uuid",UUID.class));
                 if(player != null){
                     Warn warn = event.getDocument().getObject("warn",Warn.class);
                     player.disconnect(warn.toMessage());
@@ -222,7 +222,7 @@ public class CloudNetV2PlayerManager extends PlayerManager implements Listener {
     }
     @EventHandler
     public void onPlayerUpdate(ProxiedPlayerUpdateEvent event){
-        BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedOnlineNetworkPlayerUpdateEvent(event.getCloudPlayer().getUniqueId()
+        ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedOnlineNetworkPlayerUpdateEvent(event.getCloudPlayer().getUniqueId()
                 ,System.currentTimeMillis(),false));
     }
 }

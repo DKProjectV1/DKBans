@@ -35,5 +35,6 @@ public class ColumnType {
     public static final String SMALL_MONEY = "smallmoney";
     public static final String TINY_INT = "tinyint";
     public static final String FLOAT = "float";
+    public static final String MEDIUMTEXT = "MEDIUMTEXT";
 
 }

@@ -58,6 +58,7 @@ public class JsonDKBansStorage implements DKBansStorage {
 
     public JsonDKBansStorage(Config config){
         this.storageFolder = config.storageFolder;
+        this.storageFolder.mkdirs();
     }
     @Override
     public boolean connect() {
@@ -80,7 +81,7 @@ public class JsonDKBansStorage implements DKBansStorage {
         if(ipBans.contains("bans")) this.ipBans = ipBans.getObject("bans",new TypeToken<List<IPBan>>(){}.getType());
         else this.ipBans = new ArrayList<>();
 
-        BanSystem.getInstance().getPlatform().getTaskManager().scheduleTask(this::save,10L, TimeUnit.SECONDS);
+        BanSystem.getInstance().getPlatform().getTaskManager().scheduleTask(this::save,5L, TimeUnit.SECONDS);
         return true;
     }
 
@@ -98,7 +99,7 @@ public class JsonDKBansStorage implements DKBansStorage {
                 .saveData(new File(storageFolder,"players.json"));
         new Document().append("entries",chatLogEntries).saveData(new File(storageFolder,"chatlogs.json"));
 
-        new Document().append("bans",chatLogEntries).saveData(new File(storageFolder,"ipbans.json"));
+        new Document().append("bans",ipBans).saveData(new File(storageFolder,"ipbans.json"));
     }
 
     @Override
@@ -108,11 +109,13 @@ public class JsonDKBansStorage implements DKBansStorage {
 
     @Override
     public NetworkPlayer getPlayer(String name) throws Exception {
+        System.out.println("get player by name");
         return GeneralUtil.iterateOne(this.players, object -> object.getName().equalsIgnoreCase(name));
     }
 
     @Override
     public NetworkPlayer getPlayer(UUID uuid) throws Exception {
+        System.out.println("get player by uuid "+this.players.size());
         return GeneralUtil.iterateOne(this.players, object -> object.getUUID().equals(uuid));
     }
 
@@ -257,6 +260,7 @@ public class JsonDKBansStorage implements DKBansStorage {
 
     @Override
     public void banIp(IPBan ipBan) {
+        System.out.println("ban ip");
         this.ipBans.add(ipBan);
     }
 
@@ -268,7 +272,7 @@ public class JsonDKBansStorage implements DKBansStorage {
 
     @Override
     public void unbanIp(UUID lastPlayer) {
-        IPBan ban = GeneralUtil.iterateOne(this.ipBans, object -> object.getLastPlayer().equals(lastPlayer));
+        IPBan ban = GeneralUtil.iterateOne(this.ipBans, object -> object.getLastPlayer() != null && object.getLastPlayer().equals(lastPlayer));
         if(ban != null) this.ipBans.remove(ban);
     }
 
@@ -349,8 +353,8 @@ public class JsonDKBansStorage implements DKBansStorage {
     }
 
     @Override
-    public void updateNetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks) {
-        new Document().append("networkStats",new NetworkStats(logins,reports,reportsAccepted,messages,bans,mutes,unbans,kicks))
+    public void updateNetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks, long warns) {
+        new Document().append("networkStats",new NetworkStats(logins,reports,reportsAccepted,messages,bans,mutes,unbans,kicks,warns))
                 .saveData(new File(storageFolder,"networkstats.json"));
     }
 }

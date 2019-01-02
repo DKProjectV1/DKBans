@@ -24,6 +24,8 @@ import ch.dkrieger.bansystem.lib.player.history.entry.*;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public class History {
@@ -53,6 +55,11 @@ public class History {
     }
     public HistoryEntry getEntry(int id){
         return entries.get(id);
+    }
+    public int getPoints(){
+        AtomicInteger points = new AtomicInteger(0);
+        entries.forEach((integer, entry)-> points.addAndGet(entry.getPoints()));
+        return points.get();
     }
     public int getBanCount(){
         return getBanCount(BanType.NETWORK)+getBanCount(BanType.CHAT);

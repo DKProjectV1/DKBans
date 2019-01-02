@@ -20,5 +20,24 @@
 
 package ch.dkrieger.bansystem.extension.webinterface;
 
-public class DKBansWebinterfaceConfig {
+import ch.dkrieger.bansystem.lib.BanSystem;
+import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+
+public abstract class DKBansWebinterfaceConfig {
+
+    public String passwordChangedMessage, passwordToShort, commandHelp;
+
+    public int minPasswordLenght;
+
+    public abstract boolean canAccess(NetworkPlayer player);
+
+    public DKBansWebinterfaceConfig() {
+        passwordChangedMessage = BanSystem.getInstance().getMessageConfig().addAndGetMessageValue("extension.webinterface.passwordChange","[prefix]&7The password was changed to &c[password]&7.");
+        passwordToShort = BanSystem.getInstance().getMessageConfig().addAndGetMessageValue("extension.webinterface.passwordtoshort","[prefix]&cThe password must be longer than 6 letters.");
+        commandHelp = BanSystem.getInstance().getMessageConfig().addAndGetMessageValue("extension.webinterface.commandhelp","[prefix]&cUsage&8: &7/dwi setPassword <password>");
+        BanSystem.getInstance().getMessageConfig().save();
+
+        minPasswordLenght = BanSystem.getInstance().getMessageConfig().addAndGetIntValue("extension.webinterface.minpasswordlenght",6);
+        BanSystem.getInstance().getMessageConfig().save();
+    }
 }

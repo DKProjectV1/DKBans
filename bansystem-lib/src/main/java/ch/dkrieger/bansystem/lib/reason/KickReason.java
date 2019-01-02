@@ -36,7 +36,7 @@ public class KickReason {
     private List<String> aliases;
     private Document properties;
 
-    public KickReason(int id, int points, String name, String display,String permission, boolean hidden, List<String> aliases) {
+    public KickReason(int id, int points, String name, String display,String permission, boolean hidden, List<String> aliases, Document properties) {
         this.id = id;
         this.points = points;
         this.name = name;
@@ -44,7 +44,6 @@ public class KickReason {
         this.permission = permission;
         this.hidden = hidden;
         this.aliases = new ArrayList<>(aliases);
-        this.properties = new Document();
     }
 
     public int getID() {

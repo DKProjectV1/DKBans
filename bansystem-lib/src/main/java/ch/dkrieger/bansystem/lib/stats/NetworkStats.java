@@ -22,13 +22,13 @@ package ch.dkrieger.bansystem.lib.stats;
 
 public class NetworkStats {
 
-    private long logins, reports, reportsAccepted, messages, bans,mutes, unbans, kicks;
+    private long logins, reports, reportsAccepted, messages, bans,mutes, unbans, kicks, warns;
 
     public NetworkStats(){
-        this(0,0,0,0,0,0,0,0);
+        this(0,0,0,0,0,0,0,0,0);
     }
 
-    public NetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks) {
+    public NetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks, long warns) {
         this.logins = logins;
         this.reports = reports;
         this.reportsAccepted = reportsAccepted;
@@ -37,6 +37,7 @@ public class NetworkStats {
         this.mutes = mutes;
         this.unbans = unbans;
         this.kicks = kicks;
+        this.warns = warns;
     }
 
     public long getLogins() {
@@ -72,6 +73,10 @@ public class NetworkStats {
 
     public long getKicks() {
         return kicks;
+    }
+
+    public long getWarns() {
+        return warns;
     }
 
     public void addLogins(){
@@ -114,5 +119,9 @@ public class NetworkStats {
     }
     public void addKicks(){
         kicks++;
+    }
+
+    public void addWarns(){
+        warns++;
     }
 }

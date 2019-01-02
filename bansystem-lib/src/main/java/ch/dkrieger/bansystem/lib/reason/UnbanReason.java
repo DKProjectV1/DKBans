@@ -33,19 +33,21 @@ public class UnbanReason extends KickReason{
     private int maxPoints;
     private boolean removeAllPoints;
     private List<Integer> notForBanID;
+    private BanType banType;
 
     private Duration maxDuration;
     private Duration removeDuration;
-    private double durationDivider;
+    private double durationDivider, pointsDivider;
 
-    public UnbanReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, int maxPoints, boolean removeAllPoints, List<Integer> notForBanID, Duration maxDuration, Duration removeDuration, double durationDivider) {
-        super(id, points, name, display, permission, hidden, aliases);
+    public UnbanReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, Document properties, int maxPoints, boolean removeAllPoints, List<Integer> notForBanID, Duration maxDuration, Duration removeDuration, double durationDivider, double pointsDivider) {
+        super(id, points, name, display, permission, hidden, aliases,properties);
         this.maxPoints = maxPoints;
         this.removeAllPoints = removeAllPoints;
         this.notForBanID = notForBanID;
         this.maxDuration = maxDuration;
         this.removeDuration = removeDuration;
         this.durationDivider = durationDivider;
+        this.pointsDivider = pointsDivider;
     }
 
     public Duration getMaxDuration() {
@@ -64,6 +66,14 @@ public class UnbanReason extends KickReason{
     }
     public double getDurationDivider() {
         return durationDivider;
+    }
+
+    public double getPointsDivider() {
+        return pointsDivider;
+    }
+
+    public BanType getBanType() {
+        return banType;
     }
 
     public boolean isRemoveAllPoints() {

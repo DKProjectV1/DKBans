@@ -24,7 +24,7 @@ import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 
 import java.util.UUID;
 
-public class ProxiedNetworkPlayerKickEvent extends ProxiedDKBansEvent{
+public class ProxiedNetworkPlayerKickEvent extends ProxiedDKBansNetworkPlayerEvent {
 
     public ProxiedNetworkPlayerKickEvent(UUID uuid, long timeStamp,boolean onThisServer) {
         super(uuid, timeStamp,onThisServer);

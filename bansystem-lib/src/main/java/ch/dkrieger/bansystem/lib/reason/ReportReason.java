@@ -22,6 +22,7 @@ package ch.dkrieger.bansystem.lib.reason;
 
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.report.Report;
+import ch.dkrieger.bansystem.lib.utils.Document;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,8 +31,8 @@ public class ReportReason extends KickReason{
 
     private int forBan;
 
-    public ReportReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, int forban) {
-        super(id, points, name, display, permission, hidden, aliases);
+    public ReportReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, Document properties, int forban) {
+        super(id, points, name, display, permission, hidden, aliases,properties);
         this.forBan = forban;
     }
 

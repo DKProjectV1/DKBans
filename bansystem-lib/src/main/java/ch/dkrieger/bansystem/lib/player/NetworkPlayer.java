@@ -416,6 +416,19 @@ public class NetworkPlayer {
     }
 
     /**
+     * This requires an integration to you permission system or on bukkit vault with
+     * a permission system that supports vault.
+     *
+     * Use this only if your player is not online or you have no other way to get his permission.
+     *
+     * @param permission The permission which should checked.
+     * @return If the player has this permission (Only when found a supported permission system).
+     */
+    public boolean hasPermission(String permission){
+        return BanSystem.getInstance().getPlatform().checkPermissionInternally(this,permission);
+    }
+
+    /**
      *
      * @return if this player is online or not
      */
@@ -748,7 +761,6 @@ public class NetworkPlayer {
         return warn(reason.toWarn(this,message,staff));
     }
     public Warn warn(Warn warn){
-        //add warm stats
         warn.setID(addToHistory(warn,NetworkPlayerUpdateCause.WARN));
         OnlineNetworkPlayer player = getOnlinePlayer();
         if(player != null) player.sendWarn(warn);
@@ -768,6 +780,11 @@ public class NetworkPlayer {
                 }
             }
         });
+        BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(()->{
+            NetworkPlayer staff = warn.getStaffAsPlayer();
+            if(staff != null) staff.addStatsWarned();
+        });
+        BanSystem.getInstance().getTempSyncStats().addWarns();
         return warn;
     }
 
@@ -897,6 +914,10 @@ public class NetworkPlayer {
     }
     public void addStatsKicked(){
         this.stats.addKicks();
+        updatePlayerStatsAsync();
+    }
+    public void addStatsWarned(){
+        this.stats.addWarns();
         updatePlayerStatsAsync();
     }
     public void addStatsUnbanned(){

@@ -20,5 +20,29 @@
 
 package ch.dkrieger.bansystem.extension.webinterface.bukkit;
 
-public class DKBansWebinterfaceExtension {
+import ch.dkrieger.bansystem.extension.webinterface.DKBansWebinterfaceConfig;
+import ch.dkrieger.bansystem.extension.webinterface.WebinterfaceCommand;
+import ch.dkrieger.bansystem.extension.webinterface.WebinterfaceHandler;
+import ch.dkrieger.bansystem.extension.webinterface.bungeecord.BukkitDKBansNetworkPlayerAccessWebinterface;
+import ch.dkrieger.bansystem.lib.BanSystem;
+import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.extension.restapi.DKBansRestAPIServer;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class DKBansWebinterfaceExtension extends JavaPlugin {
+
+    @Override
+    public void onEnable() {
+        Bukkit.getScheduler().runTaskLater(this,()->{
+            DKBansWebinterfaceConfig config = new DKBansWebinterfaceConfig() {
+                public boolean canAccess(NetworkPlayer player) {
+                    BukkitDKBansNetworkPlayerAccessWebinterface event = new BukkitDKBansNetworkPlayerAccessWebinterface(player.getUUID(),System.currentTimeMillis(),false);
+                    return !event.isCanceled();
+                }
+            };
+            DKBansRestAPIServer.getInstance().registerRestApiHandler(new WebinterfaceHandler(config));
+            BanSystem.getInstance().getCommandManager().registerCommand(new WebinterfaceCommand(config));
+        },20);
+    }
 }

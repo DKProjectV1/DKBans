@@ -30,7 +30,7 @@ import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 import ch.dkrieger.bansystem.lib.utils.Document;
-import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -56,7 +56,7 @@ public class SubServerConnection implements Listener {
             ByteArrayInputStream b = new ByteArrayInputStream(event.getData());
             DataInputStream in = new DataInputStream(b);
 
-            BungeeCord.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
+            ProxyServer.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
                 try{
                     Document document = Document.loadData(in.readUTF());
                     if(document.getString("action").equalsIgnoreCase("updatePlayer")){
@@ -66,25 +66,25 @@ public class SubServerConnection implements Listener {
                                 ,document.getObject("cause", NetworkPlayerUpdateCause.class)
                                 ,document.getObject("properties",Document.class),false);
                     }else if(document.getString("action").equalsIgnoreCase("sendMesssage")){
-                        ProxiedPlayer player = BungeeCord.getInstance().getPlayer(document.getObject("uuid",UUID.class));
+                        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(document.getObject("uuid",UUID.class));
                         if(player != null) player.sendMessage(document.getObject("message", TextComponent.class));
                     }else if(document.getString("action").equalsIgnoreCase("connect")){
-                        ProxiedPlayer player = BungeeCord.getInstance().getPlayer(document.getObject("uuid",UUID.class));
+                        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(document.getObject("uuid",UUID.class));
                         if(player != null){
-                            ServerInfo server = BungeeCord.getInstance().getServerInfo("server");
+                            ServerInfo server = ProxyServer.getInstance().getServerInfo("server");
                             if(server != null && player.getServer().getInfo() != server) player.connect(server);
                         }
                     }else if(document.getString("action").equalsIgnoreCase("executeCommand")){
-                        ProxiedPlayer player = BungeeCord.getInstance().getPlayer(document.getObject("uuid",UUID.class));
-                        if(player != null) BungeeCord.getInstance().getPluginManager().dispatchCommand(player,document.getString("command"));
+                        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(document.getObject("uuid",UUID.class));
+                        if(player != null)ProxyServer.getInstance().getPluginManager().dispatchCommand(player,document.getString("command"));
                     }else if(document.getString("action").equalsIgnoreCase("kick")){
-                        ProxiedPlayer player = BungeeCord.getInstance().getPlayer(document.getObject("uuid",UUID.class));
+                        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(document.getObject("uuid",UUID.class));
                         if(player != null){
                             Kick kick = document.getObject("kick", Kick.class);
                             player.disconnect(kick.toMessage());
                         }
                     }else if(document.getString("action").equalsIgnoreCase("sendBan")){
-                        ProxiedPlayer player = BungeeCord.getInstance().getPlayer(document.getObject("uuid",UUID.class));
+                        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(document.getObject("uuid",UUID.class));
                         if(player != null){
                             Ban ban = document.getObject("ban", Ban.class);
                             if(ban.getBanType() == BanType.NETWORK) player.disconnect(ban.toMessage());
@@ -92,7 +92,7 @@ public class SubServerConnection implements Listener {
                         }
                     }else if(document.getString("action").equalsIgnoreCase("broadcast")){
                         if(document.contains("message")){
-                            BungeeCord.getInstance().broadcast(document.getObject("message",TextComponent.class));
+                            ProxyServer.getInstance().broadcast(document.getObject("message",TextComponent.class));
                         }else BanSystem.getInstance().getNetwork().broadcastLocal(document.getObject("broadcast", Broadcast.class));
                     }else if(document.getString("action").equalsIgnoreCase("sendJoinMe")){
                         BanSystem.getInstance().getNetwork().sendJoinMe(document.getObject("joinme", JoinMe.class));
@@ -104,12 +104,12 @@ public class SubServerConnection implements Listener {
                     }else if(document.getString("action").equalsIgnoreCase("reloadBroadcast")){
                         BanSystem.getInstance().getBroadcastManager().reloadLocal();
                     }else if(document.getString("warn").equalsIgnoreCase("warn")){
-                        ProxiedPlayer player = BungeeCord.getInstance().getPlayer(document.getObject("uuid",UUID.class));
+                        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(document.getObject("uuid",UUID.class));
                         if(player != null){
                             Warn warn = document.getObject("warn",Warn.class);
                             player.disconnect(warn.toMessage());
                         }
-                    }else BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedDKBansMessageReceiveEvent(document));
+                    }else ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedDKBansMessageReceiveEvent(document));
                 }catch (Exception exception){
                     exception.printStackTrace();
                 }
@@ -120,14 +120,14 @@ public class SubServerConnection implements Listener {
         sendToAll(action,document,null);
     }
     public void sendToAll(String action,Document document, String from){
-        for(ServerInfo server : BungeeCord.getInstance().getServers().values()){
+        for(ServerInfo server : ProxyServer.getInstance().getServers().values()){
             if(from != null && server.getName().equalsIgnoreCase(from)) return;
             send(server,action,document);
         }
     }
     public void enable(){
         active = true;
-        BungeeCord.getInstance().registerChannel("DKBans:DKBans");
+        ProxyServer.getInstance().registerChannel("DKBans:DKBans");
     }
     public void send(ServerInfo server,String action, Document document){
         if(!active) throw new IllegalArgumentException("SubServerConnection is not enabled");

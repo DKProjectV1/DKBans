@@ -143,24 +143,15 @@ public class GeneralUtil {
         for(String value : values) if(!value.equalsIgnoreCase(string)) return false;
         return true;
     }
-    public static String encode(String password){
-        return encode(password.getBytes());
+    public static String encodeMD5(String password){
+        return encodeMD5(password.getBytes());
     }
-    public static String encode(byte[] bytes) {
+    public static String encodeMD5(byte[] bytes) {
         MessageDigest digest = getMessageDigest("MD5");
         byte[] hash = digest.digest(bytes);
         StringBuilder builder = new StringBuilder();
         for(int val : hash) builder.append(Integer.toHexString(val&0xff));
         return builder.toString();
-    }
-    public static String completEncode(String password){
-        return completEncode(password.getBytes());
-    }
-    public static String completEncode(byte[] bytes){
-        String d = encode(encode(bytes));
-        String complethash = "";
-        for(char c : d.toCharArray()) complethash+=encode(""+c);
-        return complethash;
     }
     public static MessageDigest getMessageDigest(String name) {
         try {

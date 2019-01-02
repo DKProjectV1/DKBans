@@ -22,10 +22,9 @@ package ch.dkrieger.bansystem.bungeecord.event;
 
 import ch.dkrieger.bansystem.lib.report.Report;
 
-import java.util.List;
 import java.util.UUID;
 
-public class ProxiedNetworkPlayerReportEvent extends ProxiedDKBansEvent{
+public class ProxiedNetworkPlayerReportEvent extends ProxiedDKBansNetworkPlayerEvent {
 
     private final Report reports;
 

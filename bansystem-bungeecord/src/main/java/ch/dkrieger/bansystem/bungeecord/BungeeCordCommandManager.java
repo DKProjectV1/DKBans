@@ -27,8 +27,8 @@ import ch.dkrieger.bansystem.lib.command.NetworkCommandManager;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -51,7 +51,7 @@ public class BungeeCordCommandManager implements NetworkCommandManager {
         return null;
     }
     public void registerCommand(final NetworkCommand command) {
-        BungeeCord.getInstance().getPluginManager().registerCommand(BungeeCordBanSystemBootstrap.getInstance()
+        ProxyServer.getInstance().getPluginManager().registerCommand(BungeeCordBanSystemBootstrap.getInstance()
                 ,new BungeeCordNetworkCommand(command));
     }
     private class BungeeCordNetworkCommand extends Command implements TabExecutor {
@@ -66,7 +66,7 @@ public class BungeeCordCommandManager implements NetworkCommandManager {
         public void execute(CommandSender sender, String[] args) {
             if(command.getPermission() == null || command.getPermission().equalsIgnoreCase("none")
                     || sender.hasPermission("dkbans.*") || sender.hasPermission(command.getPermission())){
-                BungeeCord.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
+                ProxyServer.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
                     command.onExecute(new BungeeCordNetworkCommandSender(sender),args);
                 });
                 return;
@@ -125,7 +125,7 @@ public class BungeeCordCommandManager implements NetworkCommandManager {
         }
         @Override
         public void executeCommand(String command) {
-            BungeeCord.getInstance().getPluginManager().dispatchCommand(sender,command);
+            ProxyServer.getInstance().getPluginManager().dispatchCommand(sender,command);
         }
         @Override
         public OnlineNetworkPlayer getAsOnlineNetworkPlayer() {

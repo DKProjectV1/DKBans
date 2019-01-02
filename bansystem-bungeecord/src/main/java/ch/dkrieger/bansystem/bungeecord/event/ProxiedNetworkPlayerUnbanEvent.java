@@ -24,7 +24,7 @@ import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
 
 import java.util.UUID;
 
-public class ProxiedNetworkPlayerUnbanEvent extends ProxiedDKBansEvent{
+public class ProxiedNetworkPlayerUnbanEvent extends ProxiedDKBansNetworkPlayerEvent {
 
     public ProxiedNetworkPlayerUnbanEvent(UUID uuid, long timeStamp, boolean onThisServer) {
         super(uuid, timeStamp,onThisServer);

@@ -23,18 +23,15 @@ package ch.dkrieger.bansystem.bungeecord;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.DKNetwork;
 import ch.dkrieger.bansystem.lib.JoinMe;
-import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.Document;
-import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.connection.Server;
 
 import java.util.*;
 
@@ -66,7 +63,7 @@ public class BungeeCordNetwork implements DKNetwork {
     }
     @Override
     public void broadcast(TextComponent component) {
-        BungeeCord.getInstance().broadcast(component);
+        ProxyServer.getInstance().broadcast(component);
     }
 
     @Override
@@ -76,14 +73,14 @@ public class BungeeCordNetwork implements DKNetwork {
 
     @Override
     public void broadcastLocal(Broadcast broadcast) {
-        BungeeCordBanSystemBootstrap.getInstance().broadcastLocal(broadcast);
+        BungeeCordBanSystemBootstrap.getInstance().sendLocalBroadcast(broadcast);
     }
 
     @Override
     public void sendJoinMe(JoinMe joinMe) {
         this.joinme.put(joinMe.getUUID(),joinMe);
         List<TextComponent> components = joinMe.create();
-        for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
+        for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
             for(TextComponent component : components) player.sendMessage(component);
         }
     }
@@ -101,7 +98,7 @@ public class BungeeCordNetwork implements DKNetwork {
     }
     @Override
     public void sendTeamMessage(TextComponent component, boolean onlyLogin) {
-        for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
+        for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
             if(player.hasPermission("dkbans.team")){//set right permission
                 NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
                 if(networkPlayer != null && (!onlyLogin || networkPlayer.isTeamChatLoggedIn())) player.sendMessage(component);
@@ -110,7 +107,7 @@ public class BungeeCordNetwork implements DKNetwork {
     }
     @Override
     public List<String> getPlayersOnServer(String server) {
-        ServerInfo serverInfo = BungeeCord.getInstance().getServerInfo(server);
+        ServerInfo serverInfo = ProxyServer.getInstance().getServerInfo(server);
         List<String> players = new ArrayList<>();
         if(serverInfo != null) for(ProxiedPlayer player : serverInfo.getPlayers()) players.add(player.getName());
         return players;

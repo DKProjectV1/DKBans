@@ -24,7 +24,6 @@ import de.dytanic.cloudnet.api.CloudAPI;
 import de.dytanic.cloudnet.api.network.packet.out.PacketOutLogoutPlayer;
 import de.dytanic.cloudnet.bridge.CloudProxy;
 import de.dytanic.cloudnet.lib.player.CloudPlayer;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -35,7 +34,7 @@ public class CloudNetExtension {
 
     public static void loginFix(UUID uuid){
         ProxyServer.getInstance().getScheduler().schedule(BungeeCordBanSystemBootstrap.getInstance(), () -> {
-            ProxiedPlayer player = BungeeCord.getInstance().getPlayer(uuid);
+            ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
             if(player == null){
                 CloudPlayer cloudPlayer = CloudProxy.getInstance().getCloudPlayers().get(uuid);
                 if(cloudPlayer != null) {

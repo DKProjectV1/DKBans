@@ -20,5 +20,43 @@
 
 package ch.dkrieger.bansystem.extension.webinterface;
 
-public class WebinterfaceCommand {
+import ch.dkrieger.bansystem.lib.Messages;
+import ch.dkrieger.bansystem.lib.command.NetworkCommand;
+import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
+import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
+
+import java.util.List;
+
+public class WebinterfaceCommand extends NetworkCommand {
+
+    private DKBansWebinterfaceConfig config;
+
+    public WebinterfaceCommand(DKBansWebinterfaceConfig config) {
+        super("dkbanswebinterface","","dkbans.webinterface","","dwi","dkbanswi","dwebinterface");
+        this.config = config;
+        setPrefix(Messages.PREFIX_NETWORK);
+    }
+
+    public void onExecute(NetworkCommandSender sender, String[] args) {
+        if(args.length > 1){
+            if(args[0].equalsIgnoreCase("setpassword")){
+                if(args[1].length() < config.minPasswordLenght){
+                    sender.sendMessage(config.passwordToShort.replace("[prefix]",getPrefix()));
+                    return;
+                }
+                NetworkPlayer player = sender.getAsNetworkPlayer();
+                player.getProperties().append("password", GeneralUtil.encodeMD5(args[1]));
+                player.saveProperties();
+                String password = "";
+                for(int i = 0;i <args[1].length();i++) password+="*";
+                sender.sendMessage(config.passwordChangedMessage.replace("[prefix]",getPrefix()).replace("[password]",password));
+                return;
+            }
+        }
+        sender.sendMessage(config.commandHelp.replace("[prefix]",getPrefix()));
+    }
+    public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
+        return null;
+    }
 }

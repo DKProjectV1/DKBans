@@ -48,7 +48,7 @@ public class WarnCommand extends NetworkCommand {
             return;
         }
         if(sender.getName().equalsIgnoreCase(args[0])){
-            sender.sendMessage(Messages.BAN_SELF.replace("[prefix]",getPrefix()));
+            sender.sendMessage(Messages.WARN_SELF.replace("[prefix]",getPrefix()));
             return;
         }
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);

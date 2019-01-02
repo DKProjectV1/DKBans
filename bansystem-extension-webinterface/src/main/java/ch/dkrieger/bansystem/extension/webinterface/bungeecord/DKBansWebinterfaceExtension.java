@@ -20,5 +20,31 @@
 
 package ch.dkrieger.bansystem.extension.webinterface.bungeecord;
 
-public class DKBansWebinterfaceExtension {
+import ch.dkrieger.bansystem.extension.webinterface.DKBansWebinterfaceConfig;
+import ch.dkrieger.bansystem.extension.webinterface.WebinterfaceCommand;
+import ch.dkrieger.bansystem.extension.webinterface.WebinterfaceHandler;
+import ch.dkrieger.bansystem.extension.webinterface.bukkit.ProxiedDKBansNetworkPlayerAccessWebinterface;
+import ch.dkrieger.bansystem.lib.BanSystem;
+import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.extension.restapi.DKBansRestAPIServer;
+import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.plugin.Plugin;
+
+import java.util.concurrent.TimeUnit;
+
+public class DKBansWebinterfaceExtension extends Plugin {
+
+    public DKBansWebinterfaceExtension() {
+        BungeeCord.getInstance().getScheduler().schedule(this,()->{
+            DKBansWebinterfaceConfig config = new DKBansWebinterfaceConfig() {
+                public boolean canAccess(NetworkPlayer player) {
+                    ProxiedDKBansNetworkPlayerAccessWebinterface event = new ProxiedDKBansNetworkPlayerAccessWebinterface(player.getUUID(),System.currentTimeMillis(),false);
+                    return !event.isCanceled();
+                }
+            };
+            DKBansRestAPIServer.getInstance().registerRestApiHandler(new WebinterfaceHandler(config));
+            BanSystem.getInstance().getCommandManager().registerCommand(new WebinterfaceCommand(config));
+        },2, TimeUnit.SECONDS);
+    }
 }
+

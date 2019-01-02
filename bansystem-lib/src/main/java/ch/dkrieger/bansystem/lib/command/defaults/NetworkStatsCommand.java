@@ -51,6 +51,7 @@ public class NetworkStatsCommand extends NetworkCommand {
                 .replace("[reportsDenied]",""+(stats.getReportsDenied()+syncStats.getReportsDenied()))
                 .replace("[logins]",""+(stats.getLogins()+syncStats.getLogins()))
                 .replace("[messages]",""+(stats.getMessages()+syncStats.getMessages()))
+                .replace("[warns]",""+(stats.getWarns()+syncStats.getWarns()))
                 .replace("[prefix]",getPrefix()));
     }
     @Override

@@ -20,6 +20,7 @@
 
 package ch.dkrieger.bansystem.lib.config;
 
+import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.DKBansPlatform;
 import ch.dkrieger.bansystem.lib.config.mode.BanMode;
 import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
@@ -89,6 +90,7 @@ public class Config extends SimpleConfig{
     public boolean chatBlockPlugin;
     public long chatDelay;
     public boolean chatFilterEnabled;
+    public int chatFilterRepeatMatchesPercent;
     public int chatFilterAutobanCount;
     public boolean chatFilterAutobanEnabled;
     public int chatFilterAutobanMessageBanID;
@@ -113,6 +115,7 @@ public class Config extends SimpleConfig{
     public boolean autobroadcastSorted;
     public int autobroadcastDelay;
 
+    public boolean ipBanBanOnlyNewPlayers;
     public long ipBanBanDuration;
     public String ipBanBanReason;
     public String ipBanBanSraff;
@@ -216,6 +219,8 @@ public class Config extends SimpleConfig{
         this.chatBlockPlugin = addAndGetBooleanValue("chat.block.plugin",true);
         this.chatDelay = addAndGetLongValue("chat.delay",500);
         this.chatFilterEnabled = addAndGetBooleanValue("chat.filter.enabled",true);
+        this.chatFilterRepeatMatchesPercent =  (100-addAndGetIntValue("chat.filter.repeat.matchespercent",40));
+        if(this.chatFilterRepeatMatchesPercent < 0) this.chatFilterRepeatMatchesPercent = 0;
         this.chatFilterAutobanEnabled = addAndGetBooleanValue("chat.autoban.enabled",true);
         this.chatFilterAutobanCount = addAndGetIntValue("chat.filter.autoban.count",8);
         this.chatFilterAutobanMessageBanID = addAndGetIntValue("chat.autoban.banid.message",3);
@@ -246,6 +251,7 @@ public class Config extends SimpleConfig{
         this.autobroadcastSorted = addAndGetBooleanValue("autobroadcast.sorted",true);
         this.autobroadcastDelay = addAndGetIntValue("autobroadcast.delay",8);
 
+        this.ipBanBanOnlyNewPlayers = addAndGetBooleanValue("ipban.onlynewplayers",true);
         this.ipBanBanDuration = GeneralUtil.convertToMillis(addAndGetLongValue("ipban.reason.duration.time",365)
                 , addAndGetStringValue("ipban.reason.duration.unit",TimeUnit.DAYS.toString()));
         this.ipBanBanReason = addAndGetStringValue("ipban.reason.reason","AltAccount");

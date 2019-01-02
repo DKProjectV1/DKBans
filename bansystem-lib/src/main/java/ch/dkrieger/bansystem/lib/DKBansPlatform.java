@@ -39,4 +39,6 @@ public interface DKBansPlatform {
 
     public String getColor(NetworkPlayer player);
 
+    public boolean checkPermissionInternally(NetworkPlayer player, String permission);
+
 }

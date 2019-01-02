@@ -21,11 +21,10 @@
 package ch.dkrieger.bansystem.bungeecord.event;
 
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
-import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 
 import java.util.UUID;
 
-public class ProxiedNetworkPlayerColorSetEvent extends ProxiedDKBansEvent{
+public class ProxiedNetworkPlayerColorSetEvent extends ProxiedDKBansNetworkPlayerEvent {
 
     private final NetworkPlayer player;
     private String color;

@@ -24,7 +24,7 @@ import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 
 import java.util.UUID;
 
-public class ProxiedNetworkPlayerBanEvent extends ProxiedDKBansEvent{
+public class ProxiedNetworkPlayerBanEvent extends ProxiedDKBansNetworkPlayerEvent {
 
     private final Ban ban;
 

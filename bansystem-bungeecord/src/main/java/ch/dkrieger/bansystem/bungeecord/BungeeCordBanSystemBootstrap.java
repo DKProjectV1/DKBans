@@ -41,7 +41,7 @@ import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import com.google.gson.reflect.TypeToken;
-import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -69,26 +69,26 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
     }
     @Override
     public void onEnable() {
-        BungeeCord.getInstance().getPluginManager().registerListener(this,new PlayerListener());
-        BungeeCord.getInstance().getScheduler().schedule(this,()->{
+        ProxyServer.getInstance().getPluginManager().registerListener(this,new PlayerListener());
+        ProxyServer.getInstance().getScheduler().schedule(this,()->{
             checkCloudNet();
             if(cloudNetV2){
                 BanSystem.getInstance().setNetwork(new CloudNetV2Network() {
                     @Override
-                    public void broadcastLocal(Broadcast broadcast) {broadcast(broadcast);}
+                    public void broadcastLocal(Broadcast broadcast) {sendLocalBroadcast(broadcast);}
                 });
                 BanSystem.getInstance().setPlayerManager(new CloudNetV2PlayerManager());
-                BungeeCord.getInstance().getPluginManager().registerListener(this,(CloudNetV2PlayerManager)BanSystem.getInstance().getPlayerManager());
+                ProxyServer.getInstance().getPluginManager().registerListener(this,(CloudNetV2PlayerManager)BanSystem.getInstance().getPlayerManager());
             }else if(cloudNetV3){
                 BanSystem.getInstance().setNetwork(new CloudNetV3Network() {
                     @Override
-                    public void broadcastLocal(Broadcast broadcast) {broadcast(broadcast);}
+                    public void broadcastLocal(Broadcast broadcast) {sendLocalBroadcast(broadcast);}
                 });
                 BanSystem.getInstance().setPlayerManager(new CloudNetV3PlayerManager());
-                BungeeCord.getInstance().getPluginManager().registerListener(this,(CloudNetV3PlayerManager)BanSystem.getInstance().getPlayerManager());
+                ProxyServer.getInstance().getPluginManager().registerListener(this,(CloudNetV3PlayerManager)BanSystem.getInstance().getPlayerManager());
             }else {
-                BungeeCord.getInstance().getPluginManager().registerListener(this,this.subServerConnection);
-                BungeeCord.getInstance().getPluginManager().registerListener(this,(BungeeCordPlayerManager)BanSystem.getInstance().getPlayerManager());
+                ProxyServer.getInstance().getPluginManager().registerListener(this,this.subServerConnection);
+                ProxyServer.getInstance().getPluginManager().registerListener(this,(BungeeCordPlayerManager)BanSystem.getInstance().getPlayerManager());
                 this.subServerConnection.enable();
             }
         },1L, TimeUnit.SECONDS);
@@ -110,7 +110,7 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
 
     @Override
     public String getServerVersion() {
-        return BungeeCord.getInstance().getVersion()+" | "+BungeeCord.getInstance().getGameVersion();
+        return ProxyServer.getInstance().getVersion()+" | "+ProxyServer.getInstance().getGameVersion();
     }
 
     @Override
@@ -129,23 +129,36 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
 
     @Override
     public String getColor(NetworkPlayer player) {
-        ProxiedPlayer proxyPlayer = BungeeCord.getInstance().getPlayer(player.getUUID());
-        if(proxyPlayer == null) return null;
-        String color = BanSystem.getInstance().getConfig().playerColorDefault;
-        for(PlayerColor colors : BanSystem.getInstance().getConfig().playerColorColors){
-            if(proxyPlayer.hasPermission(colors.getPermission())){
-                color = colors.getColor();
-                break;
+        ProxiedPlayer proxyPlayer = ProxyServer.getInstance().getPlayer(player.getUUID());
+        String color = null;
+        if(proxyPlayer != null){
+            color = BanSystem.getInstance().getConfig().playerColorDefault;
+            for(PlayerColor colors : BanSystem.getInstance().getConfig().playerColorColors){
+                if(proxyPlayer.hasPermission(colors.getPermission())){
+                    color = colors.getColor();
+                    break;
+                }
             }
         }
         ProxiedNetworkPlayerColorSetEvent event = new ProxiedNetworkPlayerColorSetEvent(player.getUUID(),System.currentTimeMillis(),true,player,color);
-        BungeeCord.getInstance().getPluginManager().callEvent(event);
+        ProxyServer.getInstance().getPluginManager().callEvent(event);
         if(event.getColor() != null) color = event.getColor();
         return color;
     }
-    public void broadcastLocal(Broadcast broadcast){
+
+    @Override
+    public boolean checkPermissionInternally(NetworkPlayer player, String permission) {
+        ProxiedPlayer proxyPlayer = ProxyServer.getInstance().getPlayer(player.getUUID());
+        if(proxyPlayer != null) return proxyPlayer.hasPermission(permission);
+        ProxiedNetworkPlayerOfflinePermissionCheckEvent event = new ProxiedNetworkPlayerOfflinePermissionCheckEvent(player.getUUID()
+                ,System.currentTimeMillis(),true,player,permission);
+        ProxyServer.getInstance().getPluginManager().callEvent(event);
+        return event.hasPermission();
+    }
+
+    public void sendLocalBroadcast(Broadcast broadcast){
         if(broadcast == null) return;
-        for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
+        for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
             if(broadcast.getPermission() == null || broadcast.getPermission().length() == 0|| player.hasPermission(broadcast.getPermission())){
                 NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
                 player.sendMessage(GeneralUtil.replaceTextComponent(Messages.BROADCAST_FORMAT_SEND.replace("[prefix]",Messages.PREFIX_NETWORK)
@@ -164,13 +177,13 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
         return this.cloudNetV3;
     }
     private void checkCloudNet(){
-        Plugin plugin = BungeeCord.getInstance().getPluginManager().getPlugin("CloudNetAPI");
+        Plugin plugin = ProxyServer.getInstance().getPluginManager().getPlugin("CloudNetAPI");
         if(plugin != null && plugin.getDescription() != null){
             this.cloudNetV2 = true;
             System.out.println(Messages.SYSTEM_PREFIX+"CloudNetV2 found");
             return;
         }else this.cloudNetV2 = false;
-        plugin = BungeeCord.getInstance().getPluginManager().getPlugin("CloudNet-Bridge");
+        plugin = ProxyServer.getInstance().getPluginManager().getPlugin("CloudNet-Bridge");
         if(plugin != null && plugin.getDescription() != null){
             this.cloudNetV3 = true;
             System.out.println(Messages.SYSTEM_PREFIX+"CloudNetV3 found");
@@ -180,18 +193,18 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
 
     public void executePlayerUpdateEvents(UUID player, NetworkPlayerUpdateCause cause, Document properties, boolean onThisServer){
         if(cause == NetworkPlayerUpdateCause.LOGIN){
-            BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerLoginEvent(player,System.currentTimeMillis(),onThisServer));
+            ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerLoginEvent(player,System.currentTimeMillis(),onThisServer));
         }else if(cause == NetworkPlayerUpdateCause.LOGOUT){
             List<Report> reports = properties.getObject("reports",new TypeToken<List<Report>>(){}.getType());
             List<UUID> sentStaffs = new ArrayList<>();
             GeneralUtil.iterateForEach(reports, object -> {
-                ProxiedPlayer reporter = BungeeCord.getInstance().getPlayer(object.getReporterUUID());
+                ProxiedPlayer reporter = ProxyServer.getInstance().getPlayer(object.getReporterUUID());
                 if(reporter != null) reporter.sendMessage(new TextComponent(Messages.REPORT_LEAVED_USER
                         .replace("[player]",object.getPlayer().getColoredName())
                         .replace("[prefix]",Messages.PREFIX_REPORT)));
                 if(!sentStaffs.contains(object.getStaff())){
                     sentStaffs.add(object.getStaff());
-                    ProxiedPlayer staff = BungeeCord.getInstance().getPlayer(object.getStaff());
+                    ProxiedPlayer staff = ProxyServer.getInstance().getPlayer(object.getStaff());
                     if(staff != null){
                         staff.sendMessage(new TextComponent(Messages.REPORT_LEAVED_STAFF
                                 .replace("[player]",object.getPlayer().getColoredName())
@@ -200,75 +213,75 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
                     }
                 }
             });
-            BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerLogoutEvent(player,System.currentTimeMillis(),onThisServer,reports));
+            ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerLogoutEvent(player,System.currentTimeMillis(),onThisServer,reports));
         }else if(cause == NetworkPlayerUpdateCause.BAN){
             BanSystem.getInstance().getHistoryManager().clearCache();
             List<Report> reports = properties.getObject("reports",new TypeToken<List<Report>>(){}.getType());
-            BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerBanEvent(player
+            ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerBanEvent(player
                     ,System.currentTimeMillis(),onThisServer,properties.getObject("ban", Ban.class)));
             if(reports.size() > 0){
                 List<UUID> sentStaffs = new ArrayList<>();
                 GeneralUtil.iterateForEach(reports, object -> {
-                    ProxiedPlayer reporter = BungeeCord.getInstance().getPlayer(object.getReporterUUID());
+                    ProxiedPlayer reporter = ProxyServer.getInstance().getPlayer(object.getReporterUUID());
                     if(reporter != null) reporter.sendMessage(new TextComponent(Messages.REPORT_ACCEPTED
                             .replace("[player]",object.getPlayer().getColoredName())
                             .replace("[prefix]",Messages.PREFIX_REPORT)));
                     if(!sentStaffs.contains(object.getStaff())){
                         sentStaffs.add(object.getStaff());
-                        ProxiedPlayer staff = BungeeCord.getInstance().getPlayer(object.getStaff());
+                        ProxiedPlayer staff = ProxyServer.getInstance().getPlayer(object.getStaff());
                         if(staff != null) reportExit(staff);
                     }
                 });
-                BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerReportsAcceptEvent(player
+                ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerReportsAcceptEvent(player
                         ,System.currentTimeMillis(),onThisServer,reports));
             }
         }else if(cause == NetworkPlayerUpdateCause.KICK){
-            BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerKickEvent(player,System.currentTimeMillis(),onThisServer));
+            ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerKickEvent(player,System.currentTimeMillis(),onThisServer));
         }else if(cause == NetworkPlayerUpdateCause.WARN){
-            BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerWarnEvent(player,System.currentTimeMillis(),onThisServer));
+            ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerWarnEvent(player,System.currentTimeMillis(),onThisServer));
         }else if(cause == NetworkPlayerUpdateCause.UNBAN){
-            BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerUnbanEvent(player,System.currentTimeMillis(),onThisServer));
+            ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerUnbanEvent(player,System.currentTimeMillis(),onThisServer));
         }else if(cause == NetworkPlayerUpdateCause.REPORTSEND){
             Report report = properties.getObject("report",Report.class);
-            for(ProxiedPlayer players : BungeeCord.getInstance().getPlayers()){
+            for(ProxiedPlayer players : ProxyServer.getInstance().getPlayers()){
                 if(players.hasPermission("dkbans.report.receive")){
                     NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(players.getUniqueId());
                     if(networkPlayer != null && networkPlayer.isReportLoggedIn()) players.sendMessage(report.toMessage());
                 }
             }
-            BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerReportEvent(player
+            ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerReportEvent(player
                     ,System.currentTimeMillis(),onThisServer,report));
             BanSystem.getInstance().getReportManager().getReports().add(report);
         }else if(cause == NetworkPlayerUpdateCause.REPORTPROCESS){
             BanSystem.getInstance().getReportManager().clearCachedReports();
-            BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerReportsProcessEvent(player
+            ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerReportsProcessEvent(player
                     ,System.currentTimeMillis(),onThisServer,properties.getObject("staff", UUID.class)));
         }else if(cause == NetworkPlayerUpdateCause.REPORTDENY){
             List<Report> reports = properties.getObject("reports",new TypeToken<List<Report>>(){}.getType());
             List<UUID> sentStaffs = new ArrayList<>();
             GeneralUtil.iterateForEach(reports, object -> {
-                ProxiedPlayer reporter = BungeeCord.getInstance().getPlayer(object.getReporterUUID());
+                ProxiedPlayer reporter = ProxyServer.getInstance().getPlayer(object.getReporterUUID());
                 if(reporter != null) reporter.sendMessage(new TextComponent(Messages.REPORT_DENIED_USER
                         .replace("[player]",object.getPlayer().getColoredName())
                         .replace("[prefix]",Messages.PREFIX_REPORT)));
                 if(!sentStaffs.contains(object.getStaff())){
                     sentStaffs.add(object.getStaff());
-                    ProxiedPlayer staff = BungeeCord.getInstance().getPlayer(object.getStaff());
+                    ProxiedPlayer staff = ProxyServer.getInstance().getPlayer(object.getStaff());
                     if(staff != null){
                         reportExit(staff);
                     }
                 }
             });
             BanSystem.getInstance().getReportManager().clearCachedReports();
-            BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerReportsDenyEvent(player
+            ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerReportsDenyEvent(player
                     ,System.currentTimeMillis(),onThisServer,reports));
         }
-        BungeeCord.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerUpdateEvent(player,System.currentTimeMillis(),onThisServer,cause));
+        ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerUpdateEvent(player,System.currentTimeMillis(),onThisServer,cause));
     }
     private void reportExit(ProxiedPlayer player){
         if(BanSystem.getInstance().getConfig().reportAutoCommandExecuteOnProxy){
             for(String command :  BanSystem.getInstance().getConfig().reportAutoCommandEnter) {
-                BungeeCord.getInstance().getPluginManager().dispatchCommand(player,command);
+                ProxyServer.getInstance().getPluginManager().dispatchCommand(player,command);
             }
         }else{
             for(String command :  BanSystem.getInstance().getConfig().reportAutoCommandEnter){
@@ -280,17 +293,17 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
 
     @Override
     public void runTaskAsync(Runnable runnable) {
-        BungeeCord.getInstance().getScheduler().runAsync(this,runnable);
+        ProxyServer.getInstance().getScheduler().runAsync(this,runnable);
     }
 
     @Override
     public void runTaskLater(Runnable runnable, Long delay, TimeUnit unit) {
-        BungeeCord.getInstance().getScheduler().schedule(this,runnable,delay,unit);
+        ProxyServer.getInstance().getScheduler().schedule(this,runnable,delay,unit);
     }
 
     @Override
     public void scheduleTask(Runnable runnable, Long repeat, TimeUnit unit) {
-        BungeeCord.getInstance().getScheduler().schedule(this,runnable,repeat,repeat,unit);
+        ProxyServer.getInstance().getScheduler().schedule(this,runnable,repeat,repeat,unit);
     }
 
 
