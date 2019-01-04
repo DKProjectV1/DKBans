@@ -21,6 +21,7 @@
 package ch.dkrieger.bansystem.lib.reason;
 
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.history.HistoryPoints;
 import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 import ch.dkrieger.bansystem.lib.utils.Document;
 
@@ -30,7 +31,7 @@ public class WarnReason extends KickReason{
 
     private int autoBanCount, forBan;
 
-    public WarnReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, Document properties, int autoBanCount, int forBan) {
+    public WarnReason(int id, HistoryPoints points, String name, String display, String permission, boolean hidden, List<String> aliases, Document properties, int autoBanCount, int forBan) {
         super(id, points, name, display, permission, hidden, aliases,properties);
         this.autoBanCount = autoBanCount;
         this.forBan = forBan;

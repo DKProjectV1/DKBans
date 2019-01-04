@@ -57,8 +57,12 @@ public class History {
         return entries.get(id);
     }
     public int getPoints(){
+        return getPoints(null);
+    }
+    public int getPoints(BanType type){
         AtomicInteger points = new AtomicInteger(0);
-        entries.forEach((integer, entry)-> points.addAndGet(entry.getPoints()));
+        GeneralUtil.iterateAcceptedForEach(this.entries.values(), object -> type == null || object.getPoints().getHistoryType().equals(type)
+                , object ->{ points.getAndAdd(object.getPoints().getPoints());});
         return points.get();
     }
     public int getBanCount(){

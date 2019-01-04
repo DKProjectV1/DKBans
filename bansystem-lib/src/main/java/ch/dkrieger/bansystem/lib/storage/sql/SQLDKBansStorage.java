@@ -33,6 +33,7 @@ import ch.dkrieger.bansystem.lib.player.chatlog.ChatLog;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLogEntry;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.History;
+import ch.dkrieger.bansystem.lib.player.history.HistoryPoints;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.HistoryEntry;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
@@ -91,7 +92,7 @@ public class SQLDKBansStorage implements DKBansStorage {
                         .create("uuid",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
                         .create("name",ColumnType.VARCHAR,20,QueryOption.NOT_NULL)
                         .create("color",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
-                        .create("lastIp",ColumnType.VARCHAR,20,QueryOption.NOT_NULL)
+                        .create("lastIp",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
                         .create("lastCountry",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
                         .create("lastLogin",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("firstLogin",ColumnType.BIG_INT,QueryOption.NOT_NULL)
@@ -138,7 +139,7 @@ public class SQLDKBansStorage implements DKBansStorage {
                         .create("time",ColumnType.BIG_INT,QueryOption.NOT_NULL).execute();
                 this.histories.create().create("id",ColumnType.INT,QueryOption.NOT_NULL,QueryOption.PRIMARY_KEY,QueryOption.AUTO_INCREMENT)
                         .create("uuid",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
-                        .create("ip",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
+                        .create("ip",ColumnType.VARCHAR,60,QueryOption.NOT_NULL)
                         .create("reason",ColumnType.VARCHAR,200,QueryOption.NOT_NULL)
                         .create("message",ColumnType.VARCHAR,200,QueryOption.NOT_NULL)
                         .create("time",ColumnType.BIG_INT,QueryOption.NOT_NULL)
@@ -167,7 +168,7 @@ public class SQLDKBansStorage implements DKBansStorage {
                         .create("kicks",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("warns",ColumnType.BIG_INT,QueryOption.NOT_NULL).execute();
 
-                this.ipbans.create().create("ip",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
+                this.ipbans.create().create("ip",ColumnType.VARCHAR,60,QueryOption.NOT_NULL)
                         .create("lastPlayer",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
                         .create("timeStamp",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("timeOut",ColumnType.BIG_INT,QueryOption.NOT_NULL).execute();
@@ -692,33 +693,33 @@ public class SQLDKBansStorage implements DKBansStorage {
                         switch (result.getString("historytype")){
                             case "KICK":
                                 createHistoryEntry(player,new Kick(player.getUUID(),player.getIP(),result.getString("reason")
-                                        ,"",timeStamp,-1,0,-1
+                                        ,"",timeStamp,-1,new HistoryPoints(0,BanType.NETWORK),-1
                                         ,result.getString("staffuuid"),new Document(),"Unknown"));
                                 break;
                             case "NETWORKBAN":
                                 long timeOut = timeStamp+result.getLong("duration");
                                 if(timeOut > yet) banned.add(player.getUUID());
                                 createHistoryEntry(player,new Ban(player.getUUID(),player.getIP(),result.getString("reason")
-                                        ,"",timeStamp,-1,0,-1,result.getString("staffuuid")
+                                        ,"",timeStamp,-1,new HistoryPoints(0,BanType.NETWORK),-1,result.getString("staffuuid")
                                         ,new Document(),timeOut,BanType.NETWORK));
                                 break;
                             case "CHATBAN":
                                 long timeOut2 = timeStamp+result.getLong("duration");
                                 if(timeOut2 > yet) muted.add(player.getUUID());
                                 createHistoryEntry(player,new Ban(player.getUUID(),player.getIP(),result.getString("reason")
-                                        ,"",timeStamp,-1,0,-1,result.getString("staffuuid")
+                                        ,"",timeStamp,-1,new HistoryPoints(0,BanType.CHAT),-1,result.getString("staffuuid")
                                         ,new Document(),timeOut2,BanType.CHAT));
                                 break;
                             case "UNBAN":
                                 if(result.getString("staffuuid").equalsIgnoreCase("AutoUnban")) continue;
                                 if(banned.contains(player.getUUID())){
                                     createHistoryEntry(player,new Unban(player.getUUID(),player.getIP(),result.getString("reason")
-                                            ,"",timeStamp,-1,0,-1,result.getString("staffuuid")
+                                            ,"",timeStamp,-1,new HistoryPoints(0,BanType.NETWORK),-1,result.getString("staffuuid")
                                             ,new Document(),BanType.NETWORK));
                                 }
                                 if(muted.contains(player.getUUID())){
                                     createHistoryEntry(player,new Unban(player.getUUID(),player.getIP(),result.getString("reason")
-                                            ,"",timeStamp,-1,0,-1,result.getString("staffuuid")
+                                            ,"",timeStamp,-1,new HistoryPoints(0,BanType.CHAT),-1,result.getString("staffuuid")
                                             ,new Document(),BanType.CHAT));
                                 }
                                 break;

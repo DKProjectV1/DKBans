@@ -48,17 +48,17 @@
         <dependency>
             <groupId>ch.dkrieger.bansystem.lib</groupId>
             <artifactId>bansystem-lib</artifactId>
-            <version>${project.version}</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>ch.dkrieger.bansystem.bungeecord</groupId>
             <artifactId>bansystem-bungeecord</artifactId>
-            <version>${project.version}</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
-            <groupId>ch.dkrieger.bansystem.spigot</groupId>
-            <artifactId>bansystem-spigot</artifactId>
-            <version>${project.version}</version>
+            <groupId>ch.dkrieger.bansystem.bukkit</groupId>
+            <artifactId>bansystem-bukkit</artifactId>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>org.bukkit</groupId>

@@ -21,6 +21,7 @@
 package ch.dkrieger.bansystem.lib.reason;
 
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.history.HistoryPoints;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import net.md_5.bungee.api.ChatColor;
@@ -30,19 +31,21 @@ import java.util.List;
 
 public class KickReason {
 
-    private int id, points;
+    private int id;
     private String name, display, permission;
     private boolean hidden;
     private List<String> aliases;
+    private HistoryPoints points;
     private Document properties;
 
-    public KickReason(int id, int points, String name, String display,String permission, boolean hidden, List<String> aliases, Document properties) {
+    public KickReason(int id,HistoryPoints points, String name, String display,String permission, boolean hidden, List<String> aliases, Document properties) {
         this.id = id;
         this.points = points;
         this.name = name;
         this.display = display;
         this.permission = permission;
         this.hidden = hidden;
+        this.properties = properties;
         this.aliases = new ArrayList<>(aliases);
     }
 
@@ -50,7 +53,7 @@ public class KickReason {
         return id;
     }
 
-    public int getPoints() {
+    public HistoryPoints getPoints() {
         return points;
     }
 
@@ -78,7 +81,7 @@ public class KickReason {
     }
 
     public boolean isHidden() {
-        return hidden;
+           return hidden;
     }
 
     public boolean hasAlias(String alias){

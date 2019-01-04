@@ -24,6 +24,7 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.config.mode.BanMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
+import ch.dkrieger.bansystem.lib.player.history.HistoryPoints;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.utils.Document;
 
@@ -35,20 +36,25 @@ public class BanReason extends KickReason {
 
     private double divider;
     private BanType historyType;
-    private Map<Integer, BanReasonEntry> durations;
+    private Map<Integer, BanReasonEntry> templateDurations;
+    private Map<Integer,BanReasonEntry> pointsDurations;
 
-    public BanReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, Document properties, double divider, BanType historyType, Map<Integer, BanReasonEntry> durations) {
+    public BanReason(int id, HistoryPoints points, String name, String display, String permission, boolean hidden, List<String> aliases
+            , Document properties, double divider, BanType historyType, Map<Integer, BanReasonEntry> templateDurations, Map<Integer, BanReasonEntry> pointsDurations) {
         super(id, points, name, display, permission, hidden, aliases,properties);
         this.divider = divider;
         this.historyType = historyType;
-        this.durations = durations;
+        this.templateDurations = templateDurations;
+        this.pointsDurations = pointsDurations;
     }
-    public BanReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, Document properties, double divider, BanType historyType, BanReasonEntry... durations) {
+    public BanReason(int id, HistoryPoints points, String name, String display, String permission, boolean hidden, List<String> aliases
+            , Document properties, double divider, BanType historyType,Map<Integer, BanReasonEntry> pointsDurations,BanReasonEntry... templateDurations) {
         super(id, points, name, display, permission, hidden, aliases,properties);
         this.divider = divider;
+        this.pointsDurations = new LinkedHashMap<>(pointsDurations);
         this.historyType = historyType;
-        this.durations = new LinkedHashMap<>();
-        for(BanReasonEntry duration : durations) this.durations.put(this.durations.size()+1,duration);
+        this.templateDurations = new LinkedHashMap<>();
+        for(BanReasonEntry duration : templateDurations) this.templateDurations.put(this.templateDurations.size()+1,duration);
     }
     public double getDivider() {
         return divider;
@@ -60,23 +66,39 @@ public class BanReason extends KickReason {
         return getDefaultDuration().getType();
     }
     public Map<Integer, BanReasonEntry> getDurations() {
-        return durations;
+        if(BanSystem.getInstance().getConfig().banMode == BanMode.POINT) return pointsDurations;
+        else return templateDurations;
+    }
+    public Map<Integer, BanReasonEntry> getTemplateDurations() {
+        return templateDurations;
+    }
+    public Map<Integer, BanReasonEntry> getPointsDurations() {
+        return pointsDurations;
     }
     public BanReasonEntry getDefaultDuration(){
         return getNextDuration(0);
     }
     public BanReasonEntry getNextDuration(NetworkPlayer player){
-        return getNextDuration(player.getHistory().getBanCount(getHistoryType()));
+        if(BanSystem.getInstance().getConfig().banMode == BanMode.POINT){
+            if(!BanSystem.getInstance().getConfig().banPointsSeparateChatAndNetwork) return getNextDuration(player.getHistory().getPoints());
+            else return getNextDuration(player.getHistory().getPoints(getPoints().getHistoryType()));
+        }
+        else return getNextDuration(player.getHistory().getBanCount(getHistoryType()));
+
     }
-    public BanReasonEntry getNextDuration(int bans){
-        bans++;
-        if(durations.containsKey(bans)) return durations.get(bans);
+    public BanReasonEntry getNextDuration(int count){
+        Map<Integer, BanReasonEntry> durations = getDurations();
+        if(BanSystem.getInstance().getConfig().banMode == BanMode.POINT){
+            count+=getPoints().getPoints();
+            if(getDivider() > 0 ) count = (int) (count/getDivider());
+        }else count++;
+        if(durations.containsKey(count)) return durations.get(count);
         else{
             int last = -1;
             BanReasonEntry highest = null;
-            for(Map.Entry<Integer, BanReasonEntry> entry : this.durations.entrySet()){
-                if(entry.getKey() == bans) return entry.getValue();
-                if(entry.getKey() > last && last < bans){
+            for(Map.Entry<Integer, BanReasonEntry> entry : durations.entrySet()){
+                if(entry.getKey() == count) return entry.getValue();
+                if(entry.getKey() > last && entry.getKey() < count){
                     highest = entry.getValue();
                     last = entry.getKey();
                 }
@@ -85,17 +107,25 @@ public class BanReason extends KickReason {
         }
     }
     public Ban toBan(NetworkPlayer player,String message, String staff){
-        int points = 0;
         long timeOut = 0;
-        BanType type = null;
-        if(BanSystem.getInstance().getConfig().banMode == BanMode.TEMPLATE){
-            BanReasonEntry value = getNextDuration(player);
-            timeOut = value.getDuration().getTime() > 0?System.currentTimeMillis()+value.getDuration().getMillisTime():-1;
-            type = value.getType();
-        }else{
-            points = getPoints();
-
-        }
-        return new Ban(player.getUUID(),player.getIP(),getRawDisplay(),message,System.currentTimeMillis(),-1,points,getID(),staff,new Document(),timeOut,type);
+        int points = getPoints().getPoints();
+        if(!BanSystem.getInstance().getConfig().banPointsSeparateChatAndNetwork) points+=player.getHistory().getPoints();
+        else points+=player.getHistory().getPoints(getPoints().getHistoryType());
+        BanReasonEntry entry = getNextDuration(player);
+        BanType type = entry.getType();
+        if(BanSystem.getInstance().getConfig().banMode == BanMode.POINT){
+            if(entry.getDuration().getTime() == -2){
+                if(getHistoryType() == BanType.NETWORK){
+                    timeOut = BanSystem.getInstance().getConfig().banPointsNetworkPermanently <= points
+                            ?-1:BanSystem.getInstance().getConfig().banPointsNetworkTime*points;
+                }else{
+                    timeOut = BanSystem.getInstance().getConfig().banPointsChatPermanently <= points
+                            ?-1:BanSystem.getInstance().getConfig().banPointsChatTime*points;
+                }
+                if(timeOut > 0) timeOut +=System.currentTimeMillis();
+            }else timeOut = entry.getDuration().getTime() > 0?System.currentTimeMillis()+entry.getDuration().getMillisTime():-1;
+        }else timeOut = entry.getDuration().getTime() > 0?System.currentTimeMillis()+entry.getDuration().getMillisTime():-1;
+        return new Ban(player.getUUID(),player.getIP(),getRawDisplay(),message,System.currentTimeMillis(),-1
+                ,new HistoryPoints(points,getPoints().getHistoryType()),getID(),staff,new Document(),timeOut,type);
     }
 }

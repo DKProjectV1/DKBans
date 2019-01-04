@@ -27,6 +27,7 @@ import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.PlayerColor;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
+import ch.dkrieger.bansystem.lib.player.history.HistoryPoints;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.storage.StorageType;
 import ch.dkrieger.bansystem.lib.utils.Document;
@@ -96,8 +97,11 @@ public class Config extends SimpleConfig{
     public int chatFilterAutobanMessageBanID;
     public int chatFilterAutobanPromotionBanID;
 
-    public int banPointsTime;
-    public int banPointsMaxHistory;
+    public boolean banPointsSeparateChatAndNetwork;
+    public long banPointsChatTime;
+    public int banPointsChatPermanently;
+    public long banPointsNetworkTime;
+    public int banPointsNetworkPermanently;
 
     public boolean playerSaveIP;
     public boolean playerOnlineSessionSaving;
@@ -171,6 +175,14 @@ public class Config extends SimpleConfig{
         this.mongoDbSrv = addAndGetBooleanValue("storage.mongodb.srv",false);
 
         this.banMode = BanMode.parse(addAndGetStringValue("ban.mode",BanMode.TEMPLATE.toString()));
+        this.banPointsSeparateChatAndNetwork = addAndGetBooleanValue("ban.points.separate.chatandnetwork",true);
+        this.banPointsChatTime =  GeneralUtil.convertToMillis(addAndGetLongValue("ban.points.chat.duration.time",3)
+                ,addAndGetStringValue("ban.points.chat.duration.unit",TimeUnit.HOURS.toString()));
+        this.banPointsChatPermanently = addAndGetIntValue("ban.points.chat.permanently",200);
+        this.banPointsNetworkTime =  GeneralUtil.convertToMillis(addAndGetLongValue("ban.points.network.duration.time",1)
+                ,addAndGetStringValue("ban.points.network.duration.unit",TimeUnit.DAYS.toString()));
+        this.banPointsNetworkPermanently = addAndGetIntValue("ban.points.network.permanently",80);
+
         this.unbanMode = ReasonMode.parse(addAndGetStringValue("unban.mode",BanMode.SELF.toString()));
         this.kickMode = ReasonMode.parse(addAndGetStringValue("kick.mode",BanMode.SELF.toString()));
 
@@ -288,7 +300,7 @@ public class Config extends SimpleConfig{
         this.commandWarn = addAndGetBooleanValue("command.warn.enabled",true);
     }
     public Ban createAltAccountBan(NetworkPlayer player, String ip){
-        return new Ban(player.getUUID(),ip,ipBanBanReason,"",System.currentTimeMillis(),-1,ipBanBanPoints,666
+        return new Ban(player.getUUID(),ip,ipBanBanReason,"",System.currentTimeMillis(),-1,new HistoryPoints(ipBanBanPoints,BanType.NETWORK),666
                 ,ipBanBanSraff,new Document(),System.currentTimeMillis()+ipBanBanDuration,BanType.NETWORK);
     }
 }

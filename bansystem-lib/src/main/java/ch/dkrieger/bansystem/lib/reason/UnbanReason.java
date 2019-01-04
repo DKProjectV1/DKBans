@@ -22,6 +22,7 @@ package ch.dkrieger.bansystem.lib.reason;
 
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
+import ch.dkrieger.bansystem.lib.player.history.HistoryPoints;
 import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.Duration;
@@ -39,7 +40,7 @@ public class UnbanReason extends KickReason{
     private Duration removeDuration;
     private double durationDivider, pointsDivider;
 
-    public UnbanReason(int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, Document properties, int maxPoints, boolean removeAllPoints, List<Integer> notForBanID, Duration maxDuration, Duration removeDuration, double durationDivider, double pointsDivider) {
+    public UnbanReason(int id, HistoryPoints points, String name, String display, String permission, boolean hidden, List<String> aliases, Document properties, int maxPoints, boolean removeAllPoints, List<Integer> notForBanID, Duration maxDuration, Duration removeDuration, double durationDivider, double pointsDivider) {
         super(id, points, name, display, permission, hidden, aliases,properties);
         this.maxPoints = maxPoints;
         this.removeAllPoints = removeAllPoints;

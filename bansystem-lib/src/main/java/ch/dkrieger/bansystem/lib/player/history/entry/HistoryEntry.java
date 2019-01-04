@@ -22,6 +22,8 @@ package ch.dkrieger.bansystem.lib.player.history.entry;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.history.BanType;
+import ch.dkrieger.bansystem.lib.player.history.HistoryPoints;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import ch.dkrieger.bansystem.lib.utils.RuntimeTypeAdapterFactory;
@@ -44,21 +46,22 @@ public abstract class HistoryEntry {
         buildAdapter();
     }
 
-    private UUID uuid;
-    private String ip, reason, message;
-    private long timeStamp;
-    private int id, points, reasonID;
-    private String staff;
-    private Document properties;
+    protected UUID uuid;
+    protected String ip, reason, message;
+    protected long timeStamp;
+    protected int id, reasonID;
+    protected String staff;
+    protected HistoryPoints historyPoints;
+    protected Document properties;
 
-    public HistoryEntry(UUID uuid, String ip, String reason, String message, long timeStamp, int id, int points, int reasonID, String staff, Document properties) {
+    public HistoryEntry(UUID uuid, String ip, String reason, String message, long timeStamp, int id,HistoryPoints points, int reasonID, String staff, Document properties) {
         this.uuid = uuid;
         this.ip = ip;
         this.reason = reason;
         this.message = message;
         this.timeStamp = timeStamp;
         this.id = id;
-        this.points = points;
+        this.historyPoints = points;
         this.reasonID = reasonID;
         this.staff = staff;
         this.properties = properties;
@@ -85,8 +88,9 @@ public abstract class HistoryEntry {
         return timeStamp;
     }
 
-    public int getPoints() {
-        return points;
+    public HistoryPoints getPoints() {
+        if(historyPoints == null) this.historyPoints = new HistoryPoints(0, BanType.NETWORK);
+        return historyPoints;
     }
 
     public int getID() {
@@ -126,11 +130,17 @@ public abstract class HistoryEntry {
         this.id = id;
     }
 
+    public void update(){
+
+    }
+
     public abstract String getTypeName();
 
     public abstract TextComponent getListMessage();
 
     public abstract TextComponent getInfoMessage();
+
+
 
     public static void buildAdapter(){
         RuntimeTypeAdapterFactory<HistoryEntry> adapter = RuntimeTypeAdapterFactory.of(HistoryEntry.class, "historyAdapterType");

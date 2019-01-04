@@ -24,6 +24,7 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.config.Config;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.History;
+import ch.dkrieger.bansystem.lib.player.history.HistoryPoints;
 import ch.dkrieger.bansystem.lib.player.history.entry.*;
 import ch.dkrieger.bansystem.lib.reason.*;
 import ch.dkrieger.bansystem.lib.report.Report;
@@ -508,26 +509,26 @@ public class NetworkPlayer {
         return ban(type, duration,unit,reason,"",reasonID,staff);
     }
     public Ban ban(BanType type, long duration, TimeUnit unit,String reason,String message, int reasonID, UUID staff){
-        return ban(type, duration,unit,reason,message,0,reasonID,staff);
+        return ban(type, duration,unit,reason,message,new HistoryPoints(0,BanType.NETWORK),reasonID,staff);
     }
 
     public Ban ban(BanType type, long duration, TimeUnit unit,String reason,String message, int reasonID, String staff){
-        return ban(type, duration,unit,reason,message,0,reasonID,staff);
+        return ban(type, duration,unit,reason,message,new HistoryPoints(0,BanType.NETWORK),reasonID,staff);
     }
 
-    public Ban ban(BanType type, long duration, TimeUnit unit,String reason,String message,int points, int reasonID, UUID staff){
+    public Ban ban(BanType type, long duration, TimeUnit unit,String reason,String message,HistoryPoints points, int reasonID, UUID staff){
         return ban(type, duration,unit,reason,message,points,reasonID,staff==null?"Console":staff.toString());
     }
 
-    public Ban ban(BanType type, long duration, TimeUnit unit,String reason,String message,int points, int reasonID, String staff){
+    public Ban ban(BanType type, long duration, TimeUnit unit,String reason,String message,HistoryPoints points, int reasonID, String staff){
         return ban(type, duration,unit,reason,message,points,reasonID,staff,new Document());
     }
 
-    public Ban ban(BanType type, long duration, TimeUnit unit,String reason,String message,int points, int reasonID, UUID staff, Document properties){
+    public Ban ban(BanType type, long duration, TimeUnit unit,String reason,String message,HistoryPoints points, int reasonID, UUID staff, Document properties){
         return ban(type, duration,unit,reason,message,points,reasonID,staff==null?"Console":staff.toString(),properties);
     }
 
-    public Ban ban(BanType type, long duration, TimeUnit unit,String reason,String message,int points, int reasonID, String staff, Document properties){
+    public Ban ban(BanType type, long duration, TimeUnit unit,String reason,String message,HistoryPoints points, int reasonID, String staff, Document properties){
         return ban(new Ban(this.uuid,this.lastIP,reason,message,System.currentTimeMillis(),-1,points,reasonID,staff,properties
                 ,System.currentTimeMillis()+unit.toMillis(duration),type));
     }
@@ -572,45 +573,45 @@ public class NetworkPlayer {
         return ban;
     }
     public Kick kick(String reason, String message){
-        return kick(reason,message,0);
+        return kick(reason,message,new HistoryPoints(0,BanType.NETWORK));
     }
     public Kick kick(String reason, String message, UUID staff){
-        return kick(reason,message,0,1,staff==null?"Console":staff.toString());
+        return kick(reason,message,new HistoryPoints(0,BanType.NETWORK),1,staff==null?"Console":staff.toString());
     }
     public Kick kick(String reason, String message, String staff){
-        return kick(reason,message,0,1,staff);
+        return kick(reason,message,new HistoryPoints(0,BanType.NETWORK),1,staff);
     }
-    public Kick kick(String reason, String message,int points){
+    public Kick kick(String reason, String message,HistoryPoints points){
         return kick(reason,message,points,-1);
     }
 
-    public Kick kick(String reason, String message,int points, int reasonID){
+    public Kick kick(String reason, String message,HistoryPoints points, int reasonID){
         return kick(reason,message,points,reasonID,"Console");
     }
 
-    public Kick kick(String reason, String message,int points, int reasonID, UUID staff){
+    public Kick kick(String reason, String message,HistoryPoints points, int reasonID, UUID staff){
         return kick(reason,message,points,reasonID,staff==null?"Console":staff.toString());
     }
 
-    public Kick kick(String reason, String message,int points, int reasonID, String staff){
+    public Kick kick(String reason, String message,HistoryPoints points, int reasonID, String staff){
         OnlineNetworkPlayer online = getOnlinePlayer();
         return kick(reason,message,points,reasonID,staff,new Document(),online!=null?online.getServer():"");
     }
 
-    public Kick kick(String reason, String message,int points, int reasonID, UUID staff, Document properties){
+    public Kick kick(String reason, String message,HistoryPoints points, int reasonID, UUID staff, Document properties){
         return kick(reason,message,points,reasonID,staff==null?"Console":staff.toString(),properties);
     }
 
-    public Kick kick(String reason, String message,int points, int reasonID, String staff, Document properties){
+    public Kick kick(String reason, String message,HistoryPoints points, int reasonID, String staff, Document properties){
         OnlineNetworkPlayer online = getOnlinePlayer();
         return kick(reason,message,points,reasonID,staff,properties,online!=null?online.getServer():"");
     }
 
-    public Kick kick(String reason, String message,int points, int reasonID, UUID staff, Document properties, String server){
+    public Kick kick(String reason, String message,HistoryPoints points, int reasonID, UUID staff, Document properties, String server){
         return kick(new Kick(this.uuid,this.lastIP,reason,message,System.currentTimeMillis(),-1,points,reasonID,staff==null?"Console":staff.toString(),properties,server));
     }
 
-    public Kick kick(String reason, String message,int points, int reasonID, String staff, Document properties, String server){
+    public Kick kick(String reason, String message,HistoryPoints points, int reasonID, String staff, Document properties, String server){
         return kick(new Kick(this.uuid,this.lastIP,reason,message,System.currentTimeMillis(),-1,points,reasonID,staff,properties,server));
     }
 
@@ -687,11 +688,11 @@ public class NetworkPlayer {
     }
 
     public Unban unban(BanType type, String reason, String message, int points, int reasonID, UUID staff, Document properties) {
-        return unban(new Unban(this.uuid,this.lastIP,reason,message,System.currentTimeMillis(),-1,points,reasonID,staff==null?"Console":staff.toString(),properties,type));
+        return unban(new Unban(this.uuid,this.lastIP,reason,message,System.currentTimeMillis(),-1,new HistoryPoints(points,BanType.NETWORK),reasonID,staff==null?"Console":staff.toString(),properties,type));
     }
 
     public Unban unban(BanType type, String reason, String message, int id, int points, int reasonID, String staff, Document properties) {
-        return unban(new Unban(this.uuid,this.lastIP,reason,message,System.currentTimeMillis(),id,points,reasonID,staff,properties,type));
+        return unban(new Unban(this.uuid,this.lastIP,reason,message,System.currentTimeMillis(),id,new HistoryPoints(points,BanType.NETWORK),reasonID,staff,properties,type));
     }
 
     public Unban unban(BanType type, UnbanReason reason){
@@ -734,19 +735,19 @@ public class NetworkPlayer {
         return warn(reason,message,staff==null?"Console":staff.toString());
     }
     public Warn warn(String reason, String message,String staff){
-        return warn(reason,message,0,-1,staff);
+        return warn(reason,message,new HistoryPoints(0,BanType.NETWORK),-1,staff);
     }
-    public Warn warn(String reason, String message, int points, int reasonID, UUID staff){
+    public Warn warn(String reason, String message, HistoryPoints points, int reasonID, UUID staff){
         return warn(reason,message,points,reasonID,staff,new Document());
     }
-    public Warn warn(String reason, String message, int points, int reasonID, String staff){
+    public Warn warn(String reason, String message, HistoryPoints points, int reasonID, String staff){
         return warn(reason,message,points,reasonID,staff,new Document());
     }
-    public Warn warn(String reason, String message, int points, int reasonID, UUID staff, Document properties){
+    public Warn warn(String reason, String message, HistoryPoints points, int reasonID, UUID staff, Document properties){
         return warn(reason,message,points,reasonID,staff==null?"Console":staff.toString(),properties);
     }
-    public Warn warn(String reason, String message, int points, int reasonID, String staff, Document properties){
-        return warn(new Warn(uuid,lastIP,reason,message,System.currentTimeMillis(),-1,points,reasonID,staff,properties));
+    public Warn warn(String reason, String message, HistoryPoints points, int reasonID, String staff, Document properties){
+        return warn(new Warn(uuid,lastIP,reason,message,System.currentTimeMillis(),-1,new HistoryPoints(0,BanType.NETWORK),reasonID,staff,properties));
     }
     public Warn warn(WarnReason reason){
         return warn(reason,"");
@@ -776,7 +777,7 @@ public class NetworkPlayer {
                 }else{
                     Config config = BanSystem.getInstance().getConfig();
                     ban(config.warnAutoBanBanType,config.warnAutoBanCustomDuration,TimeUnit.MILLISECONDS,config.warnAutoBanCustomReason,"",
-                            config.warnAutoBanCustomPoints,1,config.warnStaffName);
+                            new HistoryPoints(config.warnAutoBanCustomPoints,config.warnAutoBanBanType),1,config.warnStaffName);
                 }
             }
         });

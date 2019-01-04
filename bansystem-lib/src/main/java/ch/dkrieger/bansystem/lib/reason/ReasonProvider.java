@@ -23,6 +23,7 @@ package ch.dkrieger.bansystem.lib.reason;
 import ch.dkrieger.bansystem.lib.DKBansPlatform;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
+import ch.dkrieger.bansystem.lib.player.history.HistoryPoints;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.Duration;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
@@ -138,6 +139,7 @@ public class ReasonProvider {
     public WarnReason getWarnReason(String name){
         return GeneralUtil.iterateOne(this.warnReasons,reason -> reason.hasAlias(name));
     }
+
     public void loadBanReasons(){
         File file = new File(this.platform.getFolder(),"ban-reasons.yml");
         Configuration config = null;
@@ -149,16 +151,25 @@ public class ReasonProvider {
                 if(reasons != null){
                     for(String key : reasons.getKeys()){
                         try{
-                            Map<Integer,BanReasonEntry> durations = new HashMap<>();
+                            Map<Integer,BanReasonEntry> templateDurations = new HashMap<>();
                             Configuration durationConfig = config.getSection("reasons."+key+".durations");
                             for(String DKey : durationConfig.getKeys()){
-                                durations.put(Integer.valueOf(DKey),new BanReasonEntry(
+                                templateDurations.put(Integer.valueOf(DKey),new BanReasonEntry(
                                         BanType.valueOf(config.getString("reasons."+key+".durations."+DKey+".type"))
                                         ,config.getLong("reasons."+key+".durations."+DKey+".time")
                                         ,TimeUnit.valueOf(config.getString("reasons."+key+".durations."+DKey+".unit"))));
                             }
+                            Map<Integer,BanReasonEntry> pointsDurations = new HashMap<>();
+                            Configuration pointsConfig = config.getSection("reasons."+key+".points.durations");
+                            for(String DKey : pointsConfig.getKeys()){
+                                pointsDurations.put(Integer.valueOf(DKey),new BanReasonEntry(
+                                        BanType.valueOf(config.getString("reasons."+key+".points.durations."+DKey+".type"))
+                                        ,config.getLong("reasons."+key+".points.durations."+DKey+".time")
+                                        ,TimeUnit.valueOf(config.getString("reasons."+key+".points.durations."+DKey+".unit"))));
+                            }
                             this.banReasons.add(new BanReason(Integer.valueOf(key)
-                                    ,config.getInt("reasons."+key+".points.points")
+                                    ,new HistoryPoints(config.getInt("reasons."+key+".points.points")
+                                    ,BanType.valueOf(config.getString("reasons."+key+".historytype")))
                                     ,config.getString("reasons."+key+".name")
                                     ,config.getString("reasons."+key+".display")
                                     ,config.getString("reasons."+key+".permission")
@@ -167,7 +178,7 @@ public class ReasonProvider {
                                     ,loadProperties(config,"reasons."+key+".properties")
                                     ,config.getDouble("reasons."+key+".points.divider")
                                     ,BanType.valueOf(config.getString("reasons."+key+".historytype"))
-                                    ,durations));
+                                    ,templateDurations,pointsDurations));
                         }catch (Exception exception){
                             exception.printStackTrace();
                             System.out.println(Messages.SYSTEM_PREFIX+"Could not load ban-reason "+key);
@@ -185,14 +196,25 @@ public class ReasonProvider {
             }
         }
         config = new Configuration();
-        this.banReasons.add(new BanReason(1,30,"hacking","&4Hacking","dkbans.ban.reason.hacking"
+
+        Map<Integer,BanReasonEntry> pointsDurations = new HashMap<>();
+
+        pointsDurations.put(0,new BanReasonEntry(BanType.NETWORK,-2, TimeUnit.DAYS));
+        this.banReasons.add(new BanReason(1,new HistoryPoints(30,BanType.NETWORK),"hacking","&4Hacking","dkbans.ban.reason.hacking"
                 ,false, Arrays.asList("hacks","hacker"),new Document(),0.0, BanType.NETWORK
+                ,pointsDurations
                 ,new BanReasonEntry(BanType.NETWORK,30, TimeUnit.DAYS)
                 ,new BanReasonEntry(BanType.NETWORK,60, TimeUnit.DAYS)
                 ,new BanReasonEntry(BanType.NETWORK,90, TimeUnit.DAYS)
                 ,new BanReasonEntry(BanType.NETWORK,-1, TimeUnit.DAYS)));
-        this.banReasons.add(new BanReason(2,15,"provocation","&4Provocation","dkbans.ban.reason.provocation"
-                ,false, Arrays.asList("provocation","provo"),new Document(),0.5,BanType.CHAT
+
+        pointsDurations.clear();
+        pointsDurations.put(0,new BanReasonEntry(BanType.CHAT,30, TimeUnit.MINUTES));
+        pointsDurations.put(5,new BanReasonEntry(BanType.CHAT,-2, TimeUnit.MINUTES));
+        pointsDurations.put(50,new BanReasonEntry(BanType.NETWORK,-2, TimeUnit.MINUTES));
+        this.banReasons.add(new BanReason(2,new HistoryPoints(7,BanType.CHAT),"provocation","&4Provocation","dkbans.ban.reason.provocation"
+                ,false, Arrays.asList("provocation","provo"),new Document(),2,BanType.CHAT
+                ,pointsDurations
                 ,new BanReasonEntry(BanType.CHAT,30,TimeUnit.MINUTES)
                 ,new BanReasonEntry(BanType.CHAT,4,TimeUnit.HOURS)
                 ,new BanReasonEntry(BanType.CHAT,10,TimeUnit.DAYS)
@@ -200,8 +222,13 @@ public class ReasonProvider {
                 ,new BanReasonEntry(BanType.NETWORK,10,TimeUnit.DAYS)
                 ,new BanReasonEntry(BanType.NETWORK,30,TimeUnit.DAYS)));
 
-        this.banReasons.add(new BanReason(3,12,"insult","&4Insult","dkbans.ban.reason.insult"
-                ,false, Arrays.asList("insult"),new Document(),0.5,BanType.CHAT
+        pointsDurations.clear();
+        pointsDurations.put(0,new BanReasonEntry(BanType.CHAT,5, TimeUnit.MINUTES));
+        pointsDurations.put(9,new BanReasonEntry(BanType.CHAT,-2, TimeUnit.MINUTES));
+        pointsDurations.put(40,new BanReasonEntry(BanType.NETWORK,-2, TimeUnit.MINUTES));
+        this.banReasons.add(new BanReason(3,new HistoryPoints(9,BanType.CHAT),"insult","&4Insult","dkbans.ban.reason.insult"
+                ,false, Arrays.asList("insult"),new Document(),0,BanType.CHAT
+                ,pointsDurations
                 ,new BanReasonEntry(BanType.CHAT,5,TimeUnit.HOURS)
                 ,new BanReasonEntry(BanType.CHAT,1,TimeUnit.DAYS)
                 ,new BanReasonEntry(BanType.CHAT,10,TimeUnit.DAYS)
@@ -209,15 +236,20 @@ public class ReasonProvider {
                 ,new BanReasonEntry(BanType.NETWORK,10,TimeUnit.DAYS)
                 ,new BanReasonEntry(BanType.NETWORK,30,TimeUnit.DAYS)));
 
-        this.banReasons.add(new BanReason(4,20,"spam/promotion","&4Spam/Promotion","dkbans.ban.reason.promotion"
-                ,false, Arrays.asList("spam","spamming"),new Document(),0.0,BanType.NETWORK
+        pointsDurations.clear();
+        pointsDurations.put(0,new BanReasonEntry(BanType.NETWORK,5, TimeUnit.MINUTES));
+        pointsDurations.put(9,new BanReasonEntry(BanType.NETWORK,-2, TimeUnit.MINUTES));
+        this.banReasons.add(new BanReason(4,new HistoryPoints(9,BanType.NETWORK),"spam/promotion","&4Spam/Promotion","dkbans.ban.reason.promotion"
+                ,false, Arrays.asList("spam","spamming"),new Document(),3,BanType.NETWORK
+                ,pointsDurations
                 ,new BanReasonEntry(BanType.NETWORK,3,TimeUnit.DAYS)
                 ,new BanReasonEntry(BanType.NETWORK,10,TimeUnit.DAYS)
                 ,new BanReasonEntry(BanType.NETWORK,30,TimeUnit.DAYS)
                 ,new BanReasonEntry(BanType.NETWORK,-1,TimeUnit.DAYS)));
 
-        this.banReasons.add(new BanReason(5,300,"permanent","&4Permanent","dkbans.ban.reason.permanent"
-                ,false, Arrays.asList("spam","spamming"),new Document(),0.0,BanType.NETWORK
+        this.banReasons.add(new BanReason(5,new HistoryPoints(60,BanType.NETWORK),"permanently","&4Permanently","dkbans.ban.reason.permanent"
+                ,false, Arrays.asList("perma","perm"),new Document(),0.0,BanType.NETWORK
+                ,pointsDurations
                 ,new BanReasonEntry(BanType.NETWORK,-1,TimeUnit.DAYS)));
         for(BanReason reason : this.banReasons){
             config.set("reasons."+reason.getID()+".name",reason.getName());
@@ -226,12 +258,17 @@ public class ReasonProvider {
             config.set("reasons."+reason.getID()+".aliases",reason.getAliases());
             config.set("reasons."+reason.getID()+".hidden",reason.isHidden());
             config.set("reasons."+reason.getID()+".historytype",reason.getHistoryType().toString());
-            config.set("reasons."+reason.getID()+".points.points",reason.getPoints());
-            config.set("reasons."+reason.getID()+".points.divider",reason.getDivider());
-            for(Map.Entry<Integer, BanReasonEntry> entry : reason.getDurations().entrySet()){
+            for(Map.Entry<Integer, BanReasonEntry> entry : reason.getTemplateDurations().entrySet()){
                 config.set("reasons."+reason.getID()+".durations."+entry.getKey()+".type",entry.getValue().getType().toString());
                 config.set("reasons."+reason.getID()+".durations."+entry.getKey()+".time",entry.getValue().getDuration().getTime());
                 config.set("reasons."+reason.getID()+".durations."+entry.getKey()+".unit",entry.getValue().getDuration().getUnit().toString());
+            }
+            config.set("reasons."+reason.getID()+".points.points",reason.getPoints().getPoints());
+            config.set("reasons."+reason.getID()+".points.divider",reason.getDivider());
+            for(Map.Entry<Integer, BanReasonEntry> entry : reason.getPointsDurations().entrySet()){
+                config.set("reasons."+reason.getID()+".points.durations."+entry.getKey()+".type",entry.getValue().getType().toString());
+                config.set("reasons."+reason.getID()+".points.durations."+entry.getKey()+".time",entry.getValue().getDuration().getTime());
+                config.set("reasons."+reason.getID()+".points.durations."+entry.getKey()+".unit",entry.getValue().getDuration().getUnit().toString());
             }
             config.set("reasons."+reason.getID()+".properties.MyProperty","Hey");
             config.set("reasons."+reason.getID()+".properties.AnotherProperty",10);
@@ -310,7 +347,7 @@ public class ReasonProvider {
                 if(reasons != null) {
                     for (String key : reasons.getKeys()) {
                         try{
-                            this.reportReasons.add(new ReportReason(Integer.valueOf(key),0
+                            this.reportReasons.add(new ReportReason(Integer.valueOf(key)
                                     ,config.getString("reasons."+key+".name")
                                     ,config.getString("reasons."+key+".display")
                                     ,config.getString("reasons."+key+".permission")
@@ -335,13 +372,13 @@ public class ReasonProvider {
             }
         }
         config = new Configuration();
-        this.reportReasons.add(new ReportReason(1,0,"hacking","&4Hacking","dkbans.report.reason.hacking"
+        this.reportReasons.add(new ReportReason(1,"hacking","&4Hacking","dkbans.report.reason.hacking"
                 ,false,Arrays.asList("hacks","hacker"),new Document(),1));
-        this.reportReasons.add(new ReportReason(2,0,"provocation","&4Provocation","dkbans.report.reason.provocation"
+        this.reportReasons.add(new ReportReason(2,"provocation","&4Provocation","dkbans.report.reason.provocation"
                 ,false,Arrays.asList("provocation","provo"),new Document(),2));
-        this.reportReasons.add(new ReportReason(3,0,"insult","&4Insult","dkbans.report.reason.insult"
+        this.reportReasons.add(new ReportReason(3,"insult","&4Insult","dkbans.report.reason.insult"
                 ,false,Arrays.asList("insult"),new Document(),3));
-        this.reportReasons.add(new ReportReason(4,0,"spam/provocation","&4Spam/Promotion","dkbans.report.reason.promotion"
+        this.reportReasons.add(new ReportReason(4,"spam/provocation","&4Spam/Promotion","dkbans.report.reason.promotion"
                 ,false,Arrays.asList("spam","spamming"),new Document(),4));
 
         for(ReportReason reason : this.reportReasons){
@@ -370,7 +407,8 @@ public class ReasonProvider {
                     for (String key : reasons.getKeys()) {
                         try{
                             this.kickReasons.add(new KickReason(Integer.valueOf(key)
-                                    ,config.getInt("reasons."+key+".points")
+                                    ,new HistoryPoints(config.getInt("reasons."+key+".points.points")
+                                    ,BanType.valueOf(config.getString("reasons."+key+".points.type")))
                                     ,config.getString("reasons."+key+".name")
                                     ,config.getString("reasons."+key+".display")
                                     ,config.getString("reasons."+key+".permission")
@@ -393,13 +431,13 @@ public class ReasonProvider {
             }
         }//int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, int forban
         config = new Configuration();
-        this.kickReasons.add(new KickReason(1,2,"provocation","&4Provocation","dkbans.kick.reason.provocation"
+        this.kickReasons.add(new KickReason(1,new HistoryPoints(3,BanType.CHAT),"provocation","&4Provocation","dkbans.kick.reason.provocation"
                 ,false,Arrays.asList("provocation","provo"),new Document()));
-        this.kickReasons.add(new KickReason(2,2,"insult","&4Insult","dkbans.kick.reason.insult"
+        this.kickReasons.add(new KickReason(2,new HistoryPoints(5,BanType.CHAT),"insult","&4Insult","dkbans.kick.reason.insult"
                 ,false,Arrays.asList("insult"),new Document()));
-        this.kickReasons.add(new KickReason(3,5,"bugusing","&4Bugusing","dkbans.kick.reason.bugusing"
+        this.kickReasons.add(new KickReason(3,new HistoryPoints(3,BanType.NETWORK),"bugusing","&4Bugusing","dkbans.kick.reason.bugusing"
                 ,false, Arrays.asList("bug","bugging"),new Document()));
-        this.kickReasons.add(new KickReason(4,0,"annoy","&4Annoy","dkbans.kick.reason.annoy"
+        this.kickReasons.add(new KickReason(4,new HistoryPoints(0,BanType.CHAT),"annoy","&4Annoy","dkbans.kick.reason.annoy"
                 ,false, Arrays.asList("annoy"),new Document()));
 
         for(KickReason reason : this.kickReasons){
@@ -408,7 +446,8 @@ public class ReasonProvider {
             config.set("reasons."+reason.getID()+".permission",reason.getPermission());
             config.set("reasons."+reason.getID()+".aliases",reason.getAliases());
             config.set("reasons."+reason.getID()+".hidden",reason.isHidden());
-            config.set("reasons."+reason.getID()+".points",reason.getPoints());
+            config.set("reasons."+reason.getID()+".points.points",reason.getPoints().getPoints());
+            config.set("reasons."+reason.getID()+".points.type",reason.getPoints().getHistoryType().toString());
             config.set("reasons."+reason.getID()+".properties.MyProperty","Hey");
             config.set("reasons."+reason.getID()+".properties.AnotherProperty",10);
         }
@@ -427,8 +466,13 @@ public class ReasonProvider {
                 if(reasons != null) {
                     for (String key : reasons.getKeys()) {
                         try{
+                            /*
+                            config.set("reasons."+reason.getID()+".points.points",reason.getPoints().getPoints());
+            config.set("reasons."+reason.getID()+".points.type",reason.getPoints().getHistoryType().toString());
+                             */
                             this.warnReasons.add(new WarnReason(Integer.valueOf(key)
-                                    ,config.getInt("reasons."+key+".points")
+                                    ,new HistoryPoints(config.getInt("reasons."+key+".points.points")
+                                    ,BanType.valueOf(config.getString("reasons."+key+".points.type")))
                                     ,config.getString("reasons."+key+".name")
                                     ,config.getString("reasons."+key+".display")
                                     ,config.getString("reasons."+key+".permission")
@@ -453,11 +497,11 @@ public class ReasonProvider {
             }
         }
         config = new Configuration();
-        this.warnReasons.add(new WarnReason(1,2,"provocation","&4Provocation","dkbans.warn.reason.provocation"
+        this.warnReasons.add(new WarnReason(1,new HistoryPoints(3,BanType.CHAT),"provocation","&4Provocation","dkbans.warn.reason.provocation"
                 ,false,Arrays.asList("provocation","provo"),new Document(),3,2));
-        this.warnReasons.add(new WarnReason(2,2,"insult","&4Insult","dkbans.warn.reason.insult"
+        this.warnReasons.add(new WarnReason(2,new HistoryPoints(4,BanType.CHAT),"insult","&4Insult","dkbans.warn.reason.insult"
                 ,false,Arrays.asList("insult"),new Document(),3,3));
-        this.warnReasons.add(new WarnReason(3,2,"spam/promotion","&4Spam/Promotion","dkbans.warn.reason.promotion"
+        this.warnReasons.add(new WarnReason(3,new HistoryPoints(8,BanType.NETWORK),"spam/promotion","&4Spam/Promotion","dkbans.warn.reason.promotion"
                 ,false,Arrays.asList("spamming","spam","promotion"),new Document(),2,4));
 
         for(WarnReason reason : this.warnReasons){
@@ -466,7 +510,8 @@ public class ReasonProvider {
             config.set("reasons."+reason.getID()+".permission",reason.getPermission());
             config.set("reasons."+reason.getID()+".aliases",reason.getAliases());
             config.set("reasons."+reason.getID()+".hidden",reason.isHidden());
-            config.set("reasons."+reason.getID()+".points",reason.getPoints());
+            config.set("reasons."+reason.getID()+".points.points",reason.getPoints().getPoints());
+            config.set("reasons."+reason.getID()+".points.type",reason.getPoints().getHistoryType().toString());
             config.set("reasons."+reason.getID()+".autoban.count",reason.getAutoBanCount());
             config.set("reasons."+reason.getID()+".autoban.banid",reason.getForBan());
             config.set("reasons."+reason.getID()+".properties.MyProperty","Hey");

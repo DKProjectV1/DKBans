@@ -22,6 +22,7 @@ package ch.dkrieger.bansystem.lib.player.history.entry;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
+import ch.dkrieger.bansystem.lib.player.history.HistoryPoints;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -29,7 +30,7 @@ import java.util.UUID;
 
 public class Warn extends HistoryEntry{
 
-    public Warn(UUID uuid, String ip, String reason, String message, long timeStamp, int id, int points, int reasonID, String staff, Document properties) {
+    public Warn(UUID uuid, String ip, String reason, String message, long timeStamp, int id, HistoryPoints points, int reasonID, String staff, Document properties) {
         super(uuid, ip, reason, message, timeStamp, id, points, reasonID, staff, properties);
     }
 

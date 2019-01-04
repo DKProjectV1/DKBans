@@ -61,7 +61,7 @@
         <dependency>
             <groupId>ch.dkrieger.bansystem.lib</groupId>
             <artifactId>bansystem-lib</artifactId>
-            <version>${project.version}</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>org.bukkit</groupId>
