@@ -333,6 +333,9 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
             BanSystem.getInstance().getReportManager().clearCachedReports();
             Bukkit.getPluginManager().callEvent(new BukkitNetworkPlayerReportsDenyEvent(player
                     ,System.currentTimeMillis(),onThisServer,reports));
+        }else if(cause == NetworkPlayerUpdateCause.HISTORYUPDATE) {
+            BanSystem.getInstance().getHistoryManager().clearCache();
+            Bukkit.getPluginManager().callEvent(new BukkitNetworkPlayerHistoryUpdateEvent(player, System.currentTimeMillis(), onThisServer));
         }
         Bukkit.getPluginManager().callEvent(new BukkitNetworkPlayerUpdateEvent(player,System.currentTimeMillis(),onThisServer,cause));
     }

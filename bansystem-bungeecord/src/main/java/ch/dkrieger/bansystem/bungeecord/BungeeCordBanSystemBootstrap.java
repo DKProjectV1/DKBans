@@ -275,6 +275,10 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
             BanSystem.getInstance().getReportManager().clearCachedReports();
             ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerReportsDenyEvent(player
                     ,System.currentTimeMillis(),onThisServer,reports));
+        }else if(cause == NetworkPlayerUpdateCause.HISTORYUPDATE) {
+            BanSystem.getInstance().getHistoryManager().clearCache();
+            ProxyServer.getInstance().getPluginManager()
+                    .callEvent(new ProxiedNetworkPlayerHistoryUpdateEvent(player, System.currentTimeMillis(), onThisServer));
         }
         ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerUpdateEvent(player,System.currentTimeMillis(),onThisServer,cause));
     }
