@@ -1,16 +1,14 @@
 package de.fridious.bansystem.extension.gui.guis;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import de.fridious.bansystem.extension.gui.guis.PlayerInfoGui;
-import de.fridious.bansystem.extension.gui.guis.TemplateBanGui;
+import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.GUI;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 /*
  * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
@@ -34,60 +32,70 @@ import java.util.concurrent.ExecutionException;
 
 public class GuiManager {
 
-    private LoadingCache<UUID, OpenedInventories> cachedInventories;
+    private Map<Player, CachedInventories> cachedInventories;
 
     public GuiManager() {
-        this.cachedInventories = CacheBuilder.newBuilder().build(new CacheLoader<UUID, OpenedInventories>() {
-            @Override
-            public OpenedInventories load(UUID key) throws Exception {
-                return new OpenedInventories(key);
-            }
-        });
+        this.cachedInventories = new LinkedHashMap<>();
     }
 
-    public LoadingCache<UUID, OpenedInventories> getCachedInventories() {
+    public Map<Player, CachedInventories> getAllCachedInventories() {
         return cachedInventories;
     }
 
-    public OpenedInventories getCachedInventories(UUID uuid) {
-        try {
-            return getCachedInventories().get(uuid);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public CachedInventories getCachedInventories(Player player) {
+        if(!cachedInventories.containsKey(player)) cachedInventories.put(player, new CachedInventories(player));
+        return cachedInventories.get(player);
     }
 
-    public OpenedInventories getCachedInventories(Player player) {
-        return getCachedInventories(player.getUniqueId());
+    public void updateAllCachedInventories(Event event) {
+        for (CachedInventories openedInventories : getAllCachedInventories().values()) {
+            openedInventories.getAll().forEach(gui -> gui.updatePage(event));
+        }
+
     }
 
-    public class OpenedInventories {
+    public class CachedInventories {
 
-        private UUID uuid;
-        private PlayerInfoGui playerInfoGui;
-        private TemplateBanGui templateBanGui;
+        private final Player player;
+        private final Map<String, GUI> inventories;
 
-        public OpenedInventories(UUID uuid) {
-            this.uuid = uuid;
+        public CachedInventories(Player player) {
+            this.player = player;
+            this.inventories = new LinkedHashMap<>();
         }
 
-        public PlayerInfoGui getPlayerInfoGui(UUID target) {
-            if(this.playerInfoGui == null) this.playerInfoGui = new PlayerInfoGui(target);
-            return playerInfoGui;
+        public boolean hasCached(String inventory) {
+            return inventories.containsKey(inventory);
         }
 
-        public TemplateBanGui getTemplateBanGui(UUID target) {
-            if(this.templateBanGui == null) this.templateBanGui = new TemplateBanGui(this.uuid, target);
-            return templateBanGui;
+        public Player getPlayer() {
+            return player;
         }
 
-        public void setPlayerInfoGui(PlayerInfoGui playerInfoGui) {
-            this.playerInfoGui = playerInfoGui;
+        public GUI getAsGui(String inventory) {
+            return this.inventories.get(inventory);
         }
 
-        public void setTemplateBanGui(TemplateBanGui templateBanGui) {
-            this.templateBanGui = templateBanGui;
+        public PrivateGUI getAsPrivateGui(String inventory) {
+            return (PrivateGUI) getAsGui(inventory);
+        }
+
+        public Collection<GUI> getAll() {
+            return this.inventories.values();
+        }
+
+        public GUI create(String inventory, GUI gui) {
+            this.inventories.put(inventory, gui);
+            return gui;
+        }
+
+        public PrivateGUI create(String inventory, PrivateGUI privateGUI) {
+            this.inventories.put(inventory, privateGUI);
+            return privateGUI;
+        }
+
+        public void remove(String inventory) {
+            this.inventories.remove(inventory);
         }
     }
 }

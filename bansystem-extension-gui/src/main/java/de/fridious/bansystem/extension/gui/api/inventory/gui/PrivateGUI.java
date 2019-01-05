@@ -1,6 +1,11 @@
 package de.fridious.bansystem.extension.gui.api.inventory.gui;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /*
  * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
@@ -22,13 +27,47 @@ import org.bukkit.entity.Player;
  * under the License.
  */
 
-public abstract class PrivateGUI extends GUI {
+public abstract class PrivateGUI<T> extends GUI<T> {
+
+    public static final List<PrivateGUI> ANVIL_GUIS;
+
+    static {
+        ANVIL_GUIS = new LinkedList<>();
+    }
+
+    private static final ReflectionAnvil REFLECTION_ANVIL;
+
+    static {
+        REFLECTION_ANVIL = new ReflectionAnvil();
+    }
 
     private final Player owner;
+    //Only for anvil gui
+    private Object container;
+    private int containerId;
+
+    public PrivateGUI(Player owner) {
+        this.owner = owner;
+    }
+
+    public PrivateGUI(Inventory inventory, Player owner) {
+        super(inventory);
+        this.owner = owner;
+    }
 
     public PrivateGUI(String name, int size, Player owner) {
         super(name, size);
         this.owner = owner;
+    }
+
+    public PrivateGUI(InventoryType inventoryType, Player owner) {
+        this.owner = owner;
+        if(inventoryType == InventoryType.ANVIL) {
+            this.container = REFLECTION_ANVIL.newContainerAnvil(owner);
+            this.inventory = REFLECTION_ANVIL.toBukkitInventory(container);
+            this.containerId = REFLECTION_ANVIL.getNextContainerId(owner);
+            ANVIL_GUIS.add(this);
+        }
     }
 
     public Player getOwner() {
@@ -36,6 +75,12 @@ public abstract class PrivateGUI extends GUI {
     }
 
     public void open(){
-        open(this.owner);
+        if(this.inventory.getType() == InventoryType.ANVIL && !owner.getOpenInventory().getTopInventory().equals(inventory)) {
+            REFLECTION_ANVIL.sendPacketOpenWindow(owner, containerId);
+            REFLECTION_ANVIL.setActiveContainer(owner, container);
+            REFLECTION_ANVIL.setActiveContainerId(owner, containerId);
+            REFLECTION_ANVIL.addActiveContainerSlotListener(owner);
+        } else open(this.owner);
+
     }
 }

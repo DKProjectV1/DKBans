@@ -1,10 +1,10 @@
-package de.fridious.bansystem.extension.gui.listener;
+package de.fridious.bansystem.extension.gui.listeners;
 
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Philipp Elvin Friedhoff
- * @since 30.12.18 21:56
+ * @since 01.01.19 22:43
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -20,19 +20,16 @@ package de.fridious.bansystem.extension.gui.listener;
  * under the License.
  */
 
-import de.fridious.bansystem.extension.gui.api.inventory.gui.GUI;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerBanEvent;
+import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 
-public class InventoryCloseListener implements Listener {
+public class BukkitNetworkPlayerBanListener implements Listener {
 
     @EventHandler
-    public void onInventoryClose(InventoryCloseEvent event) {
-        if(!(event.getPlayer() instanceof Player) || (event.getInventory() == null)) return;
-        if(event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof GUI)
-            ((GUI)event.getInventory().getHolder()).handleClose(event);
+    public void onBukkitNetworkPlayerBan(BukkitNetworkPlayerBanEvent event) {
+        DKBansGuiExtension.getInstance().getGuiManager().updateAllCachedInventories(event);
     }
+
 }

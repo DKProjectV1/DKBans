@@ -20,24 +20,22 @@ package de.fridious.bansystem.extension.gui.utils;
  * under the License.
  */
 
+import ch.dkrieger.bansystem.bukkit.utils.Reflection;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
+import com.mojang.authlib.GameProfile;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.lang.reflect.Method;
+import java.util.LinkedList;
+import java.util.List;
 
 public class GuiExtensionUtils {
-
-    public static String replaceBanReason(String replace, BanReason reason) {
-        return replace
-                .replace("[id]",""+reason.getID())
-                .replace("[name]",reason.getDisplay())
-                .replace("[historyType]",reason.getHistoryType().getDisplay())
-                .replace("[banType]",reason.getBanType().getDisplay())
-                .replace("[reason]",reason.getDisplay())
-                .replace("[points]",""+reason.getPoints());
-    }
 
     public static String replaceNetworkPlayer(String replace, NetworkPlayer player) {
         String replaced = replace
@@ -70,4 +68,34 @@ public class GuiExtensionUtils {
         return replaced;
     }
 
+    public static <T> List<T> getListRange(List<? extends T> list, int from, int to) {
+        List<T> rangeList = new LinkedList<>();
+        for(int i = from; i <= to; i++) {
+            if(i < list.size()) rangeList.add(list.get(i));
+        }
+        return rangeList;
+    }
+
+    public static GameProfile getGameProfile(Player player) {
+        try{
+            Class<?> craftPlayerClass = Reflection.getCraftBukkitClass("entity.CraftPlayer");
+
+            Method getHandle = craftPlayerClass.getMethod("getProfile");
+            return (GameProfile)getHandle.invoke(player);
+        }catch (Exception exception){
+            exception.printStackTrace();
+        }
+        return null;
+    }
+
+    public static List<Player> getInteractOnlinePlayers(Player player) {
+        List<Player> interactOnlinePlayers = new LinkedList<>();
+        for (Player targetPlayer : Bukkit.getOnlinePlayers()) {
+            if(player.getUniqueId().equals(targetPlayer.getUniqueId()))continue;
+            NetworkPlayer target = BanSystem.getInstance().getPlayerManager().getPlayer(targetPlayer.getUniqueId());
+            if(target.hasBypass() && !(player.hasPermission("dkbans.bypass.ignore"))) continue;
+            interactOnlinePlayers.add(targetPlayer);
+        }
+        return interactOnlinePlayers;
+    }
 }

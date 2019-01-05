@@ -1,10 +1,10 @@
-package de.fridious.bansystem.extension.gui.listener;
+package de.fridious.bansystem.extension.gui.listeners;
 
 /*
  * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
  *
  * @author Philipp Elvin Friedhoff
- * @since 30.12.18 21:50
+ * @since 30.12.18 21:59
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -22,27 +22,26 @@ package de.fridious.bansystem.extension.gui.listener;
 
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.GUI;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 
-public class InventoryClickListener implements Listener {
+public class InventoryOpenListener implements Listener {
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
-
-        if(!(event.getWhoClicked() instanceof Player) || event.getInventory() == null ||
-                event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR ||
-                event.getCurrentItem().getItemMeta() == null ||
-                event.getCurrentItem().getItemMeta().getDisplayName() == null) return;
-        if(event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof GUI) {
-            event.setCancelled(true);
-            Bukkit.getScheduler().runTaskAsynchronously(DKBansGuiExtension.getInstance(), ()-> ((GUI)event.getInventory().getHolder()).handleClick(event));
-
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        if(!(event.getPlayer() instanceof Player) || event.getInventory() == null) return;
+        if(event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof GUI)
+            ((GUI)event.getInventory().getHolder()).handleOpen(event);
+        else {
+            PrivateGUI.ANVIL_GUIS.forEach(privateGUI -> {
+                if(privateGUI.getInventory().equals(event.getInventory()))
+                    Bukkit.getScheduler().runTaskAsynchronously(DKBansGuiExtension.getInstance(), ()-> privateGUI.handleOpen(event));
+            });
         }
-
     }
+
 }

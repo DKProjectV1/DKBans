@@ -1,5 +1,8 @@
 package de.fridious.bansystem.extension.gui.api.inventory.item;
 
+import ch.dkrieger.bansystem.bukkit.utils.Reflection;
+import com.mojang.authlib.GameProfile;
+import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.FireworkEffect;
@@ -105,10 +108,10 @@ public class ItemBuilder {
         this.itemStack = new ItemStack(Material.STAINED_GLASS_PANE, 1,data);
         setName("§7§8§0");
     }
-    public ItemBuilder(String itemid){
-        if(itemid != null){
+    public ItemBuilder(String itemId){
+        if(itemId != null){
             try{
-                String[] value = itemid.split(":");
+                String[] value = itemId.split(":");
                 Material material = Material.getMaterial(Integer.valueOf(value[0]));
                 if(material != null){
                     this.itemStack = new ItemStack(Material.getMaterial(Integer.valueOf(value[0])), 1,Integer.valueOf(value[1]).byteValue());
@@ -117,6 +120,26 @@ public class ItemBuilder {
             }catch (Exception exception){}
         }
         this.itemStack = new ItemStack(Material.PAPER);
+    }
+    public ItemBuilder(GameProfile profile){
+        setGameProfile(profile);
+    }
+    public ItemBuilder(String player, String displayName) {
+        setGameProfile(player);
+        setDisplayName(displayName);
+    }
+    public ItemBuilder setGameProfile(GameProfile profile) {
+        this.itemStack.setType(Material.SKULL_ITEM);
+        this.itemStack.setDurability((short) 3);
+        ItemMeta meta = this.itemStack.getItemMeta();
+        Class<?> headMetaClass = meta.getClass();
+        Reflection.getField(headMetaClass, "profile", GameProfile.class).set(meta, profile);
+        itemStack.setItemMeta(meta);
+        return this;
+    }
+    public ItemBuilder setGameProfile(String player) {
+        setGameProfile(DKBansGuiExtension.getInstance().getGameProfileProvider().getGameProfileByPlayer(player));
+        return this;
     }
     public ItemBuilder setMaterial(Material material) {
         this.itemStack.setType(material);

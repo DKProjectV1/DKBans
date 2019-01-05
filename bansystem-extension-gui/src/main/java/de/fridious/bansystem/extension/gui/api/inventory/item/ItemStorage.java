@@ -1,10 +1,14 @@
 package de.fridious.bansystem.extension.gui.api.inventory.item;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
+import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
+import ch.dkrieger.bansystem.lib.reason.KickReason;
+import ch.dkrieger.bansystem.lib.reason.WarnReason;
+import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
 import org.bukkit.inventory.ItemStack;
@@ -52,7 +56,45 @@ public class ItemStorage {
     }
 
     public static ItemStack get(String key, BanReason reason) {
-        return get(key, replace -> GuiExtensionUtils.replaceBanReason(replace, reason));
+        return get(key, replace -> replace
+                .replace("[id]",""+reason.getID())
+                .replace("[name]",reason.getDisplay())
+                .replace("[historyType]",reason.getHistoryType().getDisplay())
+                .replace("[banType]",reason.getBanType().getDisplay())
+                .replace("[reason]",reason.getDisplay())
+                .replace("[points]",""+reason.getPoints()));
+    }
+
+    public static ItemStack get(String key, WarnReason reason) {
+        return get(key, replace -> replace
+                .replace("[id]", String.valueOf(reason.getID()))
+                .replace("[name]",reason.getDisplay())
+                .replace("[reason]",reason.getDisplay())
+                .replace("[points]",""+reason.getPoints()));
+    }
+
+    public static ItemStack get(String key, KickReason reason) {
+        return get(key, replace -> replace
+                .replace("[id]", "" + reason.getID())
+                .replace("[reason]", reason.getDisplay())
+                .replace("[name]", reason.getDisplay())
+                .replace("[points]", "" + reason.getPoints()));
+    }
+
+    public static ItemStack get(String key, int page, int maxPages) {
+        return get(key, replace -> replace
+                .replace("[current_page]", String.valueOf(page))
+                .replace("[next_page]", String.valueOf(page+1))
+                .replace("[previous_page]", String.valueOf(page-1))
+                .replace("[max_pages]", String.valueOf(maxPages)));
+    }
+
+    public static ItemStack get(String key, Report report) {
+        return get(key, replace -> replace.replace("[reason]",report.getReason())
+                .replace("[reasonID]",""+report.getReasonID())
+                .replace("[player]",report.getPlayer().getColoredName())
+                .replace("[reporter]",report.getReporter().getColoredName())
+                .replace("[time]", BanSystem.getInstance().getConfig().dateFormat.format(System.currentTimeMillis()-report.getTimeStamp())));
     }
 
     public static ItemStack get(String key, StringReplacer replacer) {
