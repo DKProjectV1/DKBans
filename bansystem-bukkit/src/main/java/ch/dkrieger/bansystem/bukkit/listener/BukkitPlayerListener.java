@@ -21,6 +21,7 @@
 package ch.dkrieger.bansystem.bukkit.listener;
 
 import ch.dkrieger.bansystem.bukkit.BukkitBanSystemBootstrap;
+import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerRegisterLocalEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.filter.FilterType;
@@ -53,7 +54,6 @@ public class BukkitPlayerListener implements Listener {
         this.banBlockPoints = new HashMap<>();
         this.currentMessageCount = new HashMap<>();
     }
-
     @EventHandler
     public void onLogin(PlayerLoginEvent event){
         if(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.NICKNAME,event.getPlayer().getName())){
@@ -77,6 +77,10 @@ public class BukkitPlayerListener implements Listener {
             player =  BanSystem.getInstance().getPlayerManager().createPlayer(event.getPlayer().getUniqueId()
                     ,event.getPlayer().getName(),event.getAddress().getHostAddress());
             newPlayer = true;
+            Bukkit.getScheduler().runTaskAsynchronously(BukkitBanSystemBootstrap.getInstance(),()->{
+                Bukkit.getPluginManager().callEvent(new BukkitNetworkPlayerRegisterLocalEvent(event.getPlayer().getUniqueId()
+                        ,System.currentTimeMillis(),true));
+            });
         }else{
             Ban ban = player.getBan(BanType.NETWORK);
             if(ban != null){

@@ -22,6 +22,7 @@ package ch.dkrieger.bansystem.bungeecord.listener;
 
 import ch.dkrieger.bansystem.bungeecord.BungeeCordBanSystemBootstrap;
 import ch.dkrieger.bansystem.bungeecord.CloudNetExtension;
+import ch.dkrieger.bansystem.bungeecord.event.ProxiedNetworkPlayerRegisterLocalEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.filter.FilterType;
@@ -87,6 +88,10 @@ public class PlayerListener implements Listener {
             player =  BanSystem.getInstance().getPlayerManager().createPlayer(event.getConnection().getUniqueId()
                     ,event.getConnection().getName(),event.getConnection().getAddress().getAddress().getHostAddress());
             newPlayer = true;
+            ProxyServer.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
+                ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerRegisterLocalEvent(
+                        event.getConnection().getUniqueId(),System.currentTimeMillis(),true));
+            });
         }else{
             Ban ban = player.getBan(BanType.NETWORK);
             if(ban != null){
