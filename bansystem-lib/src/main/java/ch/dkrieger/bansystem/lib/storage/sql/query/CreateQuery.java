@@ -38,6 +38,10 @@ public class CreateQuery extends ExecuteQuery {
         return create(field, type, 0, options);
     }
 
+    public CreateQuery create(String field, String type, int size) {
+        return create(field, type, size, QueryOption.getAsStringArray());
+    }
+
     public CreateQuery create(String field, String type, int size, QueryOption... options) {
         return create(field, type, size, QueryOption.getAsStringArray(options));
     }

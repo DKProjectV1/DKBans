@@ -100,6 +100,7 @@ public class SQLDKBansStorage implements DKBansStorage {
                         .create("bypass",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
                         .create("teamChatLogin",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
                         .create("reportLogin",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
+                        .create("watchingReportedPlayer",ColumnType.VARCHAR,10)
                         .create("statsLogins",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("statsMessages",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("statsReports",ColumnType.BIG_INT,QueryOption.NOT_NULL)
@@ -184,6 +185,7 @@ public class SQLDKBansStorage implements DKBansStorage {
                             .value(0).value(0).value(0).value(0).value(0).value(0).execute();
                 }else{
                     try{
+                        this.players.execute("ALTER TABLE "+players.getName()+" ADD COLUMN watchingReportedPlayer varchar(80) AFTER reportLogin");
                         this.players.execute("ALTER TABLE "+players.getName()+" ADD COLUMN statsStaffWarns bigint AFTER statsStaffKicks");
                         this.networkstats.execute("ALTER TABLE "+networkstats.getName()+" ADD COLUMN warns bigint");
                     }catch (Exception exception){}
@@ -226,7 +228,7 @@ public class SQLDKBansStorage implements DKBansStorage {
             try{
                if(result.next()){
                    UUID uuid = UUID.fromString(result.getString("uuid"));
-                   return new NetworkPlayer(result.getInt("id"),uuid
+                   NetworkPlayer resultPlayer = new NetworkPlayer(result.getInt("id"),uuid
                            ,result.getString("name"),result.getString("color"),result.getString("lastIp")
                            ,result.getString("lastCountry"),result.getLong("lastLogin"),result.getLong("firstLogin")
                            ,result.getLong("onlineTime"),result.getBoolean("bypass"),result.getBoolean("teamChatLogin")
@@ -235,7 +237,11 @@ public class SQLDKBansStorage implements DKBansStorage {
                            ,result.getLong("statsReports"),result.getLong("statsReportsAccepted")
                            ,result.getLong("statsMessages"),result.getLong("statsReportsReceived")
                            ,result.getLong("statsStaffBans"),result.getLong("statsStaffMutes")
-                           ,result.getLong("statsStaffUnbans"),result.getLong("statsStaffKicks"),result.getLong("statsStaffWarns")),new ArrayList<>(),null);
+                           ,result.getLong("statsStaffUnbans"),result.getLong("statsStaffKicks")
+                           ,result.getLong("statsStaffWarns")),new ArrayList<>(),null);
+                   try{ resultPlayer.setWatchingReportedPlayer(UUID.fromString(result.getString("watchingReportedPlayer")));
+                   }catch (Exception exception){}
+                   return resultPlayer;
                }
             }catch (Exception exception){
                 exception.printStackTrace();
@@ -358,6 +364,11 @@ public class SQLDKBansStorage implements DKBansStorage {
     @Override
     public void saveStaffSettings(UUID player, boolean report, boolean teamchat) {
         this.players.update().set("reportLogin",report).set("teamChatLogin",teamchat).where("uuid",player).execute();
+    }
+
+    @Override
+    public void updateWatchReportPlayer(UUID uuid, UUID watchPlayer) {
+        this.players.update().set("watchingReportedPlayer",watchPlayer==null?"NULL":watchPlayer).where("uuid",uuid).execute();
     }
 
     @Override
@@ -590,7 +601,7 @@ public class SQLDKBansStorage implements DKBansStorage {
 
     @Override
     public void deleteBroadcast(int id) {
-        this.broadcasts.delete().where("id",id);
+        this.broadcasts.delete().where("id",id).execute();
     }
 
     @Override

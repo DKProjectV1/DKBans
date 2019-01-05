@@ -337,9 +337,8 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
         Bukkit.getPluginManager().callEvent(new BukkitNetworkPlayerUpdateEvent(player,System.currentTimeMillis(),onThisServer,cause));
     }
     private void reportExit(Player player){
-        for(String command :  BanSystem.getInstance().getConfig().reportAutoCommandEnter) {
-            Bukkit.dispatchCommand(player,command);
-        }
+        for(String command :  BanSystem.getInstance().getConfig().reportAutoCommandEnter) Bukkit.dispatchCommand(player,command);
+        BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId()).setWatchingReportedPlayer(null);
     }
     
     public static BukkitBanSystemBootstrap getInstance() {

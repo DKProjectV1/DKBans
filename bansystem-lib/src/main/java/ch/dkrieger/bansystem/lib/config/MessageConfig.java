@@ -278,6 +278,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.REPORT_LIST_HEADER = addAndGetMessageValue("report.list.header","[prefix]&7Open reports Page &c[page]&8/&c[maxPage]");
         Messages.REPORT_LIST_LIST = addAndGetMessageValue("report.list.list","&8» &8[player] &8&l>> &c[reason] &8[&7Click&8]");
         Messages.REPORT_INFO = addAndGetMessageValue("report.info","[prefix]&7At this moments are &c[size] &7Reports open.");
+        Messages.REPORT_PROCESS_ALREADY =  addAndGetMessageValue("report.process.already","[prefix]&cYou are already processing a report.");
         Messages.REPORT_PROCESS_CONTROL_MESSAGE = addAndGetMessageValue("report.process.control.message","&8» [deny] [forReason] [otherReason]\n&7");//[deny] [forReason] [otherReason]
         Messages.REPORT_PROCESS_CONTROL_DENY = addAndGetMessageValue("report.process.control.deny","&8[&c&lDeny&8]");
         Messages.REPORT_PROCESS_CONTROL_FORREASON = addAndGetMessageValue("report.process.accept","&8[&a&lAccept&8]");

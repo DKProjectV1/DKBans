@@ -31,7 +31,7 @@ import java.util.List;
 public class TeamChatCommand extends NetworkCommand {
 
     public TeamChatCommand() {
-        super("teamchat","","dkbans.teamchat.send","","tc","team","@team","tchat","teamc");
+        super("teamchat","","dkbans.teamchat.send","","tc","@team","tchat","teamc");
         setPrefix(Messages.PREFIX_TEAMCHAT);
     }
     @Override

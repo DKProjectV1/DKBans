@@ -29,6 +29,7 @@ public enum NetworkPlayerUpdateCause {
     KICK(),
     UNBAN(),
     WARN(),
+    REPORTTAKE(),
     HISTORYUPDATE(),
     STAFFSETTINGS(),
     REPORTSEND(),

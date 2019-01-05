@@ -218,6 +218,7 @@ public class Messages {
     public static String REPORT_LIST_HEADER;
     public static String REPORT_LIST_LIST;
     public static String REPORT_INFO;
+    public static String REPORT_PROCESS_ALREADY;
     public static String REPORT_PROCESS_CONTROL_MESSAGE; //[deny] [forReason] [otherReason]
     public static String REPORT_PROCESS_CONTROL_DENY;
     public static String REPORT_PROCESS_CONTROL_FORREASON;

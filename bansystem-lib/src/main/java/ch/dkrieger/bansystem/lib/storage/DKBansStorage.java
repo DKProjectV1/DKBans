@@ -74,6 +74,8 @@ public interface DKBansStorage {
 
     public void updatePlayerProperties(UUID uuid, Document properties);
 
+    public void updateWatchReportPlayer(UUID uuid, UUID watchPlayer);
+
     public ChatLog getChatLog(UUID player);
 
     public ChatLog getChatLog(String server);

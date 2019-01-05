@@ -24,6 +24,7 @@ import ch.dkrieger.bansystem.extension.restapi.ResponseCode;
 import ch.dkrieger.bansystem.extension.restapi.handler.RestApiHandler;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.utils.Document;
+import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 public class NetworkHandler extends RestApiHandler {
 
@@ -46,6 +47,9 @@ public class NetworkHandler extends RestApiHandler {
                 response.append("banReasons",BanSystem.getInstance().getReasonProvider().getBanReasons())
                         .append("reportReasons",BanSystem.getInstance().getReasonProvider().getReportReasons())
                         .append("unbanReasons",BanSystem.getInstance().getReasonProvider().getBanReasons());
+                return;
+            }else if(query.get("action").equalsIgnoreCase("config")){
+                response.append("config",BanSystem.getInstance().getConfig());
                 return;
             }
         }

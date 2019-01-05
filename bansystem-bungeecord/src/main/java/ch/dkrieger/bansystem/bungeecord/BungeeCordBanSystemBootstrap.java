@@ -289,6 +289,7 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
                 player.chat(command);
             }
         }
+        BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId()).setWatchingReportedPlayer(null);
     }
 
     @Override

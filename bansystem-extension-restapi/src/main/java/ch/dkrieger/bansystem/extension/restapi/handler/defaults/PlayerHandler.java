@@ -127,12 +127,11 @@ public class PlayerHandler extends RestApiHandler {
                             response.append("code", ResponseCode.BAD_REQUEST).append("message","Invalid ban type");
                             return;
                         }
-                        /*
                         Ban ban = player.ban(type,GeneralUtil.convertToMillis(Long.valueOf(query.get("duration")),query.get("unit")),TimeUnit.MILLISECONDS
                                 ,query.get("reason"),(query.contains("message")?query.get("message"):"")
-                                ,GeneralUtil.isNumber(query.get("points"))?Integer.valueOf(query.get("points")):0,-1,query.get("staff"));
-                         */
-                        //response.append("ban",ban).append("message","Player was banned");
+                                ,new HistoryPoints(GeneralUtil.isNumber(query.get("points"))?Integer.valueOf(query.get("points")):0
+                                        ,BanType.parse(query.get("pointsType"))),-1,query.get("staff"));
+                        response.append("ban",ban).append("message","Player was banned");
                         return;
                     }
                 }else if(action.equalsIgnoreCase("kick") && (query.contains("reason") || query.contains("reasonid"))){
@@ -145,12 +144,10 @@ public class PlayerHandler extends RestApiHandler {
                         Kick kick = player.kick(reason,(query.contains("message")?query.get("message"):""),query.get("staff"));
                         response.append("kick",kick).append("message","Player was kicked");
                     }else{
-                        /*
                         Kick kick = player.kick(query.get("reason"),(query.contains("message")?query.get("message"):"")
-                                ,GeneralUtil.isNumber(query.get("points"))?Integer.valueOf(query.get("points")):0,-1
-                                ,query.get("staff"));
-                         */
-                       // response.append("kick",kick).append("message","Player was kicked");
+                                ,new HistoryPoints(GeneralUtil.isNumber(query.get("points"))?Integer.valueOf(query.get("points")):0
+                                        ,BanType.parse(query.get("pointsType"))),-1,query.get("staff"));
+                        response.append("kick",kick).append("message","Player was kicked");
                         return;
                     }
                 }else if(action.equalsIgnoreCase("unban") && query.contains("type")){
@@ -179,10 +176,9 @@ public class PlayerHandler extends RestApiHandler {
                         player.warn(reason,query.get("message"),query.get("staff"));
                         response.append("message","player warned");
                     }else{
-                        /*
                         player.warn(query.get("reason"),query.get("message")
-                                ,new HistoryPoints(GeneralUtil.isNumber(query.get("points"))?Integer.valueOf(query.get("points")):0,null),query.get("staff"));
-                         */
+                                ,new HistoryPoints(GeneralUtil.isNumber(query.get("points"))?Integer.valueOf(query.get("points")):0
+                                        ,BanType.parse(query.get("pointsType"))),-1,query.get("staff"));
                         response.append("message","player warned");
                     }
                     return;

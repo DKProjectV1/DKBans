@@ -20,7 +20,6 @@
 
 package ch.dkrieger.bansystem.lib.config;
 
-import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.DKBansPlatform;
 import ch.dkrieger.bansystem.lib.config.mode.BanMode;
 import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
@@ -48,15 +47,15 @@ public class Config extends SimpleConfig{
     public boolean bungeecord;
 
     public StorageType storageType;
-    public File storageFolder;
-    public String storageHost, storagePort, storageUser, storagePassword, storageDatabase, mongoDbAuthDB;
+    public transient File storageFolder;
+    public transient String storageHost, storagePort, storageUser, storagePassword, storageDatabase, mongoDbAuthDB;
     public boolean storageSSL, mongoDbSrv, mongoDbAuthentication;
 
     public BanMode banMode;
     public ReasonMode unbanMode;
     public ReasonMode kickMode;
 
-    public DateFormat dateFormat;
+    public transient DateFormat dateFormat;
 
     public boolean joinMeEnabled;
     public long joinMeCooldown;
@@ -154,7 +153,7 @@ public class Config extends SimpleConfig{
     public boolean commandWarn;
     public boolean commandEdit;
 
-    private DKBansPlatform platform;
+    private transient DKBansPlatform platform;
 
     public Config(DKBansPlatform platform) {
         super(new File(platform.getFolder(),"config.yml"));

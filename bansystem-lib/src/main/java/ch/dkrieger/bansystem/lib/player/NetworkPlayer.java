@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 public class NetworkPlayer {
 
     private int id;
-    private UUID uuid;
+    private UUID uuid, watchingReportedPlayer;
     private String name, color, lastIP, lastCountry;
     private long lastLogin, firstLogin, onlineTime;
     private boolean bypass, teamChatLogin, reportLogin;
@@ -285,6 +285,10 @@ public class NetworkPlayer {
         List<String> ips = new ArrayList<>();
         GeneralUtil.iterateAcceptedForEach(this.onlineSessions, object -> !ips.contains(object.getIp()), object ->ips.add(object.getIp()));
         return ips;
+    }
+
+    public UUID getWatchingReportedPlayer() {
+        return watchingReportedPlayer;
     }
 
     /**
@@ -832,6 +836,7 @@ public class NetworkPlayer {
         if(report.getUUID() != this.uuid) throw new IllegalArgumentException("This reports ist not from this player");
         BanSystem.getInstance().getTempSyncStats().addReports();
         this.reports.add(report);
+        if(getReportStaff() != null) report.setStaff(getReportStaff());
         BanSystem.getInstance().getStorage().createReport(report);
         stats.addReportsReceived();
         BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(() ->{
@@ -845,6 +850,7 @@ public class NetworkPlayer {
         GeneralUtil.iterateForEach(this.reports, object -> object.setStaff(staff.getUUID()));
         BanSystem.getInstance().getStorage().processReports(this,staff);
         update(NetworkPlayerUpdateCause.REPORTPROCESS,new Document().append("staff",staff.getUUID()));
+        staff.setWatchingReportedPlayer(this.uuid);
     }
     public void deleteReports(){
         this.reports.clear();
@@ -854,6 +860,10 @@ public class NetworkPlayer {
     public void denyReports(){
         BanSystem.getInstance().getStorage().deleteReports(this);
         update(NetworkPlayerUpdateCause.REPORTDENY,new Document().append("reports",this.reports));
+        BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(() ->{
+            NetworkPlayer staff = BanSystem.getInstance().getPlayerManager().getPlayer(getReportStaff());
+            staff.setWatchingReportedPlayer(null);
+        });
         this.reports.clear();
     }
     public void resetHistory(){
@@ -904,6 +914,11 @@ public class NetworkPlayer {
         this.stats.addReports();
         updatePlayerStatsAsync();
     }
+    public void setWatchingReportedPlayer(UUID uuid){
+        this.watchingReportedPlayer = uuid;
+        BanSystem.getInstance().getStorage().updateWatchReportPlayer(this.uuid,uuid);
+        update(NetworkPlayerUpdateCause.REPORTTAKE);
+    }
     public void addStatsReportAccepted(){
         this.stats.addReportsAccepted();
         updatePlayerStatsAsync();
@@ -944,6 +959,7 @@ public class NetworkPlayer {
         this.onlineSessions = sessions;
     }
     public void playerLogin(String name, String ip,int clientVersion, String clientLanguage, String proxy, String color ,boolean bypass){
+        this.watchingReportedPlayer = null;
         this.reports.clear();
         this.name = name;
         if(color != null) this.color = color;
@@ -963,6 +979,8 @@ public class NetworkPlayer {
     }
     public void playerLogout(String color ,boolean bypass,String lastServer,int messages){
         if(color != null) this.color = color;
+        final UUID watching = this.watchingReportedPlayer;
+        this.watchingReportedPlayer = null;
         this.bypass = bypass;
         OnlineSession session = GeneralUtil.iterateOne(this.onlineSessions, object -> object.getConnected() == lastLogin);
         if(session!= null){
@@ -977,7 +995,7 @@ public class NetworkPlayer {
         BanSystem.getInstance().getStorage().updatePlayerLogoutInfos(this.uuid,this.lastLogin,onlineTime,this.color,bypass,stats.getMessages()+messages);
         BanSystem.getInstance().getStorage().deleteReports(this);
         stats.setMessages(stats.getMessages()+messages);
-        update(NetworkPlayerUpdateCause.LOGOUT,new Document().append("reports",reports));
+        update(NetworkPlayerUpdateCause.LOGOUT,new Document().append("reports",reports).append("watchingReportedPlayer",watching));
         this.reports.clear();
     }
     public void updatePlayerStatsAsync(){

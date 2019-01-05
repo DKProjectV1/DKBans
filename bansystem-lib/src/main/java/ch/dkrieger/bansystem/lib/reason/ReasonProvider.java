@@ -151,6 +151,13 @@ public class ReasonProvider {
                 if(reasons != null){
                     for(String key : reasons.getKeys()){
                         try{
+                            if(!config.contains("reasons."+key+".points.durations")){
+                                config.set("reasons."+key+".points.durations.0.type",BanType.NETWORK.toString());
+                                config.set("reasons."+key+".points.durations.0.time",-2);
+                                config.set("reasons."+key+".points.durations.0.unit",TimeUnit.DAYS.toString());
+                                YamlConfiguration.getProvider(YamlConfiguration.class).save(config,file);
+                            }
+
                             Map<Integer,BanReasonEntry> templateDurations = new HashMap<>();
                             Configuration durationConfig = config.getSection("reasons."+key+".durations");
                             for(String DKey : durationConfig.getKeys()){

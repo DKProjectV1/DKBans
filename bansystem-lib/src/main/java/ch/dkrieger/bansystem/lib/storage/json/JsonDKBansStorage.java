@@ -219,6 +219,9 @@ public class JsonDKBansStorage implements DKBansStorage {
     }
 
     @Override
+    public void updateWatchReportPlayer(UUID uuid, UUID watchPlayer) {}
+
+    @Override
     public void createReport(Report report) {}
 
     @Override

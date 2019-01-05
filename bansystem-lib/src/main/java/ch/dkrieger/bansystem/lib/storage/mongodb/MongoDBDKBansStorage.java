@@ -154,6 +154,12 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     }
 
     @Override
+    public void updateWatchReportPlayer(UUID uuid, UUID watchPlayer) {
+        this.playerCollection.updateOne(eq("uuid",uuid.toString()),new Document("$set"
+                ,new Document("watchingReportedPlayer",(watchPlayer==null?"NULL":watchPlayer))));
+    }
+
+    @Override
     public List<NetworkPlayer> getPlayersByIp(String ip) {
         List<NetworkPlayer> players = MongoDBUtil.find(this.playerCollection,eq("lastIP",ip),NetworkPlayer.class);
         GeneralUtil.iterateForEach(players, player -> {

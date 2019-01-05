@@ -33,8 +33,8 @@ import java.util.List;
 
 public abstract class SimpleConfig {
 
-    private final File file;
-    private Configuration config;
+    private transient final File file;
+    private transient Configuration config;
 
     public SimpleConfig(File file) {
         this.file = file;
@@ -179,8 +179,6 @@ public abstract class SimpleConfig {
         addValue(path,object);
         return this.config.getStringList(path);
     }
-
-
 
     public Collection<String> getKeys(String path){
         Configuration config = this.config.getSection(path);

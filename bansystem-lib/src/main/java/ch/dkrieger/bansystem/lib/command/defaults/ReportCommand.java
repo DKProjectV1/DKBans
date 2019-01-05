@@ -116,6 +116,10 @@ public class ReportCommand extends NetworkCommand {
                 }
                 return;
             }else if(args[0].equalsIgnoreCase("jump") || args[0].equalsIgnoreCase("goto") || args[0].equalsIgnoreCase("take")) {
+                if(sender.getAsNetworkPlayer().getWatchingReportedPlayer() != null){
+                    sender.sendMessage(Messages.REPORT_PROCESS_ALREADY.replace("[prefix]",getPrefix()));
+                    return;
+                }
                 NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[1]);
                 if(player == null){
                     sender.sendMessage(Messages.PLAYER_NOT_FOUND.replace("[prefix]",getPrefix()));
