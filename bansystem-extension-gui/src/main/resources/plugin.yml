@@ -11,3 +11,7 @@ commands:
     aliases: [pinfo]
   ban:
     aliases: [mute]
+  reports:
+  report:
+  warn:
+  kick:

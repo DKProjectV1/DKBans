@@ -1,10 +1,10 @@
 package de.fridious.bansystem.extension.gui.commands;
 
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Philipp Elvin Friedhoff
- * @since 30.12.18 22:49
+ * @since 04.01.19 15:22
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -23,45 +23,39 @@ package de.fridious.bansystem.extension.gui.commands;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
 import de.fridious.bansystem.extension.gui.guis.GUIS;
 import de.fridious.bansystem.extension.gui.guis.GuiManager;
-import de.fridious.bansystem.extension.gui.guis.playerinfo.PlayerInfoGlobalGui;
-import de.fridious.bansystem.extension.gui.guis.playerinfo.PlayerInfoGui;
+import de.fridious.bansystem.extension.gui.guis.report.ReportListGui;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class PlayerInfoCommand implements CommandExecutor {
+public class ReportsCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(!(sender instanceof Player)) {
-            sender.sendMessage(Messages.SYSTEM_PREFIX + "You can't execute this command from the console.");
+            sender.sendMessage(Messages.SYSTEM_PREFIX + "You can't execute this command from console");
             return true;
         }
-        final Player player = (Player) sender;
-        if(!player.hasPermission("dkbans.playerinfo")) {
+        final Player player = (Player)sender;
+        if(!player.hasPermission("dkbans.report.receive")) {
             player.sendMessage(Messages.NOPERMISSIONS.replace("[prefix]", Messages.PREFIX_BAN));
             return true;
         }
-        if(args.length == 0) {
-            //All players
+        NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
+        OnlineNetworkPlayer onlineNetworkPlayer = networkPlayer.getOnlinePlayer();
+        if(true) {
             GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
-            if(cachedInventories.hasCached(GUIS.PLAYERINFO_GLOBAL)) cachedInventories.getAsPrivateGui(GUIS.PLAYERINFO_GLOBAL).open();
-            else cachedInventories.create(GUIS.PLAYERINFO_GLOBAL, new PlayerInfoGlobalGui(player)).open();
-        } else if(args.length == 1) {
-            NetworkPlayer targetPlayer = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
-            if(targetPlayer == null){
-                sender.sendMessage(Messages.PLAYER_NOT_FOUND
-                        .replace("[prefix]", Messages.PREFIX_BAN)
-                        .replace("[player]",args[0]));
-                return true;
-            }
-            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(GUIS.PLAYERINFO_PLAYER, new PlayerInfoGui(player, targetPlayer.getUUID())).open();
+            if(cachedInventories.hasCached(GUIS.REPORT_LIST)) cachedInventories.getAsPrivateGui(GUIS.REPORT_LIST).open();
+            else cachedInventories.create(GUIS.REPORT_LIST, new ReportListGui(player)).open();
         } else {
-            player.sendMessage(Messages.PLAYER_INFO_HELP.replace("[prefix]", Messages.PREFIX_BAN));
+            //Inventar mit control : bannen/nicht bannen
+            //DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(GUIS.REPORT_CONTROL, new ReportControlGui(player, )).open();
         }
         return true;
     }

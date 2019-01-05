@@ -1,10 +1,10 @@
 package de.fridious.bansystem.extension.gui.commands;
 
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Philipp Elvin Friedhoff
- * @since 30.12.18 22:42
+ * @since 04.01.19 15:17
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -22,19 +22,19 @@ package de.fridious.bansystem.extension.gui.commands;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
-import ch.dkrieger.bansystem.lib.config.mode.BanMode;
+import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.guis.GUIS;
 import de.fridious.bansystem.extension.gui.guis.GuiManager;
-import de.fridious.bansystem.extension.gui.guis.ban.BanGlobalGui;
-import de.fridious.bansystem.extension.gui.guis.ban.BanTemplateGui;
+import de.fridious.bansystem.extension.gui.guis.report.ReportGlobalGui;
+import de.fridious.bansystem.extension.gui.guis.report.ReportTemplateGui;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class BanCommand implements CommandExecutor {
+public class ReportCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -43,14 +43,14 @@ public class BanCommand implements CommandExecutor {
             return true;
         }
         final Player player = (Player)sender;
-        if(!player.hasPermission("dkbans.ban")) {
+        if(!player.hasPermission("dkbans.report")) {
             player.sendMessage(Messages.NOPERMISSIONS.replace("[prefix]", Messages.PREFIX_BAN));
             return true;
         }
         if(args.length == 0) {
             GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
-            if(cachedInventories.hasCached(GUIS.BAN_GLOBAL)) cachedInventories.getAsPrivateGui(GUIS.BAN_GLOBAL).open();
-            else cachedInventories.create(GUIS.BAN_GLOBAL, new BanGlobalGui(player)).open();
+            if(cachedInventories.hasCached(GUIS.REPORT_GLOBAL)) cachedInventories.getAsPrivateGui(GUIS.REPORT_GLOBAL).open();
+            else cachedInventories.create(GUIS.REPORT_GLOBAL, new ReportGlobalGui(player)).open();
         } else if(args.length == 1) {
             NetworkPlayer target = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
             if(target == null){
@@ -69,14 +69,12 @@ public class BanCommand implements CommandExecutor {
                         .replace("[player]",target.getColoredName()));
                 return true;
             }
-            BanMode banMode = BanSystem.getInstance().getConfig().banMode;
-            if(banMode == BanMode.TEMPLATE || banMode == BanMode.POINT) {
-                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(GUIS.BAN_TEMPLATE, new BanTemplateGui(player, target.getUUID())).open();
-            } else if(banMode == BanMode.SELF) {
-                //@Todo ban command self
+            ReasonMode reportMode = BanSystem.getInstance().getConfig().reportMode;
+            if(reportMode == ReasonMode.TEMPLATE) {
+                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(GUIS.REPORT_TEMPLATE, new ReportTemplateGui(player, target.getUUID())).open();
+            } else if(reportMode == ReasonMode.SELF) {
+
             }
-        } else {
-            //USAGE
         }
         return true;
     }

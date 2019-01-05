@@ -71,10 +71,15 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>ch.dkrieger.bansystem.spigot</groupId>
-            <artifactId>bansystem-spigot</artifactId>
+            <groupId>ch.dkrieger.bansystem.bukkit</groupId>
+            <artifactId>bansystem-bukkit</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
