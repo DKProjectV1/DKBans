@@ -65,6 +65,9 @@ public class SelectQuery extends Query {
     /*public ResultSet execute() {
 
     }*/
+    public void execute() {
+        execute(object -> null);
+    }
     public <R> R execute(String query, ConsumerReturn<ResultSet,R> consumer) {
         this.query = query;
         this.addNoCase = false;
@@ -85,9 +88,7 @@ public class SelectQuery extends Query {
         }finally {
             try {
                 if(sql instanceof MySQL)connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            } catch (SQLException e) {}
         }
     }
 

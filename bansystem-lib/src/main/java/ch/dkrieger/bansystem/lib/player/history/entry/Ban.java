@@ -410,7 +410,7 @@ public class Ban extends HistoryEntry {
                     .replace("[message]",message)
                     .replace("[points]",""+points.getPoints())
                     .replace("[staff]",getStaffName())
-                    .replace("[pointType]",points.getHistoryType().getDisplay())
+                    .replace("[pointsType]",points.getHistoryType().getDisplay())
                     .replace("[time]",BanSystem.getInstance().getConfig().dateFormat.format(time))
                     .replace("[prefix]",Messages.PREFIX_BAN);
         }
@@ -419,7 +419,7 @@ public class Ban extends HistoryEntry {
             return Messages.HISTORY_INFO_BAN_VERSION_INFO_POINTS
                     .replace("[message]",message)
                     .replace("[points]",""+points.getPoints())
-                    .replace("[pointType]",points.getHistoryType().getDisplay())
+                    .replace("[pointsType]",points.getHistoryType().getDisplay())
                     .replace("[staff]",getStaffName())
                     .replace("[time]",BanSystem.getInstance().getConfig().dateFormat.format(time))
                     .replace("[prefix]",Messages.PREFIX_BAN);

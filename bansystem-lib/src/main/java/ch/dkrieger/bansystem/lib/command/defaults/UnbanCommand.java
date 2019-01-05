@@ -129,7 +129,7 @@ public class UnbanCommand extends NetworkCommand {
                 newDuration.setTime((long) (newDuration.getMillisTime()/reason.getDurationDivider()));
             }
             if(reason.isRemoveAllPoints()) ban.setPoints(0,"Change from unban reason",sender.getUUID());
-            else if(reason.getPoints().getPoints() > 0){
+            else if(reason.getPoints().getPoints() > 0 || reason.getPointsDivider() > 0){
                 int points = ban.getPoints().getPoints()-reason.getPoints().getPoints();
                 if(points > 0 && reason.getPointsDivider() > 0) points = (int) (points/reason.getPointsDivider());
                 if(points < 0) points = 0;
@@ -184,6 +184,7 @@ public class UnbanCommand extends NetworkCommand {
             for(UnbanReason reason : BanSystem.getInstance().getReasonProvider().getUnbanReasons()){
                 if(!reason.isHidden() && !sender.hasPermission(reason.getPermission()) && !sender.hasPermission("dkbans.*")) continue;
                 sender.sendMessage(Messages.UNBAN_HELP_REASON
+                        .replace("[bynType]",reason.getBanType()==null?"All":reason.getBanType().getDisplay())
                         .replace("[reason]",reason.getDisplay())
                         .replace("[prefix]",getPrefix())
                         .replace("[id]",""+reason.getID())

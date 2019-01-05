@@ -84,12 +84,12 @@ public class MessageConfig extends SimpleConfig{
         Messages.PLAYER_INFO_HELP = addAndGetMessageValue("player.info.help","[prefix]&cUsage&8: &7 /playerinfo <player>");
         Messages.PLAYER_INFO_ONLINE = addAndGetMessageValue("player.info.online","&7\n&8» &7Name&8: &c[player] &8(&aOnline&8)&7\n&8» &7UUID&8: &c[uuid]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7FirstLogin&8: &c[firstLogin]\n&8» &7Server&8: &c[server]\n&8» &7onlineTime&8: &c[onlineTime-short]" +
-                "\n&8» &7IP&8: &c[ip]\n&8» &7Country&8: &c[country]\n&8» &7Banned&8: &c[isBanned]\n&8» &7Muted&8: &c[isMuted]" +
+                "\n&8» &7IP&8: &c[ip]\n&8» &7Country&8: &c[country]\n&8» &7Banned&8: &c[isBanned]\n&8» &7Muted&8: &c[isMuted]\n&8» &7Points&8: &c[chatPoints] &8| &c[banPoints]" +
                 "\n&8» &7Bans&8: &c[bans]\n&8» &7Mutes&8: &c[mutes]\n&8» &7Warns&8: &c[warns-since-last-ban]\n&8» &7Logins&8: &c[logins]\n&8» &7Reports received&8: &c[reportsReceived]" +
                 "\n&8» &7Reports send&8: &a[reportsAccepted]&8/&c[reportsSent]\n&5\n&8» [history] [sessions] [ips]\n&7");
         Messages.PLAYER_INFO_OFFLINE = addAndGetMessageValue("player.info.offline","&7\n&8» &7Name&8: &c[player] &8(&cOffline&8)&7\n&8» &7UUID&8: &c[uuid]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7FirstLogin&8: &c[firstLogin]\n&8» &7LastLogin&8: &c[lastLogin]\n&8» &7onlineTime&8: &c[onlineTime]" +
-                "\n&8» &7IP&8: &c[ip]\n&8» &7Country&8: &c[country]\n&8» &7Banned&8: &c[isBanned]\n&8» &7Muted&8: &c[isMuted]" +
+                "\n&8» &7IP&8: &c[ip]\n&8» &7Country&8: &c[country]\n&8» &7Banned&8: &c[isBanned]\n&8» &7Muted&8: &c[isMuted]\n&8» &7Points&8: &c[chatPoints] &8| &c[banPoints]" +
                 "\n&8» &7Bans&8: &c[bans]\n&8» &7Mutes&8: &c[mutes]\n&8» &7Logins&8: &c[logins]\n&8» &7Reports received&8: &c[reportsReceived]" +
                 "\n&8» &7Reports send&8: &a[reportsAccepted]&8/&c[reportsSent]\n&5\n&8» [history] [sessions] [ips]\n&7");
         Messages.PLAYER_INFO_HISTORY = addAndGetMessageValue("player.info.history","&8[&bHistory&8]");
@@ -215,17 +215,17 @@ public class MessageConfig extends SimpleConfig{
         Messages.HISTORY_LIST_WARN = addAndGetMessageValue("history.list.warn","&8» &6Warn &8| &7[time] - &7[reason]");
         Messages.HISTORY_INFO_BAN_NETWORK = addAndGetMessageValue("history.info.ban.network","[prefix]&7Ban &c[id] &7from [player]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7Reason&8: [reason] \n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
-                "\n&8» &7Points&8: &c[points] &8| &c [pointsType]\n&8» &7Duration&8: &c[duration]\n&8» &7Remaining&8: &c[remaining-short]\n&8» &7Time&8: &c[time]\n&8» &7TimeOut&8: &c[timeout]\n&7\n&8» [changes]\n&7");
+                "\n&8» &7Points&8: &c[points] &8| &c[pointsType]\n&8» &7Duration&8: &c[duration]\n&8» &7Remaining&8: &c[remaining-short]\n&8» &7Time&8: &c[time]\n&8» &7TimeOut&8: &c[timeout]\n&7\n&8» [changes]\n&7");
         Messages.HISTORY_INFO_BAN_CHAT = addAndGetMessageValue("history.info.ban.chat","[prefix]&7Mute &c[id] &7from [player]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7Reason&8: [reason] \n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
-                "\n&8» &7Points&8: &c[points] &8| &c [pointsType]\n&8» &7Duration&8: &c[duration]\n&8» &7Remaining&8: &c[remaining-short]\n&8» &7Time&8: &c[time]\n&8» &7TimeOut&8: &c[timeout]\n&7\n&8» [changes]\n&7");
+                "\n&8» &7Points&8: &c[points] &8| &c[pointsType]\n&8» &7Duration&8: &c[duration]\n&8» &7Remaining&8: &c[remaining-short]\n&8» &7Time&8: &c[time]\n&8» &7TimeOut&8: &c[timeout]\n&7\n&8» [changes]\n&7");
         Messages.HISTORY_INFO_BAN_CHANGES = addAndGetMessageValue("history.list.ban.changes","&c[changeCount] &7Changes");
         Messages.HISTORY_INFO_BAN_VERSION_LIST_HEADER = addAndGetMessageValue("history.info.ban.version.list.header","[prefix]&7Changes from ban &c[id] &8| [player]");
         Messages.HISTORY_INFO_BAN_VERSION_LIST_FIRST = addAndGetMessageValue("history.info.ban.version.list.first","&8» &aOriginal &8| &7[time]");
         Messages.HISTORY_INFO_BAN_VERSION_LIST_REASON = addAndGetMessageValue("history.info.ban.version.list.reason","&8» &9Reason &8| &7[time] - &7[reason]");
         Messages.HISTORY_INFO_BAN_VERSION_LIST_MESSAGE = addAndGetMessageValue("history.info.ban.version.list.message","&8» &eMessage &8| &7[time] - &7[message]");
         Messages.HISTORY_INFO_BAN_VERSION_LIST_POINTS = addAndGetMessageValue("history.info.ban.version.list.points","&8» &bPoints &8| &7[time] - &7[points] &8| &7[pointsType]");
-        Messages.HISTORY_INFO_BAN_VERSION_LIST_TIMEOUT = addAndGetMessageValue("history.info.ban.version.list.timeout","&8» &cDuration &8| &7[time] - &7[points] &8| &7[pointsType]");
+        Messages.HISTORY_INFO_BAN_VERSION_LIST_TIMEOUT = addAndGetMessageValue("history.info.ban.version.list.timeout","&8» &cTimeOut &8| &7[time] - &7[duration]");
         Messages.HISTORY_INFO_BAN_VERSION_INFO_REASON = addAndGetMessageValue("history.info.ban.version.info.reason","[prefix]&7Reason change &c[id] &7from &c[entryID] &8| [player]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7Reason&8: [reason]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
                 "\n&8» &7Time&8: &c[time]");
@@ -233,9 +233,9 @@ public class MessageConfig extends SimpleConfig{
                 "\n&8» &7ID&8: &c[id]\n&8» &7Message&8: &c[message]\n&8» &7Message2&8: &c[localMessage]\n&8» &7Staff&8: &c[staff]" +
                 "\n&8» &7Time&8: &c[time]");
         Messages.HISTORY_INFO_BAN_VERSION_INFO_POINTS = addAndGetMessageValue("history.info.ban.version.info.points","[prefix]&7Points change &c[id] &7from &c[entryID] &8| [player]" +
-                "\n&8» &7ID&8: &c[id]\n&8» &7Points&8: &c[points] &8|&c[pointsType]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
+                "\n&8» &7ID&8: &c[id]\n&8» &7Points&8: &c[points] &8| &c[pointsType]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
                 "\n&8» &7Time&8: &c[time]");
-        Messages.HISTORY_INFO_BAN_VERSION_INFO_TIMEOUT = addAndGetMessageValue("history.info.ban.version.info.timeout","[prefix]&7Duration change &c[id] &7from &c[entryID] &8| [player]" +
+        Messages.HISTORY_INFO_BAN_VERSION_INFO_TIMEOUT = addAndGetMessageValue("history.info.ban.version.info.timeout","[prefix]&7TimeOut change &c[id] &7from &c[entryID] &8| [player]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7TimeOut&8: &c[timeOut]\n&8» &7Duration&8: &c[duration]\n&8» &7Remaining&8: &c[remaining-short] \n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
                 "\n&8» &7Time&8: &c[time]");
 
