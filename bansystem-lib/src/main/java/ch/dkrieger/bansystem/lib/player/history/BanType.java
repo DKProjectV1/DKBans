@@ -39,4 +39,10 @@ public enum BanType {
         }catch (Exception exception){}
         return NETWORK;
     }
+    public static BanType parseNull(String parse){
+        try{
+            return valueOf(parse.toUpperCase());
+        }catch (Exception exception){}
+        return null;
+    }
 }

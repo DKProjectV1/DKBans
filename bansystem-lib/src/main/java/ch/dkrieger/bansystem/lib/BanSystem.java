@@ -29,6 +29,7 @@ import ch.dkrieger.bansystem.lib.config.MessageConfig;
 import ch.dkrieger.bansystem.lib.filter.FilterManager;
 import ch.dkrieger.bansystem.lib.player.PlayerManager;
 import ch.dkrieger.bansystem.lib.player.history.HistoryManager;
+import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.HistoryEntry;
 import ch.dkrieger.bansystem.lib.reason.ReasonProvider;
 import ch.dkrieger.bansystem.lib.report.ReportManager;
@@ -98,6 +99,7 @@ public class BanSystem {
         this.historyManager = new HistoryManager();
 
         HistoryEntry.buildAdapter();
+        Ban.buildAdapter();
 
         if(this.config.storageType == StorageType.MONGODB) this.storage = new MongoDBDKBansStorage(this.config);
         else if(this.config.storageType == StorageType.SQLITE || this.config.storageType == StorageType.MYSQL)this.storage = new SQLDKBansStorage(config);
@@ -155,6 +157,10 @@ public class BanSystem {
         if(this.config.commandIPban) getCommandManager().registerCommand(new IpBanCommand());
         if(this.config.commandIPUnban) getCommandManager().registerCommand(new IpUnbanCommand());
         if(this.config.commandWarn) getCommandManager().registerCommand(new WarnCommand());
+        if(this.config.commandEdit) getCommandManager().registerCommand(new EditBanCommand());
+
+        getCommandManager().registerCommand(new EditBanCommand());
+
         getCommandManager().registerCommand(new DKBansCommand());
         getCommandManager().registerCommand(new BroadcastJumpCommand());
 

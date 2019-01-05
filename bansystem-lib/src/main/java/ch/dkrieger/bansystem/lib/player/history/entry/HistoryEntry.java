@@ -22,6 +22,7 @@ package ch.dkrieger.bansystem.lib.player.history.entry;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.NetworkPlayerUpdateCause;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.HistoryPoints;
 import ch.dkrieger.bansystem.lib.utils.Document;
@@ -130,8 +131,12 @@ public abstract class HistoryEntry {
         this.id = id;
     }
 
-    public void update(){
-
+    public void update(Document updateProperties){
+        NetworkPlayer player = getPlayer();
+        if(player != null){
+            BanSystem.getInstance().getStorage().updateHistoryEntry(player,this) ;
+            player.update(NetworkPlayerUpdateCause.HISTORYUPDATE,updateProperties);
+        }
     }
 
     public abstract String getTypeName();
@@ -139,8 +144,6 @@ public abstract class HistoryEntry {
     public abstract TextComponent getListMessage();
 
     public abstract TextComponent getInfoMessage();
-
-
 
     public static void buildAdapter(){
         RuntimeTypeAdapterFactory<HistoryEntry> adapter = RuntimeTypeAdapterFactory.of(HistoryEntry.class, "historyAdapterType");
@@ -152,7 +155,7 @@ public abstract class HistoryEntry {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this) return true;
+        if(obj != null && obj == this) return true;
         return obj instanceof HistoryEntry && ((HistoryEntry) obj).getID() == id;
     }
 }

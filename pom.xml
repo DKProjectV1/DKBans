@@ -41,6 +41,25 @@
         <module>bansystem-extension-reportconnect</module>
     </modules>
 
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>Dkrieger</id>
+            <name>Davide Wietlisbach</name>
+            <roles>
+                <role>Main developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+
     <build>
         <plugins>
             <plugin>
@@ -49,6 +68,7 @@
                 <configuration>
                     <source>8</source>
                     <target>8</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
         </plugins>

@@ -69,7 +69,7 @@ public class SQLDKBansStorage implements DKBansStorage {
     }
     @Override
     public boolean connect() {
-        if(config.storageType==StorageType.MYSQL) sql = new MySQL(config.storageHost,config.storagePort,config.storageDatabase,config.storageUser,config.storagePassword);
+        if(config.storageType==StorageType.MYSQL) sql = new MySQL(config.storageHost,config.storagePort,config.storageDatabase,config.storageUser,config.storagePassword,config.storageSSL);
         else sql = new SQLite(config.storageFolder,"dkabns.db");
         boolean connect = sql.connect();
 
@@ -442,9 +442,15 @@ public class SQLDKBansStorage implements DKBansStorage {
         return this.histories.insert().insert("uuid").insert("ip").insert("reason").insert("message")
                 .insert("time").insert("points").insert("reasonID").insert("staff").insert("type").insert("jsonEntryObject")
                 .value(player.getUUID().toString()).value(entry.getIp()).value(entry.getReason())
-                .value(entry.getMessage()).value(entry.getTimeStamp()).value(entry.getPoints()).value(entry.getReasonID())
+                .value(entry.getMessage()).value(entry.getTimeStamp()).value(entry.getPoints().getPoints()).value(entry.getReasonID())
                 .value(entry.getStaff()).value(entry.getTypeName())
                 .value(GeneralUtil.GSON_NOT_PRETTY.toJson(entry,new TypeToken<HistoryEntry>(){}.getType())).executeAndGetKeyAsInt();
+    }
+
+    @Override
+    public void updateHistoryEntry(NetworkPlayer player, HistoryEntry entry) {
+        this.histories.update().set("jsonEntryObject",GeneralUtil.GSON_NOT_PRETTY.toJson(entry,new TypeToken<HistoryEntry>(){}.getType()))
+                .where("uuid",player.getUUID().toString()).where("id",entry.getID()).execute();
     }
 
     @Override

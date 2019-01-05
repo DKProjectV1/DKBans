@@ -32,6 +32,7 @@ public class MySQL extends SQL {
 
     private DataSource dataSource;
     private String host, port, database, user, password;
+    private boolean ssl;
     private Map<String, String> dataSourceProperties;
     public static Map<String, String> DEFAULT_DATASOURCE_PROPERTIES;
 
@@ -45,19 +46,20 @@ public class MySQL extends SQL {
         DEFAULT_DATASOURCE_PROPERTIES.put("reconnectAtTxEnd", "true");
     }
 
-    public MySQL(String host, String port, String database, String user, String password) {
+    public MySQL(String host, String port, String database, String user, String password, boolean ssl) {
         this.host = host;
         this.port = port;
         this.database = database;
         this.user = user;
         this.password = password;
         this.dataSourceProperties = new LinkedHashMap<>();
+        this.ssl = ssl;
         setSupportNoCase(false);
         setOptionsOnEnd(true);
     }
 
-    public MySQL(String host, int port, String database, String user, String password) {
-        this(host, String.valueOf(port), database, user, password);
+    public MySQL(String host, int port, String database, String user, String password, boolean ssl) {
+        this(host, String.valueOf(port), database, user, password,ssl);
     }
 
     public Map<String, String> getDataSourceProperties() {
@@ -67,6 +69,7 @@ public class MySQL extends SQL {
     @Override
 	public boolean connect() {
         loadDriver();
+        if(ssl) dataSourceProperties.put("ssl","true");
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:mysql://"+this.host+":"+this.port+"/"+this.database);
         config.setUsername(this.user);

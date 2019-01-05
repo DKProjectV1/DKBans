@@ -46,37 +46,26 @@ public class Unban extends HistoryEntry {
 
     @Override
     public TextComponent getListMessage() {
-        System.out.println(getBanType());
-        return new TextComponent(Messages.HISTORY_LIST_UNBAN
-                .replace("[player]",getPlayer().getColoredName())
-                .replace("[id]",""+getID())
-                .replace("[reason]",getReason())
-                .replace("[reasonID]",""+getReasonID())
-                .replace("[time]", BanSystem.getInstance().getConfig().dateFormat.format(getTimeStamp()))
-                .replace("[timeout]",BanSystem.getInstance().getConfig().dateFormat.format(getTimeStamp()))
-                .replace("[message]",getMessage())
-                .replace("[type]",getTypeName())
-                .replace("[staff]",getStaffName())
-                .replace("[banType]",getBanType().getDisplay())
-                .replace("[points]",""+getPoints())
-                .replace("[prefix]",Messages.PREFIX_BAN));
+        return new TextComponent(replace(Messages.HISTORY_LIST_UNBAN));
     }
-
     @Override
     public TextComponent getInfoMessage() {
-        return new TextComponent(Messages.HISTORY_INFO_UNBAN
-                .replace("[prefix]",Messages.PREFIX_BAN)
+        return new TextComponent(replace(Messages.HISTORY_INFO_UNBAN));
+    }
+    private String replace(String message){
+        return message.replace("[prefix]",Messages.PREFIX_BAN)
                 .replace("[id]",""+getID())
                 .replace("[reason]",getReason())
                 .replace("[type]",getTypeName())
-                .replace("[points]",""+getPoints())
+                .replace("[points]",""+getPoints().getPoints())
+                .replace("[pointsType]",getPoints().getHistoryType().getDisplay())
                 .replace("[reasonID]",""+getReasonID())
                 .replace("[message]",getMessage())
                 .replace("[time]",BanSystem.getInstance().getConfig().dateFormat.format(getTimeStamp()))
                 .replace("[ip]",getIp())
                 .replace("[banType]",getBanType().getDisplay())
                 .replace("[staff]",getStaffName())
-                .replace("[player]",getPlayer().getColoredName()));
+                .replace("[player]",getPlayer().getColoredName());
     }
 
     @Override

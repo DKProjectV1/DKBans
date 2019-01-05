@@ -63,8 +63,49 @@ public class HistoryCommand extends NetworkCommand {
             return;
         }
         if(args.length > 1 && GeneralUtil.isNumber(args[1])){
-            HistoryEntry value = history.getEntry(Integer.valueOf(args[1]));
-            if(value != null) sender.sendMessage(value.getInfoMessage());
+            HistoryEntry entry = history.getEntry(Integer.valueOf(args[1]));
+            if(entry != null){
+                if(args.length > 2 && entry instanceof Ban){
+                    if(args[2].equalsIgnoreCase("list")){
+                        sender.sendMessage(Messages.HISTORY_INFO_BAN_VERSION_LIST_HEADER
+                                .replace("[id]",""+entry.getID())
+                                .replace("[player]",player.getColoredName())
+                                .replace("[prefix]",getPrefix()));
+
+                        TextComponent first = new TextComponent(Messages.HISTORY_INFO_BAN_VERSION_LIST_FIRST
+                                .replace("[id]",""+entry.getID())
+                                .replace("[player]",player.getColoredName())
+                                .replace("[time]",BanSystem.getInstance().getConfig().dateFormat.format(entry.getTimeStamp())));
+                        first.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/history "+player.getUUID()+" "+entry.getID()+" first"));
+                        sender.sendMessage(first);
+
+                        for(Ban.BanEditVersion version :((Ban) entry).getVersionsSorted()){
+                            TextComponent component = new TextComponent(version.getListMessage()
+                                    .replace("[id]",""+version.getID())
+                                    .replace("[entryID]",""+entry.getID())
+                                    .replace("[type]",((Ban) entry).getBanType().getDisplay())
+                                    .replace("[player]",player.getColoredName()));
+                            component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/history "+player.getUUID()+" "+entry.getID()+" "+version.getID()));
+                            sender.sendMessage(component);
+                        }
+                        return;
+                    }else if(args[2].equalsIgnoreCase("first")){
+                        sender.sendMessage(((Ban) entry).getInfo(true));
+                        return;
+                    }else if(GeneralUtil.isNumber(args[2])){
+                        Ban.BanEditVersion version = ((Ban) entry).getVersion(Integer.valueOf(args[2]));
+                        if(version != null){
+                            sender.sendMessage(new TextComponent(version.getInfoMessage()
+                                    .replace("[id]",""+version.getID())
+                                    .replace("[entryID]",""+entry.getID())
+                                    .replace("[type]",((Ban) entry).getBanType().getDisplay())
+                                    .replace("[player]",player.getColoredName())));
+                            return;
+                        }
+                    }
+                }
+                sender.sendMessage(entry.getInfoMessage());
+            }
             return;
         }
         sender.sendMessage(Messages.HISTORY_LIST_HEADER

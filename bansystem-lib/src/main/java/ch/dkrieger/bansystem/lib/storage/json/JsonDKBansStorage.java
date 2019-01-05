@@ -109,13 +109,11 @@ public class JsonDKBansStorage implements DKBansStorage {
 
     @Override
     public NetworkPlayer getPlayer(String name) throws Exception {
-        System.out.println("get player by name");
         return GeneralUtil.iterateOne(this.players, object -> object.getName().equalsIgnoreCase(name));
     }
 
     @Override
     public NetworkPlayer getPlayer(UUID uuid) throws Exception {
-        System.out.println("get player by uuid "+this.players.size());
         return GeneralUtil.iterateOne(this.players, object -> object.getUUID().equals(uuid));
     }
 
@@ -206,6 +204,9 @@ public class JsonDKBansStorage implements DKBansStorage {
         entry.setID(nextHistoryID.getAndIncrement());
         return entry.getID();
     }
+
+    @Override
+    public void updateHistoryEntry(NetworkPlayer player, HistoryEntry entry) {}
 
     @Override
     public void deleteHistoryEntry(NetworkPlayer player, int id) {}

@@ -40,7 +40,9 @@ public class UnbanReason extends KickReason{
     private Duration removeDuration;
     private double durationDivider, pointsDivider;
 
-    public UnbanReason(int id, HistoryPoints points, String name, String display, String permission, boolean hidden, List<String> aliases, Document properties, int maxPoints, boolean removeAllPoints, List<Integer> notForBanID, Duration maxDuration, Duration removeDuration, double durationDivider, double pointsDivider) {
+    public UnbanReason(int id, HistoryPoints points, String name, String display, String permission, boolean hidden, List<String> aliases
+            , Document properties, int maxPoints, boolean removeAllPoints, List<Integer> notForBanID, Duration maxDuration
+            , Duration removeDuration, double durationDivider, double pointsDivider,BanType banType) {
         super(id, points, name, display, permission, hidden, aliases,properties);
         this.maxPoints = maxPoints;
         this.removeAllPoints = removeAllPoints;
@@ -49,6 +51,7 @@ public class UnbanReason extends KickReason{
         this.removeDuration = removeDuration;
         this.durationDivider = durationDivider;
         this.pointsDivider = pointsDivider;
+        this.banType = banType;
     }
 
     public Duration getMaxDuration() {
@@ -81,10 +84,18 @@ public class UnbanReason extends KickReason{
         return removeAllPoints;
     }
 
-    public Unban toUnban(BanType type, NetworkPlayer player, String message, String staff){
+    public Unban toUnban(BanType type, NetworkPlayer player, String message, String staff, HistoryPoints lastBanPoints){
         if(removeDuration == null || durationDivider == 0) return new Unban(player.getUUID(),player.getIP(),getDisplay(),message,System.currentTimeMillis(),-1,getPoints(),getID(),staff,new Document(),type);
         else{
-            return new Unban(player.getUUID(),player.getIP(),getRawDisplay(),message,System.currentTimeMillis(),-1,getPoints(),getID(),staff,new Document(),type);
+            int points;
+            if(isRemoveAllPoints()) points = lastBanPoints.getPoints();
+            else{
+                points = lastBanPoints.getPoints()-getPoints().getPoints();
+                if(points > 0 && getPointsDivider() > 0) points = (int) (points/getPointsDivider());
+            }
+            points = points-(points*2);
+            return new Unban(player.getUUID(),player.getIP(),getRawDisplay(),message,System.currentTimeMillis(),-1
+                    ,new HistoryPoints(points,lastBanPoints.getHistoryType()),getID(),staff,new Document(),type);
         }
     }
 }

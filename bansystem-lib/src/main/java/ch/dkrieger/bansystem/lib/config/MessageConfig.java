@@ -109,7 +109,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.REASON_NO_PERMISSION = addAndGetMessageValue("prefix.network","[prefix]&cYou don't have permission for this reason.");
 
         Messages.BAN_HELP_HEADER = addAndGetMessageValue("ban.help.header","[prefix]&6Ban Administration");
-        Messages.BAN_HELP_REASON = addAndGetMessageValue("ban.help.reason","&8- &c[id] &8| &c[reason] &8» &4&l[banType]");
+        Messages.BAN_HELP_REASON = addAndGetMessageValue("ban.help.reason","&8- &c[id] &8| &4[reason] &8» &4&l[banType]");
         Messages.BAN_TYPE_NETWORK = addAndGetMessageValue("ban.type.network","Network");
         Messages.BAN_TYPE_CHAT= addAndGetMessageValue("ban.type.chat","Chat");
         Messages.BAN_HELP_HELP = addAndGetMessageValue("ban.help.help","&8» &cUsage&8: &7 /ban <player> <reason> {message}");
@@ -127,7 +127,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.BAN_MESSAGE_CHAT_PERMANENT = addAndGetMessageValue("ban.message.chat.permanent","&5\n[prefix]&cYou are &4&lPermanent &cbanned from the chat\n&8» &3Reason&8: &4&l[reason]\n&8» &3BanID&8: &7[banid]\n&5");
 
         Messages.KICK_HELP_HEADER = addAndGetMessageValue("kick.help.header","[prefix]&6Kick Administration");
-        Messages.KICK_HELP_REASON = addAndGetMessageValue("kick.help.reason"," &8- &c[id] &8| &c[reason]");
+        Messages.KICK_HELP_REASON = addAndGetMessageValue("kick.help.reason"," &8- &c[id] &8| &4[reason]");
         Messages.KICK_HELP_HELP = addAndGetMessageValue("kick.help.help","&8» &cUsage&8: &7 /kick <player> <reason> {message}");
         Messages.KICK_SELF = addAndGetMessageValue("kick.self","[prefix]&cYou can not kick your self.");
         Messages.KICK_BYPASS = addAndGetMessageValue("kick.bypass","[prefix]&cYou can not kick &8[player]&c.");
@@ -135,12 +135,19 @@ public class MessageConfig extends SimpleConfig{
         Messages.KICK_MESSAGE = addAndGetMessageValue("kick.message","&e&lexample.net\n&5&6&7&8\n&cYou were kicked from the network\n&3Reason&8: &4&l[reason]\n");
 
         Messages.WARN_HELP_HEADER = addAndGetMessageValue("warn.help.header","[prefix]&6Warn Administration");
-        Messages.WARN_HELP_REASON = addAndGetMessageValue("warn.help.reason"," &8- &c[id] &8| &c[reason]");
+        Messages.WARN_HELP_REASON = addAndGetMessageValue("warn.help.reason"," &8- &c[id] &8| &4[reason]");
         Messages.WARN_HELP_HELP = addAndGetMessageValue("warn.help.help","&8» &cUsage&8: &7 /warn <player> <reason> {message}");
         Messages.WARN_SELF = addAndGetMessageValue("warn.self","[prefix]&cYou can not warn your self.");
         Messages.WARN_BYPASS = addAndGetMessageValue("warn.bypass","[prefix]&cYou can not warn &8[player]&c.");
-        Messages.WARN_SUCCESS = addAndGetMessageValue("warn.success","[prefix] &7was warned for &4[reason]&7.");
+        Messages.WARN_SUCCESS = addAndGetMessageValue("warn.success","[prefix]&7was warned for &4[reason]&7.");
         Messages.WARN_MESSAGE = addAndGetMessageValue("warn.message","&5\n[prefix]&cYou were warned\n&8» &3Reason&8: &4&l[reason]\n&8» &3WarnID&8: &7[id]\n&5");
+
+        Messages.EDITBAN_HELP = addAndGetMessageValue("editban.help","[prefix]&7Ban edit Administration" +
+                "\n&8» &e/editban <player/banId> setReason <reason> {message}\n&8» &e/editban <player/banId> setMessage <message>" +
+                "\n&8» &e/editban <player/banId> setPoints <points> {message}\n&8» &e/editban <player/banId> setDuration <time> <unit> {message}" +
+                "\n&8» &e/editban <player/banId> addDuration <time> <unit> {message}");
+        Messages.EDITBAN_CHANGED = addAndGetMessageValue("editban.changed","[prefix]&7The &4[type] &7ban from [player] &7was changed..");
+        Messages.EDITBAN_NOTALLOWED = addAndGetMessageValue("editban.notallowed","[prefix]&cYou are not allowed to edit this ban.");
 
         Messages.PING_SELF = addAndGetMessageValue("ping.self","[prefix]&7Your ping is &a[ping]&cms");
         Messages.PING_OTHER = addAndGetMessageValue("ping.other","[prefix]&7The ping from [player] &7is &a[ping]&cms");
@@ -202,24 +209,45 @@ public class MessageConfig extends SimpleConfig{
         Messages.HISTORY_LIST_HEADER = addAndGetMessageValue("history.list.header","[prefix]&7History from &8[player]");
         Messages.HISTORY_LIST_BAN_CHAT = addAndGetMessageValue("history.list.ban.chat","&8» &9Mute &8| &7[time] - &7[reason]");
         Messages.HISTORY_LIST_BAN_NETWORK = addAndGetMessageValue("history.list.ban.network","&8» &cBan &8| &7[time] - &7[reason]");
+
         Messages.HISTORY_LIST_KICK = addAndGetMessageValue("history.list.kick","&8» &eKick &8| &7[time] - &7[reason]");
         Messages.HISTORY_LIST_UNBAN = addAndGetMessageValue("history.list.unban","&8» &aUnban &8| &7[time] - &7[reason]");
         Messages.HISTORY_LIST_WARN = addAndGetMessageValue("history.list.warn","&8» &6Warn &8| &7[time] - &7[reason]");
         Messages.HISTORY_INFO_BAN_NETWORK = addAndGetMessageValue("history.info.ban.network","[prefix]&7Ban &c[id] &7from [player]" +
-                "\n&8» &7ID&8: &c[id]\n&8» &7Reason&8: [reason] &8- &7[reasonID]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
-                "\n&8» &7Points&8: &c[points]\n&8» &7Duration&8: &c[duration]\n&8» &7Remaining&8: &c[remaining-short]\n&8» &7Time&8: &c[time]\n&8» &7TimeOut&8: &c[timeout]");
+                "\n&8» &7ID&8: &c[id]\n&8» &7Reason&8: [reason] \n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
+                "\n&8» &7Points&8: &c[points] &8| &c [pointsType]\n&8» &7Duration&8: &c[duration]\n&8» &7Remaining&8: &c[remaining-short]\n&8» &7Time&8: &c[time]\n&8» &7TimeOut&8: &c[timeout]\n&7\n&8» [changes]\n&7");
         Messages.HISTORY_INFO_BAN_CHAT = addAndGetMessageValue("history.info.ban.chat","[prefix]&7Mute &c[id] &7from [player]" +
-                "\n&8» &7ID&8: &c[id]\n&8» &7Reason&8: [reason] &8- &7[reasonID]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
-                "\n&8» &7Points&8: &c[points]\n&8» &7Duration&8: &c[duration]\n&8» &7Remaining&8: &c[remaining-short]\n\n&8» &7Time&8: &c[time]\n&8» &7TimeOut&8: &c[timeout]");
+                "\n&8» &7ID&8: &c[id]\n&8» &7Reason&8: [reason] \n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
+                "\n&8» &7Points&8: &c[points] &8| &c [pointsType]\n&8» &7Duration&8: &c[duration]\n&8» &7Remaining&8: &c[remaining-short]\n&8» &7Time&8: &c[time]\n&8» &7TimeOut&8: &c[timeout]\n&7\n&8» [changes]\n&7");
+        Messages.HISTORY_INFO_BAN_CHANGES = addAndGetMessageValue("history.list.ban.changes","&c[changeCount] &7Changes");
+        Messages.HISTORY_INFO_BAN_VERSION_LIST_HEADER = addAndGetMessageValue("history.info.ban.version.list.header","[prefix]&7Changes from ban &c[id] &8| [player]");
+        Messages.HISTORY_INFO_BAN_VERSION_LIST_FIRST = addAndGetMessageValue("history.info.ban.version.list.first","&8» &aOriginal &8| &7[time]");
+        Messages.HISTORY_INFO_BAN_VERSION_LIST_REASON = addAndGetMessageValue("history.info.ban.version.list.reason","&8» &9Reason &8| &7[time] - &7[reason]");
+        Messages.HISTORY_INFO_BAN_VERSION_LIST_MESSAGE = addAndGetMessageValue("history.info.ban.version.list.message","&8» &eMessage &8| &7[time] - &7[message]");
+        Messages.HISTORY_INFO_BAN_VERSION_LIST_POINTS = addAndGetMessageValue("history.info.ban.version.list.points","&8» &bPoints &8| &7[time] - &7[points] &8| &7[pointsType]");
+        Messages.HISTORY_INFO_BAN_VERSION_LIST_TIMEOUT = addAndGetMessageValue("history.info.ban.version.list.timeout","&8» &cDuration &8| &7[time] - &7[points] &8| &7[pointsType]");
+        Messages.HISTORY_INFO_BAN_VERSION_INFO_REASON = addAndGetMessageValue("history.info.ban.version.info.reason","[prefix]&7Reason change &c[id] &7from &c[entryID] &8| [player]" +
+                "\n&8» &7ID&8: &c[id]\n&8» &7Reason&8: [reason]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
+                "\n&8» &7Time&8: &c[time]");
+        Messages.HISTORY_INFO_BAN_VERSION_INFO_MESSAGE = addAndGetMessageValue("history.info.ban.version.info.message","[prefix]&7Message change &c[id] &7from &c[entryID] &8| [player]" +
+                "\n&8» &7ID&8: &c[id]\n&8» &7Message&8: &c[message]\n&8» &7Message2&8: &c[localMessage]\n&8» &7Staff&8: &c[staff]" +
+                "\n&8» &7Time&8: &c[time]");
+        Messages.HISTORY_INFO_BAN_VERSION_INFO_POINTS = addAndGetMessageValue("history.info.ban.version.info.points","[prefix]&7Points change &c[id] &7from &c[entryID] &8| [player]" +
+                "\n&8» &7ID&8: &c[id]\n&8» &7Points&8: &c[points] &8|&c[pointsType]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
+                "\n&8» &7Time&8: &c[time]");
+        Messages.HISTORY_INFO_BAN_VERSION_INFO_TIMEOUT = addAndGetMessageValue("history.info.ban.version.info.timeout","[prefix]&7Duration change &c[id] &7from &c[entryID] &8| [player]" +
+                "\n&8» &7ID&8: &c[id]\n&8» &7TimeOut&8: &c[timeOut]\n&8» &7Duration&8: &c[duration]\n&8» &7Remaining&8: &c[remaining-short] \n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
+                "\n&8» &7Time&8: &c[time]");
+
         Messages.HISTORY_INFO_KICK = addAndGetMessageValue("history.info.kick","[prefix]&7Kick &c[id] &7from [player]" +
-                "\n&8» &7ID&8: &c[id]\n&8» &7Reason&8: [reason] &8- &7[reasonID]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
-                "\n&8» &7Points&8: &c[points]\n&8» &7Time&8: &c[time]");
+                "\n&8» &7ID&8: &c[id]\n&8» &7Reason&8: [reason]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
+                "\n&8» &7Points&8: &c[points] &8| &c[pointsType]\n&8» &7Time&8: &c[time]");
         Messages.HISTORY_INFO_WARN = addAndGetMessageValue("history.info.warn","[prefix]&7Warn &c[id] &7from [player]" +
-                "\n&8» &7ID&8: &c[id]\n&8» &7For type&8: &c[banType]\n&8» &7Reason&8: [reason] &8- &7[reasonID]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
-                "\n&8» &7Points&8: &c[points]\n&8» &7Time&8: &c[time]");
+                "\n&8» &7ID&8: &c[id]\n&8» &7For type&8: &c[banType]\n&8» &7Reason&8: [reason]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
+                "\n&8» &7Points&8: &c[points] &8| &c[pointsType]\n&8» &7Time&8: &c[time]");
         Messages.HISTORY_INFO_UNBAN = addAndGetMessageValue("history.info.unban","[prefix]&7Unban &c[id] &7from [player]" +
-                "\n&8» &7ID&8: &c[id]\n&8» &7For type&8: &c[banType]\n&8» &7Reason&8: [reason] &8- &7[reasonID]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
-                "\n&8» &7Points&8: &c[points]\n&8» &7Time&8: &c[time]");
+                "\n&8» &7ID&8: &c[id]\n&8» &7For type&8: &c[banType]\n&8» &7Reason&8: [reason]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
+                "\n&8» &7Points&8: &c[points] &8| &c[pointsType]\n&8» &7Time&8: &c[time]");
         Messages.HISTORY_RESET_ALL = addAndGetMessageValue("history.reset.all","[prefix]&7The history from &8[player] &7was reset.");
         Messages.HISTORY_RESET_ONE = addAndGetMessageValue("history.reset.one","[prefix]&7The history entry &c[id] from [player] &7was reset.");
 
@@ -229,6 +257,8 @@ public class MessageConfig extends SimpleConfig{
         Messages.UNBAN_HELP_HELP = addAndGetMessageValue("unban.help.help","[prefix]&cUsage&8: &7 /unban <player> <reason> ");
         Messages.UNBAN_HELP_REASON = addAndGetMessageValue("unban.help.reason"," &8- &c[id] &8| &c[reason]");
         Messages.UNBAN_NOTALLOWED = addAndGetMessageValue("unban.notallowed","[prefix]&cYou are not allowed to unban this player.");
+        Messages.UNBAN_NOTFOTHISTYPE = addAndGetMessageValue("unban.notforthistype","[prefix]&cThis reason is not &callowed &cfor &cthis &cban &ctype.");
+        Messages.UNBAN_TOMANYPOINTS = addAndGetMessageValue("unban.tomanypoints","[prefix]&cThis player has to many history &cpoints &cfor &cunbanning &cthis &cplayer &cwith &cthis &creason.");
 
         Messages.REPORT_HELP_HEADER = addAndGetMessageValue("report.help.header","[prefix]&6Report Administration");
         Messages.REPORT_HELP_REASON = addAndGetMessageValue("report.help.reason","&8- &c[id] &8| &c[reason]");
@@ -246,7 +276,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.REPORT_LEAVED_USER = addAndGetMessageValue("report.leaved.user","[prefix]&cThe report of [player] &cwas denied, because the &cplayer &cleaved the server.");
         Messages.REPORT_LIST_NO = addAndGetMessageValue("report.list.no","[prefix]&cNo reports found.");
         Messages.REPORT_LIST_HEADER = addAndGetMessageValue("report.list.header","[prefix]&7Open reports Page &c[page]&8/&c[maxPage]");
-        Messages.REPORT_LIST_LIST = addAndGetMessageValue("report.list.list","&8» &8[player] &8&l>> &e[reason] &8[&7Click&8]");
+        Messages.REPORT_LIST_LIST = addAndGetMessageValue("report.list.list","&8» &8[player] &8&l>> &c[reason] &8[&7Click&8]");
         Messages.REPORT_INFO = addAndGetMessageValue("report.info","[prefix]&7At this moments are &c[size] &7Reports open.");
         Messages.REPORT_PROCESS_CONTROL_MESSAGE = addAndGetMessageValue("report.process.control.message","&8» [deny] [forReason] [otherReason]\n&7");//[deny] [forReason] [otherReason]
         Messages.REPORT_PROCESS_CONTROL_DENY = addAndGetMessageValue("report.process.control.deny","&8[&c&lDeny&8]");

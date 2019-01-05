@@ -234,6 +234,12 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     }
 
     @Override
+    public void updateHistoryEntry(NetworkPlayer player, HistoryEntry entry) {
+        historyCollection.replaceOne(and(eq("uuid",player.getUUID().toString()),eq("id",player.getID()))
+                ,Document.parse(GeneralUtil.GSON.toJson(entry,new TypeToken<HistoryEntry>(){}.getType())));
+    }
+
+    @Override
     public void deleteHistoryEntry(NetworkPlayer player, int id) {
         MongoDBUtil.deleteOne(this.historyCollection,and(eq("uuid",player.getUUID().toString()),eq("id",player.getID())));
     }

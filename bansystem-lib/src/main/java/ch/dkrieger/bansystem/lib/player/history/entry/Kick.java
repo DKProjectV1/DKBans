@@ -49,51 +49,30 @@ public class Kick extends HistoryEntry {
 
     @Override
     public TextComponent getListMessage() {
-        return new TextComponent(Messages.HISTORY_LIST_KICK
-                .replace("[player]",getPlayer().getColoredName())
-                .replace("[id]",""+getID())
-                .replace("[reason]",getReason())
-                .replace("[reasonID]",""+getReasonID())
-                .replace("[time]", BanSystem.getInstance().getConfig().dateFormat.format(getTimeStamp()))
-                .replace("[timeout]",BanSystem.getInstance().getConfig().dateFormat.format(getTimeStamp()))
-                .replace("[message]",getMessage())
-                .replace("[type]",getTypeName())
-                .replace("[staff]",getStaffName())
-                .replace("[server]",getServer())
-                .replace("[points]",""+getPoints())
-                .replace("[prefix]",Messages.PREFIX_BAN));
+        return new TextComponent(repalce(Messages.HISTORY_LIST_KICK));
     }
 
     @Override
     public TextComponent getInfoMessage() {
-        return new TextComponent(Messages.HISTORY_INFO_KICK
-                .replace("[prefix]",Messages.PREFIX_BAN)
-                .replace("[id]",""+getID())
-                .replace("[reason]",getReason())
-                .replace("[type]",getTypeName())
-                .replace("[points]",""+getPoints())
-                .replace("[reasonID]",""+getReasonID())
-                .replace("[message]",getMessage())
-                .replace("[time]",BanSystem.getInstance().getConfig().dateFormat.format(getTimeStamp()))
-                .replace("[ip]",getIp())
-                .replace("[server]",getServer())
-                .replace("[staff]",getStaffName())
-                .replace("[player]",getPlayer().getColoredName()));
+        return new TextComponent(repalce(Messages.HISTORY_INFO_KICK));
     }
 
     public TextComponent toMessage(){
-        return new TextComponent(Messages.KICK_MESSAGE
-                .replace("[prefix]",Messages.PREFIX_BAN)
+        return new TextComponent(repalce(Messages.KICK_MESSAGE));
+    }
+    private String repalce(String message){
+        return message.replace("[prefix]",Messages.PREFIX_BAN)
                 .replace("[id]",""+getID())
                 .replace("[reason]",getReason())
                 .replace("[type]",getTypeName())
-                .replace("[points]",""+getPoints())
+                .replace("[points]",""+getPoints().getPoints())
+                .replace("[pointsType]",getPoints().getHistoryType().getDisplay())
                 .replace("[reasonID]",""+getReasonID())
                 .replace("[message]",getMessage())
                 .replace("[time]",BanSystem.getInstance().getConfig().dateFormat.format(getTimeStamp()))
                 .replace("[ip]",getIp())
                 .replace("[server]",getServer())
                 .replace("[staff]",getStaffName())
-                .replace("[player]",getPlayer().getColoredName()));
+                .replace("[player]",getPlayer().getColoredName());
     }
 }

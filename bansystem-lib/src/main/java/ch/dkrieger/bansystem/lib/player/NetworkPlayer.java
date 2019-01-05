@@ -711,7 +711,10 @@ public class NetworkPlayer {
         return unban(type,reason,message,staff==null?"Console":staff.toString());
     }
     public Unban unban(BanType type, UnbanReason reason,String message,String staff){
-        return unban(reason.toUnban(type,this,message,staff));
+        return unban(reason.toUnban(type,this,message,staff,getBan(type).getPoints()));
+    }
+    public Unban unban(BanType type, UnbanReason reason,String message,String staff, HistoryPoints lastPoints){
+        return unban(reason.toUnban(type,this,message,staff,lastPoints));
     }
     public Unban unban(Unban unban) {
         BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(()->{

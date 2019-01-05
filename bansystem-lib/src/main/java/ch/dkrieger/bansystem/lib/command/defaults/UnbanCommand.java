@@ -74,7 +74,6 @@ public class UnbanCommand extends NetworkCommand {
             sender.sendMessage(Messages.PLAYER_NOT_BANNED
                     .replace("[prefix]",getPrefix())
                     .replace("[player]",args[0]));
-            System.out.println("test");
             return;
         }
         BanType type = null;
@@ -87,35 +86,9 @@ public class UnbanCommand extends NetworkCommand {
         if(type == null && player.isBanned(BanType.NETWORK) && player.isBanned(BanType.CHAT)){
             sender.sendMessage(Messages.PLAYER_HAS_MOREBANS_HEADER
                     .replace("[player]",player.getColoredName()).replace("[prefix]",getPrefix()));
-            TextComponent network = new TextComponent(Messages.PLAYER_HAS_MOREBANS_NETWORK
-                    .replace("[prefix]",getPrefix())
-                    .replace("[duration]",GeneralUtil.calculateDuration(player.getBan(BanType.NETWORK).getDuration()))
-                    .replace("[remaining]",GeneralUtil.calculateRemaining(player.getBan(BanType.NETWORK).getDuration(),false))
-                    .replace("[remaining-short]",GeneralUtil.calculateRemaining(player.getBan(BanType.NETWORK).getDuration(),true))
-                    .replace("[id]",""+player.getBan(BanType.NETWORK).getID())
-                    .replace("[reason]",player.getBan(BanType.NETWORK).getReason())
-                    .replace("[type]",player.getBan(BanType.NETWORK).getTypeName())
-                    .replace("[points]",""+player.getBan(BanType.NETWORK).getPoints())
-                    .replace("[message]",player.getBan(BanType.NETWORK).getMessage())
-                    .replace("[date]",""+player.getBan(BanType.NETWORK).getTimeStamp())
-                    .replace("[ip]",player.getBan(BanType.NETWORK).getIp())
-                    .replace("[staff]",player.getBan(BanType.NETWORK).getStaffName())
-                    .replace("[player]",player.getColoredName()));
+            TextComponent network = new TextComponent(player.getBan(BanType.NETWORK).replace(Messages.PLAYER_HAS_MOREBANS_NETWORK,false));
             network.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/unban "+args[0]+" NETWORK "+message));
-            TextComponent chat = new TextComponent(Messages.PLAYER_HAS_MOREBANS_CHAT
-                    .replace("[prefix]",getPrefix())
-                    .replace("[duration]",GeneralUtil.calculateDuration(player.getBan(BanType.CHAT).getDuration()))
-                    .replace("[remaining]",GeneralUtil.calculateRemaining(player.getBan(BanType.CHAT).getDuration(),false))
-                    .replace("[remaining-short]",GeneralUtil.calculateRemaining(player.getBan(BanType.CHAT).getDuration(),true))
-                    .replace("[id]",""+player.getBan(BanType.CHAT).getID())
-                    .replace("[reason]",player.getBan(BanType.CHAT).getReason())
-                    .replace("[type]",player.getBan(BanType.CHAT).getTypeName())
-                    .replace("[points]",""+player.getBan(BanType.CHAT).getPoints())
-                    .replace("[message]",player.getBan(BanType.CHAT).getMessage())
-                    .replace("[date]",""+player.getBan(BanType.CHAT).getTimeStamp())
-                    .replace("[ip]",player.getBan(BanType.CHAT).getIp())
-                    .replace("[staff]",player.getBan(BanType.CHAT).getStaffName())
-                    .replace("[player]",player.getColoredName()));
+            TextComponent chat = new TextComponent(player.getBan(BanType.CHAT).replace(Messages.PLAYER_HAS_MOREBANS_NETWORK,false));
             chat.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/unban "+args[0]+" CHAT "+message));
             sender.sendMessage(network);
             sender.sendMessage(chat);
@@ -128,9 +101,7 @@ public class UnbanCommand extends NetworkCommand {
             return;
         }
         if(!sender.hasPermission("dkbans.unban.all") && !sender.hasPermission("dkbans.*")){
-            Ban ban = null;
-            if(type != null) ban = player.getBan(type);
-            else ban = player.getBan((player.isBanned(BanType.NETWORK))?BanType.NETWORK:BanType.CHAT);
+            Ban ban = player.getBan(type);
             if(!ban.getStaff().equals(sender.getUUID().toString())){
                 sender.sendMessage(Messages.UNBAN_NOTALLOWED
                         .replace("[player]",player.getColoredName())
@@ -139,33 +110,52 @@ public class UnbanCommand extends NetworkCommand {
             }
         }
         if(this.unbanMode != ReasonMode.SELF){
-            if(reason.getBanType() != null &&! type.equals(reason.getBanType())){
-                //not for ths ban
+            if(reason.getBanType() != null && !type.equals(reason.getBanType())){
+                sender.sendMessage(Messages.UNBAN_NOTFOTHISTYPE.replace("[prefix]",getPrefix()));
                 return;
             }
-            if(reason.getMaxPoints()> 0 && player.getHistory().getPoints() >= reason.getMaxPoints()){
-                //to many points
+            if(reason.getMaxPoints() > 0 && (BanSystem.getInstance().getConfig().banPointsSeparateChatAndNetwork
+                    ?player.getHistory().getPoints(type):player.getHistory().getPoints()) >= reason.getMaxPoints()){
+                sender.sendMessage(Messages.UNBAN_TOMANYPOINTS.replace("[prefix]",getPrefix()));
                 return;
             }
             Ban ban = player.getBan(type);
 
             Duration newDuration = new Duration(ban.getDuration(),TimeUnit.MILLISECONDS);
-
-            /*
             if(reason.getRemoveDuration().getTime() > 0){
-                newDuration.setTime(newDuration.getTime()-);
+                newDuration.setTime(newDuration.getMillisTime()-reason.getRemoveDuration().getMillisTime());
             }
-             */
+            if(reason.getDurationDivider() > 0 && newDuration.getTime() > 0){
+                newDuration.setTime((long) (newDuration.getMillisTime()/reason.getDurationDivider()));
+            }
+            if(reason.isRemoveAllPoints()) ban.setPoints(0,"Change from unban reason",sender.getUUID());
+            else if(reason.getPoints().getPoints() > 0){
+                int points = ban.getPoints().getPoints()-reason.getPoints().getPoints();
+                if(points > 0 && reason.getPointsDivider() > 0) points = (int) (points/reason.getPointsDivider());
+                if(points < 0) points = 0;
+                ban.setPoints(points,"Change from unban reason",sender.getUUID());
+            }
+            if(newDuration.getMillisTime() > 10 && newDuration.getTime() != ban.getDuration()){
+                ban.setTimeOut(System.currentTimeMillis()+newDuration.getMillisTime(),message,sender.getUUID());
+                sender.sendMessage(Messages.EDITBAN_CHANGED
+                        .replace("[prefix]",getPrefix())
+                        .replace("[player]",player.getColoredName())
+                        .replace("[type]",ban.getBanType().getDisplay())
+                        .replace("[reason]",ban.getReason())
+                        .replace("[points]",String.valueOf(ban.getPoints()))
+                        .replace("[staff]",ban.getStaffName())
+                        .replace("[reasonID]",String.valueOf(ban.getReasonID()))
+                        .replace("[ip]",ban.getIp())
+                        .replace("[duration]",GeneralUtil.calculateDuration(ban.getDuration()))
+                        .replace("[remaining]",GeneralUtil.calculateRemaining(ban.getDuration(),false))
+                        .replace("[remaining-short]",GeneralUtil.calculateRemaining(ban.getDuration(),true)));
+                return;
+            }
         }
-
-
         if(type == BanType.NETWORK){
             Unban unban;
             if(this.unbanMode == ReasonMode.SELF) unban = player.unban(BanType.NETWORK,message,sender.getUUID());
-            else{
-
-                unban = player.unban(BanType.NETWORK,reason,message,sender.getUUID());
-            }
+            else unban = player.unban(BanType.NETWORK,reason,message,sender.getUUID());
             sender.sendMessage(Messages.PLAYER_UNBANNED
                     .replace("[prefix]",getPrefix())
                     .replace("[reason]",unban.getReason())
@@ -190,10 +180,11 @@ public class UnbanCommand extends NetworkCommand {
     }
     private void sendReasons(NetworkCommandSender sender){
         if(BanSystem.getInstance().getConfig().unbanMode != ReasonMode.SELF) {
-            sender.sendMessage(Messages.UNBAN_HELP_HEADER);
+            sender.sendMessage(Messages.UNBAN_HELP_HEADER.replace("[prefix]",getPrefix()));
             for(UnbanReason reason : BanSystem.getInstance().getReasonProvider().getUnbanReasons()){
                 if(!reason.isHidden() && !sender.hasPermission(reason.getPermission()) && !sender.hasPermission("dkbans.*")) continue;
                 sender.sendMessage(Messages.UNBAN_HELP_REASON
+                        .replace("[reason]",reason.getDisplay())
                         .replace("[prefix]",getPrefix())
                         .replace("[id]",""+reason.getID())
                         .replace("[name]",reason.getDisplay())

@@ -152,6 +152,7 @@ public class Config extends SimpleConfig{
     public boolean commandIPban;
     public boolean commandIPUnban;
     public boolean commandWarn;
+    public boolean commandEdit;
 
     private DKBansPlatform platform;
 
@@ -271,7 +272,7 @@ public class Config extends SimpleConfig{
         this.ipBanBanPoints = addAndGetIntValue("ipban.reason.points",40);
         this.ipBanOnBanEnabled = addAndGetBooleanValue("ipban.onban.enabled",true);
         this.ipBanOnBanDuration = GeneralUtil.convertToMillis(addAndGetLongValue("ipban.onban.duration.time",24)
-                , addAndGetStringValue("ipban.onban.duration.unit",TimeUnit.HOURS.toString()));
+                ,addAndGetStringValue("ipban.onban.duration.unit",TimeUnit.HOURS.toString()));
 
         this.commandBan = addAndGetBooleanValue("command.ban.enabled",true);
         this.commandUnban = addAndGetBooleanValue("command.unban.enabled",true);
@@ -298,6 +299,7 @@ public class Config extends SimpleConfig{
         this.commandIPban = addAndGetBooleanValue("command.ipban.enabled",true);
         this.commandIPUnban = addAndGetBooleanValue("command.ipunban.enabled",true);
         this.commandWarn = addAndGetBooleanValue("command.warn.enabled",true);
+        this.commandEdit = addAndGetBooleanValue("command.edit.enabled",true);
     }
     public Ban createAltAccountBan(NetworkPlayer player, String ip){
         return new Ban(player.getUUID(),ip,ipBanBanReason,"",System.currentTimeMillis(),-1,new HistoryPoints(ipBanBanPoints,BanType.NETWORK),666

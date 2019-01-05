@@ -170,6 +170,17 @@ public class Messages {
     public static String HISTORY_LIST_WARN;
     public static String HISTORY_INFO_BAN_CHAT;
     public static String HISTORY_INFO_BAN_NETWORK;
+    public static String HISTORY_INFO_BAN_CHANGES;
+    public static String HISTORY_INFO_BAN_VERSION_LIST_HEADER;
+    public static String HISTORY_INFO_BAN_VERSION_LIST_FIRST;
+    public static String HISTORY_INFO_BAN_VERSION_LIST_REASON;
+    public static String HISTORY_INFO_BAN_VERSION_LIST_MESSAGE;
+    public static String HISTORY_INFO_BAN_VERSION_LIST_POINTS;
+    public static String HISTORY_INFO_BAN_VERSION_LIST_TIMEOUT;
+    public static String HISTORY_INFO_BAN_VERSION_INFO_REASON;
+    public static String HISTORY_INFO_BAN_VERSION_INFO_MESSAGE;
+    public static String HISTORY_INFO_BAN_VERSION_INFO_POINTS;
+    public static String HISTORY_INFO_BAN_VERSION_INFO_TIMEOUT;
     public static String HISTORY_INFO_KICK;
     public static String HISTORY_INFO_UNBAN;
     public static String HISTORY_INFO_WARN;
@@ -182,6 +193,12 @@ public class Messages {
     public static String UNBAN_HELP_REASON;
     public static String UNBAN_HELP_HELP;
     public static String UNBAN_NOTALLOWED;
+    public static String UNBAN_NOTFOTHISTYPE;
+    public static String UNBAN_TOMANYPOINTS;
+
+    public static String EDITBAN_HELP;
+    public static String EDITBAN_CHANGED;
+    public static String EDITBAN_NOTALLOWED;
 
     public static String REPORT_HELP_HEADER;
     public static String REPORT_HELP_REASON;

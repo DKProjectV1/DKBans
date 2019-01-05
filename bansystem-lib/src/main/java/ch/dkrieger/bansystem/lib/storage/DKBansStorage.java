@@ -90,6 +90,8 @@ public interface DKBansStorage {
 
     public int createHistoryEntry(NetworkPlayer player, HistoryEntry entry);
 
+    public void updateHistoryEntry(NetworkPlayer player, HistoryEntry entry);
+
     public void deleteHistoryEntry(NetworkPlayer player,int id);
 
     public List<Report> getReports();
