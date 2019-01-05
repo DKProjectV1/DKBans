@@ -50,7 +50,7 @@ public class Ban extends HistoryEntry {
     public long getTimeOut() {
         final long[] time = new long[2];
         final boolean[] found = new boolean[1];
-        if(versions.size() > 0){
+        if(getVersions().size() > 0){
             GeneralUtil.iterateAcceptedForEach(getVersions(), object -> object instanceof TimeOutBanEdit && time[0] < object.time,object -> {
                 time[0] = object.time;
                 time[1] = ((TimeOutBanEdit)object).timeOut;
@@ -90,7 +90,7 @@ public class Ban extends HistoryEntry {
     public String getReason() {
         final long[] lastTime = new long[1];
         final String[] reason = new String[1];
-        if(versions.size() > 0){
+        if(getVersions().size() > 0){
             GeneralUtil.iterateAcceptedForEach(getVersions(), object -> object instanceof ReasonBanEdit && lastTime[0] < object.time,object -> {
                 lastTime[0] = object.time;
                 reason[0] = ((ReasonBanEdit)object).reason;
@@ -103,7 +103,7 @@ public class Ban extends HistoryEntry {
     public String getMessage() {
         final long[] lastTime = new long[1];
         final String[] message = new String[1];
-        if(versions.size() > 0){
+        if(getVersions().size() > 0){
             GeneralUtil.iterateAcceptedForEach(getVersions(), object -> object instanceof MessageBanEdit && lastTime[0] < object.time,object -> {
                 lastTime[0] = object.time;
                 message[0] = ((MessageBanEdit)object).localMessage;
@@ -116,7 +116,7 @@ public class Ban extends HistoryEntry {
     public HistoryPoints getPoints() {
         final long[] lastTime = new long[1];
         final HistoryPoints[] points = new HistoryPoints[1];
-        if(versions.size() > 0){
+        if(getVersions().size() > 0){
             GeneralUtil.iterateAcceptedForEach(getVersions(), object -> object instanceof PointsBanEdit && lastTime[0] < object.time,object -> {
                 lastTime[0] = object.time;
                 points[0] = ((PointsBanEdit)object).points;
@@ -146,7 +146,7 @@ public class Ban extends HistoryEntry {
     }
     public ReasonBanEdit setReason(String reason, String message, String staff){
         ReasonBanEdit edit = new ReasonBanEdit(staff, message,reason);
-        versions.add(edit);
+        getVersions().add(edit);
         update(new Document().append("edit",edit));
         return edit;
     }
@@ -161,7 +161,7 @@ public class Ban extends HistoryEntry {
     }
     public MessageBanEdit setMessage(String message,String messageForMessage, String staff){
         MessageBanEdit edit = new MessageBanEdit(staff,messageForMessage,message);
-        versions.add(edit);
+        getVersions().add(edit);
         update(new Document().append("edit",edit));
         return edit;
     }
@@ -176,7 +176,7 @@ public class Ban extends HistoryEntry {
     }
     public TimeOutBanEdit setTimeOut(long timeOut,String message, String staff){
         TimeOutBanEdit edit = new TimeOutBanEdit(staff,message,timeOut,getTimeStamp());
-        versions.add(edit);
+        getVersions().add(edit);
         update(new Document().append("edit",edit));
         return edit;
     }
@@ -191,7 +191,7 @@ public class Ban extends HistoryEntry {
     }
     public PointsBanEdit setPoints(int points,String message, String staff){
         PointsBanEdit edit = new PointsBanEdit(staff,message,new HistoryPoints(points,super.getPoints().getHistoryType()));
-        versions.add(edit);
+        getVersions().add(edit);
         update(new Document().append("edit",edit));
         return edit;
     }
