@@ -51,7 +51,7 @@ public class Ban extends HistoryEntry {
         final long[] time = new long[2];
         final boolean[] found = new boolean[1];
         if(versions.size() > 0){
-            GeneralUtil.iterateAcceptedForEach(this.versions, object -> object instanceof TimeOutBanEdit && time[0] < object.time,object -> {
+            GeneralUtil.iterateAcceptedForEach(getVersions(), object -> object instanceof TimeOutBanEdit && time[0] < object.time,object -> {
                 time[0] = object.time;
                 time[1] = ((TimeOutBanEdit)object).timeOut;
                 found[0] = true;
@@ -73,10 +73,11 @@ public class Ban extends HistoryEntry {
         return timeOut-System.currentTimeMillis();
     }
     public List<BanEditVersion> getVersions() {
+        if(this.versions == null) this.versions = new ArrayList<>();
         return versions;
     }
     public BanEditVersion getVersion(int id){
-        return GeneralUtil.iterateOne(this.versions, object -> object.id == id);
+        return GeneralUtil.iterateOne(getVersions(), object -> object.id == id);
     }
     public List<BanEditVersion> getVersionsSorted() {
         versions.sort((o1, o2) -> o1.time > o2.time?1:-1);
@@ -90,7 +91,7 @@ public class Ban extends HistoryEntry {
         final long[] lastTime = new long[1];
         final String[] reason = new String[1];
         if(versions.size() > 0){
-            GeneralUtil.iterateAcceptedForEach(this.versions, object -> object instanceof ReasonBanEdit && lastTime[0] < object.time,object -> {
+            GeneralUtil.iterateAcceptedForEach(getVersions(), object -> object instanceof ReasonBanEdit && lastTime[0] < object.time,object -> {
                 lastTime[0] = object.time;
                 reason[0] = ((ReasonBanEdit)object).reason;
             });
@@ -103,7 +104,7 @@ public class Ban extends HistoryEntry {
         final long[] lastTime = new long[1];
         final String[] message = new String[1];
         if(versions.size() > 0){
-            GeneralUtil.iterateAcceptedForEach(this.versions, object -> object instanceof MessageBanEdit && lastTime[0] < object.time,object -> {
+            GeneralUtil.iterateAcceptedForEach(getVersions(), object -> object instanceof MessageBanEdit && lastTime[0] < object.time,object -> {
                 lastTime[0] = object.time;
                 message[0] = ((MessageBanEdit)object).localMessage;
             });
@@ -116,7 +117,7 @@ public class Ban extends HistoryEntry {
         final long[] lastTime = new long[1];
         final HistoryPoints[] points = new HistoryPoints[1];
         if(versions.size() > 0){
-            GeneralUtil.iterateAcceptedForEach(this.versions, object -> object instanceof PointsBanEdit && lastTime[0] < object.time,object -> {
+            GeneralUtil.iterateAcceptedForEach(getVersions(), object -> object instanceof PointsBanEdit && lastTime[0] < object.time,object -> {
                 lastTime[0] = object.time;
                 points[0] = ((PointsBanEdit)object).points;
             });
