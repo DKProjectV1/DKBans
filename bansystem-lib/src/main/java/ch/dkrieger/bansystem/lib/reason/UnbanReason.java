@@ -85,17 +85,14 @@ public class UnbanReason extends KickReason{
     }
 
     public Unban toUnban(BanType type, NetworkPlayer player, String message, String staff, HistoryPoints lastBanPoints){
-        if(removeDuration == null || durationDivider == 0) return new Unban(player.getUUID(),player.getIP(),getDisplay(),message,System.currentTimeMillis(),-1,getPoints(),getID(),staff,new Document(),type);
+        int points;
+        if(isRemoveAllPoints()) points = lastBanPoints.getPoints();
         else{
-            int points;
-            if(isRemoveAllPoints()) points = lastBanPoints.getPoints();
-            else{
-                points = lastBanPoints.getPoints()-getPoints().getPoints();
-                if(points > 0 && getPointsDivider() > 0) points = (int) (points/getPointsDivider());
-            }
-            points = points-(points*2);
-            return new Unban(player.getUUID(),player.getIP(),getRawDisplay(),message,System.currentTimeMillis(),-1
-                    ,new HistoryPoints(points,lastBanPoints.getHistoryType()),getID(),staff,new Document(),type);
+            points = lastBanPoints.getPoints()-getPoints().getPoints();
+            if(points > 0 && getPointsDivider() > 0) points = (int) (points/getPointsDivider());
         }
+        points = points-(points*2);
+        return new Unban(player.getUUID(),player.getIP(),getRawDisplay(),message,System.currentTimeMillis(),-1
+                ,new HistoryPoints(points,lastBanPoints.getHistoryType()),getID(),staff,new Document(),type);
     }
 }

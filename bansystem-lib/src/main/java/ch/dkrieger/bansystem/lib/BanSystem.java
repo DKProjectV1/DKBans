@@ -159,8 +159,6 @@ public class BanSystem {
         if(this.config.commandWarn) getCommandManager().registerCommand(new WarnCommand());
         if(this.config.commandEdit) getCommandManager().registerCommand(new EditBanCommand());
 
-        getCommandManager().registerCommand(new EditBanCommand());
-
         getCommandManager().registerCommand(new DKBansCommand());
         getCommandManager().registerCommand(new BroadcastJumpCommand());
 

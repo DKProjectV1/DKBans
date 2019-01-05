@@ -100,7 +100,7 @@ public class SQLDKBansStorage implements DKBansStorage {
                         .create("bypass",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
                         .create("teamChatLogin",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
                         .create("reportLogin",ColumnType.VARCHAR,10,QueryOption.NOT_NULL)
-                        .create("watchingReportedPlayer",ColumnType.VARCHAR,10)
+                        .create("watchingReportedPlayer",ColumnType.VARCHAR,80)
                         .create("statsLogins",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("statsMessages",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("statsReports",ColumnType.BIG_INT,QueryOption.NOT_NULL)
@@ -659,8 +659,9 @@ public class SQLDKBansStorage implements DKBansStorage {
 
     private void tryTranslateFromV1ToV2(){
         try{
-            this.players.select("SELECT 1 FROM DKBans_autobroadcast LIMIT 1;");
-            System.out.println(Messages.SYSTEM_PREFIX+"Translating DKbansV1 mysql tables to DKBansV2, please wait.");
+            this.players.select("SELECT 1 FROM DKBans_autobroadcast LIMIT 1;").execute();
+
+            System.out.println(Messages.SYSTEM_PREFIX+"Translating DKBansV1 mysql tables to DKBansV2, please wait.");
             this.players.execute("RENAME TABLE `DKBans_players` TO `DKBans_playersOld`");
 
             this.players.execute("DROP TABLE IF EXISTS `DKBans_reports`");

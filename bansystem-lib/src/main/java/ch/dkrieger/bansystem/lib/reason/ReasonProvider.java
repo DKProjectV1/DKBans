@@ -333,11 +333,11 @@ public class ReasonProvider {
                 ,false, Arrays.asList("false"),new Document(),120,true,Arrays.asList()
                 ,new Duration(-1,TimeUnit.DAYS),new Duration(-1,TimeUnit.DAYS),0D,0D,null));
 
-        this.unbanReasons.add(new UnbanReason(2,new HistoryPoints(50,BanType.NETWORK),"acceptedrequest","&4Accepted unban request","dkbans.unban.reason.acceptedrequest"
+        this.unbanReasons.add(new UnbanReason(2,new HistoryPoints(0,BanType.NETWORK),"acceptedrequest","Accepted unban request","dkbans.unban.reason.acceptedrequest"
                 ,false, Arrays.asList("accepted"),new Document(),100,true,Arrays.asList(),new Duration(-1,TimeUnit.DAYS)
                 ,new Duration(-1,TimeUnit.DAYS),2D,1.5D,null));
 
-        this.unbanReasons.add(new UnbanReason(3,new HistoryPoints(10,BanType.NETWORK),"-3days","-3 Days","dkbans.unban.reason.falsban"
+        this.unbanReasons.add(new UnbanReason(3,new HistoryPoints(4,BanType.NETWORK),"-3days","-3 Days","dkbans.unban.reason.falsban"
                 ,false, Arrays.asList("-3days"),new Document(),30,true,Arrays.asList(5),new Duration(-1,TimeUnit.DAYS)
                 ,new Duration(3,TimeUnit.DAYS),0D,0D,null));
 
@@ -434,7 +434,16 @@ public class ReasonProvider {
                 Configuration reasons = config.getSection("reasons");
                 this.kickReasons= new ArrayList<>();
                 if(reasons != null) {
-                    for (String key : reasons.getKeys()) {
+                    //translate 2.0.6 to 2.0.7
+                    for(String key : reasons.getKeys()) {
+                        try{config.getInt("reasons."+key+".points.points");
+                        }catch (Exception exception){
+                            int points = config.getInt("reasons."+key+".points");
+                            config.set("reasons."+key+".points",null);
+                            config.set("reasons."+key+".points.points",points);
+                            config.set("reasons."+key+".points.type",BanType.NETWORK.toString());
+                            YamlConfiguration.getProvider(YamlConfiguration.class).save(config,file);
+                        }
                         try{
                             this.kickReasons.add(new KickReason(Integer.valueOf(key)
                                     ,new HistoryPoints(config.getInt("reasons."+key+".points.points")
@@ -457,6 +466,7 @@ public class ReasonProvider {
                 if(file.exists()){
                     file.renameTo(new File(this.platform.getFolder(),"kick-reasons-old-"+GeneralUtil.getRandomString(15)+".yml"));
                     System.out.println(Messages.SYSTEM_PREFIX+"Could not load kick-reasons, generating new (Saved als old)");
+                    exception.printStackTrace();
                 }
             }
         }//int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, int forban
@@ -496,10 +506,15 @@ public class ReasonProvider {
                 if(reasons != null) {
                     for (String key : reasons.getKeys()) {
                         try{
-                            /*
-                            config.set("reasons."+reason.getID()+".points.points",reason.getPoints().getPoints());
-            config.set("reasons."+reason.getID()+".points.type",reason.getPoints().getHistoryType().toString());
-                             */
+                            //translate 2.0.6 to 2.0.7
+                            try{config.getInt("reasons."+key+".points.points");
+                            }catch (Exception exception){
+                                int points = config.getInt("reasons."+key+".points");
+                                config.set("reasons."+key+".points",null);
+                                config.set("reasons."+key+".points.points",points);
+                                config.set("reasons."+key+".points.type",BanType.NETWORK.toString());
+                                YamlConfiguration.getProvider(YamlConfiguration.class).save(config,file);
+                            }
                             this.warnReasons.add(new WarnReason(Integer.valueOf(key)
                                     ,new HistoryPoints(config.getInt("reasons."+key+".points.points")
                                     ,BanType.valueOf(config.getString("reasons."+key+".points.type")))
@@ -518,7 +533,7 @@ public class ReasonProvider {
                         }
                     }
                 }
-                if(this.kickReasons.size() > 0) return;
+                if(this.warnReasons.size() > 0) return;
             }catch (Exception exception){
                 if(file.exists()){
                     file.renameTo(new File(this.platform.getFolder(),"warn-reasons-old-"+GeneralUtil.getRandomString(15)+".yml"));

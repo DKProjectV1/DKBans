@@ -63,9 +63,7 @@ public class ExecuteQuery extends Query {
         }finally {
             try {
                 if(sql instanceof MySQL) connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            } catch (SQLException e) {}
         }
         return null;
     }
