@@ -216,8 +216,8 @@ public class Config extends SimpleConfig{
         this.onJoinReportInfo = addAndGetBooleanValue("player.onjoin.reportinfo",true);
         this.onJoinReportSize = addAndGetBooleanValue("player.onjoin.reportsize",true);
 
-        this.tabCompleteBlockEnabled = addAndGetBooleanValue("tabcomplet.block.enabled",true);
-        List<String> tabOptions = addAndGetStringListValue("tabcomplet.options",Arrays.asList("dkbans.ban:/ban","dkbans.kick:/kick","report"));
+        this.tabCompleteBlockEnabled = addAndGetBooleanValue("tabcomplete.block.enabled",true);
+        List<String> tabOptions = addAndGetStringListValue("tabcomplete.options",Arrays.asList("dkbans.ban:/ban","dkbans.kick:/kick","report"));
         this.tabCompleteOptions = new ArrayList<>();
         for(String tabOption : tabOptions){
             try{
@@ -235,7 +235,7 @@ public class Config extends SimpleConfig{
         if(this.chatFilterRepeatMatchesPercent < 0) this.chatFilterRepeatMatchesPercent = 0;
         this.chatFilterAutobanEnabled = addAndGetBooleanValue("chat.autoban.enabled",true);
         this.chatFilterAutobanCount = addAndGetIntValue("chat.filter.autoban.count",8);
-        this.chatFilterAutobanMessageBanID = addAndGetIntValue("chatfilter.autoban.banid.message",3);
+        this.chatFilterAutobanMessageBanID = addAndGetIntValue("chat.filter.autoban.banid.message",3);
         this.chatFilterAutobanPromotionBanID = addAndGetIntValue("chat.filter.autoban.banid.promotion",4);
 
         this.playerSaveIP = addAndGetBooleanValue("player.saveip",true);
