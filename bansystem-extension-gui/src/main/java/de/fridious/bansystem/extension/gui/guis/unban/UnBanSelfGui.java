@@ -95,8 +95,9 @@ public class UnBanSelfGui extends PrivateGUI {
                         DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
                                 .create(GUIS.ANVIL_INPUT, new AnvilInputGui(this, this.reason) {
                                     @Override
-                                    public void setInput(String input) {
+                                    public boolean setInput(String input) {
                                         setReason(input);
+                                        return true;
                                     }
                                 }).open());
             } else if(event.getSlot() == 15) {
@@ -106,9 +107,10 @@ public class UnBanSelfGui extends PrivateGUI {
             } else if(event.getSlot() == 26) {
                 if(reason == null) return;
                 NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
-                Unban unban = targetNetworkPlayer.unban(null, reason, getMessage(), player.getUniqueId());
-                if(unban.getBanType() == BanType.NETWORK) {
-                    player.sendMessage(Messages.PLAYER_UNBANNED
+
+                if (targetNetworkPlayer.isBanned(BanType.CHAT)) {
+                    Unban unban = targetNetworkPlayer.unban(BanType.CHAT, reason, getMessage(), player.getUniqueId());
+                    player.sendMessage(Messages.PLAYER_UNMUTED
                             .replace("[prefix]", Messages.PREFIX_BAN)
                             .replace("[reason]",unban.getReason())
                             .replace("[message]",unban.getMessage())
@@ -116,8 +118,9 @@ public class UnBanSelfGui extends PrivateGUI {
                             .replace("[id]",""+unban.getID())
                             .replace("[points]",""+unban.getPoints())
                             .replace("[player]", targetNetworkPlayer.getColoredName()));
-                } else if(unban.getBanType() == BanType.CHAT) {
-                    player.sendMessage(Messages.PLAYER_UNMUTED
+                } else {
+                    Unban unban = targetNetworkPlayer.unban(BanType.NETWORK, reason, getMessage(), player.getUniqueId());
+                    player.sendMessage(Messages.PLAYER_UNBANNED
                             .replace("[prefix]", Messages.PREFIX_BAN)
                             .replace("[reason]",unban.getReason())
                             .replace("[message]",unban.getMessage())

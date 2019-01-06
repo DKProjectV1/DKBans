@@ -61,7 +61,7 @@ public class ReportCommand implements CommandExecutor {
                 return true;
             }
             if(target.getUUID().equals(player.getUniqueId())) {
-                player.sendMessage(Messages.BAN_SELF.replace("[prefix]", Messages.PREFIX_BAN));
+                player.sendMessage(Messages.REPORT_SELF.replace("[prefix]", Messages.PREFIX_BAN));
                 return true;
             }
             if(target.hasBypass() && !(player.hasPermission("dkbans.bypass.ignore"))){

@@ -93,8 +93,9 @@ public class KickSelfGui extends PrivateGUI {
                         DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
                                 .create(GUIS.ANVIL_INPUT, new AnvilInputGui(this, this.reason) {
                                     @Override
-                                    public void setInput(String input) {
+                                    public boolean setInput(String input) {
                                         setReason(input);
+                                        return true;
                                     }
                                 }).open());
             } else if(event.getSlot() == 15) {

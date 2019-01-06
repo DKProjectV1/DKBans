@@ -66,7 +66,6 @@ public class ReportGlobalGui extends PrivateGUI<Player> {
             } else {
                 setItem(45, ItemStorage.get("globalreport_login", networkPlayer));
             }
-            networkPlayer.setReportLogin(!networkPlayer.isReportLoggedIn());
         }
     }
 
@@ -122,7 +121,11 @@ public class ReportGlobalGui extends PrivateGUI<Player> {
                     },1L, TimeUnit.SECONDS);
                 }
             }
-        } else if(event.getSlot() == 45) setReportStatusItems();
+        } else if(event.getSlot() == 45) {
+            NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
+            networkPlayer.setReportLogin(!networkPlayer.isReportLoggedIn());
+            setReportStatusItems();
+        }
     }
 
     @Override

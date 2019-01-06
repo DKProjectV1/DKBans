@@ -91,8 +91,9 @@ public class ReportSelfGui extends PrivateGUI {
                         DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
                                 .create(GUIS.ANVIL_INPUT, new AnvilInputGui(this, this.reason) {
                                     @Override
-                                    public void setInput(String input) {
+                                    public boolean setInput(String input) {
                                         setReason(input);
+                                        return true;
                                     }
                                 }).open());
 
@@ -104,8 +105,18 @@ public class ReportSelfGui extends PrivateGUI {
                 if(reason == null) return;
                 NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
                 OnlineNetworkPlayer targetOnlineNetworkPlayer = targetNetworkPlayer.getOnlinePlayer();
-                Report report = targetNetworkPlayer.report(getOwner().getUniqueId(), getReason(), getMessage(), -1, targetOnlineNetworkPlayer.getServer());
-                if(report != null) {
+                Report report = targetNetworkPlayer.getReport(player.getUniqueId());
+                if(report != null){
+                    if(report.getTimeStamp()+BanSystem.getInstance().getConfig().reportDelay > System.currentTimeMillis()) {
+                        player.sendMessage(Messages.PLAYER_ALREADY_REPORTED
+                                .replace("[player]",targetNetworkPlayer.getColoredName())
+                                .replace("[prefix]", Messages.PREFIX_REPORT));
+                        player.closeInventory();
+                        return;
+                    }else; //@Todo remove report if delay
+                }
+                report = targetNetworkPlayer.report(player.getUniqueId(), reason, getMessage(), -1, targetOnlineNetworkPlayer.getServer());
+                if(report != null){
                     player.sendMessage(Messages.REPORT_SUCCESS
                             .replace("[player]", targetNetworkPlayer.getColoredName())
                             .replace("[reason]",report.getReason())

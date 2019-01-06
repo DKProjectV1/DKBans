@@ -207,8 +207,8 @@ public class ItemBuilder {
         return setGlowing(true);
     }
     public ItemBuilder setGlowing(boolean glowing) {
-        if(!glowing)return this;
-        this.itemStack.addUnsafeEnchantment(Enchantment.DIG_SPEED,1);
+        if(!glowing) this.itemStack.removeEnchantment(Enchantment.DIG_SPEED);
+        else this.itemStack.addUnsafeEnchantment(Enchantment.DIG_SPEED,1);
         ItemMeta meta = this.itemStack.getItemMeta();
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         itemStack.setItemMeta(meta);

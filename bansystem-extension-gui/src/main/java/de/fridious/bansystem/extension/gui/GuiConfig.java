@@ -22,9 +22,11 @@ package de.fridious.bansystem.extension.gui;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.config.SimpleConfig;
+import ch.dkrieger.bansystem.lib.player.history.BanType;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
 import de.fridious.bansystem.extension.gui.guis.ban.BanGlobalGui;
+import de.fridious.bansystem.extension.gui.guis.ban.BanSelfGui;
 import de.fridious.bansystem.extension.gui.guis.history.HistoryAllGui;
 import de.fridious.bansystem.extension.gui.guis.history.HistoryEntryDeleteGui;
 import de.fridious.bansystem.extension.gui.guis.kick.KickGlobalGui;
@@ -42,6 +44,7 @@ import de.fridious.bansystem.extension.gui.guis.warn.WarnTemplateGui;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 public class GuiConfig extends SimpleConfig {
 
@@ -53,9 +56,10 @@ public class GuiConfig extends SimpleConfig {
     public void onLoad() {
         BanTemplateGui.INVENTORY_TITLE = addAndGetMessageValue("ban.template.title", "&4Ban");
         BanGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("ban.global.title", "&4Global ban");
+        BanSelfGui.INVENTORY_TITLE = addAndGetMessageValue("ban.self.title", "&4Ban");
 
         HistoryAllGui.INVENTORY_TITLE = addAndGetMessageValue("history.all.title", "&bHistory");
-        HistoryEntryDeleteGui.INVENTORY_TITLE = addAndGetMessageValue("history.delete.title", "&8Are you sure?");
+        HistoryEntryDeleteGui.INVENTORY_TITLE = addAndGetMessageValue("history.delete.title", "&8Are you sure to delete?");
 
         KickGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("kick.global.title", "&4Global Kick");
         KickTemplateGui.INVENTORY_TITLE = addAndGetMessageValue("kick.template.title", "&4Kick");
@@ -97,6 +101,19 @@ public class GuiConfig extends SimpleConfig {
         ItemStorage.put("globalban_skull", addAndGetItemStack("ban.global.items.skull", new ItemBuilder(Material.SKULL_ITEM).setDisplayName("[player]").setLore("&7Click to ban").build()));
         ItemStorage.put("templateban_reason", addAndGetItemStack("ban.template.items.reason", new ItemBuilder(Material.PAPER).setDisplayName("[reason]").setLore("&7Id&8: &c[id]", "&7BanType&8: &4[banType]").build()));
         ItemStorage.put("templateban_editmessage", addAndGetItemStack("ban.template.items.editmessage", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet message of ban").setLore("&7Current message&8: &7[message]").build()));
+        ItemStorage.put("selfban_network", addAndGetItemStack("ban.self.items.network", new ItemBuilder(Material.BARRIER).setDisplayName("&4Ban").setLore("&7Click to change to mute").build()));
+        ItemStorage.put("selfban_chat", addAndGetItemStack("ban.self.items.chat", new ItemBuilder(Material.EMPTY_MAP).setDisplayName("&4Mute").setLore("&7Click to change to ban").build()));
+        ItemStorage.put("selfban_editmessage", addAndGetItemStack("ban.self.items.editmessage", new ItemBuilder(Material.PAPER).setDisplayName("&cSet a message of the ban").setLore("&7Current message&8: &c[message]").build()));
+        ItemStorage.put("selfban_reason", addAndGetItemStack("ban.self.items.reason", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet the reason").setLore("&7Current reason&8: &c[reason]").build()));
+        ItemStorage.put("selfban_duration", addAndGetItemStack("ban.self.items.duration", new ItemBuilder(Material.WATCH).setDisplayName("&cDuration").setLore("&7Current duration&8: &c[duration]").build()));
+        ItemStorage.put("selfban_timeunit_seconds", addAndGetItemStack("ban.self.items.timeunit.seconds", new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (short) 5).setDisplayName("&aSeconds").build()));
+        ItemStorage.put("selfban_timeunit_minutes", addAndGetItemStack("ban.self.items.timeunit.minutes", new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (short) 13).setDisplayName("&2Minutes").build()));
+        ItemStorage.put("selfban_timeunit_hours", addAndGetItemStack("ban.self.items.timeunit.hours", new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (short) 4).setDisplayName("&eHours").build()));
+        ItemStorage.put("selfban_timeunit_days", addAndGetItemStack("ban.self.items.timeunit.days", new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (short) 14).setDisplayName("&4Days").build()));
+        ItemStorage.put("selfban_send", addAndGetItemStack("ban.self.items.send", new ItemBuilder(Material.INK_SACK, 1, (short) 10).setDisplayName("&aSend").build()));
+        BanSelfGui.DEFAULT_SETTINGS.put("bantype", BanType.valueOf(addAndGetMessageValue("ban.self.settings.default.bantype", BanType.NETWORK.toString().toLowerCase()).toUpperCase()));
+        BanSelfGui.DEFAULT_SETTINGS.put("timeunit", TimeUnit.valueOf(addAndGetMessageValue("ban.self.settings.default.timeunit", TimeUnit.DAYS.toString().toLowerCase()).toUpperCase()));
+        BanSelfGui.DEFAULT_SETTINGS.put("duration", addAndGetLongValue("ban.self.settings.default.duration", -1));
         //Report
         ItemStorage.put("report_editmessage", addAndGetItemStack("report.template.items.editmessage", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet a message of a report").setLore("&7Current message&8: &7[message]").build()));
         ItemStorage.put("report_reason", addAndGetItemStack("report.template.items.skull", new ItemBuilder(Material.PAPER).setDisplayName("[reason]").build()));
@@ -107,7 +124,7 @@ public class GuiConfig extends SimpleConfig {
         ItemStorage.put("reportcontrol_accept", addAndGetItemStack("report.control.accept", new ItemBuilder(Material.EMERALD).setDisplayName("&aAccept").build()));
         ItemStorage.put("reportcontrol_deny", addAndGetItemStack("report.control.deny", new ItemBuilder(Material.REDSTONE).setDisplayName("&cDeny").build()));
         ItemStorage.put("reportcontrol_custom", addAndGetItemStack("report.control.custom", new ItemBuilder(Material.BARRIER).setDisplayName("&7Change ban reason").setLore("&7Ban the player with a custom ban reason").build()));
-        ItemStorage.put("reportcontrol_editmessage", addAndGetItemStack("report.control.items.editmessage", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet a message of the ban").setLore("&7Current message&8: &7[message]").build()));
+        ItemStorage.put("reportcontrol_editmessage", addAndGetItemStack("report.control.items.editmessage", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet a message of the report").setLore("&7Current message&8: &7[message]").build()));
         ItemStorage.put("reportself_reason", addAndGetItemStack("report.self.items.reason", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet the reason").setLore("&7Current reason&8: [reason]").build()));
         ItemStorage.put("reportself_message", addAndGetItemStack("report.self.items.message", new ItemBuilder(Material.PAPER).setDisplayName("&cSet the message").setLore("&7Current message&8: [message]").build()));
         ItemStorage.put("reportself_send", addAndGetItemStack("report.self.items.send", new ItemBuilder(Material.INK_SACK, 1, (short) 10).setDisplayName("&aSend").build()));
@@ -132,7 +149,8 @@ public class GuiConfig extends SimpleConfig {
         ItemStorage.put("unbanself_message", addAndGetItemStack("unban.self.items.message", new ItemBuilder(Material.PAPER).setDisplayName("&cSet the message").setLore("&7Current message&8: [message]").build()));
         ItemStorage.put("unbanself_send", addAndGetItemStack("unban.self.items.send", new ItemBuilder(Material.INK_SACK, 1, (short) 10).setDisplayName("&aSend").build()));
         //History
-        ItemStorage.put("history_ban", addAndGetItemStack("history.items.ban", new ItemBuilder(Material.BARRIER).setDisplayName("&4Ban").setLore("&7Id&8: &c[id]", "&7Reason&8: &c[reason]", "&7Time&8: &c[time]", "&7Timeout&8: &c[timeout]", "&7Message&8: &c[message]", "&7Type&8: &c[type]", "&7Staff&8: &c[staff]", "&7Ip&8: &c[ip]").build()));
+        ItemStorage.put("history_ban_network", addAndGetItemStack("history.items.ban.network", new ItemBuilder(Material.BARRIER).setDisplayName("&4Ban").setLore("&7Id&8: &c[id]", "&7Reason&8: &c[reason]", "&7Time&8: &c[time]", "&7Timeout&8: &c[timeout]", "&7Message&8: &c[message]", "&7Type&8: &c[type]", "&7Staff&8: &c[staff]", "&7Ip&8: &c[ip]").build()));
+        ItemStorage.put("history_ban_chat", addAndGetItemStack("history.items.ban.chat", new ItemBuilder(Material.EMPTY_MAP).setDisplayName("&4Mute").setLore("&7Id&8: &c[id]", "&7Reason&8: &c[reason]", "&7Time&8: &c[time]", "&7Timeout&8: &c[timeout]", "&7Message&8: &c[message]", "&7Type&8: &c[type]", "&7Staff&8: &c[staff]", "&7Ip&8: &c[ip]").build()));
         ItemStorage.put("history_unban", addAndGetItemStack("history.items.unban", new ItemBuilder(Material.IRON_FENCE).setDisplayName("&4Unban").setLore("&7Id&8: &c[id]", "&7Reason&8: &c[reason]", "&7Message&8: &c[message]", "&7Type&8: &c[type]", "&7Time&8: &c[time]", "&7Staff&8: &c[staff]", "&7Ip&8: &c[ip]").build()));
         ItemStorage.put("history_warn", addAndGetItemStack("history.items.warn", new ItemBuilder(Material.TNT).setDisplayName("&6Warn").setLore("&7Id&8: &c[id]", "&7Reason&8: &c[reason]", "&7Message&8: &c[message]", "&7Type&8: &c[type]", "&7Time&8: &c[time]", "&7Staff&8: &c[staff]", "&7Ip&8: &c[ip]").build()));
         ItemStorage.put("history_kick", addAndGetItemStack("history.items.kick", new ItemBuilder(Material.RABBIT_FOOT).setDisplayName("&4Kick").setLore("&7Id&8: &c[id]", "&7Reason&8: &c[reason]", "&7Message&8: &c[message]", "&7Type&8: &c[type]", "&7Server&8: &c[server]", "&7Time&8: &c[time]", "&7Staff&8: &c[staff]", "&7Ip&8: &c[ip]").build()));

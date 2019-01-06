@@ -63,6 +63,7 @@ public class ReportControlGui extends PrivateGUI {
         setItem(13, ItemStorage.get("reportcontrol_custom"));
         setItem(16, ItemStorage.get("reportcontrol_deny"));
         setItem(22, ItemStorage.get("reportcontrol_editmessage", replace -> replace.replace("[message]", message)));
+        fill(ItemStorage.get("placeholder"));
     }
 
     public String getMessage() {
@@ -106,6 +107,7 @@ public class ReportControlGui extends PrivateGUI {
                         .replace("[duration]", GeneralUtil.calculateDuration(ban.getDuration()))
                         .replace("[remaining]", GeneralUtil.calculateRemaining(ban.getDuration(),false))
                         .replace("[remaining-short]", GeneralUtil.calculateRemaining(ban.getDuration(),true)));
+                player.closeInventory();
             } else if(event.getSlot() == 13) {
                 BanMode banMode = BanSystem.getInstance().getConfig().banMode;
                 if(banMode == BanMode.TEMPLATE || banMode == BanMode.POINT) {
@@ -122,6 +124,7 @@ public class ReportControlGui extends PrivateGUI {
                         .replace("[player]", targetNetworkPlayer.getColoredName())
                         .replace("[prefix]", Messages.PREFIX_BAN));
                 targetNetworkPlayer.denyReports();
+                player.closeInventory();
             } else if(event.getSlot() == 22) {
                 Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                         DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)

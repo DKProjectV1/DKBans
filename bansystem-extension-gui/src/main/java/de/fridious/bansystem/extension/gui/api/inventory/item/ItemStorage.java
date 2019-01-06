@@ -107,7 +107,7 @@ public class ItemStorage {
                 .replace("[reasonID]",""+report.getReasonID())
                 .replace("[player]",report.getPlayer().getColoredName())
                 .replace("[reporter]",report.getReporter().getColoredName())
-                .replace("[time]", BanSystem.getInstance().getConfig().dateFormat.format(System.currentTimeMillis()-report.getTimeStamp())));
+                .replace("[time]", BanSystem.getInstance().getConfig().dateFormat.format(report.getTimeStamp())));
     }
 
     public static ItemStack get(String key, HistoryEntry entry) {
@@ -129,7 +129,7 @@ public class ItemStorage {
                 .replace("[time]",BanSystem.getInstance().getConfig().dateFormat.format(ban.getTimeStamp()))
                 .replace("[timeout]",BanSystem.getInstance().getConfig().dateFormat.format(ban.getTimeOut()))
                 .replace("[message]",ban.getMessage())
-                .replace("[type]",ban.getTypeName())
+                .replace("[type]",ban.getBanType().getDisplay())
                 .replace("[staff]",ban.getStaffName())
                 .replace("[ip]",ban.getIp())
                 .replace("[points]",""+ban.getPoints().getPoints())

@@ -45,21 +45,15 @@ public class BanTemplateGui extends PrivateGUI<BanReason> {
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList();
     private UUID target;
-    private String message;
 
     public BanTemplateGui(Player player, UUID target) {
         super(player);
         String title = INVENTORY_TITLE;
         this.target = target;
-        this.message = " ";
         createInventory(title, 54);
         getUpdateEvents().addAll(UPDATE_EVENTS);
         setPageEntries(getInteractBanReasons());
-        setItem(45, ItemStorage.get("templateban_editmessage", replace -> replace.replace("[message]", message)));
-    }
-
-    public String getMessage() {
-        return message;
+        setItem(45, ItemStorage.get("templateban_editmessage", replace -> replace.replace("[message]", getMessage())));
     }
 
     private List<BanReason> getInteractBanReasons() {
@@ -72,14 +66,10 @@ public class BanTemplateGui extends PrivateGUI<BanReason> {
         return banReasons;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     @Override
     public void updatePage(Event event) {
         if(event == null || getUpdateEvents().contains(event.getClass())) {
-            setItem(45, ItemStorage.get("templateban_editmessage", replace -> replace.replace("[message]", message)));
+            setItem(45, ItemStorage.get("templateban_editmessage", replace -> replace.replace("[message]", getMessage())));
         }
     }
 

@@ -23,11 +23,12 @@ package de.fridious.bansystem.extension.gui.api.inventory.gui;
 public class MessageAnvilInputGui extends AnvilInputGui {
 
     public MessageAnvilInputGui(PrivateGUI gui) {
-        super(gui, gui.getInput());
+        super(gui, gui.getMessage());
     }
 
     @Override
-    public void setInput(String input) {
+    public boolean setInput(String input) {
         getGui().setMessage(input);
+        return true;
     }
 }

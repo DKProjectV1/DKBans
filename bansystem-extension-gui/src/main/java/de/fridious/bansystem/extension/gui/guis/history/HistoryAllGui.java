@@ -23,6 +23,7 @@ package de.fridious.bansystem.extension.gui.guis.history;
 import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerHistoryUpdateEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.*;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
@@ -44,13 +45,11 @@ public class HistoryAllGui extends PrivateGUI<HistoryEntry> {
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = new LinkedList<>(Arrays.asList(BukkitNetworkPlayerHistoryUpdateEvent.class));
     private UUID target;
-    private boolean childGui;
 
     public HistoryAllGui(Player owner, UUID target) {
         super(owner);
         String title = INVENTORY_TITLE;
         this.target = target;
-        this.childGui = false;
         createInventory(title, 54);
         getUpdateEvents().addAll(UPDATE_EVENTS);
         NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
@@ -75,7 +74,8 @@ public class HistoryAllGui extends PrivateGUI<HistoryEntry> {
     @Override
     public void setPageItem(int slot, HistoryEntry historyEntry) {
         if(historyEntry instanceof Ban) {
-            setItem(slot, ItemStorage.get("history_ban", (Ban) historyEntry));
+            if(((Ban) historyEntry).getBanType() == BanType.CHAT) setItem(slot, ItemStorage.get("history_ban_chat", (Ban) historyEntry));
+            else setItem(slot, ItemStorage.get("history_ban_network", (Ban) historyEntry));
         } else if(historyEntry instanceof Warn) {
             setItem(slot, ItemStorage.get("history_warn", (Warn) historyEntry));
         } else if(historyEntry instanceof Kick) {
@@ -99,7 +99,6 @@ public class HistoryAllGui extends PrivateGUI<HistoryEntry> {
         System.out.println(player.hasPermission("dkbans.history.reset"));
         if(historyEntry != null && player.hasPermission("dkbans.history.reset")) {
             System.out.println("hasPermission and not null");
-            this.childGui = true;
             Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                     DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
                             .create(GUIS.HISTORY_DELETE, new HistoryEntryDeleteGui(getOwner(), target, historyEntry, this)).open());
@@ -111,6 +110,6 @@ public class HistoryAllGui extends PrivateGUI<HistoryEntry> {
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        if(!childGui) DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.HISTORY_ALL);
+        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.HISTORY_ALL);
     }
 }

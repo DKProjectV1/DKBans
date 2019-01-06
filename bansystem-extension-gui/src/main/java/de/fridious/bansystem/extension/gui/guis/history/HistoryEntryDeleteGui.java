@@ -23,6 +23,7 @@ package de.fridious.bansystem.extension.gui.guis.history;
 import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerHistoryUpdateEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.*;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
@@ -59,7 +60,8 @@ public class HistoryEntryDeleteGui extends PrivateGUI {
         createInventory(title, 27);
         getUpdateEvents().addAll(UPDATE_EVENTS);
         if(historyEntry instanceof Ban) {
-            setItem(13, ItemStorage.get("history_ban", (Ban) historyEntry));
+            if(((Ban) historyEntry).getBanType() == BanType.CHAT) setItem(13, ItemStorage.get("history_ban_chat", (Ban) historyEntry));
+            else setItem(13, ItemStorage.get("history_ban_network", (Ban) historyEntry));
         } else if(historyEntry instanceof Warn) {
             setItem(13, ItemStorage.get("history_warn", (Warn) historyEntry));
         } else if(historyEntry instanceof Kick) {
@@ -79,20 +81,19 @@ public class HistoryEntryDeleteGui extends PrivateGUI {
 
     @Override
     protected void onClick(InventoryClickEvent event) {
-        final Player player = (Player) event.getWhoClicked();
         if(ACCEPT_SLOTS.contains(event.getSlot())) {
             NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
             targetNetworkPlayer.resetHistory(historyEntry.getID());
-            player.closeInventory();
+            if(this.historyAllGui != null) Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                    historyAllGui.open());
         } else if(DENY_SLOTS.contains(event.getSlot())) {
-            player.closeInventory();
+            if(this.historyAllGui != null) Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                    historyAllGui.open());
         }
     }
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
         DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.HISTORY_DELETE);
-        if(this.historyAllGui != null) Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                historyAllGui.open());
     }
 }

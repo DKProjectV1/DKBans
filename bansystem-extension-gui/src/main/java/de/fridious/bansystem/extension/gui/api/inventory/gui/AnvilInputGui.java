@@ -56,18 +56,24 @@ public abstract class AnvilInputGui extends PrivateGUI {
         if(event.getRawSlot() == AnvilSlot.OUTPUT) {
             String input = getInput();
             if(input != null) {
-                setInput(input.trim());
-                gui.updatePage(null);
-                inventory.clear();
-                Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()-> gui.open());
+                boolean successful = setInput(input.trim());
+                if(successful) {
+                    inventory.clear();
+                    if(gui != null) {
+                        gui.updatePage(null);
+                        Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()-> gui.open());
+                    }
+                }
             }
         }
     }
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
+        System.out.println("ONCLOSE INPUt GUI " + gui.getClass());
         DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.ANVIL_INPUT);
+        event.getInventory().clear();
     }
 
-    public abstract void setInput(String input);
+    public abstract boolean setInput(String input);
 }

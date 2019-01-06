@@ -51,6 +51,24 @@ public class ReportListGui extends PrivateGUI<Report> {
         getUpdateEvents().addAll(UPDATE_EVENTS);
         createInventory(title, 54);
         setPageEntries(BanSystem.getInstance().getReportManager().getOpenReports());
+        setReportStatusItems();
+    }
+
+    public void setReportStatusItems() {
+        if(getOwner().hasPermission("dkbans.report") && getOwner().hasPermission("dkbans.report.receive")) {
+            NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getOwner().getUniqueId());
+            if(networkPlayer.isReportLoggedIn()) {
+                setItem(45, ItemStorage.get("globalreport_logout", networkPlayer));
+            } else {
+                setItem(45, ItemStorage.get("globalreport_login", networkPlayer));
+            }
+        }
+    }
+
+    @Override
+    public void updatePage(Event event) {
+        super.updatePage(event);
+        setReportStatusItems();
     }
 
     @Override
@@ -107,6 +125,11 @@ public class ReportListGui extends PrivateGUI<Report> {
                     .replace("[reporter]",report.getReporter().getColoredName())
                     .replace("[server]", onlineNetworkPlayer.getServer())
                     .replace("[prefix]", Messages.PREFIX_BAN));
+            player.closeInventory();
+        } else if(event.getSlot() == 45) {
+            NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
+            networkPlayer.setReportLogin(!networkPlayer.isReportLoggedIn());
+            setReportStatusItems();
         }
     }
 

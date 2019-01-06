@@ -82,8 +82,18 @@ public class ReportTemplateGui extends PrivateGUI<ReportReason> {
             if(player.hasPermission("dkbans.report") && player.hasPermission(reportReason.getPermission())) {
                 NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
                 OnlineNetworkPlayer targetOnlineNetworkPlayer = targetNetworkPlayer.getOnlinePlayer();
-                Report report = targetNetworkPlayer.report(reportReason, getMessage(), player.getUniqueId(), targetOnlineNetworkPlayer.getServer());
-                if(report != null) {
+                Report report = targetNetworkPlayer.getReport(player.getUniqueId());
+                if(report != null){
+                    if(report.getTimeStamp()+BanSystem.getInstance().getConfig().reportDelay > System.currentTimeMillis()) {
+                        player.sendMessage(Messages.PLAYER_ALREADY_REPORTED
+                                .replace("[player]",targetNetworkPlayer.getColoredName())
+                                .replace("[prefix]", Messages.PREFIX_REPORT));
+                        player.closeInventory();
+                        return;
+                    }else; //@Todo remove report if delay
+                }
+                report = targetNetworkPlayer.report(reportReason, getMessage(), player.getUniqueId(), targetOnlineNetworkPlayer.getServer());
+                if(report != null){
                     player.sendMessage(Messages.REPORT_SUCCESS
                             .replace("[player]", targetNetworkPlayer.getColoredName())
                             .replace("[reason]",report.getReason())

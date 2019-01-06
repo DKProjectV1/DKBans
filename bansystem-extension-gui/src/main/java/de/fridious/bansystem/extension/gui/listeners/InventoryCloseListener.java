@@ -39,7 +39,7 @@ public class InventoryCloseListener implements Listener {
         else {
             PrivateGUI.ANVIL_GUIS.forEach(privateGUI -> {
                 if(privateGUI.getInventory().equals(event.getInventory()))
-                    Bukkit.getScheduler().runTaskAsynchronously(DKBansGuiExtension.getInstance(), ()-> privateGUI.handleClose(event));
+                    privateGUI.handleClose(event);
             });
         }
     }

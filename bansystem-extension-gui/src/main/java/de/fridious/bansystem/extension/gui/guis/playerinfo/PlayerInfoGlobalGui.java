@@ -56,15 +56,13 @@ public class PlayerInfoGlobalGui extends PrivateGUI<Player> {
 
     @Override
     public void beforeUpdatePage() {
-        System.out.println("Playerinfogui: beforeupdatePage set: " + Bukkit.getOnlinePlayers());
         setPageEntries(new LinkedList<>(Bukkit.getOnlinePlayers()));
     }
 
     @Override
     public void setPageItem(int slot, Player player) {
         NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
-        setItem(slot, new ItemBuilder(
-                ItemStorage.get("globalplayerinfo_skull", networkPlayer)).setGameProfile(networkPlayer.getName()));
+        setItem(slot, new ItemBuilder(ItemStorage.get("globalplayerinfo_skull", networkPlayer)).setGameProfile(networkPlayer.getName()));
     }
 
     @Override
