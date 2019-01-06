@@ -68,8 +68,8 @@
             <version>LATEST</version>
         </dependency>
         <dependency>
-            <groupId>ch.dkrieger.bansystem.spigot</groupId>
-            <artifactId>bansystem-spigot</artifactId>
+            <groupId>ch.dkrieger.bansystem.bukkit</groupId>
+            <artifactId>bansystem-bukkit</artifactId>
             <version>LATEST</version>
         </dependency>
         <dependency>
