@@ -659,7 +659,7 @@ public class SQLDKBansStorage implements DKBansStorage {
 
     private void tryTranslateFromV1ToV2(){
         try{
-            this.players.select("SELECT 1 FROM DKBans_autobroadcast LIMIT 1;").execute();
+            this.players.select().execute();
 
             System.out.println(Messages.SYSTEM_PREFIX+"Translating DKBansV1 mysql tables to DKBansV2, please wait.");
             this.players.execute("RENAME TABLE `DKBans_players` TO `DKBans_playersOld`");
