@@ -378,7 +378,7 @@ public class SQLDKBansStorage implements DKBansStorage {
 
     @Override
     public ChatLog getChatLog(UUID player) {
-        return getChatLog(chatlogs.select().where("player",player.toString()));
+        return getChatLog(chatlogs.select().where("uuid",player.toString()));
     }
 
     @Override
@@ -387,7 +387,7 @@ public class SQLDKBansStorage implements DKBansStorage {
     }
     @Override
     public ChatLog getChatLog(UUID player, String server) {
-        return getChatLog(chatlogs.select().where("server",server).where("player",player.toString()));
+        return getChatLog(chatlogs.select().where("server",server).where("uuid",player.toString()));
     }
     public ChatLog getChatLog(SelectQuery query){
         return query.execute(result -> {
