@@ -570,6 +570,7 @@ public class NetworkPlayer {
                     BanSystem.getInstance().getPlayerManager().banIp(lastIP,BanSystem.getInstance().getConfig().ipBanOnBanDuration,TimeUnit.MILLISECONDS,uuid);
             });
         }
+        BanSystem.getInstance().getStorage().deleteReports(this);
         ban.setID(addToHistory(ban,NetworkPlayerUpdateCause.BAN,new Document().append("ban",ban).append("reports",this.reports)));
         this.reports.clear();
         OnlineNetworkPlayer player = getOnlinePlayer();
