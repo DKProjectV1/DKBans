@@ -1,23 +1,10 @@
 package de.fridious.bansystem.extension.gui.api.inventory.gui;
 
-import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.AnvilSlot;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
-import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
-import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryType;
-
 /*
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Philipp Elvin Friedhoff
- * @since 05.01.19 00:06
+ * @since 06.01.19 00:42
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -33,11 +20,30 @@ import org.bukkit.event.inventory.InventoryType;
  * under the License.
  */
 
+import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
+import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
+import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
+import de.fridious.bansystem.extension.gui.guis.GUIS;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
+
 public abstract class AnvilInputGui extends PrivateGUI {
 
-    public AnvilInputGui(Player owner) {
-        super(InventoryType.ANVIL, owner);
-        setItem(AnvilSlot.INPUT_LEFT, new ItemBuilder(ItemStorage.get("custom_message")).setDisplayName(getMessage()));
+    private PrivateGUI gui;
+
+    public AnvilInputGui(PrivateGUI gui, String input) {
+        super(InventoryType.ANVIL, gui.getOwner());
+        setItem(AnvilSlot.INPUT_LEFT, new ItemBuilder(ItemStorage.get("custom_message"))
+                .setDisplayName((input == null || input.equalsIgnoreCase("")) ? " " : input));
+        this.gui = gui;
+    }
+
+    public PrivateGUI getGui() {
+        return gui;
     }
 
     @Override
@@ -50,10 +56,10 @@ public abstract class AnvilInputGui extends PrivateGUI {
         if(event.getRawSlot() == AnvilSlot.OUTPUT) {
             String input = getInput();
             if(input != null) {
-                setMessage(input.trim());
-                updatePage();
+                setInput(input.trim());
+                gui.updatePage(null);
                 inventory.clear();
-                Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), this::open);
+                Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()-> gui.open());
             }
         }
     }
@@ -63,8 +69,5 @@ public abstract class AnvilInputGui extends PrivateGUI {
         DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.ANVIL_INPUT);
     }
 
-    public abstract String getMessage();
-    public abstract void setMessage(String message);
-    public abstract void updatePage();
-    public abstract void open();
+    public abstract void setInput(String input);
 }

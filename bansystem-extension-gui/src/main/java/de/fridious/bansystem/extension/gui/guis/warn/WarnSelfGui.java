@@ -4,7 +4,7 @@ package de.fridious.bansystem.extension.gui.guis.warn;
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Philipp Elvin Friedhoff
- * @since 04.01.19 20:32
+ * @since 05.01.19 02:27
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -23,9 +23,11 @@ package de.fridious.bansystem.extension.gui.guis.warn;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
-import ch.dkrieger.bansystem.lib.reason.WarnReason;
+import ch.dkrieger.bansystem.lib.report.Report;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.AnvilInputGui;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.MessageAnvilInputGui;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
@@ -36,58 +38,45 @@ import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-public class WarnTemplateGui extends PrivateGUI<WarnReason> {
+public class WarnSelfGui extends PrivateGUI {
 
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList();
-    private String title;
     private UUID target;
-    private String message;
+    private String reason;
 
-    public WarnTemplateGui(Player owner, UUID target) {
+    public WarnSelfGui(Player owner, UUID target) {
         super(owner);
-        this.title = INVENTORY_TITLE;
         this.target = target;
-        this.message = " ";
-        createInventory(title, 54);
-        setPageEntries(getInteractWarnReasons());
-        setItem(45, ItemStorage.get("templatewarn_editmessage", replace -> replace.replace("[message]", message)));
+        this.reason = "";
+        String title = INVENTORY_TITLE;
         getUpdateEvents().addAll(UPDATE_EVENTS);
+        createInventory(title, 27);
+        setItem(11, ItemStorage.get("warnself_reason", replace -> replace.replace("[reason]", reason)));
+        setItem(15, ItemStorage.get("warnself_message", replace -> replace.replace("[message]", getMessage())));
+        setItem(26, ItemStorage.get("warnself_send", replace ->
+                replace.replace("[reason]", reason).replace("[message]", getMessage())));
     }
 
-    public String getMessage() {
-        return message;
+    public String getReason() {
+        return reason;
     }
 
-    private List<WarnReason> getInteractWarnReasons() {
-        List<WarnReason> warnReasons = new LinkedList<>();
-        for(WarnReason reason : BanSystem.getInstance().getReasonProvider().getWarnReasons()) {
-            if((!BanSystem.getInstance().getPlayerManager().getPlayer(target).hasBypass() || getOwner().hasPermission("dkbans.bypass.ignore"))
-                    && !reason.isHidden() && getOwner().hasPermission("dkbans.warn")
-                    && getOwner().hasPermission(reason.getPermission())) warnReasons.add(reason);
-        }
-        return warnReasons;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     @Override
     public void updatePage(Event event) {
-        if(event == null || getUpdateEvents().contains(event.getClass())) {
-            setItem(45, ItemStorage.get("templatewarn_editmessage", replace -> replace.replace("[message]", message)));
-        }
-    }
-
-    @Override
-    public void setPageItem(int slot, WarnReason reason) {
-        setItem(slot, ItemStorage.get("templatewarn_reason", reason));
+        setItem(11, ItemStorage.get("warnself_reason", replace -> replace.replace("[reason]", reason)));
+        setItem(15, ItemStorage.get("warnself_message", replace -> replace.replace("[message]", getMessage())));
+        setItem(26, ItemStorage.get("warnself_send", replace ->
+                replace.replace("[reason]", reason).replace("[message]", getMessage())));
     }
 
     @Override
@@ -98,13 +87,25 @@ public class WarnTemplateGui extends PrivateGUI<WarnReason> {
     @Override
     protected void onClick(InventoryClickEvent event) {
         final Player player = (Player) event.getWhoClicked();
-        WarnReason warnReason = getEntryBySlot().get(event.getSlot());
-        if(warnReason != null) {
-            if(player.hasPermission("dkbans.warn") &&
-                    player.hasPermission(warnReason.getPermission())
-                    && (!BanSystem.getInstance().getPlayerManager().getPlayer(target).hasBypass() || player.hasPermission("dkbans.bypass.ignore"))) {
+        if(player.hasPermission("dkbans.warn") && (!BanSystem.getInstance().getPlayerManager().getPlayer(target).hasBypass()
+                || player.hasPermission("dkbans.bypass.ignore"))) {
+            if(event.getSlot() == 11) {
+                Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                .create(GUIS.ANVIL_INPUT, new AnvilInputGui(this, this.reason) {
+                                    @Override
+                                    public void setInput(String input) {
+                                        setReason(input);
+                                    }
+                                }).open());
+            } else if(event.getSlot() == 15) {
+                Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                .create(GUIS.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
+            } else if(event.getSlot() == 26) {
+                if(reason == null) return;
                 NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
-                Warn warn = targetNetworkPlayer.warn(warnReason, getMessage(), player.getUniqueId());
+                Warn warn = targetNetworkPlayer.warn(getReason(), getMessage(), player.getUniqueId());
                 player.sendMessage(Messages.WARN_SUCCESS
                         .replace("[prefix]", Messages.PREFIX_BAN)
                         .replace("[reason]",warn.getReason())
@@ -115,15 +116,11 @@ public class WarnTemplateGui extends PrivateGUI<WarnReason> {
                         .replace("[player]", targetNetworkPlayer.getColoredName()));
                 player.closeInventory();
             }
-        } else if(event.getSlot() == 45) {
-            Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                    DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                            .create(GUIS.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
         }
     }
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.WARN_TEMPLATE);
+        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.WARN_SELF);
     }
 }

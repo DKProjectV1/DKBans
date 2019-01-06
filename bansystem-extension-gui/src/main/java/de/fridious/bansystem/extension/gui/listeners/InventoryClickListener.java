@@ -39,17 +39,17 @@ public class InventoryClickListener implements Listener {
 
         if(!(event.getWhoClicked() instanceof Player) || event.getInventory() == null ||
                 event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR ||
-                event.getCurrentItem().getItemMeta() == null ||
-                event.getCurrentItem().getItemMeta().getDisplayName() == null) return;
+                event.getCurrentItem().getItemMeta() == null) return;
         if(event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof GUI) {
             event.setCancelled(true);
             Bukkit.getScheduler().runTaskAsynchronously(DKBansGuiExtension.getInstance(), ()-> ((GUI)event.getInventory().getHolder()).handleClick(event));
         } else {
-            PrivateGUI.ANVIL_GUIS.forEach(privateGUI -> {
-                if(privateGUI.getInventory().equals(event.getInventory()))
-                    Bukkit.getScheduler().runTaskAsynchronously(DKBansGuiExtension.getInstance(), ()-> privateGUI.handleClick(event));
-            });
+            for (PrivateGUI privateGUI : PrivateGUI.ANVIL_GUIS) {
+                if (privateGUI.getInventory().equals(event.getInventory())) {
+                    event.setCancelled(true);
+                    Bukkit.getScheduler().runTaskAsynchronously(DKBansGuiExtension.getInstance(), () -> privateGUI.handleClick(event));
+                }
+            }
         }
-
     }
 }

@@ -28,6 +28,7 @@ import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.guis.GUIS;
 import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.guis.kick.KickGlobalGui;
+import de.fridious.bansystem.extension.gui.guis.kick.KickSelfGui;
 import de.fridious.bansystem.extension.gui.guis.kick.KickTemplateGui;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -71,8 +72,11 @@ public class KickCommand implements CommandExecutor {
             }
             ReasonMode kickMode = BanSystem.getInstance().getConfig().kickMode;
             if(kickMode == ReasonMode.TEMPLATE) {
-                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(GUIS.KICK_TEMPLATE, new KickTemplateGui(player, target.getUUID())).open();
+                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                        .create(GUIS.KICK_TEMPLATE, new KickTemplateGui(player, target.getUUID())).open();
             } else if(kickMode == ReasonMode.SELF) {
+                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                        .create(GUIS.KICK_SELF, new KickSelfGui(player, target.getUUID())).open();
 
             }
         } else {

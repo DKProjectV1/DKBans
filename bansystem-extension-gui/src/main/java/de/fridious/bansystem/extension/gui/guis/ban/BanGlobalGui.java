@@ -81,9 +81,12 @@ public class BanGlobalGui extends PrivateGUI<Player> {
                 BanMode banMode = BanSystem.getInstance().getConfig().banMode;
                 if(banMode == BanMode.TEMPLATE || banMode == BanMode.POINT) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(GUIS.BAN_TEMPLATE, new BanTemplateGui(player, target.getUniqueId())).open());
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                    .create(GUIS.BAN_TEMPLATE, new BanTemplateGui(player, target.getUniqueId())).open());
                 } else if(banMode == BanMode.SELF) {
-
+                    Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                    .create(GUIS.BAN_SELF, new BanSelfGui(player, target.getUniqueId())).open());
                 }
             }
         }

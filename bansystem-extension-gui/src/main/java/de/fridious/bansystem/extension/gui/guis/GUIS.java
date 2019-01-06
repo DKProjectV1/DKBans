@@ -26,6 +26,7 @@ public final class GUIS {
 
     public static final String BAN_GLOBAL = "ban_global";
     public static final String BAN_TEMPLATE = "ban_template";
+    public static final String BAN_SELF = "ban_self";
 
     public static final String PLAYERINFO_GLOBAL = "playerinfo_global";
     public static final String PLAYERINFO_PLAYER = "playerinfo_player";
@@ -34,10 +35,19 @@ public final class GUIS {
     public static final String REPORT_TEMPLATE = "report_template";
     public static final String REPORT_LIST = "report_list";
     public static final String REPORT_CONTROL = "report_control";
+    public static final String REPORT_SELF = "report_self";
 
     public static final String WARN_GLOBAL = "warn_global";
     public static final String WARN_TEMPLATE = "warn_template";
+    public static final String WARN_SELF = "warn_self";
 
     public static final String KICK_GLOBAL = "kick_global";
     public static final String KICK_TEMPLATE = "kick_template";
+    public static final String KICK_SELF = "kick_self";
+
+    public static final String UNBAN_TEMPLATE = "unban_template";
+    public static final String UNBAN_SELF = "unban_self";
+
+    public static final String HISTORY_ALL = "history_all";
+    public static final String HISTORY_DELETE = "history_delete";
 }

@@ -86,7 +86,9 @@ public class KickGlobalGui extends PrivateGUI<Player> {
                             DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
                                     .create(GUIS.KICK_TEMPLATE, new KickTemplateGui(player, target.getUniqueId())).open());
                 } else if(kickMode == ReasonMode.SELF) {
-
+                    Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                    .create(GUIS.KICK_SELF, new KickSelfGui(player, target.getUniqueId())).open());
                 }
             }
         }

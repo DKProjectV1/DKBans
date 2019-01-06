@@ -63,10 +63,10 @@ public abstract class PrivateGUI<T> extends GUI<T> {
     public PrivateGUI(InventoryType inventoryType, Player owner) {
         this.owner = owner;
         if(inventoryType == InventoryType.ANVIL) {
+            ANVIL_GUIS.add(this);
             this.container = REFLECTION_ANVIL.newContainerAnvil(owner);
             this.inventory = REFLECTION_ANVIL.toBukkitInventory(container);
             this.containerId = REFLECTION_ANVIL.getNextContainerId(owner);
-            ANVIL_GUIS.add(this);
         }
     }
 

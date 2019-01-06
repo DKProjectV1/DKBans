@@ -25,15 +25,19 @@ import ch.dkrieger.bansystem.lib.config.SimpleConfig;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
 import de.fridious.bansystem.extension.gui.guis.ban.BanGlobalGui;
+import de.fridious.bansystem.extension.gui.guis.history.HistoryAllGui;
+import de.fridious.bansystem.extension.gui.guis.history.HistoryEntryDeleteGui;
 import de.fridious.bansystem.extension.gui.guis.kick.KickGlobalGui;
+import de.fridious.bansystem.extension.gui.guis.kick.KickSelfGui;
+import de.fridious.bansystem.extension.gui.guis.kick.KickTemplateGui;
 import de.fridious.bansystem.extension.gui.guis.playerinfo.PlayerInfoGlobalGui;
 import de.fridious.bansystem.extension.gui.guis.playerinfo.PlayerInfoGui;
 import de.fridious.bansystem.extension.gui.guis.ban.BanTemplateGui;
-import de.fridious.bansystem.extension.gui.guis.report.ReportGlobalGui;
-import de.fridious.bansystem.extension.gui.guis.report.ReportControlGui;
-import de.fridious.bansystem.extension.gui.guis.report.ReportListGui;
-import de.fridious.bansystem.extension.gui.guis.report.ReportTemplateGui;
+import de.fridious.bansystem.extension.gui.guis.report.*;
+import de.fridious.bansystem.extension.gui.guis.unban.UnBanSelfGui;
+import de.fridious.bansystem.extension.gui.guis.unban.UnBanTemplateGui;
 import de.fridious.bansystem.extension.gui.guis.warn.WarnGlobalGui;
+import de.fridious.bansystem.extension.gui.guis.warn.WarnSelfGui;
 import de.fridious.bansystem.extension.gui.guis.warn.WarnTemplateGui;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -47,17 +51,32 @@ public class GuiConfig extends SimpleConfig {
 
     @Override
     public void onLoad() {
-        PlayerInfoGui.INVENTORY_TITLE = addAndGetMessageValue("playerinfo.player.title", "&4Player info");
-        PlayerInfoGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("playerinfo.global.title", "&4Global player info");
         BanTemplateGui.INVENTORY_TITLE = addAndGetMessageValue("ban.template.title", "&4Ban");
         BanGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("ban.global.title", "&4Global ban");
+
+        HistoryAllGui.INVENTORY_TITLE = addAndGetMessageValue("history.all.title", "&bHistory");
+        HistoryEntryDeleteGui.INVENTORY_TITLE = addAndGetMessageValue("history.delete.title", "&8Are you sure?");
+
+        KickGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("kick.global.title", "&4Global Kick");
+        KickTemplateGui.INVENTORY_TITLE = addAndGetMessageValue("kick.template.title", "&4Kick");
+        KickSelfGui.INVENTORY_TITLE = addAndGetMessageValue("kick.self.title", "&4Kick");
+
+        PlayerInfoGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("playerinfo.global.title", "&4Global player info");
+        PlayerInfoGui.INVENTORY_TITLE = addAndGetMessageValue("playerinfo.player.title", "&4Player info");
+
         ReportGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("report.global.title", "&6Global report");
         ReportListGui.INVENTORY_TITLE = addAndGetMessageValue("report.list.title", "&6Reports");
-        ReportControlGui.INVENTORY_TITLE = addAndGetMessageValue("report.control.title", "&6Report control");
         ReportTemplateGui.INVENTORY_TITLE = addAndGetMessageValue("report.template.title", "&6Report");
+        ReportControlGui.INVENTORY_TITLE = addAndGetMessageValue("report.control.title", "&6Report control");
+        ReportSelfGui.INVENTORY_TITLE = addAndGetMessageValue("report.self.title", "&6Report");
+
+        UnBanTemplateGui.INVENTORY_TITLE = addAndGetMessageValue("unban.template.title", "&4Unban");
+        UnBanSelfGui.INVENTORY_TITLE = addAndGetMessageValue("unban.self.title", "&4Unban");
+
         WarnGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("warn.global.title", "&6Global Warns");
         WarnTemplateGui.INVENTORY_TITLE = addAndGetMessageValue("warn.template.title", "&6Warn");
-        KickGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("kick.template.title", "&4Kick");
+        WarnSelfGui.INVENTORY_TITLE = addAndGetMessageValue("warn.self.title", "&6Warn");
+
         //General
         ItemStorage.put("placeholder", addAndGetItemStack("items.placeholder", new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (short)15).setDisplayName(" ").build()));
         ItemStorage.put("nextpage", addAndGetItemStack("items.nextpage", new ItemBuilder(Material.ARROW).setDisplayName("&aNext page").setLore("Go to page [next_page]").build()));
@@ -89,15 +108,37 @@ public class GuiConfig extends SimpleConfig {
         ItemStorage.put("reportcontrol_deny", addAndGetItemStack("report.control.deny", new ItemBuilder(Material.REDSTONE).setDisplayName("&cDeny").build()));
         ItemStorage.put("reportcontrol_custom", addAndGetItemStack("report.control.custom", new ItemBuilder(Material.BARRIER).setDisplayName("&7Change ban reason").setLore("&7Ban the player with a custom ban reason").build()));
         ItemStorage.put("reportcontrol_editmessage", addAndGetItemStack("report.control.items.editmessage", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet a message of the ban").setLore("&7Current message&8: &7[message]").build()));
+        ItemStorage.put("reportself_reason", addAndGetItemStack("report.self.items.reason", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet the reason").setLore("&7Current reason&8: [reason]").build()));
+        ItemStorage.put("reportself_message", addAndGetItemStack("report.self.items.message", new ItemBuilder(Material.PAPER).setDisplayName("&cSet the message").setLore("&7Current message&8: [message]").build()));
+        ItemStorage.put("reportself_send", addAndGetItemStack("report.self.items.send", new ItemBuilder(Material.INK_SACK, 1, (short) 10).setDisplayName("&aSend").build()));
         //Warn
         ItemStorage.put("globalwarn_skull", addAndGetItemStack("warn.global.items.skull", new ItemBuilder(Material.SKULL_ITEM).setDisplayName("[player]").setLore("&7Click to warn").build()));
         ItemStorage.put("templatewarn_editmessage", addAndGetItemStack("warn.template.items.editmessage", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet a message of a warn").setLore("&7Current message&8: &7[message]").build()));
-        ItemStorage.put("templatewarn_reason", addAndGetItemStack("ban.template.items.reason", new ItemBuilder(Material.PAPER).setDisplayName("[reason]").setLore("&7Id&8: &c[id]").build()));
+        ItemStorage.put("templatewarn_reason", addAndGetItemStack("warn.template.items.reason", new ItemBuilder(Material.PAPER).setDisplayName("[reason]").setLore("&7Id&8: &c[id]").build()));
+        ItemStorage.put("warnself_reason", addAndGetItemStack("warn.self.items.reason", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet the reason").setLore("&7Current reason&8: [reason]").build()));
+        ItemStorage.put("warnself_message", addAndGetItemStack("warn.self.items.message", new ItemBuilder(Material.PAPER).setDisplayName("&cSet the message").setLore("&7Current message&8: [message]").build()));
+        ItemStorage.put("warnself_send", addAndGetItemStack("warn.self.items.send", new ItemBuilder(Material.INK_SACK, 1, (short) 10).setDisplayName("&aSend").build()));
         //Kick
         ItemStorage.put("globalkick_skull", addAndGetItemStack("kick.global.items.skull", new ItemBuilder(Material.SKULL_ITEM).setDisplayName("[player]").setLore("&7Click to kick").build()));
         ItemStorage.put("templatekick_editmessage", addAndGetItemStack("kick.template.items.editmessage", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet a message of a kick").setLore("&7Current message&8: &7[message]").build()));
         ItemStorage.put("templatekick_reason", addAndGetItemStack("kick.template.items.reason", new ItemBuilder(Material.PAPER).setDisplayName("[reason]").setLore("&7Id&8: &c[id]").build()));
-
+        ItemStorage.put("kickself_reason", addAndGetItemStack("kick.self.items.reason", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet the reason").setLore("&7Current reason&8: [reason]").build()));
+        ItemStorage.put("kickself_message", addAndGetItemStack("kick.self.items.message", new ItemBuilder(Material.PAPER).setDisplayName("&cSet the message").setLore("&7Current message&8: [message]").build()));
+        ItemStorage.put("kickself_send", addAndGetItemStack("kick.self.items.send", new ItemBuilder(Material.INK_SACK, 1, (short) 10).setDisplayName("&aSend").build()));
+        //UnBan
+        ItemStorage.put("templateunban_reason", addAndGetItemStack("unban.template.items.reason", new ItemBuilder(Material.PAPER).setDisplayName("[reason]").setLore("&7Id&8: &c[id]", "&7BanType&8: &4[banType]").build()));
+        ItemStorage.put("templateunban_editmessage", addAndGetItemStack("unban.template.items.editmessage", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet message of unban").setLore("&7Current message&8: &7[message]").build()));
+        ItemStorage.put("unbanself_reason", addAndGetItemStack("unban.self.items.reason", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet the reason").setLore("&7Current reason&8: [reason]").build()));
+        ItemStorage.put("unbanself_message", addAndGetItemStack("unban.self.items.message", new ItemBuilder(Material.PAPER).setDisplayName("&cSet the message").setLore("&7Current message&8: [message]").build()));
+        ItemStorage.put("unbanself_send", addAndGetItemStack("unban.self.items.send", new ItemBuilder(Material.INK_SACK, 1, (short) 10).setDisplayName("&aSend").build()));
+        //History
+        ItemStorage.put("history_ban", addAndGetItemStack("history.items.ban", new ItemBuilder(Material.BARRIER).setDisplayName("&4Ban").setLore("&7Id&8: &c[id]", "&7Reason&8: &c[reason]", "&7Time&8: &c[time]", "&7Timeout&8: &c[timeout]", "&7Message&8: &c[message]", "&7Type&8: &c[type]", "&7Staff&8: &c[staff]", "&7Ip&8: &c[ip]").build()));
+        ItemStorage.put("history_unban", addAndGetItemStack("history.items.unban", new ItemBuilder(Material.IRON_FENCE).setDisplayName("&4Unban").setLore("&7Id&8: &c[id]", "&7Reason&8: &c[reason]", "&7Message&8: &c[message]", "&7Type&8: &c[type]", "&7Time&8: &c[time]", "&7Staff&8: &c[staff]", "&7Ip&8: &c[ip]").build()));
+        ItemStorage.put("history_warn", addAndGetItemStack("history.items.warn", new ItemBuilder(Material.TNT).setDisplayName("&6Warn").setLore("&7Id&8: &c[id]", "&7Reason&8: &c[reason]", "&7Message&8: &c[message]", "&7Type&8: &c[type]", "&7Time&8: &c[time]", "&7Staff&8: &c[staff]", "&7Ip&8: &c[ip]").build()));
+        ItemStorage.put("history_kick", addAndGetItemStack("history.items.kick", new ItemBuilder(Material.RABBIT_FOOT).setDisplayName("&4Kick").setLore("&7Id&8: &c[id]", "&7Reason&8: &c[reason]", "&7Message&8: &c[message]", "&7Type&8: &c[type]", "&7Server&8: &c[server]", "&7Time&8: &c[time]", "&7Staff&8: &c[staff]", "&7Ip&8: &c[ip]").build()));
+        ItemStorage.put("history_clear", addAndGetItemStack("history.all.items.clear", new ItemBuilder(Material.HOPPER).setDisplayName("&cClear history").setDisplayName("&7Clear the whole history of [player]").build()));
+        ItemStorage.put("historydelete_accept", addAndGetItemStack("history.delete.items.accept", new ItemBuilder(Material.STAINED_CLAY, 1, (short) 13).setDisplayName("&aYes").build()));
+        ItemStorage.put("historydelete_deny", addAndGetItemStack("history.delete.items.deny", new ItemBuilder(Material.STAINED_CLAY, 1, (short) 14).setDisplayName("&cNo").build()));
     }
 
     private ItemStack addAndGetItemStack(String path, ItemStack itemStack) {

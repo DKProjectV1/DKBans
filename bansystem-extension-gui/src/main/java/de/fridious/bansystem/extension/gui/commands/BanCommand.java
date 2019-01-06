@@ -28,6 +28,7 @@ import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.guis.GUIS;
 import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.guis.ban.BanGlobalGui;
+import de.fridious.bansystem.extension.gui.guis.ban.BanSelfGui;
 import de.fridious.bansystem.extension.gui.guis.ban.BanTemplateGui;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -71,9 +72,11 @@ public class BanCommand implements CommandExecutor {
             }
             BanMode banMode = BanSystem.getInstance().getConfig().banMode;
             if(banMode == BanMode.TEMPLATE || banMode == BanMode.POINT) {
-                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(GUIS.BAN_TEMPLATE, new BanTemplateGui(player, target.getUUID())).open();
+                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                        .create(GUIS.BAN_TEMPLATE, new BanTemplateGui(player, target.getUUID())).open();
             } else if(banMode == BanMode.SELF) {
-                //@Todo ban command self
+                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                        .create(GUIS.BAN_SELF, new BanSelfGui(player, target.getUUID())).open();
             }
         } else {
             //USAGE

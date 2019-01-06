@@ -4,7 +4,7 @@ package de.fridious.bansystem.extension.gui.guis.report;
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Philipp Elvin Friedhoff
- * @since 04.01.19 14:38
+ * @since 05.01.19 01:42
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -24,9 +24,9 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
-import ch.dkrieger.bansystem.lib.reason.ReportReason;
 import ch.dkrieger.bansystem.lib.report.Report;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.AnvilInputGui;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.MessageAnvilInputGui;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
@@ -41,32 +41,40 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class ReportTemplateGui extends PrivateGUI<ReportReason> {
+public class ReportSelfGui extends PrivateGUI {
 
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList();
     private UUID target;
+    private String reason;
 
-    public ReportTemplateGui(Player owner, UUID target) {
+    public ReportSelfGui(Player owner, UUID target) {
         super(owner);
         this.target = target;
+        this.reason = "";
         String title = INVENTORY_TITLE;
         getUpdateEvents().addAll(UPDATE_EVENTS);
-        createInventory(title, 54);
-        setPageEntries(BanSystem.getInstance().getReasonProvider().getReportReasons());
-        updatePage(null);
+        createInventory(title, 27);
+        setItem(11, ItemStorage.get("reportself_reason", replace -> replace.replace("[reason]", reason)));
+        setItem(15, ItemStorage.get("reportself_message", replace -> replace.replace("[message]", getMessage())));
+        setItem(26, ItemStorage.get("reportself_send", replace ->
+                replace.replace("[reason]", reason).replace("[message]", getMessage())));
     }
 
-    @Override
-    public void setPageItem(int slot, ReportReason reportReason) {
-        setItem(slot, ItemStorage.get("report_reason", replace -> replace.replace("[reason]", reportReason.getDisplay())));
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     @Override
     public void updatePage(Event event) {
-        if(event == null || getUpdateEvents().contains(event.getClass())) {
-            setItem(45, ItemStorage.get("report_editmessage", replace -> replace.replace("[message]", getMessage())));
-        }
+        setItem(11, ItemStorage.get("reportself_reason", replace -> replace.replace("[reason]", reason)));
+        setItem(15, ItemStorage.get("reportself_message", replace -> replace.replace("[message]", getMessage())));
+        setItem(26, ItemStorage.get("reportself_send", replace ->
+                replace.replace("[reason]", reason).replace("[message]", getMessage())));
     }
 
     @Override
@@ -77,12 +85,26 @@ public class ReportTemplateGui extends PrivateGUI<ReportReason> {
     @Override
     protected void onClick(InventoryClickEvent event) {
         final Player player = (Player) event.getWhoClicked();
-        ReportReason reportReason = getEntryBySlot().get(event.getSlot());
-        if(reportReason != null) {
-            if(player.hasPermission("dkbans.report") && player.hasPermission(reportReason.getPermission())) {
+        if(player.hasPermission("dkbans.report")) {
+            if(event.getSlot() == 11) {
+                Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                .create(GUIS.ANVIL_INPUT, new AnvilInputGui(this, this.reason) {
+                                    @Override
+                                    public void setInput(String input) {
+                                        setReason(input);
+                                    }
+                                }).open());
+
+            } else if(event.getSlot() == 15) {
+                Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                .create(GUIS.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
+            } else if(event.getSlot() == 26) {
+                if(reason == null) return;
                 NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
                 OnlineNetworkPlayer targetOnlineNetworkPlayer = targetNetworkPlayer.getOnlinePlayer();
-                Report report = targetNetworkPlayer.report(reportReason, getMessage(), player.getUniqueId(), targetOnlineNetworkPlayer.getServer());
+                Report report = targetNetworkPlayer.report(getOwner().getUniqueId(), getReason(), getMessage(), -1, targetOnlineNetworkPlayer.getServer());
                 if(report != null) {
                     player.sendMessage(Messages.REPORT_SUCCESS
                             .replace("[player]", targetNetworkPlayer.getColoredName())
@@ -92,20 +114,12 @@ public class ReportTemplateGui extends PrivateGUI<ReportReason> {
                             .replace("[prefix]", Messages.PREFIX_BAN));
                 }
                 player.closeInventory();
-            } else {
-                player.sendMessage(Messages.REASON_NO_PERMISSION
-                        .replace("[prefix]", Messages.PREFIX_BAN)
-                        .replace("[reason]", reportReason.getDisplay()));
             }
-        } else if(event.getSlot() == 45) {
-            Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                    DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                            .create(GUIS.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
         }
     }
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.REPORT_TEMPLATE);
+        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.REPORT_SELF);
     }
 }

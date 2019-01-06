@@ -5,8 +5,10 @@ import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
+import ch.dkrieger.bansystem.lib.player.history.entry.*;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
 import ch.dkrieger.bansystem.lib.reason.KickReason;
+import ch.dkrieger.bansystem.lib.reason.UnbanReason;
 import ch.dkrieger.bansystem.lib.reason.WarnReason;
 import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
@@ -81,6 +83,17 @@ public class ItemStorage {
                 .replace("[points]", "" + reason.getPoints()));
     }
 
+    public static ItemStack get(String key, UnbanReason reason) {
+        return get(key, replace -> replace
+                .replace("[reason]",reason.getDisplay())
+                .replace("[id]",""+reason.getID())
+                .replace("[name]",reason.getDisplay())
+                .replace("[maxPoints]",""+reason.getMaxPoints())
+                .replace("[maxDuration]",reason.getMaxDuration().getFormattedTime(true))
+                .replace("[points]",""+reason.getPoints())
+                .replace("[banType]", reason.getBanType() == null ? BanType.NETWORK + " §8| " + BanType.CHAT : reason.getBanType().getDisplay()));
+    }
+
     public static ItemStack get(String key, int page, int maxPages) {
         return get(key, replace -> replace
                 .replace("[current_page]", String.valueOf(page))
@@ -95,6 +108,86 @@ public class ItemStorage {
                 .replace("[player]",report.getPlayer().getColoredName())
                 .replace("[reporter]",report.getReporter().getColoredName())
                 .replace("[time]", BanSystem.getInstance().getConfig().dateFormat.format(System.currentTimeMillis()-report.getTimeStamp())));
+    }
+
+    public static ItemStack get(String key, HistoryEntry entry) {
+        if(entry instanceof Ban) return get(key, (Ban) entry);
+        else if(entry instanceof Unban) return get(key, (Unban) entry);
+        else if(entry instanceof Kick) return get(key, (Kick) entry);
+        else if(entry instanceof Warn) return get(key, (Warn) entry);
+        return null;
+    }
+
+    public static ItemStack get(String key, Ban ban) {
+        return get(key, replace -> replace
+                .replace("[player]",ban.getPlayer().getColoredName())
+                .replace("[id]",""+ban.getID())
+                .replace("[banId]",""+ban.getID())
+                .replace("[banid]",""+ban.getID())
+                .replace("[reason]",ban.getReason())
+                .replace("[reasonID]",""+ban.getReasonID())
+                .replace("[time]",BanSystem.getInstance().getConfig().dateFormat.format(ban.getTimeStamp()))
+                .replace("[timeout]",BanSystem.getInstance().getConfig().dateFormat.format(ban.getTimeOut()))
+                .replace("[message]",ban.getMessage())
+                .replace("[type]",ban.getTypeName())
+                .replace("[staff]",ban.getStaffName())
+                .replace("[ip]",ban.getIp())
+                .replace("[points]",""+ban.getPoints().getPoints())
+                .replace("[pointsType]",ban.getPoints().getHistoryType().getDisplay())
+                .replace("[duration]",GeneralUtil.calculateDuration(ban.getDuration()))
+                .replace("[remaining]",GeneralUtil.calculateRemaining(ban.getRemaining(),false))
+                .replace("[remaining-short]",GeneralUtil.calculateRemaining(ban.getRemaining(),true))
+                .replace("[prefix]",Messages.PREFIX_BAN));
+    }
+
+    public static ItemStack get(String key, Kick kick) {
+        return get(key, replace -> replace
+                .replace("[prefix]",Messages.PREFIX_BAN)
+                .replace("[id]",""+kick.getID())
+                .replace("[reason]",kick.getReason())
+                .replace("[type]",kick.getTypeName())
+                .replace("[points]",""+kick.getPoints().getPoints())
+                .replace("[pointsType]",kick.getPoints().getHistoryType().getDisplay())
+                .replace("[reasonID]",""+kick.getReasonID())
+                .replace("[message]",kick.getMessage())
+                .replace("[time]",BanSystem.getInstance().getConfig().dateFormat.format(kick.getTimeStamp()))
+                .replace("[ip]",kick.getIp())
+                .replace("[server]",kick.getServer())
+                .replace("[staff]",kick.getStaffName())
+                .replace("[player]",kick.getPlayer().getColoredName()));
+    }
+
+    public static ItemStack get(String key, Unban unban) {
+        return get(key, replace -> replace
+                .replace("[prefix]",Messages.PREFIX_BAN)
+                .replace("[id]",""+unban.getID())
+                .replace("[reason]",unban.getReason())
+                .replace("[type]",unban.getTypeName())
+                .replace("[points]",""+unban.getPoints().getPoints())
+                .replace("[pointsType]",unban.getPoints().getHistoryType().getDisplay())
+                .replace("[reasonID]",""+unban.getReasonID())
+                .replace("[message]",unban.getMessage())
+                .replace("[time]",BanSystem.getInstance().getConfig().dateFormat.format(unban.getTimeStamp()))
+                .replace("[ip]",unban.getIp())
+                .replace("[banType]",unban.getBanType().getDisplay())
+                .replace("[staff]",unban.getStaffName())
+                .replace("[player]",unban.getPlayer().getColoredName()));
+    }
+
+    public static ItemStack get(String key, Warn warn) {
+        return get(key, replace -> replace
+                .replace("[prefix]",Messages.PREFIX_BAN)
+                .replace("[id]",""+warn.getID())
+                .replace("[reason]",warn.getReason())
+                .replace("[type]",warn.getTypeName())
+                .replace("[points]",""+warn.getPoints().getPoints())
+                .replace("[pointsType]",warn.getPoints().getHistoryType().getDisplay())
+                .replace("[reasonID]",""+warn.getReasonID())
+                .replace("[message]",warn.getMessage())
+                .replace("[time]", BanSystem.getInstance().getConfig().dateFormat.format(warn.getTimeStamp()))
+                .replace("[ip]",warn.getIp())
+                .replace("[staff]",warn.getStaffName())
+                .replace("[player]",warn.getPlayer().getColoredName()));
     }
 
     public static ItemStack get(String key, StringReplacer replacer) {

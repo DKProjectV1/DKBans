@@ -1,10 +1,10 @@
-package de.fridious.bansystem.extension.gui.guis.kick;
+package de.fridious.bansystem.extension.gui.guis.unban;
 
 /*
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Philipp Elvin Friedhoff
- * @since 05.01.19 00:22
+ * @since 05.01.19 14:54
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -23,8 +23,9 @@ package de.fridious.bansystem.extension.gui.guis.kick;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
-import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
-import ch.dkrieger.bansystem.lib.reason.KickReason;
+import ch.dkrieger.bansystem.lib.player.history.BanType;
+import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
+import ch.dkrieger.bansystem.lib.reason.UnbanReason;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.MessageAnvilInputGui;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
@@ -42,21 +43,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-public class KickTemplateGui extends PrivateGUI<KickReason> {
+public class UnBanTemplateGui extends PrivateGUI<UnbanReason> {
 
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList();
     private UUID target;
     private String message;
 
-    public KickTemplateGui(Player owner, UUID target) {
+    public UnBanTemplateGui(Player owner, UUID target) {
         super(owner);
         String title = INVENTORY_TITLE;
         this.target = target;
         this.message = " ";
         createInventory(title, 54);
-        setPageEntries(getInteractKickReasons());
-        setItem(45, ItemStorage.get("templatekick_editmessage", replace -> replace.replace("[message]", message)));
+        setPageEntries(getInteractUnBanReasons());
+        setItem(45, ItemStorage.get("templateunban_editmessage", replace -> replace.replace("[message]", message)));
         getUpdateEvents().addAll(UPDATE_EVENTS);
     }
 
@@ -64,14 +65,16 @@ public class KickTemplateGui extends PrivateGUI<KickReason> {
         return message;
     }
 
-    private List<KickReason> getInteractKickReasons() {
-        List<KickReason> kickReasons = new LinkedList<>();
-        for(KickReason reason : BanSystem.getInstance().getReasonProvider().getKickReasons()) {
+    private List<UnbanReason> getInteractUnBanReasons() {
+        NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
+        List<UnbanReason> reasons = new LinkedList<>();
+        for(UnbanReason reason : BanSystem.getInstance().getReasonProvider().getUnbanReasons()) {
             if((!BanSystem.getInstance().getPlayerManager().getPlayer(target).hasBypass() || getOwner().hasPermission("dkbans.bypass.ignore"))
-                    && !reason.isHidden() && getOwner().hasPermission("dkbans.kick")
-                    && getOwner().hasPermission(reason.getPermission())) kickReasons.add(reason);
+                    && !reason.isHidden() && getOwner().hasPermission("dkbans.unban")
+                    && getOwner().hasPermission(reason.getPermission())
+                    && (reason.getBanType() == null || targetNetworkPlayer.isBanned(reason.getBanType()))) reasons.add(reason);
         }
-        return kickReasons;
+        return reasons;
     }
 
     public void setMessage(String message) {
@@ -81,13 +84,13 @@ public class KickTemplateGui extends PrivateGUI<KickReason> {
     @Override
     public void updatePage(Event event) {
         if(event == null || getUpdateEvents().contains(event.getClass())) {
-            setItem(45, ItemStorage.get("templatekick_editmessage", replace -> replace.replace("[message]", message)));
+            setItem(45, ItemStorage.get("templateunban_editmessage", replace -> replace.replace("[message]", message)));
         }
     }
 
     @Override
-    public void setPageItem(int slot, KickReason reason) {
-        setItem(slot, ItemStorage.get("templatekick_reason", reason));
+    public void setPageItem(int slot, UnbanReason reason) {
+        setItem(slot, ItemStorage.get("templateunban_reason", reason));
     }
 
     @Override
@@ -98,19 +101,32 @@ public class KickTemplateGui extends PrivateGUI<KickReason> {
     @Override
     protected void onClick(InventoryClickEvent event) {
         final Player player = (Player) event.getWhoClicked();
-        KickReason kickReason = getEntryBySlot().get(event.getSlot());
-        if(kickReason != null) {
-            if(player.hasPermission("dkbans.ban") &&
-                    player.hasPermission(kickReason.getPermission())
+        UnbanReason reason = getEntryBySlot().get(event.getSlot());
+        if(reason != null) {
+            if(player.hasPermission("dkbans.unban") &&
+                    player.hasPermission(reason.getPermission())
                     && (!BanSystem.getInstance().getPlayerManager().getPlayer(target).hasBypass() || player.hasPermission("dkbans.bypass.ignore"))) {
                 NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
-                Kick kick = targetNetworkPlayer.kick(kickReason, getMessage(), player.getUniqueId());
-                player.sendMessage(Messages.KICK_SUCCESS
-                        .replace("[prefix]", Messages.PREFIX_BAN)
-                        .replace("[server]", kick.getServer())
-                        .replace("[reason]", kick.getReason())
-                        .replace("[reasonID]",""+kick.getReasonID())
-                        .replace("[player]", targetNetworkPlayer.getColoredName()));
+                Unban unban = targetNetworkPlayer.unban(reason.getBanType(), reason, getMessage(), player.getUniqueId());
+                if(unban.getBanType() == BanType.NETWORK) {
+                    player.sendMessage(Messages.PLAYER_UNBANNED
+                            .replace("[prefix]", Messages.PREFIX_BAN)
+                            .replace("[reason]",unban.getReason())
+                            .replace("[message]",unban.getMessage())
+                            .replace("[staff]",unban.getStaffName())
+                            .replace("[id]",""+unban.getID())
+                            .replace("[points]",""+unban.getPoints())
+                            .replace("[player]", targetNetworkPlayer.getColoredName()));
+                } else if(unban.getBanType() == BanType.CHAT) {
+                    player.sendMessage(Messages.PLAYER_UNMUTED
+                            .replace("[prefix]", Messages.PREFIX_BAN)
+                            .replace("[reason]",unban.getReason())
+                            .replace("[message]",unban.getMessage())
+                            .replace("[staff]",unban.getStaffName())
+                            .replace("[id]",""+unban.getID())
+                            .replace("[points]",""+unban.getPoints())
+                            .replace("[player]", targetNetworkPlayer.getColoredName()));
+                }
                 player.closeInventory();
             }
         } else if(event.getSlot() == 45) {
@@ -122,6 +138,6 @@ public class KickTemplateGui extends PrivateGUI<KickReason> {
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.KICK_TEMPLATE);
+        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.UNBAN_TEMPLATE);
     }
 }

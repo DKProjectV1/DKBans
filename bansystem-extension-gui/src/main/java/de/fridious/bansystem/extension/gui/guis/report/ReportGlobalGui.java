@@ -103,19 +103,23 @@ public class ReportGlobalGui extends PrivateGUI<Player> {
                 ReasonMode reportMode = BanSystem.getInstance().getConfig().reportMode;
                 if(reportMode == ReasonMode.TEMPLATE) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(GUIS.REPORT_TEMPLATE, new ReportTemplateGui(player, target.getUniqueId())).open());
-                    OnlineNetworkPlayer onlineNetworkPlayer = BanSystem.getInstance().getPlayerManager().getOnlinePlayer(player.getUniqueId());
-                    if(BanSystem.getInstance().getConfig().reportAutoCommandExecuteOnProxy){
-                        for(String command :  BanSystem.getInstance().getConfig().reportAutoCommandEnter)
-                            onlineNetworkPlayer.executeCommand(command.replace("[player]",player.getName()));
-                    }else{
-                        BanSystem.getInstance().getPlatform().getTaskManager().runTaskLater(()->{
-                            for(String command :  BanSystem.getInstance().getConfig().reportAutoCommandEnter)
-                                Bukkit.dispatchCommand(player, command.replace("[player]",player.getName()));
-                        },1L, TimeUnit.SECONDS);
-                    }
-                } else if(reportMode == ReasonMode.SELF) {
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                    .create(GUIS.REPORT_TEMPLATE, new ReportTemplateGui(player, target.getUniqueId())).open());
 
+                } else if(reportMode == ReasonMode.SELF) {
+                    Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                    .create(GUIS.REPORT_SELF, new ReportSelfGui(player, target.getUniqueId())).open());
+                }
+                OnlineNetworkPlayer onlineNetworkPlayer = BanSystem.getInstance().getPlayerManager().getOnlinePlayer(player.getUniqueId());
+                if(BanSystem.getInstance().getConfig().reportAutoCommandExecuteOnProxy){
+                    for(String command :  BanSystem.getInstance().getConfig().reportAutoCommandEnter)
+                        onlineNetworkPlayer.executeCommand(command.replace("[player]",player.getName()));
+                }else{
+                    BanSystem.getInstance().getPlatform().getTaskManager().runTaskLater(()->{
+                        for(String command :  BanSystem.getInstance().getConfig().reportAutoCommandEnter)
+                            Bukkit.dispatchCommand(player, command.replace("[player]",player.getName()));
+                    },1L, TimeUnit.SECONDS);
                 }
             }
         } else if(event.getSlot() == 45) setReportStatusItems();

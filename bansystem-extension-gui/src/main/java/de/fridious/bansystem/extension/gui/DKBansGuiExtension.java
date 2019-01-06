@@ -20,10 +20,11 @@ package de.fridious.bansystem.extension.gui;
  * under the License.
  */
 
+import ch.dkrieger.bansystem.bukkit.utils.Reflection;
+import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import de.fridious.bansystem.extension.gui.commands.*;
 import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.listeners.*;
-import de.fridious.bansystem.extension.gui.utils.GameProfileProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -34,11 +35,11 @@ public class DKBansGuiExtension extends JavaPlugin {
     private GuiManager guiManager;
     private boolean configItemIds;
     private GuiConfig config;
-    private GameProfileProvider gameProfileProvider;
 
     @Override
     public void onLoad() {
         instance = this;
+        registerJsonAdapters();
         this.configItemIds = !Bukkit.getBukkitVersion().contains("1.13");
         this.chatPrefix = "&8» &4DKBansGuiExtension &8| &f";
         this.consolePrefix = "[DKBansGuiExtension] ";
@@ -46,7 +47,6 @@ public class DKBansGuiExtension extends JavaPlugin {
         System.out.println(this.consolePrefix + "DKBansGuiExtension "+ getDescription().getVersion() +" by Philipp Elvin Friedhoff/Fridious");
         this.config = new GuiConfig();
         this.config.loadConfig();
-        this.gameProfileProvider = new GameProfileProvider();
         this.guiManager = new GuiManager();
         System.out.println(this.consolePrefix + "plugin successfully started");
     }
@@ -82,10 +82,6 @@ public class DKBansGuiExtension extends JavaPlugin {
         return consolePrefix;
     }
 
-    public GameProfileProvider getGameProfileProvider() {
-        return gameProfileProvider;
-    }
-
     private void registerListeners() {
         Bukkit.getPluginManager().registerEvents(new PlayerLoginListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(), this);
@@ -97,6 +93,7 @@ public class DKBansGuiExtension extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BukkitNetworkPlayerUnBanListener(), this);
         Bukkit.getPluginManager().registerEvents(new BukkitNetworkPlayerReportListener(), this);
         Bukkit.getPluginManager().registerEvents(new BukkitNetworkPlayerReportsProcessListener(), this);
+        Bukkit.getPluginManager().registerEvents(new BukkitNetworkPlayerHistoryUpdateListener(), this);
     }
 
     private void registerCommands() {
@@ -107,6 +104,20 @@ public class DKBansGuiExtension extends JavaPlugin {
         getCommand("reports").setExecutor(new ReportsCommand());
         getCommand("warn").setExecutor(new WarnCommand());
         getCommand("kick").setExecutor(new KickCommand());
+        getCommand("unban").setExecutor(new UnBanCommand());
+    }
+
+    private void registerJsonAdapters() {
+        try {
+            Class<?> propertyMapClass = Reflection.getClass("com.mojang.authlib.properties.PropertyMap");
+            Class<?> propertyMapSerializer = propertyMapClass.getDeclaredClasses()[0];
+
+            GeneralUtil.GSON_BUILDER.disableHtmlEscaping() .registerTypeAdapter(propertyMapClass, propertyMapSerializer.newInstance());
+            GeneralUtil.GSON_BUILDER_NOT_PRETTY.disableHtmlEscaping().registerTypeAdapter(propertyMapClass, propertyMapSerializer.newInstance());
+            GeneralUtil.createGSON();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public static DKBansGuiExtension getInstance() {

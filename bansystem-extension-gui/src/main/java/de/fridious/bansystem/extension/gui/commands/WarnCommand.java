@@ -30,6 +30,7 @@ import de.fridious.bansystem.extension.gui.guis.GUIS;
 import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.guis.ban.BanTemplateGui;
 import de.fridious.bansystem.extension.gui.guis.warn.WarnGlobalGui;
+import de.fridious.bansystem.extension.gui.guis.warn.WarnSelfGui;
 import de.fridious.bansystem.extension.gui.guis.warn.WarnTemplateGui;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -73,9 +74,11 @@ public class WarnCommand implements CommandExecutor {
             }
             ReasonMode warnMode = BanSystem.getInstance().getConfig().warnMode;
             if(warnMode == ReasonMode.TEMPLATE) {
-                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(GUIS.WARN_TEMPLATE, new WarnTemplateGui(player, target.getUUID())).open();
+                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                        .create(GUIS.WARN_TEMPLATE, new WarnTemplateGui(player, target.getUUID())).open();
             } else if(warnMode == ReasonMode.SELF) {
-                //@Todo warn self
+                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                        .create(GUIS.WARN_SELF, new WarnSelfGui(player, target.getUUID())).open();
             }
         } else {
 

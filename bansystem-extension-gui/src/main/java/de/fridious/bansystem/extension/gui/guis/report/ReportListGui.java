@@ -107,35 +107,6 @@ public class ReportListGui extends PrivateGUI<Report> {
                     .replace("[reporter]",report.getReporter().getColoredName())
                     .replace("[server]", onlineNetworkPlayer.getServer())
                     .replace("[prefix]", Messages.PREFIX_BAN));
-            /*if(BanSystem.getInstance().getConfig().reportControls){
-                TextComponent deny = new TextComponent(Messages.REPORT_PROCESS_CONTROL_DENY);
-                deny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/report deny "+player.getUUID()));
-
-                ReportReason reportReason = BanSystem.getInstance().getReasonProvider().getReportReason(report.getReasonID());
-                BanReason reason = null;
-                if(reportReason != null) reason =  BanSystem.getInstance().getReasonProvider().getBanReason(reportReason.getForBan());
-
-                TextComponent accept = new TextComponent(Messages.REPORT_PROCESS_CONTROL_FORREASON
-                        .replace("[reason]",reason==null?"Unknown":reason.getDisplay()));
-                accept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/report accept "+player.getUUID()));
-
-                TextComponent other = new TextComponent(Messages.REPORT_PROCESS_CONTROL_OTHERREASON);
-                other.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/report other "+player.getUUID()));
-
-                TextComponent message = GeneralUtil.replaceTextComponent(
-                        Messages.REPORT_PROCESS_CONTROL_MESSAGE.replace("[prefix]",getPrefix()),"[deny]",deny);
-                message = GeneralUtil.replaceTextComponent(message,"[forReason]",accept);
-                message = GeneralUtil.replaceTextComponent(message,"[otherReason]",other);
-                sender.sendMessage(message);
-            }
-            if(BanSystem.getInstance().getConfig().reportAutoCommandExecuteOnProxy){
-                for(String command :  BanSystem.getInstance().getConfig().reportAutoCommandEnter) sender.executeCommand(command.replace("[player]",player.getName()));
-            }else{
-                BanSystem.getInstance().getPlatform().getTaskManager().runTaskLater(()->{
-                    for(String command :  BanSystem.getInstance().getConfig().reportAutoCommandEnter) sender.executeCommandOnServer(command.replace("[player]",player.getName()));
-                },1L, TimeUnit.SECONDS);
-            }
-            return;*/
         }
     }
 

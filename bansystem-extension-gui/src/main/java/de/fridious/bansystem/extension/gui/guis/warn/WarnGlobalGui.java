@@ -81,9 +81,12 @@ public class WarnGlobalGui extends PrivateGUI<Player> {
                 ReasonMode warnMode = BanSystem.getInstance().getConfig().warnMode;
                 if(warnMode == ReasonMode.TEMPLATE) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(GUIS.WARN_TEMPLATE, new WarnTemplateGui(player, target.getUniqueId())).open());
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                    .create(GUIS.WARN_TEMPLATE, new WarnTemplateGui(player, target.getUniqueId())).open());
                 } else if(warnMode == ReasonMode.SELF) {
-
+                    Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                    .create(GUIS.WARN_SELF, new WarnSelfGui(player, target.getUniqueId())).open());
                 }
             }
         }

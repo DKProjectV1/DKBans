@@ -4,7 +4,7 @@ package de.fridious.bansystem.extension.gui.commands;
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Philipp Elvin Friedhoff
- * @since 04.01.19 15:22
+ * @since 05.01.19 16:36
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -22,20 +22,18 @@ package de.fridious.bansystem.extension.gui.commands;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
+import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.guis.GUIS;
-import de.fridious.bansystem.extension.gui.guis.GuiManager;
-import de.fridious.bansystem.extension.gui.guis.report.ReportListGui;
-import de.fridious.bansystem.extension.gui.guis.report.ReportControlGui;
+import de.fridious.bansystem.extension.gui.guis.unban.UnBanSelfGui;
+import de.fridious.bansystem.extension.gui.guis.unban.UnBanTemplateGui;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
-
-public class ReportsCommand implements CommandExecutor {
+public class UnBanCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -44,18 +42,32 @@ public class ReportsCommand implements CommandExecutor {
             return true;
         }
         final Player player = (Player)sender;
-        if(!player.hasPermission("dkbans.report.receive")) {
+        if(!player.hasPermission("dkbans.unban")) {
             player.sendMessage(Messages.NOPERMISSIONS.replace("[prefix]", Messages.PREFIX_BAN));
             return true;
         }
-        NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
-        UUID target = networkPlayer.getWatchingReportedPlayer();
-        if(target == null) {
-            GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
-            if(cachedInventories.hasCached(GUIS.REPORT_LIST)) cachedInventories.getAsPrivateGui(GUIS.REPORT_LIST).open();
-            else cachedInventories.create(GUIS.REPORT_LIST, new ReportListGui(player)).open();
-        } else {
-            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(GUIS.REPORT_CONTROL, new ReportControlGui(player, target)).open();
+        if(args.length != 1) {
+            player.sendMessage(Messages.UNBAN_HELP_HELP.replace("[prefix]", Messages.PREFIX_BAN));
+            return true;
+        }
+        NetworkPlayer target = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
+        if(target == null){
+            player.sendMessage(Messages.PLAYER_NOT_FOUND
+                    .replace("[prefix]", Messages.PREFIX_BAN)
+                    .replace("[player]",args[0]));
+            return true;
+        }
+        if(target.getUUID().equals(player.getUniqueId())) {
+            player.sendMessage(Messages.BAN_SELF.replace("[prefix]", Messages.PREFIX_BAN));
+            return true;
+        }
+        ReasonMode unBanMode = BanSystem.getInstance().getConfig().unbanMode;
+        if(unBanMode == ReasonMode.TEMPLATE) {
+            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                    .create(GUIS.UNBAN_TEMPLATE, new UnBanTemplateGui(player, target.getUUID())).open();
+        } else if(unBanMode == ReasonMode.SELF) {
+            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                    .create(GUIS.UNBAN_SELF, new UnBanSelfGui(player, target.getUUID())).open();
         }
         return true;
     }

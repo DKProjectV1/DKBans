@@ -1,8 +1,7 @@
 package de.fridious.bansystem.extension.gui.api.inventory.item;
 
 import ch.dkrieger.bansystem.bukkit.utils.Reflection;
-import com.mojang.authlib.GameProfile;
-import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
+import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.FireworkEffect;
@@ -14,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -121,24 +119,24 @@ public class ItemBuilder {
         }
         this.itemStack = new ItemStack(Material.PAPER);
     }
-    public ItemBuilder(GameProfile profile){
+    public ItemBuilder(Object profile){
         setGameProfile(profile);
     }
     public ItemBuilder(String player, String displayName) {
         setGameProfile(player);
         setDisplayName(displayName);
     }
-    public ItemBuilder setGameProfile(GameProfile profile) {
+    public ItemBuilder setGameProfile(Object profile) {
         this.itemStack.setType(Material.SKULL_ITEM);
         this.itemStack.setDurability((short) 3);
         ItemMeta meta = this.itemStack.getItemMeta();
         Class<?> headMetaClass = meta.getClass();
-        Reflection.getField(headMetaClass, "profile", GameProfile.class).set(meta, profile);
+        Reflection.getField(headMetaClass, "profile", Reflection.getClass("com.mojang.authlib.GameProfile")).set(meta, profile);
         itemStack.setItemMeta(meta);
         return this;
     }
     public ItemBuilder setGameProfile(String player) {
-        setGameProfile(DKBansGuiExtension.getInstance().getGameProfileProvider().getGameProfileByPlayer(player));
+        setGameProfile(GuiExtensionUtils.getGameProfileByPlayer(player));
         return this;
     }
     public ItemBuilder setMaterial(Material material) {

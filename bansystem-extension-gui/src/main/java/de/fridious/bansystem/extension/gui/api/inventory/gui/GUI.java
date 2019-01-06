@@ -1,7 +1,6 @@
 package de.fridious.bansystem.extension.gui.api.inventory.gui;
 
-import ch.dkrieger.bansystem.lib.BanSystem;
-import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.utils.Document;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
@@ -13,13 +12,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /*
  * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
@@ -48,12 +48,15 @@ public abstract class GUI<T> implements InventoryHolder {
     private List<? extends T> pageEntries;
     private Map<Integer, T> entryBySlot;
     private List<Class<? extends Event>> updateEvents;
-
+    private String message;
+    private final Document properties;
 
     protected GUI() {
         this.currentPage = 1;
         this.pageSize = 36;
         this.updateEvents = new LinkedList<>();
+        this.properties = new Document();
+        this.message = "";
     }
 
     public GUI(Inventory inventory) {
@@ -71,12 +74,20 @@ public abstract class GUI<T> implements InventoryHolder {
         this.inventory = Bukkit.createInventory(this, inventoryType);
     }
 
+    public String getMessage() {
+        return message;
+    }
+
     public ItemStack getItem(int place){
         return this.inventory.getItem(place);
     }
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    public Document getProperties() {
+        return properties;
     }
 
     /**
@@ -87,7 +98,8 @@ public abstract class GUI<T> implements InventoryHolder {
     public String getInput() {
         ItemStack itemStack = getItem(AnvilSlot.OUTPUT);
         if(itemStack == null) return null;
-        return itemStack.getItemMeta().hasDisplayName() ? itemStack.getItemMeta().getDisplayName() : itemStack.getType().toString();
+        String input = itemStack.getItemMeta().hasDisplayName() ? itemStack.getItemMeta().getDisplayName() : " ";
+        return input == null || input.equalsIgnoreCase(itemStack.getType().toString()) ? " " : input;
     }
 
     public int getPageSize() {
@@ -106,7 +118,6 @@ public abstract class GUI<T> implements InventoryHolder {
         return this.currentPage > 1;
     }
 
-    @Nullable
     public List<? extends T> getPageEntries() {
         return pageEntries;
     }
@@ -121,10 +132,12 @@ public abstract class GUI<T> implements InventoryHolder {
     }
 
     public void setPageEntries(List<? extends T> pageEntries) {
-        this.pageEntries = pageEntries;
         this.entryBySlot = new LinkedHashMap<>();
-        setPage(this.currentPage);
-        setArea(ItemStorage.get("placeholder"), this.pageSize, this.pageSize+8);
+        if(this.pageEntries == null || this.pageEntries.isEmpty()) {
+            this.pageEntries = pageEntries;
+            setPage(this.currentPage);
+            setArea(ItemStorage.get("placeholder"), this.pageSize, this.pageSize+8);
+        }else this.pageEntries = pageEntries;
     }
 
     public Map<Integer, T> getEntryBySlot() {
@@ -134,6 +147,11 @@ public abstract class GUI<T> implements InventoryHolder {
     public void setPage(int page) {
         if(getPageEntries() != null) {
             getEntryBySlot().clear();
+            if(getMaxPages() < getCurrentPage()) {
+                this.currentPage--;
+                setPage(this.currentPage);
+                return;
+            }
             clear(0, (this.pageSize-1));
             clear(this.pageSize+9, this.pageSize+17);
             List<T> rangeList = GuiExtensionUtils.getListRange(getPageEntries(),
@@ -157,12 +175,15 @@ public abstract class GUI<T> implements InventoryHolder {
 
     }
 
+    public void afterUpdatePage() {
+
+    }
+
     public void updatePage(Event event) {
-        System.out.println("PRE UPDATE PAGE " + this.getClass() + ":" + updateEvents);
         if(event == null || this.updateEvents.contains(event.getClass())) {
-            System.out.println("UPDATE PAGE " + this.getClass());
             beforeUpdatePage();
             setPage(this.currentPage);
+            afterUpdatePage();
         }
     }
 
@@ -183,8 +204,20 @@ public abstract class GUI<T> implements InventoryHolder {
         this.currentPage = currentPage;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public void setItem(ItemStack itemStack, int... places) {
+        for(int place : places) setItem(place, itemStack);
+    }
+
+    public void setItem(ItemStack itemStack, List<Integer> places) {
+        for(int place : places) setItem(place, itemStack);
     }
 
     public void setItem(int place, ItemStack item){
@@ -264,15 +297,15 @@ public abstract class GUI<T> implements InventoryHolder {
             if(event.getSlot() == this.inventory.getSize()-1) {
                 if(hasNextPage()) {
                     this.currentPage++;
-                    setPage(this.currentPage);
+                    updatePage(null);
                 } else if(hasPreviousPage()) {
                     this.currentPage--;
-                    setPage(this.currentPage);
+                    updatePage(null);
                 }
             } else if(event.getSlot() == this.inventory.getSize()-2) {
                 if(hasPreviousPage()) {
                     this.currentPage--;
-                    setPage(this.currentPage);
+                    updatePage(null);
                 }
             }
         }

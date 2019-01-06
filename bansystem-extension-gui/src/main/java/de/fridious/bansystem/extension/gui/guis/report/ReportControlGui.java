@@ -1,10 +1,35 @@
 package de.fridious.bansystem.extension.gui.guis.report;
 
+import ch.dkrieger.bansystem.lib.BanSystem;
+import ch.dkrieger.bansystem.lib.Messages;
+import ch.dkrieger.bansystem.lib.config.mode.BanMode;
+import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
+import ch.dkrieger.bansystem.lib.reason.ReportReason;
+import ch.dkrieger.bansystem.lib.report.Report;
+import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
+import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.MessageAnvilInputGui;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
+import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
+import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.ban.BanSelfGui;
+import de.fridious.bansystem.extension.gui.guis.ban.BanTemplateGui;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
 /*
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Philipp Elvin Friedhoff
- * @since 04.01.19 16:16
+ * @since 06.01.19 00:29
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -19,29 +44,6 @@ package de.fridious.bansystem.extension.gui.guis.report;
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-
-import ch.dkrieger.bansystem.lib.BanSystem;
-import ch.dkrieger.bansystem.lib.Messages;
-import ch.dkrieger.bansystem.lib.config.mode.BanMode;
-import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
-import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
-import ch.dkrieger.bansystem.lib.reason.ReportReason;
-import ch.dkrieger.bansystem.lib.report.Report;
-import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
-import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
-import de.fridious.bansystem.extension.gui.guis.ban.BanTemplateGui;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 
 public class ReportControlGui extends PrivateGUI {
 
@@ -111,7 +113,9 @@ public class ReportControlGui extends PrivateGUI {
                             DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
                                     .create(GUIS.BAN_TEMPLATE, new BanTemplateGui(player, target)).open());
                 } else if(banMode == BanMode.SELF) {
-                    //@Todo BanMode self
+                    Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                    .create(GUIS.BAN_SELF, new BanSelfGui(player, target)));
                 }
             } else if(event.getSlot() == 16) {
                 player.sendMessage(Messages.REPORT_DENIED_STAFF
@@ -121,7 +125,7 @@ public class ReportControlGui extends PrivateGUI {
             } else if(event.getSlot() == 22) {
                 Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                         DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                                .create(GUIS.ANVIL_INPUT, new ReportControlMessageGui(this)));
+                                .create(GUIS.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
             }
         }
     }

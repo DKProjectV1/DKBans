@@ -1,10 +1,10 @@
-package de.fridious.bansystem.extension.gui.listeners;
+package de.fridious.bansystem.extension.gui.commands;
 
 /*
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Philipp Elvin Friedhoff
- * @since 01.01.19 22:09
+ * @since 05.01.19 20:35
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -20,18 +20,15 @@ package de.fridious.bansystem.extension.gui.listeners;
  * under the License.
  */
 
+import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerUpdateEvent;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 
-public class PlayerJoinListener implements Listener {
+public class BukkitNetworkPlayerUpdateListener implements Listener {
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(DKBansGuiExtension.getInstance(), ()->
-                DKBansGuiExtension.getInstance().getGuiManager().updateAllCachedInventories(event), 40);
+    public void onBukkitNetworkPlayerUpdate(BukkitNetworkPlayerUpdateEvent event) {
+        DKBansGuiExtension.getInstance().getGuiManager().updateAllCachedInventories(event);
     }
 }

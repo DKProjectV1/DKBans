@@ -4,7 +4,7 @@ package de.fridious.bansystem.extension.gui.guis.kick;
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Philipp Elvin Friedhoff
- * @since 05.01.19 00:22
+ * @since 05.01.19 02:26
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -23,9 +23,11 @@ package de.fridious.bansystem.extension.gui.guis.kick;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
-import ch.dkrieger.bansystem.lib.reason.KickReason;
+import ch.dkrieger.bansystem.lib.report.Report;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.AnvilInputGui;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.MessageAnvilInputGui;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
@@ -38,56 +40,43 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-public class KickTemplateGui extends PrivateGUI<KickReason> {
+public class KickSelfGui extends PrivateGUI {
 
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList();
     private UUID target;
-    private String message;
+    private String reason;
 
-    public KickTemplateGui(Player owner, UUID target) {
+    public KickSelfGui(Player owner, UUID target) {
         super(owner);
-        String title = INVENTORY_TITLE;
         this.target = target;
-        this.message = " ";
-        createInventory(title, 54);
-        setPageEntries(getInteractKickReasons());
-        setItem(45, ItemStorage.get("templatekick_editmessage", replace -> replace.replace("[message]", message)));
+        this.reason = "";
+        String title = INVENTORY_TITLE;
         getUpdateEvents().addAll(UPDATE_EVENTS);
+        createInventory(title, 27);
+        setItem(11, ItemStorage.get("kickself_reason", replace -> replace.replace("[reason]", reason)));
+        setItem(15, ItemStorage.get("kickself_message", replace -> replace.replace("[message]", getMessage())));
+        setItem(26, ItemStorage.get("kickself_send", replace ->
+                replace.replace("[reason]", reason).replace("[message]", getMessage())));
     }
 
-    public String getMessage() {
-        return message;
+    public String getReason() {
+        return reason;
     }
 
-    private List<KickReason> getInteractKickReasons() {
-        List<KickReason> kickReasons = new LinkedList<>();
-        for(KickReason reason : BanSystem.getInstance().getReasonProvider().getKickReasons()) {
-            if((!BanSystem.getInstance().getPlayerManager().getPlayer(target).hasBypass() || getOwner().hasPermission("dkbans.bypass.ignore"))
-                    && !reason.isHidden() && getOwner().hasPermission("dkbans.kick")
-                    && getOwner().hasPermission(reason.getPermission())) kickReasons.add(reason);
-        }
-        return kickReasons;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     @Override
     public void updatePage(Event event) {
-        if(event == null || getUpdateEvents().contains(event.getClass())) {
-            setItem(45, ItemStorage.get("templatekick_editmessage", replace -> replace.replace("[message]", message)));
-        }
-    }
-
-    @Override
-    public void setPageItem(int slot, KickReason reason) {
-        setItem(slot, ItemStorage.get("templatekick_reason", reason));
+        setItem(11, ItemStorage.get("kickself_reason", replace -> replace.replace("[reason]", reason)));
+        setItem(15, ItemStorage.get("kickself_message", replace -> replace.replace("[message]", getMessage())));
+        setItem(26, ItemStorage.get("kickself_send", replace ->
+                replace.replace("[reason]", reason).replace("[message]", getMessage())));
     }
 
     @Override
@@ -98,13 +87,25 @@ public class KickTemplateGui extends PrivateGUI<KickReason> {
     @Override
     protected void onClick(InventoryClickEvent event) {
         final Player player = (Player) event.getWhoClicked();
-        KickReason kickReason = getEntryBySlot().get(event.getSlot());
-        if(kickReason != null) {
-            if(player.hasPermission("dkbans.ban") &&
-                    player.hasPermission(kickReason.getPermission())
-                    && (!BanSystem.getInstance().getPlayerManager().getPlayer(target).hasBypass() || player.hasPermission("dkbans.bypass.ignore"))) {
+        if(player.hasPermission("dkbans.kick")) {
+            if(event.getSlot() == 11) {
+                Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                .create(GUIS.ANVIL_INPUT, new AnvilInputGui(this, this.reason) {
+                                    @Override
+                                    public void setInput(String input) {
+                                        setReason(input);
+                                    }
+                                }).open());
+            } else if(event.getSlot() == 15) {
+
+                Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                .create(GUIS.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
+            } else if(event.getSlot() == 26) {
+                if(reason == null) return;
                 NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
-                Kick kick = targetNetworkPlayer.kick(kickReason, getMessage(), player.getUniqueId());
+                Kick kick = targetNetworkPlayer.kick(getReason(), getMessage(), getOwner().getUniqueId());
                 player.sendMessage(Messages.KICK_SUCCESS
                         .replace("[prefix]", Messages.PREFIX_BAN)
                         .replace("[server]", kick.getServer())
@@ -113,15 +114,11 @@ public class KickTemplateGui extends PrivateGUI<KickReason> {
                         .replace("[player]", targetNetworkPlayer.getColoredName()));
                 player.closeInventory();
             }
-        } else if(event.getSlot() == 45) {
-            Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                    DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                            .create(GUIS.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
         }
     }
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.KICK_TEMPLATE);
+        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.KICK_SELF);
     }
 }

@@ -25,12 +25,9 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
-import ch.dkrieger.bansystem.lib.reason.BanReason;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-import com.mojang.authlib.GameProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,16 +73,20 @@ public class GuiExtensionUtils {
         return rangeList;
     }
 
-    public static GameProfile getGameProfile(Player player) {
-        try{
+    public static Object getGameProfile(Player player) {
+        try {
             Class<?> craftPlayerClass = Reflection.getCraftBukkitClass("entity.CraftPlayer");
-
             Method getHandle = craftPlayerClass.getMethod("getProfile");
-            return (GameProfile)getHandle.invoke(player);
+            return getHandle.invoke(player);
         }catch (Exception exception){
             exception.printStackTrace();
         }
         return null;
+    }
+
+    public static Object getGameProfileByPlayer(String player) {
+        NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player);
+        return networkPlayer.getProperties().getObject("gameProfile", Reflection.getClass("com.mojang.authlib.GameProfile"));
     }
 
     public static List<Player> getInteractOnlinePlayers(Player player) {

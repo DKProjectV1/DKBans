@@ -7,6 +7,7 @@ import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.MessageAnvilInputGui;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
 import de.fridious.bansystem.extension.gui.guis.GUIS;
@@ -52,9 +53,9 @@ public class BanTemplateGui extends PrivateGUI<BanReason> {
         this.target = target;
         this.message = " ";
         createInventory(title, 54);
+        getUpdateEvents().addAll(UPDATE_EVENTS);
         setPageEntries(getInteractBanReasons());
         setItem(45, ItemStorage.get("templateban_editmessage", replace -> replace.replace("[message]", message)));
-        getUpdateEvents().addAll(UPDATE_EVENTS);
     }
 
     public String getMessage() {
@@ -73,10 +74,6 @@ public class BanTemplateGui extends PrivateGUI<BanReason> {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public void executeAfterBan(Ban ban) {
-
     }
 
     @Override
@@ -118,13 +115,12 @@ public class BanTemplateGui extends PrivateGUI<BanReason> {
                         .replace("[duration]", GeneralUtil.calculateDuration(ban.getDuration()))
                         .replace("[remaining]", GeneralUtil.calculateRemaining(ban.getDuration(),false))
                         .replace("[remaining-short]", GeneralUtil.calculateRemaining(ban.getDuration(),true)));
-                executeAfterBan(ban);
                 player.closeInventory();
             }
         } else if(event.getSlot() == 45) {
             Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                     DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                            .create(GUIS.ANVIL_INPUT, new BanMessageGui(this)));
+                            .create(GUIS.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
         }
     }
 

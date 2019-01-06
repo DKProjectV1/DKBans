@@ -14,8 +14,14 @@ import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
 import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.ban.BanSelfGui;
 import de.fridious.bansystem.extension.gui.guis.ban.BanTemplateGui;
+import de.fridious.bansystem.extension.gui.guis.history.HistoryAllGui;
+import de.fridious.bansystem.extension.gui.guis.kick.KickSelfGui;
 import de.fridious.bansystem.extension.gui.guis.kick.KickTemplateGui;
+import de.fridious.bansystem.extension.gui.guis.unban.UnBanSelfGui;
+import de.fridious.bansystem.extension.gui.guis.unban.UnBanTemplateGui;
+import de.fridious.bansystem.extension.gui.guis.warn.WarnSelfGui;
 import de.fridious.bansystem.extension.gui.guis.warn.WarnTemplateGui;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
 import org.bukkit.Bukkit;
@@ -77,13 +83,18 @@ public class PlayerInfoGui extends PrivateGUI {
     public void updatePage(Event event) {
         if(event == null || getUpdateEvents().contains(event.getClass())) {
             NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(this.target);
+            System.out.println("Update PlayerInfo: " + networkPlayer.isOnline() + ":" + networkPlayer.isBanned());
             if(networkPlayer.isBanned()) setItem(20, ItemStorage.get("playerinfo_unban", networkPlayer));
             else setItem(20, ItemStorage.get("playerinfo_ban", networkPlayer));
             if(networkPlayer.isOnline()) {
                 setItem(19, ItemStorage.get("playerinfo_kick", networkPlayer));
                 setItem(13, new ItemBuilder(ItemStorage.get("playerinfo_skull_online", networkPlayer)).setGameProfile(networkPlayer.getName()));
                 setItem(25, ItemStorage.get("playerinfo_jumpto", networkPlayer));
-            } else setItem(13, new ItemBuilder(ItemStorage.get("playerinfo_skull_offline", networkPlayer)).setGameProfile(networkPlayer.getName()));
+            } else {
+                setItem(19, ItemStorage.get("placeholder"));
+                setItem(13, new ItemBuilder(ItemStorage.get("playerinfo_skull_offline", networkPlayer)).setGameProfile(networkPlayer.getName()));
+                setItem(25, ItemStorage.get("placeholder"));
+            }
             setItem(22, ItemStorage.get("playerinfo_showhistory", networkPlayer));
             setItem(24, ItemStorage.get("playerinfo_warn", networkPlayer));
         }
@@ -99,9 +110,28 @@ public class PlayerInfoGui extends PrivateGUI {
         final Player player = (Player) event.getWhoClicked();
         final NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
         final NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(this.target);
+        if(targetNetworkPlayer == null) {
+            player.sendMessage(Messages.PLAYER_NOT_FOUND
+                    .replace("[prefix]", Messages.PREFIX_NETWORK)
+                    .replace("[player]", networkPlayer.getName()));
+            return;
+        }
         if(event.getSlot() == 20) {
             if(targetNetworkPlayer.isBanned() & player.hasPermission("dkbans.unban")) {
-
+                if(targetNetworkPlayer.getUUID().equals(networkPlayer.getUUID())) {
+                    player.sendMessage(Messages.BAN_SELF.replace("[prefix]", Messages.PREFIX_BAN));
+                    return;
+                }
+                ReasonMode unbanMode = BanSystem.getInstance().getConfig().unbanMode;
+                if(unbanMode == ReasonMode.TEMPLATE) {
+                    Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                    .create(GUIS.UNBAN_TEMPLATE, new UnBanTemplateGui(player, target)).open());
+                } else if(unbanMode == ReasonMode.SELF) {
+                    Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                    .create(GUIS.UNBAN_SELF, new UnBanSelfGui(player, target)).open());
+                }
             }else if(player.hasPermission("dkbans.ban")) {
                 if(targetNetworkPlayer.getUUID().equals(networkPlayer.getUUID())) {
                     player.sendMessage(Messages.BAN_SELF.replace("[prefix]", Messages.PREFIX_BAN));
@@ -115,45 +145,39 @@ public class PlayerInfoGui extends PrivateGUI {
                 }
                 if(BanSystem.getInstance().getConfig().banMode == BanMode.TEMPLATE) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(GUIS.BAN_TEMPLATE, new BanTemplateGui(player, target)).open());
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                    .create(GUIS.BAN_TEMPLATE, new BanTemplateGui(player, target)).open());
                 } else if(BanSystem.getInstance().getConfig().banMode == BanMode.SELF) {
-
+                    Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                    .create(GUIS.BAN_SELF, new BanSelfGui(player, target)).open());
                 }
             }
         } else if(event.getSlot() == 19 && player.hasPermission("dkbans.kick")) {
             //Kick
-            if(targetNetworkPlayer.isOnline() && player.hasPermission("dkbans.kick")) {
-                if(networkPlayer.getUUID().equals(targetNetworkPlayer.getUUID())){
-                    player.sendMessage(Messages.KICK_SELF.replace("[prefix]", Messages.PREFIX_BAN));
-                    return;
-                }
-                if(targetNetworkPlayer.hasBypass() && !(player.hasPermission("dkbans.bypass.ignore"))) {
-                    player.sendMessage(Messages.KICK_BYPASS
-                            .replace("[prefix]", Messages.PREFIX_BAN)
-                            .replace("[player]", targetNetworkPlayer.getColoredName()));
-                    return;
-                }
-                if(BanSystem.getInstance().getConfig().kickMode == ReasonMode.TEMPLATE) {
-                    Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), () ->
-                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                                    .create(GUIS.KICK_TEMPLATE, new KickTemplateGui(player, target)));
-                } else if(BanSystem.getInstance().getConfig().kickMode == ReasonMode.SELF) {
+            if(!targetNetworkPlayer.isOnline()) return;
+            if(networkPlayer.getUUID().equals(targetNetworkPlayer.getUUID())){
+                player.sendMessage(Messages.KICK_SELF.replace("[prefix]", Messages.PREFIX_BAN));
+                return;
+            }
+            if(targetNetworkPlayer.hasBypass() && !(player.hasPermission("dkbans.bypass.ignore"))) {
+                player.sendMessage(Messages.KICK_BYPASS
+                        .replace("[prefix]", Messages.PREFIX_BAN)
+                        .replace("[player]", targetNetworkPlayer.getColoredName()));
+                return;
+            }
+            if(BanSystem.getInstance().getConfig().kickMode == ReasonMode.TEMPLATE) {
+                Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), () ->
+                        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                .create(GUIS.KICK_TEMPLATE, new KickTemplateGui(player, target)).open());
+            } else if(BanSystem.getInstance().getConfig().kickMode == ReasonMode.SELF) {
+                Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), () ->
+                        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                .create(GUIS.KICK_SELF, new KickSelfGui(player, target)).open());
+            }
 
-                }
-            }
         } else if(event.getSlot() == 25 && player.hasPermission("dkbans.jumpto")) {
-            if(targetNetworkPlayer == null) {
-                player.sendMessage(Messages.PLAYER_NOT_FOUND
-                        .replace("[prefix]", Messages.PREFIX_NETWORK)
-                        .replace("[player]", networkPlayer.getName()));
-                return;
-            }
-            if(!targetNetworkPlayer.isOnline()) {
-                player.sendMessage(Messages.PLAYER_NOT_ONLINE
-                        .replace("[prefix]", Messages.PREFIX_NETWORK)
-                        .replace("[player]", networkPlayer.getColoredName()));
-                return;
-            }
+            if(!targetNetworkPlayer.isOnline()) return;
             final OnlineNetworkPlayer targetOnlineNetworkPlayer = targetNetworkPlayer.getOnlinePlayer();
             if(targetOnlineNetworkPlayer.getServer() == null) {
                 player.sendMessage(Messages.SERVER_NOT_FOUND
@@ -170,7 +194,9 @@ public class PlayerInfoGui extends PrivateGUI {
             player.sendMessage(Messages.SERVER_CONNECTING.replace("[prefix]", Messages.PREFIX_NETWORK));
             networkPlayer.getOnlinePlayer().connect(targetOnlineNetworkPlayer.getServer());
         } else if(event.getSlot() == 22 && player.hasPermission("dkbans.history")) {
-            //@Todo history
+            Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
+                    DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                            .create(GUIS.HISTORY_ALL, new HistoryAllGui(player, target)).open());
         } else if(event.getSlot() == 24 && player.hasPermission("dkbans.warn")) {
             if(networkPlayer.getUUID().equals(targetNetworkPlayer.getUUID())){
                 player.sendMessage(Messages.KICK_SELF.replace("[prefix]", Messages.PREFIX_BAN));
@@ -187,7 +213,9 @@ public class PlayerInfoGui extends PrivateGUI {
                         DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
                                 .create(GUIS.WARN_TEMPLATE, new WarnTemplateGui(player, target)).open());
             } else if(BanSystem.getInstance().getConfig().warnMode == ReasonMode.SELF) {
-
+                Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), () ->
+                        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                                .create(GUIS.WARN_SELF, new WarnSelfGui(player, target)).open());
             }
         }
     }

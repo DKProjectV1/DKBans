@@ -28,6 +28,7 @@ import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.guis.GUIS;
 import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.guis.report.ReportGlobalGui;
+import de.fridious.bansystem.extension.gui.guis.report.ReportSelfGui;
 import de.fridious.bansystem.extension.gui.guis.report.ReportTemplateGui;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -71,9 +72,11 @@ public class ReportCommand implements CommandExecutor {
             }
             ReasonMode reportMode = BanSystem.getInstance().getConfig().reportMode;
             if(reportMode == ReasonMode.TEMPLATE) {
-                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(GUIS.REPORT_TEMPLATE, new ReportTemplateGui(player, target.getUUID())).open();
+                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                        .create(GUIS.REPORT_TEMPLATE, new ReportTemplateGui(player, target.getUUID())).open();
             } else if(reportMode == ReasonMode.SELF) {
-
+                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                        .create(GUIS.REPORT_SELF, new ReportSelfGui(player, target.getUUID())).open();
             }
         }
         return true;
