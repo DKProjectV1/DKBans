@@ -91,7 +91,7 @@ public class ItemStorage {
                 .replace("[maxPoints]",""+reason.getMaxPoints())
                 .replace("[maxDuration]",reason.getMaxDuration().getFormattedTime(true))
                 .replace("[points]",""+reason.getPoints())
-                .replace("[banType]", reason.getBanType() == null ? BanType.NETWORK + " §8| " + BanType.CHAT : reason.getBanType().getDisplay()));
+                .replace("[banType]", reason.getBanType() == null ? "§4" + BanType.NETWORK.getDisplay() + " §8| §4" + BanType.CHAT.getDisplay() : "§4" + reason.getBanType().getDisplay()));
     }
 
     public static ItemStack get(String key, int page, int maxPages) {

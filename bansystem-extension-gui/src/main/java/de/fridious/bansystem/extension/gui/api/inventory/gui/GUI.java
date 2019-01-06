@@ -49,6 +49,7 @@ public abstract class GUI<T> implements InventoryHolder {
     private Map<Integer, T> entryBySlot;
     private List<Class<? extends Event>> updateEvents;
     private String message;
+    private boolean childGui;
     private final Document properties;
 
     protected GUI() {
@@ -57,6 +58,7 @@ public abstract class GUI<T> implements InventoryHolder {
         this.updateEvents = new LinkedList<>();
         this.properties = new Document();
         this.message = "";
+        this.childGui = false;
     }
 
     public GUI(Inventory inventory) {
@@ -72,6 +74,10 @@ public abstract class GUI<T> implements InventoryHolder {
     public GUI(InventoryType inventoryType) {
         this();
         this.inventory = Bukkit.createInventory(this, inventoryType);
+    }
+
+    public boolean hasChildGui() {
+        return childGui;
     }
 
     public String getMessage() {
@@ -142,6 +148,10 @@ public abstract class GUI<T> implements InventoryHolder {
 
     public Map<Integer, T> getEntryBySlot() {
         return entryBySlot;
+    }
+
+    public void setChildGui(boolean childGui) {
+        this.childGui = childGui;
     }
 
     public void setPage(int page) {

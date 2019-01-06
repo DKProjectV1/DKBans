@@ -87,18 +87,15 @@ public class HistoryAllGui extends PrivateGUI<HistoryEntry> {
 
     @Override
     protected void onOpen(InventoryOpenEvent event) {
-
+        setChildGui(false);
     }
 
     @Override
     protected void onClick(InventoryClickEvent event) {
-        System.out.println("history all click");
         final Player player = (Player) event.getWhoClicked();
         HistoryEntry historyEntry = getEntryBySlot().get(event.getSlot());
-        System.out.println(historyEntry);
-        System.out.println(player.hasPermission("dkbans.history.reset"));
         if(historyEntry != null && player.hasPermission("dkbans.history.reset")) {
-            System.out.println("hasPermission and not null");
+            setChildGui(true);
             Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                     DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
                             .create(GUIS.HISTORY_DELETE, new HistoryEntryDeleteGui(getOwner(), target, historyEntry, this)).open());
@@ -110,6 +107,6 @@ public class HistoryAllGui extends PrivateGUI<HistoryEntry> {
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.HISTORY_ALL);
+        if(!hasChildGui())DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.HISTORY_ALL);
     }
 }

@@ -29,6 +29,7 @@ import de.fridious.bansystem.extension.gui.guis.ban.BanGlobalGui;
 import de.fridious.bansystem.extension.gui.guis.ban.BanSelfGui;
 import de.fridious.bansystem.extension.gui.guis.history.HistoryAllGui;
 import de.fridious.bansystem.extension.gui.guis.history.HistoryEntryDeleteGui;
+import de.fridious.bansystem.extension.gui.guis.history.HistoryGlobalGui;
 import de.fridious.bansystem.extension.gui.guis.kick.KickGlobalGui;
 import de.fridious.bansystem.extension.gui.guis.kick.KickSelfGui;
 import de.fridious.bansystem.extension.gui.guis.kick.KickTemplateGui;
@@ -60,6 +61,7 @@ public class GuiConfig extends SimpleConfig {
 
         HistoryAllGui.INVENTORY_TITLE = addAndGetMessageValue("history.all.title", "&bHistory");
         HistoryEntryDeleteGui.INVENTORY_TITLE = addAndGetMessageValue("history.delete.title", "&8Are you sure to delete?");
+        HistoryGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("history.global.title", "&bGlobal history");
 
         KickGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("kick.global.title", "&4Global Kick");
         KickTemplateGui.INVENTORY_TITLE = addAndGetMessageValue("kick.template.title", "&4Kick");
@@ -143,7 +145,7 @@ public class GuiConfig extends SimpleConfig {
         ItemStorage.put("kickself_message", addAndGetItemStack("kick.self.items.message", new ItemBuilder(Material.PAPER).setDisplayName("&cSet the message").setLore("&7Current message&8: [message]").build()));
         ItemStorage.put("kickself_send", addAndGetItemStack("kick.self.items.send", new ItemBuilder(Material.INK_SACK, 1, (short) 10).setDisplayName("&aSend").build()));
         //UnBan
-        ItemStorage.put("templateunban_reason", addAndGetItemStack("unban.template.items.reason", new ItemBuilder(Material.PAPER).setDisplayName("[reason]").setLore("&7Id&8: &c[id]", "&7BanType&8: &4[banType]").build()));
+        ItemStorage.put("templateunban_reason", addAndGetItemStack("unban.template.items.reason", new ItemBuilder(Material.PAPER).setDisplayName("[reason]").setLore("&7Id&8: &c[id]", "&7BanType&8: [banType]").build()));
         ItemStorage.put("templateunban_editmessage", addAndGetItemStack("unban.template.items.editmessage", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet message of unban").setLore("&7Current message&8: &7[message]").build()));
         ItemStorage.put("unbanself_reason", addAndGetItemStack("unban.self.items.reason", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet the reason").setLore("&7Current reason&8: [reason]").build()));
         ItemStorage.put("unbanself_message", addAndGetItemStack("unban.self.items.message", new ItemBuilder(Material.PAPER).setDisplayName("&cSet the message").setLore("&7Current message&8: [message]").build()));
@@ -157,6 +159,8 @@ public class GuiConfig extends SimpleConfig {
         ItemStorage.put("history_clear", addAndGetItemStack("history.all.items.clear", new ItemBuilder(Material.HOPPER).setDisplayName("&cClear history").setDisplayName("&7Clear the whole history of [player]").build()));
         ItemStorage.put("historydelete_accept", addAndGetItemStack("history.delete.items.accept", new ItemBuilder(Material.STAINED_CLAY, 1, (short) 13).setDisplayName("&aYes").build()));
         ItemStorage.put("historydelete_deny", addAndGetItemStack("history.delete.items.deny", new ItemBuilder(Material.STAINED_CLAY, 1, (short) 14).setDisplayName("&cNo").build()));
+        ItemStorage.put("globalhistory_skull", addAndGetItemStack("history.global.items.skull", new ItemBuilder(Material.SKULL_ITEM).setDisplayName("[player]").setLore("&7Click to open history").build()));
+
     }
 
     private ItemStack addAndGetItemStack(String path, ItemStack itemStack) {

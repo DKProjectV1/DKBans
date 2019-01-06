@@ -16,3 +16,4 @@ commands:
   warn:
   kick:
   unban:
+  history:

@@ -29,6 +29,7 @@ import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
 import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -50,6 +51,7 @@ public class HistoryEntryDeleteGui extends PrivateGUI {
     private HistoryEntry historyEntry;
     private UUID target;
     private HistoryAllGui historyAllGui;
+    private boolean openParentGui;
 
     public HistoryEntryDeleteGui(Player owner, UUID target, HistoryEntry historyEntry, HistoryAllGui historyAllGui) {
         super(owner);
@@ -57,6 +59,7 @@ public class HistoryEntryDeleteGui extends PrivateGUI {
         this.target = target;
         this.historyEntry = historyEntry;
         this.historyAllGui = historyAllGui;
+        this.openParentGui = false;
         createInventory(title, 27);
         getUpdateEvents().addAll(UPDATE_EVENTS);
         if(historyEntry instanceof Ban) {
@@ -84,16 +87,24 @@ public class HistoryEntryDeleteGui extends PrivateGUI {
         if(ACCEPT_SLOTS.contains(event.getSlot())) {
             NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
             targetNetworkPlayer.resetHistory(historyEntry.getID());
-            if(this.historyAllGui != null) Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                    historyAllGui.open());
+
+            if(this.historyAllGui != null) {
+                this.openParentGui = true;
+                Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()-> historyAllGui.open());
+            }
         } else if(DENY_SLOTS.contains(event.getSlot())) {
-            if(this.historyAllGui != null) Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                    historyAllGui.open());
+            if(this.historyAllGui != null) {
+                this.openParentGui = true;
+                Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()-> historyAllGui.open());
+            }
         }
     }
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.HISTORY_DELETE);
+        final Player player = (Player) event.getPlayer();
+        GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
+        cachedInventories.remove(GUIS.HISTORY_DELETE);
+        if(this.historyAllGui != null && !this.openParentGui) cachedInventories.remove(GUIS.HISTORY_ALL);
     }
 }

@@ -50,4 +50,5 @@ public final class GUIS {
 
     public static final String HISTORY_ALL = "history_all";
     public static final String HISTORY_DELETE = "history_delete";
+    public static final String HISTORY_GLOBAL = "history_global";
 }

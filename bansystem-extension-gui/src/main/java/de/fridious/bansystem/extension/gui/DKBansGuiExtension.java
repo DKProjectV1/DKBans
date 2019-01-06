@@ -105,6 +105,7 @@ public class DKBansGuiExtension extends JavaPlugin {
         getCommand("warn").setExecutor(new WarnCommand());
         getCommand("kick").setExecutor(new KickCommand());
         getCommand("unban").setExecutor(new UnBanCommand());
+        getCommand("history").setExecutor(new HistoryCommand());
     }
 
     private void registerJsonAdapters() {

@@ -70,7 +70,6 @@ public abstract class AnvilInputGui extends PrivateGUI {
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        System.out.println("ONCLOSE INPUt GUI " + gui.getClass());
         DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.ANVIL_INPUT);
         event.getInventory().clear();
     }
