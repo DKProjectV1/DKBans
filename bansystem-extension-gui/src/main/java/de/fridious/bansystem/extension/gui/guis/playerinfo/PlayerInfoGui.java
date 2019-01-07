@@ -58,18 +58,11 @@ import java.util.UUID;
 
 public class PlayerInfoGui extends PrivateGui {
 
-    public static String INVENTORY_TITLE;
-    public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList(PlayerJoinEvent.class, PlayerQuitEvent.class, BukkitNetworkPlayerBanEvent.class, BukkitNetworkPlayerUnbanEvent.class);
-    private String title;
     private UUID target;
 
     public PlayerInfoGui(Player player, UUID target) {
-        super(player);
-        this.title = INVENTORY_TITLE;
+        super(45, replace -> GuiExtensionUtils.replaceNetworkPlayer(replace, BanSystem.getInstance().getPlayerManager().getPlayer(target)), player);
         this.target = target;
-        getUpdateEvents().addAll(UPDATE_EVENTS);
-        NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(this.target);
-        createInventory(GuiExtensionUtils.replaceNetworkPlayer(title, networkPlayer), 45);
         updatePage(null);
         fill(ItemStorage.get("placeholder"));
     }

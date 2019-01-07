@@ -20,7 +20,6 @@ package de.fridious.bansystem.extension.gui.guis.history;
  * under the License.
  */
 
-import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerHistoryUpdateEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
@@ -31,27 +30,19 @@ import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
 import de.fridious.bansystem.extension.gui.guis.Guis;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+
 import java.util.UUID;
 
 public class HistoryAllGui extends PrivateGui<HistoryEntry> {
 
-    public static String INVENTORY_TITLE;
-    public static List<Class<? extends Event>> UPDATE_EVENTS = new LinkedList<>(Arrays.asList(BukkitNetworkPlayerHistoryUpdateEvent.class));
     private UUID target;
 
     public HistoryAllGui(Player owner, UUID target) {
-        super(owner);
-        String title = INVENTORY_TITLE;
+        super(54, owner);
         this.target = target;
-        createInventory(title, 54);
-        getUpdateEvents().addAll(UPDATE_EVENTS);
         NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
         setPageEntries(targetNetworkPlayer.getHistory().getEntriesSorted());
         if(getOwner().hasPermission("dkbans.history.reset") && !getPageEntries().isEmpty())

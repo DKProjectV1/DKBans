@@ -45,30 +45,19 @@ import java.util.concurrent.TimeUnit;
 
 public class BanSelfGui extends PrivateGui {
 
-    public static String INVENTORY_TITLE;
-    public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList();
-    public static final Map<String, Object> DEFAULT_SETTINGS;
     private UUID target;
     private BanType banType;
     private String reason;
     private long duration;
     private TimeUnit timeUnit;
 
-    static {
-        DEFAULT_SETTINGS = new LinkedHashMap<>();
-    }
-
     public BanSelfGui(Player owner, UUID target) {
-        super(owner);
-        //Reason, duration, message, timeunit, bantype
-        String title = INVENTORY_TITLE;
+        super(45, owner);
         this.target = target;
-        this.banType = (BanType) DEFAULT_SETTINGS.get("bantype");
-        this.timeUnit = (TimeUnit) DEFAULT_SETTINGS.get("timeunit");
+        this.banType = (BanType) getSettings().get("bantype");
+        this.timeUnit = (TimeUnit) getSettings().get("timeunit");
         this.reason = "";
-        this.duration = (long) DEFAULT_SETTINGS.get("duration");
-        createInventory(title, 45);
-        getUpdateEvents().addAll(UPDATE_EVENTS);
+        this.duration = (long) getSettings().get("duration");
         updatePage(null);
         fill(ItemStorage.get("placeholder"));
     }

@@ -42,16 +42,11 @@ import java.util.*;
 
 public class BanTemplateGui extends PrivateGui<BanReason> {
 
-    public static String INVENTORY_TITLE;
-    public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList();
     private UUID target;
 
     public BanTemplateGui(Player player, UUID target) {
-        super(player);
-        String title = INVENTORY_TITLE;
+        super(54, player);
         this.target = target;
-        createInventory(title, 54);
-        getUpdateEvents().addAll(UPDATE_EVENTS);
         setPageEntries(getInteractBanReasons());
         setItem(45, ItemStorage.get("templateban_editmessage", replace -> replace.replace("[message]", getMessage())));
     }

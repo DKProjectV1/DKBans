@@ -27,23 +27,19 @@ import ch.dkrieger.bansystem.lib.player.history.entry.*;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
-import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.guis.GuiManager;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 public class HistoryEntryDeleteGui extends PrivateGui {
 
-    public static String INVENTORY_TITLE;
-    public static List<Class<? extends Event>> UPDATE_EVENTS = new LinkedList<>();
     private static List<Integer> ACCEPT_SLOTS = Arrays.asList(0, 1, 2, 9, 10, 11, 18, 19, 20);
     private static List<Integer> DENY_SLOTS = Arrays.asList(6, 7, 8, 15, 16, 17, 24, 25, 26);
     private HistoryEntry historyEntry;
@@ -52,14 +48,11 @@ public class HistoryEntryDeleteGui extends PrivateGui {
     private boolean openParentGui;
 
     public HistoryEntryDeleteGui(Player owner, UUID target, HistoryEntry historyEntry, HistoryAllGui historyAllGui) {
-        super(owner);
-        String title = INVENTORY_TITLE;
+        super(27, owner);
         this.target = target;
         this.historyEntry = historyEntry;
         this.historyAllGui = historyAllGui;
         this.openParentGui = false;
-        createInventory(title, 27);
-        getUpdateEvents().addAll(UPDATE_EVENTS);
         if(historyEntry instanceof Ban) {
             if(((Ban) historyEntry).getBanType() == BanType.CHAT) setItem(13, ItemStorage.get("history_ban_chat", (Ban) historyEntry));
             else setItem(13, ItemStorage.get("history_ban_network", (Ban) historyEntry));

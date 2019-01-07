@@ -42,16 +42,9 @@ import java.util.List;
 
 public class PlayerInfoGlobalGui extends PrivateGui<Player> {
 
-    public static String INVENTORY_TITLE;
-    public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList(PlayerJoinEvent.class, PlayerQuitEvent.class);
-    private String title;
-
     public PlayerInfoGlobalGui(Player owner) {
-        super(owner);
-        this.title = INVENTORY_TITLE;
-        createInventory(this.title, 54);
+        super(54, owner);
         setPageEntries(new LinkedList<>(Bukkit.getOnlinePlayers()));
-        getUpdateEvents().addAll(UPDATE_EVENTS);
     }
 
     @Override

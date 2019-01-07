@@ -43,18 +43,13 @@ import java.util.UUID;
 
 public class ReportSelfGui extends PrivateGui {
 
-    public static String INVENTORY_TITLE;
-    public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList();
     private UUID target;
     private String reason;
 
     public ReportSelfGui(Player owner, UUID target) {
-        super(owner);
+        super(27, owner);
         this.target = target;
         this.reason = "";
-        String title = INVENTORY_TITLE;
-        getUpdateEvents().addAll(UPDATE_EVENTS);
-        createInventory(title, 27);
         setItem(11, ItemStorage.get("reportself_reason", replace -> replace.replace("[reason]", reason)));
         setItem(15, ItemStorage.get("reportself_message", replace -> replace.replace("[message]", getMessage())));
         setItem(26, ItemStorage.get("reportself_send", replace ->

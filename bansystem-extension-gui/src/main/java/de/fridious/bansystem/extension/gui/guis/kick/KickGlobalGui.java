@@ -43,14 +43,8 @@ import java.util.List;
 
 public class KickGlobalGui extends PrivateGui<Player> {
 
-    public static String INVENTORY_TITLE;
-    public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList(PlayerJoinEvent.class, PlayerQuitEvent.class);
-
     public KickGlobalGui(Player owner) {
-        super(owner);
-        String title = INVENTORY_TITLE;
-        getUpdateEvents().addAll(UPDATE_EVENTS);
-        createInventory(title, 54);
+        super(54, owner);
         setPageEntries(GuiExtensionUtils.getInteractOnlinePlayers(owner));
     }
 

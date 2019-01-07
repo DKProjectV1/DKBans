@@ -20,11 +20,15 @@ package de.fridious.bansystem.extension.gui;
  * under the License.
  */
 
+import ch.dkrieger.bansystem.bukkit.event.*;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.config.SimpleConfig;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.Gui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
+import de.fridious.bansystem.extension.gui.guis.GuiData;
+import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.guis.ban.BanGlobalGui;
 import de.fridious.bansystem.extension.gui.guis.ban.BanSelfGui;
 import de.fridious.bansystem.extension.gui.guis.history.HistoryAllGui;
@@ -37,15 +41,23 @@ import de.fridious.bansystem.extension.gui.guis.playerinfo.PlayerInfoGlobalGui;
 import de.fridious.bansystem.extension.gui.guis.playerinfo.PlayerInfoGui;
 import de.fridious.bansystem.extension.gui.guis.ban.BanTemplateGui;
 import de.fridious.bansystem.extension.gui.guis.report.*;
+import de.fridious.bansystem.extension.gui.guis.unban.UnBanGlobalGui;
 import de.fridious.bansystem.extension.gui.guis.unban.UnBanSelfGui;
 import de.fridious.bansystem.extension.gui.guis.unban.UnBanTemplateGui;
 import de.fridious.bansystem.extension.gui.guis.warn.WarnGlobalGui;
 import de.fridious.bansystem.extension.gui.guis.warn.WarnSelfGui;
 import de.fridious.bansystem.extension.gui.guis.warn.WarnTemplateGui;
 import org.bukkit.Material;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import java.io.File;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class GuiConfig extends SimpleConfig {
 
@@ -55,33 +67,39 @@ public class GuiConfig extends SimpleConfig {
 
     @Override
     public void onLoad() {
-        BanTemplateGui.INVENTORY_TITLE = addAndGetMessageValue("ban.template.title", "&4Ban");
-        BanGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("ban.global.title", "&4Global ban");
-        BanSelfGui.INVENTORY_TITLE = addAndGetMessageValue("ban.self.title", "&4Ban");
+        Map<Class<? extends Gui>, GuiData> guiData = DKBansGuiExtension.getInstance().getGuiManager().getInventoryData();
+        guiData.put(BanGlobalGui.class, addAndGetGuiData("ban.global", new GuiData(true, "&4Global ban",PlayerJoinEvent.class, PlayerQuitEvent.class)));
+        guiData.put(BanSelfGui.class, addAndGetGuiData("ban.self", new GuiData(true, "&4Ban", new ConcurrentHashMap<String, Object>(){{
+            put("bantype", BanType.valueOf(addAndGetMessageValue("ban.self.settings.default.bantype", BanType.NETWORK.toString().toLowerCase()).toUpperCase()));
+            put("timeunit", TimeUnit.valueOf(addAndGetMessageValue("ban.self.settings.default.timeunit", TimeUnit.DAYS.toString().toLowerCase()).toUpperCase()));
+            put("duration", addAndGetLongValue("ban.self.settings.default.duration", -1));
+        }})));
+        guiData.put(BanTemplateGui.class, addAndGetGuiData("ban.template", new GuiData(true, "&4Ban")));
 
-        HistoryAllGui.INVENTORY_TITLE = addAndGetMessageValue("history.all.title", "&bHistory");
-        HistoryEntryDeleteGui.INVENTORY_TITLE = addAndGetMessageValue("history.delete.title", "&8Are you sure to delete?");
-        HistoryGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("history.global.title", "&bGlobal history");
+        guiData.put(HistoryAllGui.class, addAndGetGuiData("history.all", new GuiData(true, "&bHistory", BukkitNetworkPlayerHistoryUpdateEvent.class)));
+        guiData.put(HistoryEntryDeleteGui.class, addAndGetGuiData("history.delete", new GuiData(true, "&8Are you sure to delete?")));
+        guiData.put(HistoryGlobalGui.class, addAndGetGuiData("history.global", new GuiData(true, "&bGlobal history", PlayerJoinEvent.class, PlayerQuitEvent.class)));
 
-        KickGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("kick.global.title", "&4Global Kick");
-        KickTemplateGui.INVENTORY_TITLE = addAndGetMessageValue("kick.template.title", "&4Kick");
-        KickSelfGui.INVENTORY_TITLE = addAndGetMessageValue("kick.self.title", "&4Kick");
+        guiData.put(KickGlobalGui.class, addAndGetGuiData("kick.global", new GuiData(true, "&4Global Kick", PlayerJoinEvent.class, PlayerQuitEvent.class)));
+        guiData.put(KickSelfGui.class, addAndGetGuiData("kick.self", new GuiData(true, "&4Kick")));
+        guiData.put(KickTemplateGui.class, addAndGetGuiData("kick.template", new GuiData(true, "&4Kick")));
 
-        PlayerInfoGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("playerinfo.global.title", "&4Global player info");
-        PlayerInfoGui.INVENTORY_TITLE = addAndGetMessageValue("playerinfo.player.title", "&4Player info");
+        guiData.put(PlayerInfoGlobalGui.class, addAndGetGuiData("playerinfo.global", new GuiData(true, "&4Global player info", PlayerJoinEvent.class, PlayerQuitEvent.class)));
+        guiData.put(PlayerInfoGui.class, addAndGetGuiData("playerinfo.player", new GuiData(true, "&4Player info", PlayerJoinEvent.class, PlayerQuitEvent.class, BukkitNetworkPlayerBanEvent.class, BukkitNetworkPlayerUnbanEvent.class)));
 
-        ReportGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("report.global.title", "&6Global report");
-        ReportListGui.INVENTORY_TITLE = addAndGetMessageValue("report.list.title", "&6Reports");
-        ReportTemplateGui.INVENTORY_TITLE = addAndGetMessageValue("report.template.title", "&6Report");
-        ReportControlGui.INVENTORY_TITLE = addAndGetMessageValue("report.control.title", "&6Report control");
-        ReportSelfGui.INVENTORY_TITLE = addAndGetMessageValue("report.self.title", "&6Report");
+        guiData.put(ReportControlGui.class, addAndGetGuiData("report.control", new GuiData(true, "&6Report control")));
+        guiData.put(ReportGlobalGui.class, addAndGetGuiData("report.global", new GuiData(true, "&6Global report", PlayerJoinEvent.class, PlayerQuitEvent.class)));
+        guiData.put(ReportListGui.class, addAndGetGuiData("report.list", new GuiData(true, "&6Reports", BukkitNetworkPlayerReportEvent.class, BukkitNetworkPlayerReportsProcessEvent.class, PlayerQuitEvent.class)));
+        guiData.put(ReportSelfGui.class, addAndGetGuiData("report.self", new GuiData(true, "&6Report")));
+        guiData.put(ReportTemplateGui.class, addAndGetGuiData("report.template", new GuiData(true, "&6Report")));
 
-        UnBanTemplateGui.INVENTORY_TITLE = addAndGetMessageValue("unban.template.title", "&4Unban");
-        UnBanSelfGui.INVENTORY_TITLE = addAndGetMessageValue("unban.self.title", "&4Unban");
+        //guiData.put(UnBanGlobalGui.class, addAndGetGuiData("unban.global", new GuiData(true, )))
+        guiData.put(UnBanSelfGui.class, addAndGetGuiData("unban.self", new GuiData(true, "&4Unban")));
+        guiData.put(UnBanTemplateGui.class, addAndGetGuiData("unban.template", new GuiData(true, "&4Unban")));
 
-        WarnGlobalGui.INVENTORY_TITLE = addAndGetMessageValue("warn.global.title", "&6Global Warns");
-        WarnTemplateGui.INVENTORY_TITLE = addAndGetMessageValue("warn.template.title", "&6Warn");
-        WarnSelfGui.INVENTORY_TITLE = addAndGetMessageValue("warn.self.title", "&6Warn");
+        guiData.put(WarnGlobalGui.class, addAndGetGuiData("warn.global", new GuiData(true, "&6Global warn", PlayerJoinEvent.class, PlayerQuitEvent.class)));
+        guiData.put(WarnSelfGui.class, addAndGetGuiData("warn.self", new GuiData(true, "&6Warn")));
+        guiData.put(WarnTemplateGui.class, addAndGetGuiData("warn.template", new GuiData(true, "&6Warn")));
 
         //General
         ItemStorage.put("placeholder", addAndGetItemStack("items.placeholder", new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (short)15).setDisplayName(" ").build()));
@@ -113,9 +131,7 @@ public class GuiConfig extends SimpleConfig {
         ItemStorage.put("selfban_timeunit_hours", addAndGetItemStack("ban.self.items.timeunit.hours", new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (short) 4).setDisplayName("&eHours").build()));
         ItemStorage.put("selfban_timeunit_days", addAndGetItemStack("ban.self.items.timeunit.days", new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (short) 14).setDisplayName("&4Days").build()));
         ItemStorage.put("selfban_send", addAndGetItemStack("ban.self.items.send", new ItemBuilder(Material.INK_SACK, 1, (short) 10).setDisplayName("&aSend").build()));
-        BanSelfGui.DEFAULT_SETTINGS.put("bantype", BanType.valueOf(addAndGetMessageValue("ban.self.settings.default.bantype", BanType.NETWORK.toString().toLowerCase()).toUpperCase()));
-        BanSelfGui.DEFAULT_SETTINGS.put("timeunit", TimeUnit.valueOf(addAndGetMessageValue("ban.self.settings.default.timeunit", TimeUnit.DAYS.toString().toLowerCase()).toUpperCase()));
-        BanSelfGui.DEFAULT_SETTINGS.put("duration", addAndGetLongValue("ban.self.settings.default.duration", -1));
+
         //Report
         ItemStorage.put("report_editmessage", addAndGetItemStack("report.template.items.editmessage", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet a message of a report").setLore("&7Current message&8: &7[message]").build()));
         ItemStorage.put("report_reason", addAndGetItemStack("report.template.items.skull", new ItemBuilder(Material.PAPER).setDisplayName("[reason]").build()));
@@ -178,5 +194,14 @@ public class GuiConfig extends SimpleConfig {
         if(itemStack.getItemMeta().hasLore())
             itemBuilder.setLore(addAndGetMessageListValue(path+".lore", itemStack.getItemMeta().getLore()));
         return itemBuilder.build();
+    }
+
+    private GuiData addAndGetGuiData(String path, GuiData guiData) {
+        boolean enabled = addAndGetBooleanValue(path+".enabled", guiData.isEnabled());
+        String title = addAndGetMessageValue(path+".title", guiData.getTitle());
+        Map<String, Object> settings = new ConcurrentHashMap<>();
+        for (Map.Entry<String, Object> entry : guiData.getSettings().entrySet())
+            settings.put(entry.getKey(), addAndGetValue(path + ".settings." + entry.getKey(), entry.getValue()));
+        return new GuiData(enabled, title, settings, guiData.getUpdateEvents());
     }
 }

@@ -1,8 +1,10 @@
 package de.fridious.bansystem.extension.gui.api.inventory.gui;
 
 import ch.dkrieger.bansystem.lib.utils.Document;
+import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
+import de.fridious.bansystem.extension.gui.guis.GuiData;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*
  * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
@@ -50,13 +53,13 @@ public abstract class Gui<T> implements InventoryHolder {
     private List<Class<? extends Event>> updateEvents;
     private String message;
     private boolean childGui;
-    private final Document properties;
+    private final Map<String, Object> settings;
 
     protected Gui() {
         this.currentPage = 1;
         this.pageSize = 36;
         this.updateEvents = new LinkedList<>();
-        this.properties = new Document();
+        this.settings = new ConcurrentHashMap<>();
         this.message = "";
         this.childGui = false;
     }
@@ -69,6 +72,18 @@ public abstract class Gui<T> implements InventoryHolder {
     public Gui(String name, int size){
         this();
         this.inventory = Bukkit.createInventory(this,size,name);
+    }
+
+    public Gui(int size) {
+        this(size, replace -> replace);
+    }
+
+    public Gui(int size, ItemStorage.StringReplacer stringReplacer) {
+        this();
+        GuiData guiData = DKBansGuiExtension.getInstance().getGuiManager().getInventoryData().get(this.getClass());
+        this.inventory = Bukkit.createInventory(this, size, stringReplacer.replace(guiData.getTitle()));
+        this.updateEvents.addAll(guiData.getUpdateEvents());
+        this.settings.putAll(guiData.getSettings());
     }
 
     public Gui(InventoryType inventoryType) {
@@ -92,8 +107,8 @@ public abstract class Gui<T> implements InventoryHolder {
         return inventory;
     }
 
-    public Document getProperties() {
-        return properties;
+    public Map<String, Object> getSettings() {
+        return settings;
     }
 
     /**

@@ -1,5 +1,6 @@
 package de.fridious.bansystem.extension.gui.api.inventory.gui;
 
+import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -68,6 +69,16 @@ public abstract class PrivateGui<T> extends Gui<T> {
             this.inventory = REFLECTION_ANVIL.toBukkitInventory(container);
             this.containerId = REFLECTION_ANVIL.getNextContainerId(owner);
         }
+    }
+
+    public PrivateGui(int size, Player owner) {
+        super(size);
+        this.owner = owner;
+    }
+
+    public PrivateGui(int size, ItemStorage.StringReplacer stringReplacer, Player owner) {
+        super(size, stringReplacer);
+        this.owner = owner;
     }
 
     public Player getOwner() {

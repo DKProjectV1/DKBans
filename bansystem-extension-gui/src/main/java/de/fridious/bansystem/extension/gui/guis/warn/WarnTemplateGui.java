@@ -43,21 +43,15 @@ import java.util.UUID;
 
 public class WarnTemplateGui extends PrivateGui<WarnReason> {
 
-    public static String INVENTORY_TITLE;
-    public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList();
-    private String title;
     private UUID target;
     private String message;
 
     public WarnTemplateGui(Player owner, UUID target) {
-        super(owner);
-        this.title = INVENTORY_TITLE;
+        super(54, owner);
         this.target = target;
         this.message = " ";
-        createInventory(title, 54);
         setPageEntries(getInteractWarnReasons());
         setItem(45, ItemStorage.get("templatewarn_editmessage", replace -> replace.replace("[message]", message)));
-        getUpdateEvents().addAll(UPDATE_EVENTS);
     }
 
     public String getMessage() {

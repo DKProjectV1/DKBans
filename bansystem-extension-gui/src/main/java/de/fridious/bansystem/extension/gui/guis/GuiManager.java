@@ -8,6 +8,7 @@ import org.bukkit.event.Event;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*
  * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
@@ -32,13 +33,19 @@ import java.util.Map;
 public class GuiManager {
 
     private Map<Player, CachedInventories> cachedInventories;
+    private Map<Class<? extends Gui>, GuiData> inventoryData;
 
     public GuiManager() {
-        this.cachedInventories = new LinkedHashMap<>();
+        this.cachedInventories = new ConcurrentHashMap<>();
+        this.inventoryData = new ConcurrentHashMap<>();
     }
 
     public Map<Player, CachedInventories> getAllCachedInventories() {
         return cachedInventories;
+    }
+
+    public Map<Class<? extends Gui>, GuiData> getInventoryData() {
+        return inventoryData;
     }
 
     public CachedInventories getCachedInventories(Player player) {
@@ -46,11 +53,12 @@ public class GuiManager {
         return cachedInventories.get(player);
     }
 
+
+
     public void updateAllCachedInventories(Event event) {
         for (CachedInventories openedInventories : getAllCachedInventories().values()) {
             openedInventories.getAll().forEach(gui -> gui.updatePage(event));
         }
-
     }
 
     public class CachedInventories {

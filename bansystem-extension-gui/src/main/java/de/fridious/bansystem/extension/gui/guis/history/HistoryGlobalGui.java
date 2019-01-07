@@ -30,26 +30,14 @@ import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class HistoryGlobalGui extends PrivateGui<Player> {
 
-    public static String INVENTORY_TITLE;
-    public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList(PlayerJoinEvent.class, PlayerQuitEvent.class);
-
     public HistoryGlobalGui(Player owner) {
-        super(owner);
-        String title = INVENTORY_TITLE;
-        getUpdateEvents().addAll(UPDATE_EVENTS);
-        createInventory(title, 54);
+        super(54, owner);
         setPageEntries(GuiExtensionUtils.getInteractOnlinePlayers(owner));
     }
 

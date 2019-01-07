@@ -47,18 +47,13 @@ import java.util.UUID;
 
 public class ReportControlGui extends PrivateGui {
 
-    public static String INVENTORY_TITLE;
-    public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList();
     private UUID target;
     private String message;
 
     public ReportControlGui(Player owner, UUID target) {
-        super(owner);
+        super(36, owner);
         this.target = target;
         this.message = " ";
-        String title = INVENTORY_TITLE;
-        getUpdateEvents().addAll(UPDATE_EVENTS);
-        createInventory(title, 36);
         setItem(10, ItemStorage.get("reportcontrol_accept"));
         setItem(13, ItemStorage.get("reportcontrol_custom"));
         setItem(16, ItemStorage.get("reportcontrol_deny"));

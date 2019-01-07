@@ -45,20 +45,15 @@ import java.util.UUID;
 
 public class UnBanTemplateGui extends PrivateGui<UnbanReason> {
 
-    public static String INVENTORY_TITLE;
-    public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList();
     private UUID target;
     private String message;
 
     public UnBanTemplateGui(Player owner, UUID target) {
-        super(owner);
-        String title = INVENTORY_TITLE;
+        super(54, owner);
         this.target = target;
         this.message = " ";
-        createInventory(title, 54);
         setPageEntries(getInteractUnBanReasons());
         setItem(45, ItemStorage.get("templateunban_editmessage", replace -> replace.replace("[message]", message)));
-        getUpdateEvents().addAll(UPDATE_EVENTS);
     }
 
     public String getMessage() {

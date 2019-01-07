@@ -42,14 +42,8 @@ import java.util.List;
 
 public class ReportListGui extends PrivateGui<Report> {
 
-    public static String INVENTORY_TITLE;
-    public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList(BukkitNetworkPlayerReportEvent.class, BukkitNetworkPlayerReportsProcessEvent.class, PlayerQuitEvent.class);
-
     public ReportListGui(Player owner) {
-        super(owner);
-        String title = INVENTORY_TITLE;
-        getUpdateEvents().addAll(UPDATE_EVENTS);
-        createInventory(title, 54);
+        super(54, owner);
         setPageEntries(BanSystem.getInstance().getReportManager().getOpenReports());
         setReportStatusItems();
     }

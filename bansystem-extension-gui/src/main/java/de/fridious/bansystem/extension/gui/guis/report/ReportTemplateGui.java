@@ -43,16 +43,11 @@ import java.util.UUID;
 
 public class ReportTemplateGui extends PrivateGui<ReportReason> {
 
-    public static String INVENTORY_TITLE;
-    public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList();
     private UUID target;
 
     public ReportTemplateGui(Player owner, UUID target) {
-        super(owner);
+        super(54, owner);
         this.target = target;
-        String title = INVENTORY_TITLE;
-        getUpdateEvents().addAll(UPDATE_EVENTS);
-        createInventory(title, 54);
         setPageEntries(BanSystem.getInstance().getReasonProvider().getReportReasons());
         updatePage(null);
     }
