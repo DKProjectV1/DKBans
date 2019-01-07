@@ -31,7 +31,7 @@ import java.util.List;
 public class TeamChatCommand extends NetworkCommand {
 
     public TeamChatCommand() {
-        super("teamchat","","dkbans.teamchat.send","","tc","@team","tchat","teamc");
+        super("teamchat","","dkbans.team","","tc","@team","tchat","teamc");
         setPrefix(Messages.PREFIX_TEAMCHAT);
     }
     @Override
@@ -46,6 +46,10 @@ public class TeamChatCommand extends NetworkCommand {
         else if(args[0].equalsIgnoreCase("login")) changeLogin(sender,player,true);
         else if(args[0].equalsIgnoreCase("toggle")) changeLogin(sender,player,!player.isTeamChatLoggedIn());
         else{
+            if(!sender.hasPermission("dkbans.teamchat.send") && ! sender.hasPermission("dkbans.*")){
+                sender.sendMessage(Messages.NOPERMISSIONS.replace("[prefix]",getPrefix()));
+                return;
+            }
             if(!player.isTeamChatLoggedIn()){
                 sender.sendMessage(Messages.STAFF_STATUS_NOT
                         .replace("[status]",Messages.STAFF_STATUS_LOGIN)

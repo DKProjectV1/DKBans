@@ -133,7 +133,7 @@ public class ReportCommand extends NetworkCommand {
                     return;
                 }
                 Report report = player.getOpenReportWhenNoProcessing();
-                if(report == null){
+                if(player.getReportStaff() != null && report == null){
                     sender.sendMessage(Messages.REPORT_NOTFOUND
                             .replace("[player]",player.getColoredName())
                             .replace("[prefix]",getPrefix()));
