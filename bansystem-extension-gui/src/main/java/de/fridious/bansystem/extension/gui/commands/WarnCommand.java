@@ -22,13 +22,11 @@ package de.fridious.bansystem.extension.gui.commands;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
-import ch.dkrieger.bansystem.lib.config.mode.BanMode;
 import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.guis.GuiManager;
-import de.fridious.bansystem.extension.gui.guis.ban.BanTemplateGui;
 import de.fridious.bansystem.extension.gui.guis.warn.WarnGlobalGui;
 import de.fridious.bansystem.extension.gui.guis.warn.WarnSelfGui;
 import de.fridious.bansystem.extension.gui.guis.warn.WarnTemplateGui;
@@ -52,8 +50,8 @@ public class WarnCommand implements CommandExecutor {
         }
         if(args.length == 0) {
             GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
-            if (cachedInventories.hasCached(GUIS.WARN_GLOBAL)) cachedInventories.getAsPrivateGui(GUIS.WARN_GLOBAL).open();
-            else cachedInventories.create(GUIS.WARN_GLOBAL, new WarnGlobalGui(player)).open();
+            if (cachedInventories.hasCached(Guis.WARN_GLOBAL)) cachedInventories.getAsPrivateGui(Guis.WARN_GLOBAL).open();
+            else cachedInventories.create(Guis.WARN_GLOBAL, new WarnGlobalGui(player)).open();
         } else if(args.length == 1) {
             NetworkPlayer target = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
             if(target == null){
@@ -75,10 +73,10 @@ public class WarnCommand implements CommandExecutor {
             ReasonMode warnMode = BanSystem.getInstance().getConfig().warnMode;
             if(warnMode == ReasonMode.TEMPLATE) {
                 DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                        .create(GUIS.WARN_TEMPLATE, new WarnTemplateGui(player, target.getUUID())).open();
+                        .create(Guis.WARN_TEMPLATE, new WarnTemplateGui(player, target.getUUID())).open();
             } else if(warnMode == ReasonMode.SELF) {
                 DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                        .create(GUIS.WARN_SELF, new WarnSelfGui(player, target.getUUID())).open();
+                        .create(Guis.WARN_SELF, new WarnSelfGui(player, target.getUUID())).open();
             }
         } else {
 

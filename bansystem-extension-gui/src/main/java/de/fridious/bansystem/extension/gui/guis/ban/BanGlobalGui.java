@@ -4,10 +4,10 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.config.mode.BanMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -41,7 +41,7 @@ import java.util.List;
  * under the License.
  */
 
-public class BanGlobalGui extends PrivateGUI<Player> {
+public class BanGlobalGui extends PrivateGui<Player> {
 
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList(PlayerJoinEvent.class, PlayerQuitEvent.class);
@@ -82,11 +82,11 @@ public class BanGlobalGui extends PrivateGUI<Player> {
                 if(banMode == BanMode.TEMPLATE || banMode == BanMode.POINT) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                             DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                                    .create(GUIS.BAN_TEMPLATE, new BanTemplateGui(player, target.getUniqueId())).open());
+                                    .create(Guis.BAN_TEMPLATE, new BanTemplateGui(player, target.getUniqueId())).open());
                 } else if(banMode == BanMode.SELF) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                             DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                                    .create(GUIS.BAN_SELF, new BanSelfGui(player, target.getUniqueId())).open());
+                                    .create(Guis.BAN_SELF, new BanSelfGui(player, target.getUniqueId())).open());
                 }
             }
         }

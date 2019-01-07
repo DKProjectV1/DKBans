@@ -10,9 +10,9 @@ import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.MessageAnvilInputGui;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.guis.ban.BanSelfGui;
 import de.fridious.bansystem.extension.gui.guis.ban.BanTemplateGui;
 import org.bukkit.Bukkit;
@@ -45,7 +45,7 @@ import java.util.UUID;
  * under the License.
  */
 
-public class ReportControlGui extends PrivateGUI {
+public class ReportControlGui extends PrivateGui {
 
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList();
@@ -113,11 +113,11 @@ public class ReportControlGui extends PrivateGUI {
                 if(banMode == BanMode.TEMPLATE || banMode == BanMode.POINT) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                             DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                                    .create(GUIS.BAN_TEMPLATE, new BanTemplateGui(player, target)).open());
+                                    .create(Guis.BAN_TEMPLATE, new BanTemplateGui(player, target)).open());
                 } else if(banMode == BanMode.SELF) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                             DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                                    .create(GUIS.BAN_SELF, new BanSelfGui(player, target)));
+                                    .create(Guis.BAN_SELF, new BanSelfGui(player, target)));
                 }
             } else if(event.getSlot() == 16) {
                 player.sendMessage(Messages.REPORT_DENIED_STAFF
@@ -128,13 +128,13 @@ public class ReportControlGui extends PrivateGUI {
             } else if(event.getSlot() == 22) {
                 Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                         DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                                .create(GUIS.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
+                                .create(Guis.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
             }
         }
     }
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.REPORT_CONTROL);
+        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(Guis.REPORT_CONTROL);
     }
 }

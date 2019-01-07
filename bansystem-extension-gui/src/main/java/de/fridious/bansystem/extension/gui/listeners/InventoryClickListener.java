@@ -21,16 +21,14 @@ package de.fridious.bansystem.extension.gui.listeners;
  */
 
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.GUI;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.Gui;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-
-import java.util.function.Consumer;
 
 public class InventoryClickListener implements Listener {
 
@@ -40,11 +38,11 @@ public class InventoryClickListener implements Listener {
         if(!(event.getWhoClicked() instanceof Player) || event.getInventory() == null ||
                 event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR ||
                 event.getCurrentItem().getItemMeta() == null) return;
-        if(event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof GUI) {
+        if(event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof Gui) {
             event.setCancelled(true);
-            Bukkit.getScheduler().runTaskAsynchronously(DKBansGuiExtension.getInstance(), ()-> ((GUI)event.getInventory().getHolder()).handleClick(event));
+            Bukkit.getScheduler().runTaskAsynchronously(DKBansGuiExtension.getInstance(), ()-> ((Gui)event.getInventory().getHolder()).handleClick(event));
         } else {
-            for (PrivateGUI privateGUI : PrivateGUI.ANVIL_GUIS) {
+            for (PrivateGui privateGUI : PrivateGui.ANVIL_GUIS) {
                 if (privateGUI.getInventory().equals(event.getInventory())) {
                     event.setCancelled(true);
                     Bukkit.getScheduler().runTaskAsynchronously(DKBansGuiExtension.getInstance(), () -> privateGUI.handleClick(event));

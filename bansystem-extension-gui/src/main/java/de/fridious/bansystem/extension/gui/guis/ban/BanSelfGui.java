@@ -29,10 +29,10 @@ import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.AnvilInputGui;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.MessageAnvilInputGui;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -43,14 +43,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class BanSelfGui extends PrivateGUI {
-
-    /*
-    Reason - anvil
-    BAN/MUTE - BARRIER/EMPTY MAP
-    Duration - CLOCK -> Anvil inv
-    TimeUnit - Seconds(Lime Green), Minutes(Green), Hours(Yellow), Days(Red)
-     */
+public class BanSelfGui extends PrivateGui {
 
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList();
@@ -121,7 +114,7 @@ public class BanSelfGui extends PrivateGUI {
         } else if(event.getSlot() == 12) {
             Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                     DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                            .create(GUIS.ANVIL_INPUT, new AnvilInputGui(this, this.reason) {
+                            .create(Guis.ANVIL_INPUT, new AnvilInputGui(this, this.reason) {
                                 @Override
                                 public boolean setInput(String input) {
                                     setReason(input);
@@ -131,11 +124,11 @@ public class BanSelfGui extends PrivateGUI {
         } else if(event.getSlot() == 14) {
             Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                     DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                            .create(GUIS.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
+                            .create(Guis.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
         } else if(event.getSlot() == 16) {
             Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()-> {
                 DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                        .create(GUIS.ANVIL_INPUT, new AnvilInputGui(this, String.valueOf(this.duration)) {
+                        .create(Guis.ANVIL_INPUT, new AnvilInputGui(this, String.valueOf(this.duration)) {
                             @Override
                             public boolean setInput(String input) {
                                 try {
@@ -182,7 +175,7 @@ public class BanSelfGui extends PrivateGUI {
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.BAN_SELF);
+        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(Guis.BAN_SELF);
     }
 
     private String replace(String replace) {

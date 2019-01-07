@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*
  * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
@@ -46,7 +47,7 @@ public class ItemStorage {
     private static Map<String, ItemStack> itemStacks;
 
     static {
-        itemStacks = new LinkedHashMap<>();
+        itemStacks = new ConcurrentHashMap<>();
     }
 
     public static ItemStack get(String key) {

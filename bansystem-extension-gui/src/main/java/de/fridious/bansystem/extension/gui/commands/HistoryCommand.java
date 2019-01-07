@@ -24,10 +24,8 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.guis.GuiManager;
-import de.fridious.bansystem.extension.gui.guis.ban.BanGlobalGui;
-import de.fridious.bansystem.extension.gui.guis.ban.BanSelfGui;
 import de.fridious.bansystem.extension.gui.guis.history.HistoryAllGui;
 import de.fridious.bansystem.extension.gui.guis.history.HistoryGlobalGui;
 import org.bukkit.command.Command;
@@ -50,8 +48,8 @@ public class HistoryCommand implements CommandExecutor {
         }
         if(args.length == 0) {
             GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
-            if(cachedInventories.hasCached(GUIS.HISTORY_GLOBAL)) cachedInventories.getAsPrivateGui(GUIS.HISTORY_GLOBAL).open();
-            else cachedInventories.create(GUIS.HISTORY_GLOBAL, new HistoryGlobalGui(player)).open();
+            if(cachedInventories.hasCached(Guis.HISTORY_GLOBAL)) cachedInventories.getAsPrivateGui(Guis.HISTORY_GLOBAL).open();
+            else cachedInventories.create(Guis.HISTORY_GLOBAL, new HistoryGlobalGui(player)).open();
         } else if(args.length == 1) {
             NetworkPlayer target = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
             if(target == null){
@@ -65,7 +63,7 @@ public class HistoryCommand implements CommandExecutor {
                 return true;
             }
             DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                    .create(GUIS.HISTORY_ALL, new HistoryAllGui(player, target.getUUID())).open();
+                    .create(Guis.HISTORY_ALL, new HistoryAllGui(player, target.getUUID())).open();
         }
         return true;
     }

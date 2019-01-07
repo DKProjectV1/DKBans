@@ -21,15 +21,12 @@ package de.fridious.bansystem.extension.gui.guis.history;
  */
 
 import ch.dkrieger.bansystem.lib.BanSystem;
-import ch.dkrieger.bansystem.lib.config.mode.BanMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
-import de.fridious.bansystem.extension.gui.guis.ban.BanSelfGui;
-import de.fridious.bansystem.extension.gui.guis.ban.BanTemplateGui;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -43,7 +40,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.Arrays;
 import java.util.List;
 
-public class HistoryGlobalGui extends PrivateGUI<Player> {
+public class HistoryGlobalGui extends PrivateGui<Player> {
 
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList(PlayerJoinEvent.class, PlayerQuitEvent.class);
@@ -80,7 +77,7 @@ public class HistoryGlobalGui extends PrivateGUI<Player> {
             if(player.hasPermission("dkbans.history")) {
                 Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                         DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                                .create(GUIS.HISTORY_ALL, new HistoryAllGui(player, target.getUniqueId())).open());
+                                .create(Guis.HISTORY_ALL, new HistoryAllGui(player, target.getUniqueId())).open());
 
             }
         }

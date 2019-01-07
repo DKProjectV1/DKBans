@@ -21,15 +21,13 @@ package de.fridious.bansystem.extension.gui.guis.kick;
  */
 
 import ch.dkrieger.bansystem.lib.BanSystem;
-import ch.dkrieger.bansystem.lib.config.mode.BanMode;
 import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
-import de.fridious.bansystem.extension.gui.guis.ban.BanTemplateGui;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -43,7 +41,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.Arrays;
 import java.util.List;
 
-public class KickGlobalGui extends PrivateGUI<Player> {
+public class KickGlobalGui extends PrivateGui<Player> {
 
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList(PlayerJoinEvent.class, PlayerQuitEvent.class);
@@ -84,11 +82,11 @@ public class KickGlobalGui extends PrivateGUI<Player> {
                 if(kickMode == ReasonMode.TEMPLATE) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                             DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                                    .create(GUIS.KICK_TEMPLATE, new KickTemplateGui(player, target.getUniqueId())).open());
+                                    .create(Guis.KICK_TEMPLATE, new KickTemplateGui(player, target.getUniqueId())).open());
                 } else if(kickMode == ReasonMode.SELF) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                             DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                                    .create(GUIS.KICK_SELF, new KickSelfGui(player, target.getUniqueId())).open());
+                                    .create(Guis.KICK_SELF, new KickSelfGui(player, target.getUniqueId())).open());
                 }
             }
         }

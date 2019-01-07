@@ -1,8 +1,7 @@
 package de.fridious.bansystem.extension.gui.guis;
 
-import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.GUI;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.Gui;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
@@ -57,7 +56,7 @@ public class GuiManager {
     public class CachedInventories {
 
         private final Player player;
-        private final Map<String, GUI> inventories;
+        private final Map<String, Gui> inventories;
 
         public CachedInventories(Player player) {
             this.player = player;
@@ -72,24 +71,24 @@ public class GuiManager {
             return player;
         }
 
-        public GUI getAsGui(String inventory) {
+        public Gui getAsGui(String inventory) {
             return this.inventories.get(inventory);
         }
 
-        public PrivateGUI getAsPrivateGui(String inventory) {
-            return (PrivateGUI) getAsGui(inventory);
+        public PrivateGui getAsPrivateGui(String inventory) {
+            return (PrivateGui) getAsGui(inventory);
         }
 
-        public Collection<GUI> getAll() {
+        public Collection<Gui> getAll() {
             return this.inventories.values();
         }
 
-        public GUI create(String inventory, GUI gui) {
+        public Gui create(String inventory, Gui gui) {
             this.inventories.put(inventory, gui);
             return gui;
         }
 
-        public PrivateGUI create(String inventory, PrivateGUI privateGUI) {
+        public PrivateGui create(String inventory, PrivateGui privateGUI) {
             this.inventories.put(inventory, privateGUI);
             return privateGUI;
         }

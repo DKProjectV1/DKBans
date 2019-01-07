@@ -22,7 +22,7 @@ package de.fridious.bansystem.extension.gui.api.inventory.gui;
 
 public class MessageAnvilInputGui extends AnvilInputGui {
 
-    public MessageAnvilInputGui(PrivateGUI gui) {
+    public MessageAnvilInputGui(PrivateGui gui) {
         super(gui, gui.getMessage());
     }
 

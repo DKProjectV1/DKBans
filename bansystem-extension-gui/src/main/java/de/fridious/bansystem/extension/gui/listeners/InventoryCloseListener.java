@@ -20,10 +20,8 @@ package de.fridious.bansystem.extension.gui.listeners;
  * under the License.
  */
 
-import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.GUI;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
-import org.bukkit.Bukkit;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.Gui;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,10 +32,10 @@ public class InventoryCloseListener implements Listener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         if(!(event.getPlayer() instanceof Player) || (event.getInventory() == null)) return;
-        if(event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof GUI)
-            ((GUI)event.getInventory().getHolder()).handleClose(event);
+        if(event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof Gui)
+            ((Gui)event.getInventory().getHolder()).handleClose(event);
         else {
-            PrivateGUI.ANVIL_GUIS.forEach(privateGUI -> {
+            PrivateGui.ANVIL_GUIS.forEach(privateGUI -> {
                 if(privateGUI.getInventory().equals(event.getInventory()))
                     privateGUI.handleClose(event);
             });

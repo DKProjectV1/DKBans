@@ -3,10 +3,10 @@ package de.fridious.bansystem.extension.gui.guis.playerinfo;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -40,7 +40,7 @@ import java.util.List;
  * under the License.
  */
 
-public class PlayerInfoGlobalGui extends PrivateGUI<Player> {
+public class PlayerInfoGlobalGui extends PrivateGui<Player> {
 
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList(PlayerJoinEvent.class, PlayerQuitEvent.class);
@@ -77,7 +77,7 @@ public class PlayerInfoGlobalGui extends PrivateGUI<Player> {
         if(target != null) {
             if(player.hasPermission("dkbans.playerinfo")) {
                 Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(GUIS.PLAYERINFO_PLAYER, new PlayerInfoGui(player, target.getUniqueId())).open());
+                        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(Guis.PLAYERINFO_PLAYER, new PlayerInfoGui(player, target.getUniqueId())).open());
             }
         }
     }

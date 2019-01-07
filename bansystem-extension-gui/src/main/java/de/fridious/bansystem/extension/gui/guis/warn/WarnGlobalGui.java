@@ -24,10 +24,10 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -41,7 +41,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.Arrays;
 import java.util.List;
 
-public class WarnGlobalGui extends PrivateGUI<Player> {
+public class WarnGlobalGui extends PrivateGui<Player> {
 
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList(PlayerJoinEvent.class, PlayerQuitEvent.class);
@@ -82,11 +82,11 @@ public class WarnGlobalGui extends PrivateGUI<Player> {
                 if(warnMode == ReasonMode.TEMPLATE) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                             DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                                    .create(GUIS.WARN_TEMPLATE, new WarnTemplateGui(player, target.getUniqueId())).open());
+                                    .create(Guis.WARN_TEMPLATE, new WarnTemplateGui(player, target.getUniqueId())).open());
                 } else if(warnMode == ReasonMode.SELF) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                             DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                                    .create(GUIS.WARN_SELF, new WarnSelfGui(player, target.getUniqueId())).open());
+                                    .create(Guis.WARN_SELF, new WarnSelfGui(player, target.getUniqueId())).open());
                 }
             }
         }

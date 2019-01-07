@@ -25,7 +25,7 @@ import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.guis.kick.KickGlobalGui;
 import de.fridious.bansystem.extension.gui.guis.kick.KickSelfGui;
@@ -50,8 +50,8 @@ public class KickCommand implements CommandExecutor {
         }
         if(args.length == 0) {
             GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
-            if(cachedInventories.hasCached(GUIS.KICK_GLOBAL)) cachedInventories.getAsPrivateGui(GUIS.KICK_GLOBAL).open();
-            else cachedInventories.create(GUIS.KICK_GLOBAL, new KickGlobalGui(player));
+            if(cachedInventories.hasCached(Guis.KICK_GLOBAL)) cachedInventories.getAsPrivateGui(Guis.KICK_GLOBAL).open();
+            else cachedInventories.create(Guis.KICK_GLOBAL, new KickGlobalGui(player));
         } else if(args.length == 1) {
             NetworkPlayer target = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
             if(target == null){
@@ -73,10 +73,10 @@ public class KickCommand implements CommandExecutor {
             ReasonMode kickMode = BanSystem.getInstance().getConfig().kickMode;
             if(kickMode == ReasonMode.TEMPLATE) {
                 DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                        .create(GUIS.KICK_TEMPLATE, new KickTemplateGui(player, target.getUUID())).open();
+                        .create(Guis.KICK_TEMPLATE, new KickTemplateGui(player, target.getUUID())).open();
             } else if(kickMode == ReasonMode.SELF) {
                 DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                        .create(GUIS.KICK_SELF, new KickSelfGui(player, target.getUUID())).open();
+                        .create(Guis.KICK_SELF, new KickSelfGui(player, target.getUUID())).open();
 
             }
         } else {

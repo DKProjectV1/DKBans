@@ -23,15 +23,13 @@ package de.fridious.bansystem.extension.gui.guis.warn;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
-import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
-import ch.dkrieger.bansystem.lib.report.Report;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.AnvilInputGui;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.MessageAnvilInputGui;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -43,7 +41,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class WarnSelfGui extends PrivateGUI {
+public class WarnSelfGui extends PrivateGui {
 
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList();
@@ -92,7 +90,7 @@ public class WarnSelfGui extends PrivateGUI {
             if(event.getSlot() == 11) {
                 Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                         DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                                .create(GUIS.ANVIL_INPUT, new AnvilInputGui(this, this.reason) {
+                                .create(Guis.ANVIL_INPUT, new AnvilInputGui(this, this.reason) {
                                     @Override
                                     public boolean setInput(String input) {
                                         setReason(input);
@@ -102,7 +100,7 @@ public class WarnSelfGui extends PrivateGUI {
             } else if(event.getSlot() == 15) {
                 Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                         DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                                .create(GUIS.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
+                                .create(Guis.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
             } else if(event.getSlot() == 26) {
                 if(reason == null) return;
                 NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
@@ -122,6 +120,6 @@ public class WarnSelfGui extends PrivateGUI {
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.WARN_SELF);
+        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(Guis.WARN_SELF);
     }
 }

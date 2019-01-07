@@ -23,7 +23,7 @@ package de.fridious.bansystem.extension.gui.api.inventory.gui;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -31,18 +31,18 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 
-public abstract class AnvilInputGui extends PrivateGUI {
+public abstract class AnvilInputGui extends PrivateGui {
 
-    private PrivateGUI gui;
+    private PrivateGui gui;
 
-    public AnvilInputGui(PrivateGUI gui, String input) {
+    public AnvilInputGui(PrivateGui gui, String input) {
         super(InventoryType.ANVIL, gui.getOwner());
         setItem(AnvilSlot.INPUT_LEFT, new ItemBuilder(ItemStorage.get("custom_message"))
                 .setDisplayName((input == null || input.equalsIgnoreCase("")) ? " " : input));
         this.gui = gui;
     }
 
-    public PrivateGUI getGui() {
+    public PrivateGui getGui() {
         return gui;
     }
 
@@ -70,7 +70,7 @@ public abstract class AnvilInputGui extends PrivateGUI {
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.ANVIL_INPUT);
+        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(Guis.ANVIL_INPUT);
         event.getInventory().clear();
     }
 

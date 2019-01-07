@@ -24,7 +24,7 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.guis.report.ReportListGui;
 import de.fridious.bansystem.extension.gui.guis.report.ReportControlGui;
@@ -52,10 +52,10 @@ public class ReportsCommand implements CommandExecutor {
         UUID target = networkPlayer.getWatchingReportedPlayer();
         if(target == null) {
             GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
-            if(cachedInventories.hasCached(GUIS.REPORT_LIST)) cachedInventories.getAsPrivateGui(GUIS.REPORT_LIST).open();
-            else cachedInventories.create(GUIS.REPORT_LIST, new ReportListGui(player)).open();
+            if(cachedInventories.hasCached(Guis.REPORT_LIST)) cachedInventories.getAsPrivateGui(Guis.REPORT_LIST).open();
+            else cachedInventories.create(Guis.REPORT_LIST, new ReportListGui(player)).open();
         } else {
-            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(GUIS.REPORT_CONTROL, new ReportControlGui(player, target)).open();
+            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(Guis.REPORT_CONTROL, new ReportControlGui(player, target)).open();
         }
         return true;
     }

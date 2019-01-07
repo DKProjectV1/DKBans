@@ -21,8 +21,8 @@ package de.fridious.bansystem.extension.gui.listeners;
  */
 
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.GUI;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.Gui;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,10 +34,10 @@ public class InventoryOpenListener implements Listener {
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
         if(!(event.getPlayer() instanceof Player) || event.getInventory() == null) return;
-        if(event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof GUI)
-            ((GUI)event.getInventory().getHolder()).handleOpen(event);
+        if(event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof Gui)
+            ((Gui)event.getInventory().getHolder()).handleOpen(event);
         else {
-            PrivateGUI.ANVIL_GUIS.forEach(privateGUI -> {
+            PrivateGui.ANVIL_GUIS.forEach(privateGUI -> {
                 if(privateGUI.getInventory().equals(event.getInventory()))
                     Bukkit.getScheduler().runTaskAsynchronously(DKBansGuiExtension.getInstance(), ()-> privateGUI.handleOpen(event));
             });

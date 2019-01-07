@@ -25,7 +25,7 @@ import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.config.mode.BanMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.guis.ban.BanGlobalGui;
 import de.fridious.bansystem.extension.gui.guis.ban.BanSelfGui;
@@ -50,8 +50,8 @@ public class BanCommand implements CommandExecutor {
         }
         if(args.length == 0) {
             GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
-            if(cachedInventories.hasCached(GUIS.BAN_GLOBAL)) cachedInventories.getAsPrivateGui(GUIS.BAN_GLOBAL).open();
-            else cachedInventories.create(GUIS.BAN_GLOBAL, new BanGlobalGui(player)).open();
+            if(cachedInventories.hasCached(Guis.BAN_GLOBAL)) cachedInventories.getAsPrivateGui(Guis.BAN_GLOBAL).open();
+            else cachedInventories.create(Guis.BAN_GLOBAL, new BanGlobalGui(player)).open();
         } else if(args.length == 1) {
             NetworkPlayer target = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
             if(target == null){
@@ -73,10 +73,10 @@ public class BanCommand implements CommandExecutor {
             BanMode banMode = BanSystem.getInstance().getConfig().banMode;
             if(banMode == BanMode.TEMPLATE || banMode == BanMode.POINT) {
                 DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                        .create(GUIS.BAN_TEMPLATE, new BanTemplateGui(player, target.getUUID())).open();
+                        .create(Guis.BAN_TEMPLATE, new BanTemplateGui(player, target.getUUID())).open();
             } else if(banMode == BanMode.SELF) {
                 DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                        .create(GUIS.BAN_SELF, new BanSelfGui(player, target.getUUID())).open();
+                        .create(Guis.BAN_SELF, new BanSelfGui(player, target.getUUID())).open();
             }
         } else {
             //USAGE

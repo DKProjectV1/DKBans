@@ -20,15 +20,14 @@ package de.fridious.bansystem.extension.gui.guis.history;
  * under the License.
  */
 
-import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerHistoryUpdateEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.*;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -36,13 +35,12 @@ import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-public class HistoryEntryDeleteGui extends PrivateGUI {
+public class HistoryEntryDeleteGui extends PrivateGui {
 
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = new LinkedList<>();
@@ -104,7 +102,7 @@ public class HistoryEntryDeleteGui extends PrivateGUI {
     protected void onClose(InventoryCloseEvent event) {
         final Player player = (Player) event.getPlayer();
         GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
-        cachedInventories.remove(GUIS.HISTORY_DELETE);
-        if(this.historyAllGui != null && !this.openParentGui) cachedInventories.remove(GUIS.HISTORY_ALL);
+        cachedInventories.remove(Guis.HISTORY_DELETE);
+        if(this.historyAllGui != null && !this.openParentGui) cachedInventories.remove(Guis.HISTORY_ALL);
     }
 }

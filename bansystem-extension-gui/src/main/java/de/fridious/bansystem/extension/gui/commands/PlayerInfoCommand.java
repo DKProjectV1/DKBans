@@ -24,7 +24,7 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.guis.playerinfo.PlayerInfoGlobalGui;
 import de.fridious.bansystem.extension.gui.guis.playerinfo.PlayerInfoGui;
@@ -49,8 +49,8 @@ public class PlayerInfoCommand implements CommandExecutor {
         if(args.length == 0) {
             //All players
             GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
-            if(cachedInventories.hasCached(GUIS.PLAYERINFO_GLOBAL)) cachedInventories.getAsPrivateGui(GUIS.PLAYERINFO_GLOBAL).open();
-            else cachedInventories.create(GUIS.PLAYERINFO_GLOBAL, new PlayerInfoGlobalGui(player)).open();
+            if(cachedInventories.hasCached(Guis.PLAYERINFO_GLOBAL)) cachedInventories.getAsPrivateGui(Guis.PLAYERINFO_GLOBAL).open();
+            else cachedInventories.create(Guis.PLAYERINFO_GLOBAL, new PlayerInfoGlobalGui(player)).open();
         } else if(args.length == 1) {
             NetworkPlayer targetPlayer = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
             if(targetPlayer == null){
@@ -59,7 +59,7 @@ public class PlayerInfoCommand implements CommandExecutor {
                         .replace("[player]",args[0]));
                 return true;
             }
-            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(GUIS.PLAYERINFO_PLAYER, new PlayerInfoGui(player, targetPlayer.getUUID())).open();
+            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(Guis.PLAYERINFO_PLAYER, new PlayerInfoGui(player, targetPlayer.getUUID())).open();
         } else {
             player.sendMessage(Messages.PLAYER_INFO_HELP.replace("[prefix]", Messages.PREFIX_BAN));
         }

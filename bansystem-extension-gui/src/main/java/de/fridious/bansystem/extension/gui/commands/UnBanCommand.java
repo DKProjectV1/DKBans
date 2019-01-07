@@ -25,7 +25,7 @@ import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.guis.unban.UnBanSelfGui;
 import de.fridious.bansystem.extension.gui.guis.unban.UnBanTemplateGui;
 import org.bukkit.command.Command;
@@ -64,10 +64,10 @@ public class UnBanCommand implements CommandExecutor {
         ReasonMode unBanMode = BanSystem.getInstance().getConfig().unbanMode;
         if(unBanMode == ReasonMode.TEMPLATE) {
             DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                    .create(GUIS.UNBAN_TEMPLATE, new UnBanTemplateGui(player, target.getUUID())).open();
+                    .create(Guis.UNBAN_TEMPLATE, new UnBanTemplateGui(player, target.getUUID())).open();
         } else if(unBanMode == ReasonMode.SELF) {
             DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                    .create(GUIS.UNBAN_SELF, new UnBanSelfGui(player, target.getUUID())).open();
+                    .create(Guis.UNBAN_SELF, new UnBanSelfGui(player, target.getUUID())).open();
         }
         return true;
     }

@@ -21,16 +21,14 @@ package de.fridious.bansystem.extension.gui.guis.report;
  */
 
 import ch.dkrieger.bansystem.lib.BanSystem;
-import ch.dkrieger.bansystem.lib.Messages;
-import ch.dkrieger.bansystem.lib.config.mode.BanMode;
 import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -44,7 +42,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class ReportGlobalGui extends PrivateGUI<Player> {
+public class ReportGlobalGui extends PrivateGui<Player> {
 
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = Arrays.asList(PlayerJoinEvent.class, PlayerQuitEvent.class);
@@ -103,12 +101,12 @@ public class ReportGlobalGui extends PrivateGUI<Player> {
                 if(reportMode == ReasonMode.TEMPLATE) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                             DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                                    .create(GUIS.REPORT_TEMPLATE, new ReportTemplateGui(player, target.getUniqueId())).open());
+                                    .create(Guis.REPORT_TEMPLATE, new ReportTemplateGui(player, target.getUniqueId())).open());
 
                 } else if(reportMode == ReasonMode.SELF) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                             DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                                    .create(GUIS.REPORT_SELF, new ReportSelfGui(player, target.getUniqueId())).open());
+                                    .create(Guis.REPORT_SELF, new ReportSelfGui(player, target.getUniqueId())).open());
                 }
                 OnlineNetworkPlayer onlineNetworkPlayer = BanSystem.getInstance().getPlayerManager().getOnlinePlayer(player.getUniqueId());
                 if(BanSystem.getInstance().getConfig().reportAutoCommandExecuteOnProxy){

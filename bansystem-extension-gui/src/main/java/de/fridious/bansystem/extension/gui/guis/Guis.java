@@ -20,7 +20,7 @@ package de.fridious.bansystem.extension.gui.guis;
  * under the License.
  */
 
-public final class GUIS {
+public final class Guis {
 
     public static final String ANVIL_INPUT = "anvil_input";
 

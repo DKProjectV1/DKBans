@@ -27,9 +27,9 @@ import java.util.List;
  * under the License.
  */
 
-public abstract class PrivateGUI<T> extends GUI<T> {
+public abstract class PrivateGui<T> extends Gui<T> {
 
-    public static final List<PrivateGUI> ANVIL_GUIS;
+    public static final List<PrivateGui> ANVIL_GUIS;
 
     static {
         ANVIL_GUIS = new LinkedList<>();
@@ -46,21 +46,21 @@ public abstract class PrivateGUI<T> extends GUI<T> {
     private Object container;
     private int containerId;
 
-    public PrivateGUI(Player owner) {
+    public PrivateGui(Player owner) {
         this.owner = owner;
     }
 
-    public PrivateGUI(Inventory inventory, Player owner) {
+    public PrivateGui(Inventory inventory, Player owner) {
         super(inventory);
         this.owner = owner;
     }
 
-    public PrivateGUI(String name, int size, Player owner) {
+    public PrivateGui(String name, int size, Player owner) {
         super(name, size);
         this.owner = owner;
     }
 
-    public PrivateGUI(InventoryType inventoryType, Player owner) {
+    public PrivateGui(InventoryType inventoryType, Player owner) {
         this.owner = owner;
         if(inventoryType == InventoryType.ANVIL) {
             ANVIL_GUIS.add(this);

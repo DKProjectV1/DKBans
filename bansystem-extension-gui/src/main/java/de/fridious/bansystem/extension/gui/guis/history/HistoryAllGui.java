@@ -26,9 +26,9 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.*;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
-import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGUI;
+import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
-import de.fridious.bansystem.extension.gui.guis.GUIS;
+import de.fridious.bansystem.extension.gui.guis.Guis;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -40,7 +40,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-public class HistoryAllGui extends PrivateGUI<HistoryEntry> {
+public class HistoryAllGui extends PrivateGui<HistoryEntry> {
 
     public static String INVENTORY_TITLE;
     public static List<Class<? extends Event>> UPDATE_EVENTS = new LinkedList<>(Arrays.asList(BukkitNetworkPlayerHistoryUpdateEvent.class));
@@ -98,7 +98,7 @@ public class HistoryAllGui extends PrivateGUI<HistoryEntry> {
             setChildGui(true);
             Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
                     DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                            .create(GUIS.HISTORY_DELETE, new HistoryEntryDeleteGui(getOwner(), target, historyEntry, this)).open());
+                            .create(Guis.HISTORY_DELETE, new HistoryEntryDeleteGui(getOwner(), target, historyEntry, this)).open());
         } else if(event.getSlot() == 45 && player.hasPermission("dkbans.history.reset")) {
             NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
             targetNetworkPlayer.resetHistory();
@@ -107,6 +107,6 @@ public class HistoryAllGui extends PrivateGUI<HistoryEntry> {
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        if(!hasChildGui())DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(GUIS.HISTORY_ALL);
+        if(!hasChildGui())DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(Guis.HISTORY_ALL);
     }
 }

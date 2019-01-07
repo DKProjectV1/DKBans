@@ -41,7 +41,7 @@ import java.util.Map;
  * under the License.
  */
 
-public abstract class GUI<T> implements InventoryHolder {
+public abstract class Gui<T> implements InventoryHolder {
 
     protected Inventory inventory;
     private int currentPage, pageSize;
@@ -52,7 +52,7 @@ public abstract class GUI<T> implements InventoryHolder {
     private boolean childGui;
     private final Document properties;
 
-    protected GUI() {
+    protected Gui() {
         this.currentPage = 1;
         this.pageSize = 36;
         this.updateEvents = new LinkedList<>();
@@ -61,17 +61,17 @@ public abstract class GUI<T> implements InventoryHolder {
         this.childGui = false;
     }
 
-    public GUI(Inventory inventory) {
+    public Gui(Inventory inventory) {
         this();
         this.inventory = inventory;
     }
 
-    public GUI(String name, int size){
+    public Gui(String name, int size){
         this();
         this.inventory = Bukkit.createInventory(this,size,name);
     }
 
-    public GUI(InventoryType inventoryType) {
+    public Gui(InventoryType inventoryType) {
         this();
         this.inventory = Bukkit.createInventory(this, inventoryType);
     }
@@ -319,23 +319,23 @@ public abstract class GUI<T> implements InventoryHolder {
                 }
             }
         }
-        if(this instanceof PrivateGUI){
+        if(this instanceof PrivateGui){
             Player clicker = (Player) event.getWhoClicked();
-            if(((PrivateGUI)this).getOwner() == clicker) onClick(event);
+            if(((PrivateGui)this).getOwner() == clicker) onClick(event);
         }else onClick(event);
     }
 
     public void handleClose(InventoryCloseEvent event){
-        if(this instanceof PrivateGUI){
+        if(this instanceof PrivateGui){
             Player clicker = (Player) event.getPlayer();
-            if(((PrivateGUI)this).getOwner() == clicker) onClose(event);
+            if(((PrivateGui)this).getOwner() == clicker) onClose(event);
         }else onClose(event);
     }
 
     public void handleOpen(InventoryOpenEvent event) {
-        if(this instanceof PrivateGUI){
+        if(this instanceof PrivateGui){
             Player clicker = (Player) event.getPlayer();
-            if(((PrivateGUI)this).getOwner() == clicker) onOpen(event);
+            if(((PrivateGui)this).getOwner() == clicker) onOpen(event);
         }else onOpen(event);
     }
 
