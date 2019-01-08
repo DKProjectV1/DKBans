@@ -93,13 +93,14 @@ public class WarnCommand extends NetworkCommand {
     private void sendHelp(NetworkCommandSender sender){
         sender.sendMessage(Messages.WARN_HELP_HEADER.replace("[prefix]",getPrefix()));
         for(WarnReason reason : BanSystem.getInstance().getReasonProvider().getWarnReasons()){
-            if(!reason.isHidden() && !sender.hasPermission(reason.getPermission()) && !sender.hasPermission("dkbans.*")) continue;
-            sender.sendMessage(Messages.WARN_HELP_REASON
-                    .replace("[prefix]",getPrefix())
-                    .replace("[id]",""+reason.getID())
-                    .replace("[name]",reason.getDisplay())
-                    .replace("[reason]",reason.getDisplay())
-                    .replace("[points]",""+reason.getPoints()));
+            if(!reason.isHidden() && (sender.hasPermission(reason.getPermission()) || sender.hasPermission("dkbans.*"))){
+                sender.sendMessage(Messages.WARN_HELP_REASON
+                        .replace("[prefix]",getPrefix())
+                        .replace("[id]",""+reason.getID())
+                        .replace("[name]",reason.getDisplay())
+                        .replace("[reason]",reason.getDisplay())
+                        .replace("[points]",""+reason.getPoints()));
+            }
         }
         sender.sendMessage(Messages.WARN_HELP_HELP.replace("[prefix]",getPrefix()));
     }

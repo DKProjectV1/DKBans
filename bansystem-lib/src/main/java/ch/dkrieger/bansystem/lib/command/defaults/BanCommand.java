@@ -147,15 +147,16 @@ public class BanCommand extends NetworkCommand {
     private void sendReasons(NetworkCommandSender sender){
         sender.sendMessage(Messages.BAN_HELP_HEADER.replace("[prefix]",getPrefix()));
         for(BanReason reason : BanSystem.getInstance().getReasonProvider().getBanReasons()){
-            if(!reason.isHidden() && !sender.hasPermission(reason.getPermission()) && !sender.hasPermission("dkbans.*")) continue;
-            sender.sendMessage(Messages.BAN_HELP_REASON
-                    .replace("[prefix]",getPrefix())
-                    .replace("[id]",""+reason.getID())
-                    .replace("[name]",reason.getDisplay())
-                    .replace("[historyType]",reason.getHistoryType().getDisplay())
-                    .replace("[banType]",reason.getBanType().getDisplay())
-                    .replace("[reason]",reason.getDisplay())
-                    .replace("[points]",""+reason.getPoints()));
+            if(!reason.isHidden() && (sender.hasPermission(reason.getPermission()) || sender.hasPermission("dkbans.*"))){
+                sender.sendMessage(Messages.BAN_HELP_REASON
+                        .replace("[prefix]",getPrefix())
+                        .replace("[id]",""+reason.getID())
+                        .replace("[name]",reason.getDisplay())
+                        .replace("[historyType]",reason.getHistoryType().getDisplay())
+                        .replace("[banType]",reason.getBanType().getDisplay())
+                        .replace("[reason]",reason.getDisplay())
+                        .replace("[points]",""+reason.getPoints()));
+            }
         }
         sender.sendMessage(Messages.BAN_HELP_HELP.replace("[prefix]",getPrefix()));
     }

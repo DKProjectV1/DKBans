@@ -116,12 +116,12 @@ public class PlayerListener implements Listener {
             if(BanSystem.getInstance().getConfig().onJoinChatClear) for(int i = 1; i < 120; i++) event.getPlayer().sendMessage(new TextComponent(""));
             NetworkPlayer player = BanSystem.getInstance().getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
             if(player == null) return;
-            if(BanSystem.getInstance().getConfig().onJoinTeamChatInfo && event.getPlayer().hasPermission("dkbans.teamchat.receive")){
+            if(BanSystem.getInstance().getConfig().onJoinTeamChatInfo && (event.getPlayer().hasPermission("dkbans.team") || event.getPlayer().hasPermission("dkbans.*"))){
                 event.getPlayer().sendMessage(new TextComponent(Messages.STAFF_STATUS_NOW
                         .replace("[status]",(player.isTeamChatLoggedIn()?Messages.STAFF_STATUS_LOGIN:Messages.STAFF_STATUS_LOGOUT))
                         .replace("[prefix]",Messages.PREFIX_TEAMCHAT)));
             }
-            if(event.getPlayer().hasPermission("dkbans.report.receive")){
+            if(event.getPlayer().hasPermission("dkbans.report.receive") && (event.getPlayer().hasPermission("dkbans.report.receive") || event.getPlayer().hasPermission("dkbans.*"))){
                 if(BanSystem.getInstance().getConfig().onJoinReportInfo){
                     event.getPlayer().sendMessage(new TextComponent(Messages.STAFF_STATUS_NOW
                             .replace("[status]",(player.isReportLoggedIn()?Messages.STAFF_STATUS_LOGIN:Messages.STAFF_STATUS_LOGOUT))

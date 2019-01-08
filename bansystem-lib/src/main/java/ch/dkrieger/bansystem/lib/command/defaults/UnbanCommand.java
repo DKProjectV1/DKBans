@@ -182,16 +182,17 @@ public class UnbanCommand extends NetworkCommand {
         if(BanSystem.getInstance().getConfig().unbanMode != ReasonMode.SELF) {
             sender.sendMessage(Messages.UNBAN_HELP_HEADER.replace("[prefix]",getPrefix()));
             for(UnbanReason reason : BanSystem.getInstance().getReasonProvider().getUnbanReasons()){
-                if(!reason.isHidden() && !sender.hasPermission(reason.getPermission()) && !sender.hasPermission("dkbans.*")) continue;
-                sender.sendMessage(Messages.UNBAN_HELP_REASON
-                        .replace("[bynType]",reason.getBanType()==null?"All":reason.getBanType().getDisplay())
-                        .replace("[reason]",reason.getDisplay())
-                        .replace("[prefix]",getPrefix())
-                        .replace("[id]",""+reason.getID())
-                        .replace("[name]",reason.getDisplay())
-                        .replace("[maxPoints]",""+reason.getMaxPoints())
-                        .replace("[maxDuration]",reason.getMaxDuration().getFormattedTime(true))
-                        .replace("[points]",""+reason.getPoints()));
+                if(!reason.isHidden() && (sender.hasPermission(reason.getPermission()) || sender.hasPermission("dkbans.*"))){
+                    sender.sendMessage(Messages.UNBAN_HELP_REASON
+                            .replace("[bynType]",reason.getBanType()==null?"All":reason.getBanType().getDisplay())
+                            .replace("[reason]",reason.getDisplay())
+                            .replace("[prefix]",getPrefix())
+                            .replace("[id]",""+reason.getID())
+                            .replace("[name]",reason.getDisplay())
+                            .replace("[maxPoints]",""+reason.getMaxPoints())
+                            .replace("[maxDuration]",reason.getMaxDuration().getFormattedTime(true))
+                            .replace("[points]",""+reason.getPoints()));
+                }
             }
         }
         sender.sendMessage(Messages.UNBAN_HELP_HELP.replace("[prefix]",getPrefix()));
