@@ -316,7 +316,7 @@ public class NetworkPlayer {
      */
     public Report getProcessingReport(){
         List<Report> reports = getProcessingReports();
-        if(reports.size() >= 1) return reports.get(0);
+        if(reports.size() > 0) return reports.get(0);
         return null;
     }
 

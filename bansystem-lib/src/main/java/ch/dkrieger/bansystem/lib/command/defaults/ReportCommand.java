@@ -133,7 +133,7 @@ public class ReportCommand extends NetworkCommand {
                     return;
                 }
                 Report report = player.getOpenReportWhenNoProcessing();
-                if(player.getReportStaff() != null && report == null){
+                if(player.getReportStaff() != null || report == null){
                     sender.sendMessage(Messages.REPORT_NOTFOUND
                             .replace("[player]",player.getColoredName())
                             .replace("[prefix]",getPrefix()));
@@ -249,13 +249,14 @@ public class ReportCommand extends NetworkCommand {
     private void sendHelp(NetworkCommandSender sender){
         sender.sendMessage(Messages.REPORT_HELP_HEADER.replace("[prefix]",getPrefix()));
         for(ReportReason reason : BanSystem.getInstance().getReasonProvider().getReportReasons()){
-            if(!reason.isHidden() &&!sender.hasPermission(reason.getPermission()) && !sender.hasPermission("dkbans.*")) continue;
-            sender.sendMessage(Messages.REPORT_HELP_REASON
-                    .replace("[prefix]",getPrefix())
-                    .replace("[id]",""+reason.getID())
-                    .replace("[name]",reason.getDisplay())
-                    .replace("[reason]",reason.getDisplay())
-                    .replace("[points]",""+reason.getPoints()));
+            if(!reason.isHidden() && (sender.hasPermission(reason.getPermission()) || sender.hasPermission("dkbans.*"))){
+                sender.sendMessage(Messages.REPORT_HELP_REASON
+                        .replace("[prefix]",getPrefix())
+                        .replace("[id]",""+reason.getID())
+                        .replace("[name]",reason.getDisplay())
+                        .replace("[reason]",reason.getDisplay())
+                        .replace("[points]",""+reason.getPoints()));
+            }
         }
         sender.sendMessage(Messages.REPORT_HELP_HELP.replace("[prefix]",getPrefix()));
     }
