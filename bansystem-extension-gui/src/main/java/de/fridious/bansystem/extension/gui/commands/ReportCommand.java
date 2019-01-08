@@ -48,11 +48,12 @@ public class ReportCommand implements CommandExecutor {
             player.sendMessage(Messages.NOPERMISSIONS.replace("[prefix]", Messages.PREFIX_BAN));
             return true;
         }
-        if(args.length == 0) {
-            GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
-            if(cachedInventories.hasCached(Guis.REPORT_GLOBAL)) cachedInventories.getAsPrivateGui(Guis.REPORT_GLOBAL).open();
-            else cachedInventories.create(Guis.REPORT_GLOBAL, new ReportGlobalGui(player)).open();
-        } else if(args.length == 1) {
+        GuiManager guiManager = DKBansGuiExtension.getInstance().getGuiManager();
+        if(args.length == 0 && guiManager.isGuiEnabled(ReportGlobalGui.class)) {
+            GuiManager.CachedGuis cachedGuis = DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player);
+            if(cachedGuis.hasCached(Guis.REPORT_GLOBAL)) cachedGuis.getAsPrivateGui(Guis.REPORT_GLOBAL).open();
+            else cachedGuis.create(Guis.REPORT_GLOBAL, new ReportGlobalGui(player)).open();
+        } else if(args.length == 1 && (guiManager.isGuiEnabled(ReportSelfGui.class) || guiManager.isGuiEnabled(ReportTemplateGui.class))) {
             NetworkPlayer target = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
             if(target == null){
                 player.sendMessage(Messages.PLAYER_NOT_FOUND
@@ -72,10 +73,10 @@ public class ReportCommand implements CommandExecutor {
             }
             ReasonMode reportMode = BanSystem.getInstance().getConfig().reportMode;
             if(reportMode == ReasonMode.TEMPLATE) {
-                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                         .create(Guis.REPORT_TEMPLATE, new ReportTemplateGui(player, target.getUUID())).open();
             } else if(reportMode == ReasonMode.SELF) {
-                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                         .create(Guis.REPORT_SELF, new ReportSelfGui(player, target.getUUID())).open();
             }
         }

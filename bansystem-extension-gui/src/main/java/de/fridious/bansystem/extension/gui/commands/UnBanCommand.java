@@ -25,6 +25,7 @@ import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
+import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.guis.unban.UnBanSelfGui;
 import de.fridious.bansystem.extension.gui.guis.unban.UnBanTemplateGui;
@@ -61,12 +62,14 @@ public class UnBanCommand implements CommandExecutor {
             player.sendMessage(Messages.BAN_SELF.replace("[prefix]", Messages.PREFIX_BAN));
             return true;
         }
+        GuiManager guiManager = DKBansGuiExtension.getInstance().getGuiManager();
+        if(!(guiManager.isGuiEnabled(UnBanTemplateGui.class) || guiManager.isGuiEnabled(UnBanSelfGui.class))) return true;
         ReasonMode unBanMode = BanSystem.getInstance().getConfig().unbanMode;
         if(unBanMode == ReasonMode.TEMPLATE) {
-            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+            DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                     .create(Guis.UNBAN_TEMPLATE, new UnBanTemplateGui(player, target.getUUID())).open();
         } else if(unBanMode == ReasonMode.SELF) {
-            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+            DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                     .create(Guis.UNBAN_SELF, new UnBanSelfGui(player, target.getUUID())).open();
         }
         return true;

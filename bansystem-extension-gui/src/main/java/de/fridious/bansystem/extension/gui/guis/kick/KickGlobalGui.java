@@ -27,6 +27,7 @@ import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
+import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
 import org.bukkit.Bukkit;
@@ -72,14 +73,15 @@ public class KickGlobalGui extends PrivateGui<Player> {
             NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target.getUniqueId());
             if(player.hasPermission("dkbans.kick") && (!targetNetworkPlayer.hasBypass()
                     || player.hasPermission("dkbans.bypass.ignore"))) {
+                GuiManager guiManager = DKBansGuiExtension.getInstance().getGuiManager();
                 ReasonMode kickMode = BanSystem.getInstance().getConfig().kickMode;
-                if(kickMode == ReasonMode.TEMPLATE) {
+                if(kickMode == ReasonMode.TEMPLATE && guiManager.isGuiEnabled(KickTemplateGui.class)) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                                     .create(Guis.KICK_TEMPLATE, new KickTemplateGui(player, target.getUniqueId())).open());
-                } else if(kickMode == ReasonMode.SELF) {
+                } else if(kickMode == ReasonMode.SELF && guiManager.isGuiEnabled(KickSelfGui.class)) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                                     .create(Guis.KICK_SELF, new KickSelfGui(player, target.getUniqueId())).open());
                 }
             }

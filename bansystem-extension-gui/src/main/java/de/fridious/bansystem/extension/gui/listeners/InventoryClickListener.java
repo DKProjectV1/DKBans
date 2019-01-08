@@ -40,7 +40,7 @@ public class InventoryClickListener implements Listener {
                 event.getCurrentItem().getItemMeta() == null) return;
         if(event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof Gui) {
             event.setCancelled(true);
-            Bukkit.getScheduler().runTaskAsynchronously(DKBansGuiExtension.getInstance(), ()-> ((Gui)event.getInventory().getHolder()).handleClick(event));
+            Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()-> ((Gui)event.getInventory().getHolder()).handleClick(event));
         } else {
             for (PrivateGui privateGUI : PrivateGui.ANVIL_GUIS) {
                 if (privateGUI.getInventory().equals(event.getInventory())) {

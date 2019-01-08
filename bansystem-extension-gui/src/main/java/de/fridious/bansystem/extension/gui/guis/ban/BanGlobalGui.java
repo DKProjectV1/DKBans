@@ -7,6 +7,7 @@ import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
+import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
 import org.bukkit.Bukkit;
@@ -73,13 +74,14 @@ public class BanGlobalGui extends PrivateGui<Player> {
             if(player.hasPermission("dkbans.ban") && (!targetNetworkPlayer.hasBypass()
                     || player.hasPermission("dkbans.bypass.ignore"))) {
                 BanMode banMode = BanSystem.getInstance().getConfig().banMode;
-                if(banMode == BanMode.TEMPLATE || banMode == BanMode.POINT) {
+                GuiManager guiManager = DKBansGuiExtension.getInstance().getGuiManager();
+                if((banMode == BanMode.TEMPLATE || banMode == BanMode.POINT) && guiManager.isGuiEnabled(BanTemplateGui.class)) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                                     .create(Guis.BAN_TEMPLATE, new BanTemplateGui(player, target.getUniqueId())).open());
-                } else if(banMode == BanMode.SELF) {
+                } else if(banMode == BanMode.SELF && guiManager.isGuiEnabled(BanSelfGui.class)) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                                     .create(Guis.BAN_SELF, new BanSelfGui(player, target.getUniqueId())).open());
                 }
             }

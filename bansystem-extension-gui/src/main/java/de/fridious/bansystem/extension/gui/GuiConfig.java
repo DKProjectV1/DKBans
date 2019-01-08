@@ -28,7 +28,6 @@ import de.fridious.bansystem.extension.gui.api.inventory.gui.Gui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
 import de.fridious.bansystem.extension.gui.guis.GuiData;
-import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.guis.ban.BanGlobalGui;
 import de.fridious.bansystem.extension.gui.guis.ban.BanSelfGui;
 import de.fridious.bansystem.extension.gui.guis.history.HistoryAllGui;
@@ -41,7 +40,7 @@ import de.fridious.bansystem.extension.gui.guis.playerinfo.PlayerInfoGlobalGui;
 import de.fridious.bansystem.extension.gui.guis.playerinfo.PlayerInfoGui;
 import de.fridious.bansystem.extension.gui.guis.ban.BanTemplateGui;
 import de.fridious.bansystem.extension.gui.guis.report.*;
-import de.fridious.bansystem.extension.gui.guis.unban.UnBanGlobalGui;
+import de.fridious.bansystem.extension.gui.guis.unban.UnBanChooseBanTypeGui;
 import de.fridious.bansystem.extension.gui.guis.unban.UnBanSelfGui;
 import de.fridious.bansystem.extension.gui.guis.unban.UnBanTemplateGui;
 import de.fridious.bansystem.extension.gui.guis.warn.WarnGlobalGui;
@@ -52,12 +51,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class GuiConfig extends SimpleConfig {
 
@@ -67,12 +63,12 @@ public class GuiConfig extends SimpleConfig {
 
     @Override
     public void onLoad() {
-        Map<Class<? extends Gui>, GuiData> guiData = DKBansGuiExtension.getInstance().getGuiManager().getInventoryData();
+        Map<Class<? extends Gui>, GuiData> guiData = DKBansGuiExtension.getInstance().getGuiManager().getGuiData();
         guiData.put(BanGlobalGui.class, addAndGetGuiData("ban.global", new GuiData(true, "&4Global ban",PlayerJoinEvent.class, PlayerQuitEvent.class)));
         guiData.put(BanSelfGui.class, addAndGetGuiData("ban.self", new GuiData(true, "&4Ban", new ConcurrentHashMap<String, Object>(){{
-            put("bantype", BanType.valueOf(addAndGetMessageValue("ban.self.settings.default.bantype", BanType.NETWORK.toString().toLowerCase()).toUpperCase()));
-            put("timeunit", TimeUnit.valueOf(addAndGetMessageValue("ban.self.settings.default.timeunit", TimeUnit.DAYS.toString().toLowerCase()).toUpperCase()));
-            put("duration", addAndGetLongValue("ban.self.settings.default.duration", -1));
+            put("bantype", BanType.NETWORK.toString().toLowerCase());
+            put("timeunit", TimeUnit.HOURS.toString().toLowerCase());
+            put("duration", -1);
         }})));
         guiData.put(BanTemplateGui.class, addAndGetGuiData("ban.template", new GuiData(true, "&4Ban")));
 
@@ -96,6 +92,7 @@ public class GuiConfig extends SimpleConfig {
         //guiData.put(UnBanGlobalGui.class, addAndGetGuiData("unban.global", new GuiData(true, )))
         guiData.put(UnBanSelfGui.class, addAndGetGuiData("unban.self", new GuiData(true, "&4Unban")));
         guiData.put(UnBanTemplateGui.class, addAndGetGuiData("unban.template", new GuiData(true, "&4Unban")));
+        guiData.put(UnBanChooseBanTypeGui.class, addAndGetGuiData("unban.choosetype", new GuiData(true, "&4Choose unban type")));
 
         guiData.put(WarnGlobalGui.class, addAndGetGuiData("warn.global", new GuiData(true, "&6Global warn", PlayerJoinEvent.class, PlayerQuitEvent.class)));
         guiData.put(WarnSelfGui.class, addAndGetGuiData("warn.self", new GuiData(true, "&6Warn")));
@@ -166,6 +163,8 @@ public class GuiConfig extends SimpleConfig {
         ItemStorage.put("unbanself_reason", addAndGetItemStack("unban.self.items.reason", new ItemBuilder(Material.ANVIL).setDisplayName("&cSet the reason").setLore("&7Current reason&8: [reason]").build()));
         ItemStorage.put("unbanself_message", addAndGetItemStack("unban.self.items.message", new ItemBuilder(Material.PAPER).setDisplayName("&cSet the message").setLore("&7Current message&8: [message]").build()));
         ItemStorage.put("unbanself_send", addAndGetItemStack("unban.self.items.send", new ItemBuilder(Material.INK_SACK, 1, (short) 10).setDisplayName("&aSend").build()));
+        ItemStorage.put("chooseunban_network", addAndGetItemStack("unban.choosetype.items.network", new ItemBuilder(Material.BARRIER).setDisplayName("&4Network").build()));
+        ItemStorage.put("chooseunban_chat", addAndGetItemStack("unban.choosetype.items.chat", new ItemBuilder(Material.EMPTY_MAP).setDisplayName("&4Chat").build()));
         //History
         ItemStorage.put("history_ban_network", addAndGetItemStack("history.items.ban.network", new ItemBuilder(Material.BARRIER).setDisplayName("&4Ban").setLore("&7Id&8: &c[id]", "&7Reason&8: &c[reason]", "&7Time&8: &c[time]", "&7Timeout&8: &c[timeout]", "&7Message&8: &c[message]", "&7Type&8: &c[type]", "&7Staff&8: &c[staff]", "&7Ip&8: &c[ip]").build()));
         ItemStorage.put("history_ban_chat", addAndGetItemStack("history.items.ban.chat", new ItemBuilder(Material.EMPTY_MAP).setDisplayName("&4Mute").setLore("&7Id&8: &c[id]", "&7Reason&8: &c[reason]", "&7Time&8: &c[time]", "&7Timeout&8: &c[timeout]", "&7Message&8: &c[message]", "&7Type&8: &c[type]", "&7Staff&8: &c[staff]", "&7Ip&8: &c[ip]").build()));

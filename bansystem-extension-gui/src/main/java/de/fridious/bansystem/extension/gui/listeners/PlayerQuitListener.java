@@ -31,6 +31,6 @@ public class PlayerQuitListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Bukkit.getScheduler().runTaskLaterAsynchronously(DKBansGuiExtension.getInstance(), ()->
-                DKBansGuiExtension.getInstance().getGuiManager().updateAllCachedInventories(event), 3);
+                DKBansGuiExtension.getInstance().getGuiManager().updateAllCachedGuis(event, event.getPlayer().getUniqueId()), 3);
     }
 }

@@ -6,6 +6,7 @@ import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
+import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.guis.Guis;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -67,10 +68,11 @@ public class PlayerInfoGlobalGui extends PrivateGui<Player> {
     protected void onClick(InventoryClickEvent event) {
         final Player player = (Player) event.getWhoClicked();
         Player target = getEntryBySlot().get(event.getSlot());
-        if(target != null) {
+        GuiManager guiManager = DKBansGuiExtension.getInstance().getGuiManager();
+        if(target != null && guiManager.isGuiEnabled(PlayerInfoGui.class)) {
             if(player.hasPermission("dkbans.playerinfo")) {
                 Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(Guis.PLAYERINFO_PLAYER, new PlayerInfoGui(player, target.getUniqueId())).open());
+                        DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player).create(Guis.PLAYERINFO_PLAYER, new PlayerInfoGui(player, target.getUniqueId())).open());
             }
         }
     }

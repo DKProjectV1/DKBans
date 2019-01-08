@@ -32,6 +32,6 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Bukkit.getScheduler().runTaskLaterAsynchronously(DKBansGuiExtension.getInstance(), ()->
-                DKBansGuiExtension.getInstance().getGuiManager().updateAllCachedInventories(event), 40);
+                DKBansGuiExtension.getInstance().getGuiManager().updateAllCachedGuis(event, event.getPlayer().getUniqueId()), 40);
     }
 }

@@ -44,12 +44,10 @@ import java.util.UUID;
 
 public class KickTemplateGui extends PrivateGui<KickReason> {
 
-    private UUID target;
     private String message;
 
     public KickTemplateGui(Player owner, UUID target) {
-        super(54, owner);
-        this.target = target;
+        super(54, target, owner);
         this.message = " ";
         setPageEntries(getInteractKickReasons());
         setItem(45, ItemStorage.get("templatekick_editmessage", replace -> replace.replace("[message]", message)));
@@ -62,7 +60,7 @@ public class KickTemplateGui extends PrivateGui<KickReason> {
     private List<KickReason> getInteractKickReasons() {
         List<KickReason> kickReasons = new LinkedList<>();
         for(KickReason reason : BanSystem.getInstance().getReasonProvider().getKickReasons()) {
-            if((!BanSystem.getInstance().getPlayerManager().getPlayer(target).hasBypass() || getOwner().hasPermission("dkbans.bypass.ignore"))
+            if((!BanSystem.getInstance().getPlayerManager().getPlayer(getTarget()).hasBypass() || getOwner().hasPermission("dkbans.bypass.ignore"))
                     && !reason.isHidden() && getOwner().hasPermission("dkbans.kick")
                     && getOwner().hasPermission(reason.getPermission())) kickReasons.add(reason);
         }
@@ -97,8 +95,8 @@ public class KickTemplateGui extends PrivateGui<KickReason> {
         if(kickReason != null) {
             if(player.hasPermission("dkbans.ban") &&
                     player.hasPermission(kickReason.getPermission())
-                    && (!BanSystem.getInstance().getPlayerManager().getPlayer(target).hasBypass() || player.hasPermission("dkbans.bypass.ignore"))) {
-                NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
+                    && (!BanSystem.getInstance().getPlayerManager().getPlayer(getTarget()).hasBypass() || player.hasPermission("dkbans.bypass.ignore"))) {
+                NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getTarget());
                 Kick kick = targetNetworkPlayer.kick(kickReason, getMessage(), player.getUniqueId());
                 player.sendMessage(Messages.KICK_SUCCESS
                         .replace("[prefix]", Messages.PREFIX_BAN)
@@ -110,13 +108,13 @@ public class KickTemplateGui extends PrivateGui<KickReason> {
             }
         } else if(event.getSlot() == 45) {
             Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                    DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                    DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                             .create(Guis.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
         }
     }
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(Guis.KICK_TEMPLATE);
+        DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis((Player) event.getPlayer()).remove(Guis.KICK_TEMPLATE);
     }
 }

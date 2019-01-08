@@ -46,11 +46,12 @@ public class HistoryCommand implements CommandExecutor {
             player.sendMessage(Messages.NOPERMISSIONS.replace("[prefix]", Messages.PREFIX_NETWORK));
             return true;
         }
-        if(args.length == 0) {
-            GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
-            if(cachedInventories.hasCached(Guis.HISTORY_GLOBAL)) cachedInventories.getAsPrivateGui(Guis.HISTORY_GLOBAL).open();
-            else cachedInventories.create(Guis.HISTORY_GLOBAL, new HistoryGlobalGui(player)).open();
-        } else if(args.length == 1) {
+        GuiManager guiManager = DKBansGuiExtension.getInstance().getGuiManager();
+        if(args.length == 0 && guiManager.isGuiEnabled(HistoryGlobalGui.class)) {
+            GuiManager.CachedGuis cachedGuis = DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player);
+            if(cachedGuis.hasCached(Guis.HISTORY_GLOBAL)) cachedGuis.getAsPrivateGui(Guis.HISTORY_GLOBAL).open();
+            else cachedGuis.create(Guis.HISTORY_GLOBAL, new HistoryGlobalGui(player)).open();
+        } else if(args.length == 1 && guiManager.isGuiEnabled(HistoryAllGui.class)) {
             NetworkPlayer target = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
             if(target == null){
                 player.sendMessage(Messages.PLAYER_NOT_FOUND
@@ -62,7 +63,7 @@ public class HistoryCommand implements CommandExecutor {
                 player.sendMessage(Messages.BAN_SELF.replace("[prefix]", Messages.PREFIX_BAN));
                 return true;
             }
-            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+            DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                     .create(Guis.HISTORY_ALL, new HistoryAllGui(player, target.getUUID())).open();
         }
         return true;

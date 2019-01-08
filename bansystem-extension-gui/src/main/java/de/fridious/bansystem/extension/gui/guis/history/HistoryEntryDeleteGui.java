@@ -43,13 +43,11 @@ public class HistoryEntryDeleteGui extends PrivateGui {
     private static List<Integer> ACCEPT_SLOTS = Arrays.asList(0, 1, 2, 9, 10, 11, 18, 19, 20);
     private static List<Integer> DENY_SLOTS = Arrays.asList(6, 7, 8, 15, 16, 17, 24, 25, 26);
     private HistoryEntry historyEntry;
-    private UUID target;
     private HistoryAllGui historyAllGui;
     private boolean openParentGui;
 
     public HistoryEntryDeleteGui(Player owner, UUID target, HistoryEntry historyEntry, HistoryAllGui historyAllGui) {
-        super(27, owner);
-        this.target = target;
+        super(27, target, owner);
         this.historyEntry = historyEntry;
         this.historyAllGui = historyAllGui;
         this.openParentGui = false;
@@ -76,7 +74,7 @@ public class HistoryEntryDeleteGui extends PrivateGui {
     @Override
     protected void onClick(InventoryClickEvent event) {
         if(ACCEPT_SLOTS.contains(event.getSlot())) {
-            NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
+            NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getTarget());
             targetNetworkPlayer.resetHistory(historyEntry.getID());
 
             if(this.historyAllGui != null) {
@@ -94,8 +92,8 @@ public class HistoryEntryDeleteGui extends PrivateGui {
     @Override
     protected void onClose(InventoryCloseEvent event) {
         final Player player = (Player) event.getPlayer();
-        GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
-        cachedInventories.remove(Guis.HISTORY_DELETE);
-        if(this.historyAllGui != null && !this.openParentGui) cachedInventories.remove(Guis.HISTORY_ALL);
+        GuiManager.CachedGuis cachedGuis = DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player);
+        cachedGuis.remove(Guis.HISTORY_DELETE);
+        if(this.historyAllGui != null && !this.openParentGui) cachedGuis.remove(Guis.HISTORY_ALL);
     }
 }

@@ -45,17 +45,15 @@ import java.util.concurrent.TimeUnit;
 
 public class BanSelfGui extends PrivateGui {
 
-    private UUID target;
     private BanType banType;
     private String reason;
     private long duration;
     private TimeUnit timeUnit;
 
     public BanSelfGui(Player owner, UUID target) {
-        super(45, owner);
-        this.target = target;
-        this.banType = (BanType) getSettings().get("bantype");
-        this.timeUnit = (TimeUnit) getSettings().get("timeunit");
+        super(45, target, owner);
+        this.banType = BanType.parse((String) getSettings().get("bantype"));
+        this.timeUnit = TimeUnit.valueOf(((String) getSettings().get("timeunit")).toUpperCase());
         this.reason = "";
         this.duration = (long) getSettings().get("duration");
         updatePage(null);
@@ -102,7 +100,7 @@ public class BanSelfGui extends PrivateGui {
             updatePage(null);
         } else if(event.getSlot() == 12) {
             Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                    DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                    DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                             .create(Guis.ANVIL_INPUT, new AnvilInputGui(this, this.reason) {
                                 @Override
                                 public boolean setInput(String input) {
@@ -112,11 +110,11 @@ public class BanSelfGui extends PrivateGui {
                             }).open());
         } else if(event.getSlot() == 14) {
             Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                    DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                    DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                             .create(Guis.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
         } else if(event.getSlot() == 16) {
             Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()-> {
-                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                         .create(Guis.ANVIL_INPUT, new AnvilInputGui(this, String.valueOf(this.duration)) {
                             @Override
                             public boolean setInput(String input) {
@@ -143,7 +141,7 @@ public class BanSelfGui extends PrivateGui {
             updatePage(null);
         } else if(event.getSlot() == 44) {
             if(this.banType != null) {
-                NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
+                NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getTarget());
                 Ban ban  = targetNetworkPlayer.ban(this.banType, this.duration, this.timeUnit, this.reason, getMessage(), -1, player.getUniqueId());
                 player.sendMessage(Messages.BAN_SUCCESS
                         .replace("[prefix]", Messages.PREFIX_BAN)
@@ -164,7 +162,7 @@ public class BanSelfGui extends PrivateGui {
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(Guis.BAN_SELF);
+        DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis((Player) event.getPlayer()).remove(Guis.BAN_SELF);
     }
 
     private String replace(String replace) {

@@ -1,12 +1,14 @@
 package de.fridious.bansystem.extension.gui.api.inventory.gui;
 
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
+import de.fridious.bansystem.extension.gui.utils.StringReplacer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 /*
  * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
@@ -76,8 +78,18 @@ public abstract class PrivateGui<T> extends Gui<T> {
         this.owner = owner;
     }
 
-    public PrivateGui(int size, ItemStorage.StringReplacer stringReplacer, Player owner) {
+    public PrivateGui(int size, StringReplacer stringReplacer, Player owner) {
         super(size, stringReplacer);
+        this.owner = owner;
+    }
+
+    public PrivateGui(int size, StringReplacer stringReplacer, UUID target, Player owner) {
+        super(size, stringReplacer, target);
+        this.owner = owner;
+    }
+
+    public PrivateGui(int size, UUID target, Player owner) {
+        super(size, target);
         this.owner = owner;
     }
 

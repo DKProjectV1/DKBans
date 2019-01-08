@@ -39,7 +39,7 @@ public class InventoryOpenListener implements Listener {
         else {
             PrivateGui.ANVIL_GUIS.forEach(privateGUI -> {
                 if(privateGUI.getInventory().equals(event.getInventory()))
-                    Bukkit.getScheduler().runTaskAsynchronously(DKBansGuiExtension.getInstance(), ()-> privateGUI.handleOpen(event));
+                    Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()-> privateGUI.handleOpen(event));
             });
         }
     }

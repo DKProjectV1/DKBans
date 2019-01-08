@@ -47,6 +47,7 @@ public final class Guis {
 
     public static final String UNBAN_TEMPLATE = "unban_template";
     public static final String UNBAN_SELF = "unban_self";
+    public static final String UNBAN_CHOOSE_BANTYPE = "unban_choose_bantype";
 
     public static final String HISTORY_ALL = "history_all";
     public static final String HISTORY_DELETE = "history_delete";

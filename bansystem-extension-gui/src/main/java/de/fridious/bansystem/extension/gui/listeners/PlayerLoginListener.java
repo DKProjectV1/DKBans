@@ -34,8 +34,8 @@ public class PlayerLoginListener implements Listener {
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
-        final Player player = event.getPlayer();
         Bukkit.getScheduler().runTaskAsynchronously(DKBansGuiExtension.getInstance(), ()-> {
+            final Player player = event.getPlayer();
             NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
             networkPlayer.getProperties().append("gameProfile",GuiExtensionUtils.getGameProfile(player));
             networkPlayer.saveProperties();

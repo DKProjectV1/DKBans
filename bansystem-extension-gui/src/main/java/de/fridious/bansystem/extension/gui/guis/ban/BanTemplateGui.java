@@ -42,11 +42,8 @@ import java.util.*;
 
 public class BanTemplateGui extends PrivateGui<BanReason> {
 
-    private UUID target;
-
     public BanTemplateGui(Player player, UUID target) {
-        super(54, player);
-        this.target = target;
+        super(54, target, player);
         setPageEntries(getInteractBanReasons());
         setItem(45, ItemStorage.get("templateban_editmessage", replace -> replace.replace("[message]", getMessage())));
     }
@@ -54,7 +51,7 @@ public class BanTemplateGui extends PrivateGui<BanReason> {
     private List<BanReason> getInteractBanReasons() {
         List<BanReason> banReasons = new LinkedList<>();
         for(BanReason reason : BanSystem.getInstance().getReasonProvider().getBanReasons()) {
-            if((!BanSystem.getInstance().getPlayerManager().getPlayer(target).hasBypass() || getOwner().hasPermission("dkbans.bypass.ignore"))
+            if((!BanSystem.getInstance().getPlayerManager().getPlayer(getTarget()).hasBypass() || getOwner().hasPermission("dkbans.bypass.ignore"))
                     && !reason.isHidden() && getOwner().hasPermission("dkbans.ban")
                     && getOwner().hasPermission(reason.getPermission())) banReasons.add(reason);
         }
@@ -85,8 +82,8 @@ public class BanTemplateGui extends PrivateGui<BanReason> {
         if(banReason != null) {
             if(player.hasPermission("dkbans.ban") &&
                     player.hasPermission(banReason.getPermission())
-                    && (!BanSystem.getInstance().getPlayerManager().getPlayer(target).hasBypass() || player.hasPermission("dkbans.bypass.ignore"))) {
-                NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
+                    && (!BanSystem.getInstance().getPlayerManager().getPlayer(getTarget()).hasBypass() || player.hasPermission("dkbans.bypass.ignore"))) {
+                NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getTarget());
                 Ban ban = networkPlayer.ban(banReason, getMessage(), player.getUniqueId());
                 player.sendMessage(Messages.BAN_SUCCESS
                         .replace("[prefix]", Messages.PREFIX_BAN)
@@ -104,13 +101,13 @@ public class BanTemplateGui extends PrivateGui<BanReason> {
             }
         } else if(event.getSlot() == 45) {
             Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                    DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                    DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                             .create(Guis.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
         }
     }
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(Guis.BAN_TEMPLATE);
+        DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis((Player) event.getPlayer()).remove(Guis.BAN_TEMPLATE);
     }
 }

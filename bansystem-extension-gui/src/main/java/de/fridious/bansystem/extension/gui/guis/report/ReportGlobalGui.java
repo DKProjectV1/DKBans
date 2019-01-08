@@ -28,6 +28,7 @@ import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
+import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
 import org.bukkit.Bukkit;
@@ -92,14 +93,15 @@ public class ReportGlobalGui extends PrivateGui<Player> {
             if(player.hasPermission("dkbans.report") && (!targetNetworkPlayer.hasBypass()
                     || player.hasPermission("dkbans.bypass.ignore"))) {
                 ReasonMode reportMode = BanSystem.getInstance().getConfig().reportMode;
-                if(reportMode == ReasonMode.TEMPLATE) {
+                GuiManager guiManager = DKBansGuiExtension.getInstance().getGuiManager();
+                if(reportMode == ReasonMode.TEMPLATE && guiManager.isGuiEnabled(ReportTemplateGui.class)) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                                     .create(Guis.REPORT_TEMPLATE, new ReportTemplateGui(player, target.getUniqueId())).open());
 
-                } else if(reportMode == ReasonMode.SELF) {
+                } else if(reportMode == ReasonMode.SELF && guiManager.isGuiEnabled(ReportSelfGui.class)) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                                     .create(Guis.REPORT_SELF, new ReportSelfGui(player, target.getUniqueId())).open());
                 }
                 OnlineNetworkPlayer onlineNetworkPlayer = BanSystem.getInstance().getPlayerManager().getOnlinePlayer(player.getUniqueId());

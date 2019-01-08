@@ -43,12 +43,10 @@ import java.util.UUID;
 
 public class WarnTemplateGui extends PrivateGui<WarnReason> {
 
-    private UUID target;
     private String message;
 
     public WarnTemplateGui(Player owner, UUID target) {
-        super(54, owner);
-        this.target = target;
+        super(54, target, owner);
         this.message = " ";
         setPageEntries(getInteractWarnReasons());
         setItem(45, ItemStorage.get("templatewarn_editmessage", replace -> replace.replace("[message]", message)));
@@ -61,7 +59,7 @@ public class WarnTemplateGui extends PrivateGui<WarnReason> {
     private List<WarnReason> getInteractWarnReasons() {
         List<WarnReason> warnReasons = new LinkedList<>();
         for(WarnReason reason : BanSystem.getInstance().getReasonProvider().getWarnReasons()) {
-            if((!BanSystem.getInstance().getPlayerManager().getPlayer(target).hasBypass() || getOwner().hasPermission("dkbans.bypass.ignore"))
+            if((!BanSystem.getInstance().getPlayerManager().getPlayer(getTarget()).hasBypass() || getOwner().hasPermission("dkbans.bypass.ignore"))
                     && !reason.isHidden() && getOwner().hasPermission("dkbans.warn")
                     && getOwner().hasPermission(reason.getPermission())) warnReasons.add(reason);
         }
@@ -96,8 +94,8 @@ public class WarnTemplateGui extends PrivateGui<WarnReason> {
         if(warnReason != null) {
             if(player.hasPermission("dkbans.warn") &&
                     player.hasPermission(warnReason.getPermission())
-                    && (!BanSystem.getInstance().getPlayerManager().getPlayer(target).hasBypass() || player.hasPermission("dkbans.bypass.ignore"))) {
-                NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
+                    && (!BanSystem.getInstance().getPlayerManager().getPlayer(getTarget()).hasBypass() || player.hasPermission("dkbans.bypass.ignore"))) {
+                NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getTarget());
                 Warn warn = targetNetworkPlayer.warn(warnReason, getMessage(), player.getUniqueId());
                 player.sendMessage(Messages.WARN_SUCCESS
                         .replace("[prefix]", Messages.PREFIX_BAN)
@@ -111,13 +109,13 @@ public class WarnTemplateGui extends PrivateGui<WarnReason> {
             }
         } else if(event.getSlot() == 45) {
             Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                    DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                    DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                             .create(Guis.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
         }
     }
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(Guis.WARN_TEMPLATE);
+        DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis((Player) event.getPlayer()).remove(Guis.WARN_TEMPLATE);
     }
 }

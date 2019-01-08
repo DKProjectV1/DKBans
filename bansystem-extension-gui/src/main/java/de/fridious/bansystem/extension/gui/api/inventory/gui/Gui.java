@@ -6,6 +6,7 @@ import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
 import de.fridious.bansystem.extension.gui.guis.GuiData;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
+import de.fridious.bansystem.extension.gui.utils.StringReplacer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,10 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /*
@@ -47,6 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class Gui<T> implements InventoryHolder {
 
     protected Inventory inventory;
+    private UUID target;
     private int currentPage, pageSize;
     private List<? extends T> pageEntries;
     private Map<Integer, T> entryBySlot;
@@ -78,12 +77,21 @@ public abstract class Gui<T> implements InventoryHolder {
         this(size, replace -> replace);
     }
 
-    public Gui(int size, ItemStorage.StringReplacer stringReplacer) {
+    public Gui(int size, StringReplacer stringReplacer, UUID target) {
         this();
-        GuiData guiData = DKBansGuiExtension.getInstance().getGuiManager().getInventoryData().get(this.getClass());
+        this.target = target;
+        GuiData guiData = DKBansGuiExtension.getInstance().getGuiManager().getGuiData().get(this.getClass());
         this.inventory = Bukkit.createInventory(this, size, stringReplacer.replace(guiData.getTitle()));
         this.updateEvents.addAll(guiData.getUpdateEvents());
         this.settings.putAll(guiData.getSettings());
+    }
+
+    public Gui(int size, UUID target) {
+        this(size, replace -> replace, target);
+    }
+
+    public Gui(int size, StringReplacer stringReplacer) {
+        this(size, stringReplacer, null);
     }
 
     public Gui(InventoryType inventoryType) {
@@ -109,6 +117,10 @@ public abstract class Gui<T> implements InventoryHolder {
 
     public Map<String, Object> getSettings() {
         return settings;
+    }
+
+    public UUID getTarget() {
+        return target;
     }
 
     /**

@@ -48,11 +48,12 @@ public class KickCommand implements CommandExecutor {
             player.sendMessage(Messages.NOPERMISSIONS.replace("[prefix]", Messages.PREFIX_BAN));
             return true;
         }
-        if(args.length == 0) {
-            GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
-            if(cachedInventories.hasCached(Guis.KICK_GLOBAL)) cachedInventories.getAsPrivateGui(Guis.KICK_GLOBAL).open();
-            else cachedInventories.create(Guis.KICK_GLOBAL, new KickGlobalGui(player));
-        } else if(args.length == 1) {
+        GuiManager guiManager = DKBansGuiExtension.getInstance().getGuiManager();
+        if(args.length == 0 && guiManager.isGuiEnabled(KickGlobalGui.class)) {
+            GuiManager.CachedGuis cachedGuis = DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player);
+            if(cachedGuis.hasCached(Guis.KICK_GLOBAL)) cachedGuis.getAsPrivateGui(Guis.KICK_GLOBAL).open();
+            else cachedGuis.create(Guis.KICK_GLOBAL, new KickGlobalGui(player));
+        } else if(args.length == 1 && (guiManager.isGuiEnabled(KickSelfGui.class) || guiManager.isGuiEnabled(KickTemplateGui.class))) {
             NetworkPlayer target = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
             if(target == null){
                 player.sendMessage(Messages.PLAYER_NOT_FOUND
@@ -72,10 +73,10 @@ public class KickCommand implements CommandExecutor {
             }
             ReasonMode kickMode = BanSystem.getInstance().getConfig().kickMode;
             if(kickMode == ReasonMode.TEMPLATE) {
-                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                         .create(Guis.KICK_TEMPLATE, new KickTemplateGui(player, target.getUUID())).open();
             } else if(kickMode == ReasonMode.SELF) {
-                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                         .create(Guis.KICK_SELF, new KickSelfGui(player, target.getUUID())).open();
 
             }

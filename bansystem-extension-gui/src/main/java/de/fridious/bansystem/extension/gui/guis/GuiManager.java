@@ -4,10 +4,9 @@ import de.fridious.bansystem.extension.gui.api.inventory.gui.Gui;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /*
@@ -32,77 +31,86 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GuiManager {
 
-    private Map<Player, CachedInventories> cachedInventories;
-    private Map<Class<? extends Gui>, GuiData> inventoryData;
+    private Map<Player, CachedGuis> cachedGuis;
+    private Map<Class<? extends Gui>, GuiData> guiData;
 
     public GuiManager() {
-        this.cachedInventories = new ConcurrentHashMap<>();
-        this.inventoryData = new ConcurrentHashMap<>();
+        this.cachedGuis = new ConcurrentHashMap<>();
+        this.guiData = new ConcurrentHashMap<>();
     }
 
-    public Map<Player, CachedInventories> getAllCachedInventories() {
-        return cachedInventories;
+    public Map<Player, CachedGuis> getAllCachedGuis() {
+        return cachedGuis;
     }
 
-    public Map<Class<? extends Gui>, GuiData> getInventoryData() {
-        return inventoryData;
+    public Map<Class<? extends Gui>, GuiData> getGuiData() {
+        return guiData;
     }
 
-    public CachedInventories getCachedInventories(Player player) {
-        if(!cachedInventories.containsKey(player)) cachedInventories.put(player, new CachedInventories(player));
-        return cachedInventories.get(player);
+    public GuiData getGuiData(Class<? extends Gui> guiClass) {
+        return getGuiData().get(guiClass);
     }
 
+    public boolean isGuiEnabled(Class<? extends Gui> guiClass) {
+        return getGuiData(guiClass).isEnabled();
+    }
 
+    public CachedGuis getCachedGuis(Player player) {
+        if(!cachedGuis.containsKey(player)) cachedGuis.put(player, new CachedGuis(player));
+        return cachedGuis.get(player);
+    }
 
-    public void updateAllCachedInventories(Event event) {
-        for (CachedInventories openedInventories : getAllCachedInventories().values()) {
-            openedInventories.getAll().forEach(gui -> gui.updatePage(event));
+    //@Todo better caching and synchronisation
+    public void updateAllCachedGuis(Event event, UUID target) {
+        for (CachedGuis openedGuis : getAllCachedGuis().values()) {
+            for (Gui gui : openedGuis.getAll()) {
+                gui.updatePage(event);
+            }
         }
     }
 
-    public class CachedInventories {
+    public class CachedGuis {
 
         private final Player player;
-        private final Map<String, Gui> inventories;
+        private final Map<String, Gui> guis;
 
-        public CachedInventories(Player player) {
+        public CachedGuis(Player player) {
             this.player = player;
-            this.inventories = new LinkedHashMap<>();
+            this.guis = new ConcurrentHashMap<>();
         }
 
-        public boolean hasCached(String inventory) {
-            return inventories.containsKey(inventory);
+        public boolean hasCached(String gui) {
+            return guis.containsKey(gui);
         }
 
         public Player getPlayer() {
             return player;
         }
 
-        public Gui getAsGui(String inventory) {
-            return this.inventories.get(inventory);
+        public Gui getAsGui(String guiName) {
+            return this.guis.get(guiName);
         }
 
-        public PrivateGui getAsPrivateGui(String inventory) {
-            return (PrivateGui) getAsGui(inventory);
+        public PrivateGui getAsPrivateGui(String guiName) {
+            return (PrivateGui) getAsGui(guiName);
         }
 
         public Collection<Gui> getAll() {
-            return this.inventories.values();
+            return this.guis.values();
         }
 
-        public Gui create(String inventory, Gui gui) {
-            this.inventories.put(inventory, gui);
+        public Gui create(String guiName, Gui gui) {
+            this.guis.put(guiName, gui);
             return gui;
         }
 
-        public PrivateGui create(String inventory, PrivateGui privateGUI) {
-            this.inventories.put(inventory, privateGUI);
+        public PrivateGui create(String guiName, PrivateGui privateGUI) {
+            this.guis.put(guiName, privateGUI);
             return privateGUI;
         }
 
-        public void remove(String inventory) {
-            this.inventories.remove(inventory);
+        public void remove(String gui) {
+            this.guis.remove(gui);
         }
     }
 }

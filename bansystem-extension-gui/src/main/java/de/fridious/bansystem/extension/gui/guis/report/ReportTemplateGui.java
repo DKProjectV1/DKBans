@@ -37,17 +37,12 @@ import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 public class ReportTemplateGui extends PrivateGui<ReportReason> {
 
-    private UUID target;
-
     public ReportTemplateGui(Player owner, UUID target) {
-        super(54, owner);
-        this.target = target;
+        super(54, target, owner);
         setPageEntries(BanSystem.getInstance().getReasonProvider().getReportReasons());
         updatePage(null);
     }
@@ -75,7 +70,7 @@ public class ReportTemplateGui extends PrivateGui<ReportReason> {
         ReportReason reportReason = getEntryBySlot().get(event.getSlot());
         if(reportReason != null) {
             if(player.hasPermission("dkbans.report") && player.hasPermission(reportReason.getPermission())) {
-                NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
+                NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getTarget());
                 OnlineNetworkPlayer targetOnlineNetworkPlayer = targetNetworkPlayer.getOnlinePlayer();
                 Report report = targetNetworkPlayer.getReport(player.getUniqueId());
                 if(report != null){
@@ -104,13 +99,13 @@ public class ReportTemplateGui extends PrivateGui<ReportReason> {
             }
         } else if(event.getSlot() == 45) {
             Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                    DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                    DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                             .create(Guis.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
         }
     }
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(Guis.REPORT_TEMPLATE);
+        DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis((Player) event.getPlayer()).remove(Guis.REPORT_TEMPLATE);
     }
 }

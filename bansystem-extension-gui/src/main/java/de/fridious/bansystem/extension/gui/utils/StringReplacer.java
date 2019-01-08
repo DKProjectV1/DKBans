@@ -1,10 +1,10 @@
-package de.fridious.bansystem.extension.gui.guis.unban;
+package de.fridious.bansystem.extension.gui.utils;
 
 /*
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Philipp Elvin Friedhoff
- * @since 05.01.19 14:53
+ * @since 07.01.19 19:29
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -20,6 +20,8 @@ package de.fridious.bansystem.extension.gui.guis.unban;
  * under the License.
  */
 
-public class UnBanGlobalGui {
+public interface StringReplacer {
+
+    String replace(String replace);
 
 }

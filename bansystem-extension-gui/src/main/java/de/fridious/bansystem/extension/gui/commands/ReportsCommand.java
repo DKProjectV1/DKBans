@@ -48,14 +48,15 @@ public class ReportsCommand implements CommandExecutor {
             player.sendMessage(Messages.NOPERMISSIONS.replace("[prefix]", Messages.PREFIX_BAN));
             return true;
         }
+        GuiManager guiManager = DKBansGuiExtension.getInstance().getGuiManager();
         NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
         UUID target = networkPlayer.getWatchingReportedPlayer();
-        if(target == null) {
-            GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
+        if(target == null && guiManager.isGuiEnabled(ReportListGui.class)) {
+            GuiManager.CachedGuis cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player);
             if(cachedInventories.hasCached(Guis.REPORT_LIST)) cachedInventories.getAsPrivateGui(Guis.REPORT_LIST).open();
             else cachedInventories.create(Guis.REPORT_LIST, new ReportListGui(player)).open();
-        } else {
-            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player).create(Guis.REPORT_CONTROL, new ReportControlGui(player, target)).open();
+        } else if(guiManager.isGuiEnabled(ReportControlGui.class)) {
+            DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player).create(Guis.REPORT_CONTROL, new ReportControlGui(player, target)).open();
         }
         return true;
     }

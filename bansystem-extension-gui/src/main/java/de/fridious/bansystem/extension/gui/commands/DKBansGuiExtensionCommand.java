@@ -30,7 +30,7 @@ public class DKBansGuiExtensionCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        sender.sendMessage((sender instanceof Player ? DKBansGuiExtension.getInstance().getChatPrefix() : DKBansGuiExtension.getInstance().getConsolePrefix()) + "This plugin was developed by Philipp Elvin Friedhoff/Fridious(GitHub: https://github.com/fridious)");
+        sender.sendMessage((sender instanceof Player ? DKBansGuiExtension.getInstance().getChatPrefix() : DKBansGuiExtension.getInstance().getConsolePrefix()) + "This plugin was developed by Philipp Elvin Friedhoff/Fridious(GitHub: https://github.com/Fridious)");
         return true;
     }
 }

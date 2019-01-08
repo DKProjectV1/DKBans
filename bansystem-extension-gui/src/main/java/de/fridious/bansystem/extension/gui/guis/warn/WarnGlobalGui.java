@@ -27,6 +27,7 @@ import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
+import de.fridious.bansystem.extension.gui.guis.GuiManager;
 import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
 import org.bukkit.Bukkit;
@@ -42,7 +43,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class WarnGlobalGui extends PrivateGui<Player> {
-
 
     public WarnGlobalGui(Player owner) {
         super(54, owner);
@@ -73,14 +73,15 @@ public class WarnGlobalGui extends PrivateGui<Player> {
             NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target.getUniqueId());
             if(player.hasPermission("dkbans.warn") && (!targetNetworkPlayer.hasBypass()
                     || player.hasPermission("dkbans.bypass.ignore"))) {
+                GuiManager guiManager = DKBansGuiExtension.getInstance().getGuiManager();
                 ReasonMode warnMode = BanSystem.getInstance().getConfig().warnMode;
-                if(warnMode == ReasonMode.TEMPLATE) {
+                if(warnMode == ReasonMode.TEMPLATE && guiManager.isGuiEnabled(WarnTemplateGui.class)) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                                     .create(Guis.WARN_TEMPLATE, new WarnTemplateGui(player, target.getUniqueId())).open());
-                } else if(warnMode == ReasonMode.SELF) {
+                } else if(warnMode == ReasonMode.SELF && guiManager.isGuiEnabled(WarnSelfGui.class)) {
                     Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                            DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                            DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                                     .create(Guis.WARN_SELF, new WarnSelfGui(player, target.getUniqueId())).open());
                 }
             }

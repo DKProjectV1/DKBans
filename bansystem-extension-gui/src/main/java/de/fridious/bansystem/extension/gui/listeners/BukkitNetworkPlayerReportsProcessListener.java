@@ -22,6 +22,7 @@ package de.fridious.bansystem.extension.gui.listeners;
 
 import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerReportsProcessEvent;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -29,6 +30,7 @@ public class BukkitNetworkPlayerReportsProcessListener implements Listener {
 
     @EventHandler
     public void onBukkitNetworkPlayerReportsProcess(BukkitNetworkPlayerReportsProcessEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().updateAllCachedInventories(event);
+        Bukkit.getScheduler().runTaskAsynchronously(DKBansGuiExtension.getInstance(), ()->
+                DKBansGuiExtension.getInstance().getGuiManager().updateAllCachedGuis(event, event.getUUID()));
     }
 }

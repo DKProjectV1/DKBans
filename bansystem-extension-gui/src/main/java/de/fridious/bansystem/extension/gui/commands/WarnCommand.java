@@ -48,11 +48,12 @@ public class WarnCommand implements CommandExecutor {
             player.sendMessage(Messages.NOPERMISSIONS.replace("[prefix]", Messages.PREFIX_BAN));
             return true;
         }
-        if(args.length == 0) {
-            GuiManager.CachedInventories cachedInventories = DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player);
-            if (cachedInventories.hasCached(Guis.WARN_GLOBAL)) cachedInventories.getAsPrivateGui(Guis.WARN_GLOBAL).open();
-            else cachedInventories.create(Guis.WARN_GLOBAL, new WarnGlobalGui(player)).open();
-        } else if(args.length == 1) {
+        GuiManager guiManager = DKBansGuiExtension.getInstance().getGuiManager();
+        if(args.length == 0 && guiManager.isGuiEnabled(WarnGlobalGui.class)) {
+            GuiManager.CachedGuis cachedGuis = DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player);
+            if (cachedGuis.hasCached(Guis.WARN_GLOBAL)) cachedGuis.getAsPrivateGui(Guis.WARN_GLOBAL).open();
+            else cachedGuis.create(Guis.WARN_GLOBAL, new WarnGlobalGui(player)).open();
+        } else if(args.length == 1 && (guiManager.isGuiEnabled(WarnSelfGui.class) || guiManager.isGuiEnabled(WarnTemplateGui.class))) {
             NetworkPlayer target = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
             if(target == null){
                 player.sendMessage(Messages.PLAYER_NOT_FOUND
@@ -72,10 +73,10 @@ public class WarnCommand implements CommandExecutor {
             }
             ReasonMode warnMode = BanSystem.getInstance().getConfig().warnMode;
             if(warnMode == ReasonMode.TEMPLATE) {
-                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                         .create(Guis.WARN_TEMPLATE, new WarnTemplateGui(player, target.getUUID())).open();
             } else if(warnMode == ReasonMode.SELF) {
-                DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                         .create(Guis.WARN_SELF, new WarnSelfGui(player, target.getUUID())).open();
             }
         } else {

@@ -13,6 +13,7 @@ import ch.dkrieger.bansystem.lib.reason.WarnReason;
 import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
+import de.fridious.bansystem.extension.gui.utils.StringReplacer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -218,9 +219,5 @@ public class ItemStorage {
     public static ItemStack put(String key, ItemStack itemStack) {
         itemStacks.put(key, itemStack);
         return itemStack;
-    }
-
-    public interface StringReplacer {
-        String replace(String replace);
     }
 }

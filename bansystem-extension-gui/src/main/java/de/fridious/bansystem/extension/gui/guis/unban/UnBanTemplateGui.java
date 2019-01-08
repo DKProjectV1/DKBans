@@ -37,20 +37,16 @@ import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 public class UnBanTemplateGui extends PrivateGui<UnbanReason> {
 
-    private UUID target;
     private String message;
 
     public UnBanTemplateGui(Player owner, UUID target) {
-        super(54, owner);
-        this.target = target;
+        super(54, target, owner);
         this.message = " ";
         setPageEntries(getInteractUnBanReasons());
         setItem(45, ItemStorage.get("templateunban_editmessage", replace -> replace.replace("[message]", message)));
@@ -61,10 +57,10 @@ public class UnBanTemplateGui extends PrivateGui<UnbanReason> {
     }
 
     private List<UnbanReason> getInteractUnBanReasons() {
-        NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
+        NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getTarget());
         List<UnbanReason> reasons = new LinkedList<>();
         for(UnbanReason reason : BanSystem.getInstance().getReasonProvider().getUnbanReasons()) {
-            if((!BanSystem.getInstance().getPlayerManager().getPlayer(target).hasBypass() || getOwner().hasPermission("dkbans.bypass.ignore"))
+            if((!BanSystem.getInstance().getPlayerManager().getPlayer(getTarget()).hasBypass() || getOwner().hasPermission("dkbans.bypass.ignore"))
                     && !reason.isHidden() && getOwner().hasPermission("dkbans.unban")
                     && getOwner().hasPermission(reason.getPermission())
                     && (reason.getBanType() == null || targetNetworkPlayer.isBanned(reason.getBanType()))) reasons.add(reason);
@@ -100,9 +96,20 @@ public class UnBanTemplateGui extends PrivateGui<UnbanReason> {
         if(reason != null) {
             if(player.hasPermission("dkbans.unban") &&
                     player.hasPermission(reason.getPermission())
-                    && (!BanSystem.getInstance().getPlayerManager().getPlayer(target).hasBypass() || player.hasPermission("dkbans.bypass.ignore"))) {
-                NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
-                Unban unban = targetNetworkPlayer.unban(reason.getBanType(), reason, getMessage(), player.getUniqueId());
+                    && (!BanSystem.getInstance().getPlayerManager().getPlayer(getTarget()).hasBypass() || player.hasPermission("dkbans.bypass.ignore"))) {
+                NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getTarget());
+                BanType banType = reason.getBanType();
+                if(banType == null) {
+                    if(targetNetworkPlayer.isBanned(BanType.NETWORK) && targetNetworkPlayer.isBanned(BanType.CHAT)) {
+                        DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player).create(Guis.UNBAN_CHOOSE_BANTYPE, new UnBanChooseBanTypeGui(player, getTarget(), reason));
+                        return;
+                    } else if(targetNetworkPlayer.isBanned(BanType.CHAT)) {
+                        banType = BanType.CHAT;
+                    } else if(targetNetworkPlayer.isBanned(BanType.NETWORK)) {
+                        banType = BanType.NETWORK;
+                    }
+                }
+                Unban unban = targetNetworkPlayer.unban(banType, reason, getMessage(), player.getUniqueId());
                 if(unban.getBanType() == BanType.NETWORK) {
                     player.sendMessage(Messages.PLAYER_UNBANNED
                             .replace("[prefix]", Messages.PREFIX_BAN)
@@ -126,13 +133,13 @@ public class UnBanTemplateGui extends PrivateGui<UnbanReason> {
             }
         } else if(event.getSlot() == 45) {
             Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                    DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                    DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                             .create(Guis.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
         }
     }
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(Guis.UNBAN_TEMPLATE);
+        DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis((Player) event.getPlayer()).remove(Guis.UNBAN_TEMPLATE);
     }
 }

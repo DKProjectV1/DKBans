@@ -37,19 +37,14 @@ import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 public class UnBanSelfGui extends PrivateGui {
 
-    private UUID target;
     private String reason;
 
     public UnBanSelfGui(Player owner, UUID target) {
-        super(27, owner);
-        this.target = target;
+        super(27, target, owner);
         this.reason = "";
         setItem(11, ItemStorage.get("unbanself_reason", replace -> replace.replace("[reason]", reason)));
         setItem(15, ItemStorage.get("unbanself_message", replace -> replace.replace("[message]", getMessage())));
@@ -81,11 +76,11 @@ public class UnBanSelfGui extends PrivateGui {
     @Override
     protected void onClick(InventoryClickEvent event) {
         final Player player = (Player) event.getWhoClicked();
-        if(player.hasPermission("dkbans.unban") && (!BanSystem.getInstance().getPlayerManager().getPlayer(target).hasBypass()
+        if(player.hasPermission("dkbans.unban") && (!BanSystem.getInstance().getPlayerManager().getPlayer(getTarget()).hasBypass()
                 || player.hasPermission("dkbans.bypass.ignore"))) {
             if(event.getSlot() == 11) {
                 Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                        DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                                 .create(Guis.ANVIL_INPUT, new AnvilInputGui(this, this.reason) {
                                     @Override
                                     public boolean setInput(String input) {
@@ -95,11 +90,11 @@ public class UnBanSelfGui extends PrivateGui {
                                 }).open());
             } else if(event.getSlot() == 15) {
                 Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
+                        DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                                 .create(Guis.ANVIL_INPUT, new MessageAnvilInputGui(this)).open());
             } else if(event.getSlot() == 26) {
                 if(reason == null) return;
-                NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
+                NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getTarget());
 
                 if (targetNetworkPlayer.isBanned(BanType.CHAT)) {
                     Unban unban = targetNetworkPlayer.unban(BanType.CHAT, reason, getMessage(), player.getUniqueId());
@@ -129,6 +124,6 @@ public class UnBanSelfGui extends PrivateGui {
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(Guis.UNBAN_SELF);
+        DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis((Player) event.getPlayer()).remove(Guis.UNBAN_SELF);
     }
 }

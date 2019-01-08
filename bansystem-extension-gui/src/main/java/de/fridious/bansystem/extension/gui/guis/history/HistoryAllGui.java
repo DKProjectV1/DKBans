@@ -38,11 +38,8 @@ import java.util.UUID;
 
 public class HistoryAllGui extends PrivateGui<HistoryEntry> {
 
-    private UUID target;
-
     public HistoryAllGui(Player owner, UUID target) {
-        super(54, owner);
-        this.target = target;
+        super(54, target, owner);
         NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
         setPageEntries(targetNetworkPlayer.getHistory().getEntriesSorted());
         if(getOwner().hasPermission("dkbans.history.reset") && !getPageEntries().isEmpty())
@@ -51,14 +48,14 @@ public class HistoryAllGui extends PrivateGui<HistoryEntry> {
 
     @Override
     public void afterUpdatePage() {
-        NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
+        NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getTarget());
         if(getOwner().hasPermission("dkbans.history.reset") && !getPageEntries().isEmpty())
             setItem(45, ItemStorage.get("history_clear", replace -> replace.replace("[player]", targetNetworkPlayer.getColoredName())));
     }
 
     @Override
     public void beforeUpdatePage() {
-        NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
+        NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getTarget());
         setPageEntries(targetNetworkPlayer.getHistory().getEntriesSorted());
     }
 
@@ -88,16 +85,16 @@ public class HistoryAllGui extends PrivateGui<HistoryEntry> {
         if(historyEntry != null && player.hasPermission("dkbans.history.reset")) {
             setChildGui(true);
             Bukkit.getScheduler().runTask(DKBansGuiExtension.getInstance(), ()->
-                    DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories(player)
-                            .create(Guis.HISTORY_DELETE, new HistoryEntryDeleteGui(getOwner(), target, historyEntry, this)).open());
+                    DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
+                            .create(Guis.HISTORY_DELETE, new HistoryEntryDeleteGui(getOwner(), getTarget(), historyEntry, this)).open());
         } else if(event.getSlot() == 45 && player.hasPermission("dkbans.history.reset")) {
-            NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(target);
+            NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getTarget());
             targetNetworkPlayer.resetHistory();
         }
     }
 
     @Override
     protected void onClose(InventoryCloseEvent event) {
-        if(!hasChildGui())DKBansGuiExtension.getInstance().getGuiManager().getCachedInventories((Player) event.getPlayer()).remove(Guis.HISTORY_ALL);
+        if(!hasChildGui())DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis((Player) event.getPlayer()).remove(Guis.HISTORY_ALL);
     }
 }
