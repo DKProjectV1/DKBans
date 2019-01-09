@@ -48,7 +48,7 @@ public class BungeeCordConnection implements PluginMessageListener {
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] bytes) {
-        if(channel.equalsIgnoreCase("DKBans:DKBans")){
+        if(channel.equalsIgnoreCase("dkbans:dkbans")){
             Bukkit.getScheduler().runTaskAsynchronously(BukkitBanSystemBootstrap.getInstance(),()->{
                 try{
                     if(Bukkit.getOnlineMode()) return;
@@ -88,8 +88,8 @@ public class BungeeCordConnection implements PluginMessageListener {
     }
     public void enable(){
         this.active = true;
-        Bukkit.getMessenger().registerOutgoingPluginChannel(BukkitBanSystemBootstrap.getInstance(),"DKBans:DKBans");
-        Bukkit.getMessenger().registerIncomingPluginChannel(BukkitBanSystemBootstrap.getInstance(),"DKBans:DKBans",this);
+        Bukkit.getMessenger().registerOutgoingPluginChannel(BukkitBanSystemBootstrap.getInstance(),"dkbans:dkbans");
+        Bukkit.getMessenger().registerIncomingPluginChannel(BukkitBanSystemBootstrap.getInstance(),"dkbans:dkbans",this);
     }
     public void send(String action, Document document){
         if(Bukkit.getOnlineMode()) return;
@@ -105,7 +105,7 @@ public class BungeeCordConnection implements PluginMessageListener {
                 return;
             }
             for(Player player : Bukkit.getOnlinePlayers()){
-                player.sendPluginMessage(BukkitBanSystemBootstrap.getInstance(),"DKBans:DKBans",b.toByteArray());
+                player.sendPluginMessage(BukkitBanSystemBootstrap.getInstance(),"dkbans:dkbans",b.toByteArray());
                 return;
             }
         }catch (IOException exception){

@@ -52,7 +52,7 @@ public class SubServerConnection implements Listener {
 
     @EventHandler
     public void onPluginMessageReceive(PluginMessageEvent event){
-        if(event.getTag().equalsIgnoreCase("DKBans:DKBans") && event.getSender() instanceof Server){
+        if(event.getTag().equalsIgnoreCase("dkbans:dkbans") && event.getSender() instanceof Server){
             ByteArrayInputStream b = new ByteArrayInputStream(event.getData());
             DataInputStream in = new DataInputStream(b);
 
@@ -88,7 +88,7 @@ public class SubServerConnection implements Listener {
                         if(player != null){
                             Ban ban = document.getObject("ban", Ban.class);
                             if(ban.getBanType() == BanType.NETWORK) player.disconnect(ban.toMessage());
-                            else player.sendMessage(ban.toMessage());;
+                            else player.sendMessage(ban.toMessage());
                         }
                     }else if(document.getString("action").equalsIgnoreCase("broadcast")){
                         if(document.contains("message")){
@@ -127,7 +127,7 @@ public class SubServerConnection implements Listener {
     }
     public void enable(){
         active = true;
-        ProxyServer.getInstance().registerChannel("DKBans:DKBans");
+        ProxyServer.getInstance().registerChannel("dkbans:dkbans");
     }
     public void send(ServerInfo server,String action, Document document){
         if(!active) throw new IllegalArgumentException("SubServerConnection is not enabled");
@@ -137,7 +137,7 @@ public class SubServerConnection implements Listener {
             DataOutputStream out = new DataOutputStream(b);
 
             out.writeUTF(document.toJson());
-            server.sendData("DKBans:DKBans",b.toByteArray());
+            server.sendData("dkbans:dkbans",b.toByteArray());
         }catch (IOException exception){
             exception.printStackTrace();
         }
