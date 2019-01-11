@@ -31,7 +31,12 @@
 
     <groupId>ch.dkrieger.bansystem.bungeecord</groupId>
     <artifactId>bansystem-bungeecord</artifactId>
-
+    <repositories>
+        <repository>
+            <id>bungeecord-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>ch.dkrieger.bansystem.lib</groupId>
@@ -45,6 +50,11 @@
             <version>LATEST</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.md-5</groupId>
+            <artifactId>bungeecord-chat</artifactId>
+            <version>1.8-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
-
 </project>
