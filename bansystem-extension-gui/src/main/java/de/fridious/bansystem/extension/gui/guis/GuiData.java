@@ -32,10 +32,10 @@ public class GuiData {
 
     private final boolean enabled;
     private final String title;
-    private final Map<String, Object> settings;
+    private final Map<String, String> settings;
     private final List<Class<? extends Event>> updateEvents;
 
-    public GuiData(boolean enabled, String title, Map<String, Object> settings, List<Class<? extends Event>> updateEvents) {
+    public GuiData(boolean enabled, String title, Map<String, String> settings, List<Class<? extends Event>> updateEvents) {
         this.enabled = enabled;
         this.title = title;
         this.settings = settings;
@@ -49,7 +49,7 @@ public class GuiData {
         this.updateEvents = new LinkedList<>();
     }
 
-    public GuiData(boolean enabled, String title, Map<String, Object> settings) {
+    public GuiData(boolean enabled, String title, Map<String, String> settings) {
         this.enabled = enabled;
         this.title = title;
         this.settings = settings;
@@ -78,7 +78,7 @@ public class GuiData {
         return title;
     }
 
-    public Map<String, Object> getSettings() {
+    public Map<String, String> getSettings() {
         return settings;
     }
 

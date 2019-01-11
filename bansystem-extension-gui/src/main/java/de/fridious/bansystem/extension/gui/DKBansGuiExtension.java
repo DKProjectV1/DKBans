@@ -57,8 +57,8 @@ public class DKBansGuiExtension extends JavaPlugin {
     @Override
     public void onLoad() {
         instance = this;
-        registerJsonAdapters();
         this.configItemIds = !Bukkit.getBukkitVersion().contains("1.13");
+        registerJsonAdapters();
         this.chatPrefix = "&8» &4DKBansGuiExtension &8| &f";
         this.consolePrefix = "[DKBansGuiExtension] ";
         System.out.println(this.consolePrefix + "plugin is starting");
