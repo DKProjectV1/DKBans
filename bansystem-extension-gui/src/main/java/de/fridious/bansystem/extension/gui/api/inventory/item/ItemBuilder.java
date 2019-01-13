@@ -2,6 +2,7 @@ package de.fridious.bansystem.extension.gui.api.inventory.item;
 
 import ch.dkrieger.bansystem.bukkit.utils.Reflection;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
+import de.fridious.bansystem.extension.gui.utils.ItemStackTranslator;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.FireworkEffect;
@@ -49,6 +50,9 @@ public class ItemBuilder {
     }
     public ItemBuilder(ItemStack itemstack){
         this.itemStack = itemstack;
+    }
+    public ItemBuilder(ItemStackTranslator itemStackTranslator) {
+        this.itemStack = itemStackTranslator.getItemStack();
     }
     public ItemBuilder(Material material, int amount) {
         this.itemStack = new ItemStack(material, amount);
@@ -127,7 +131,7 @@ public class ItemBuilder {
         setDisplayName(displayName);
     }
     public ItemBuilder setGameProfile(Object profile) {
-        this.itemStack.setType(Material.SKULL_ITEM);
+        this.itemStack.setType(Material.valueOf(ItemStackTranslator.SKULL_ITEM.getMaterial()));
         this.itemStack.setDurability((short) 3);
         ItemMeta meta = this.itemStack.getItemMeta();
         Class<?> headMetaClass = meta.getClass();
@@ -168,7 +172,7 @@ public class ItemBuilder {
         return this;
     }
     public ItemBuilder setSkull(String skullowner, String displayname){
-        itemStack = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+        itemStack = new ItemStack(ItemStackTranslator.SKULL_ITEM.getItemStack());
         SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
         meta.setOwner(skullowner);
         meta.setDisplayName(displayname);

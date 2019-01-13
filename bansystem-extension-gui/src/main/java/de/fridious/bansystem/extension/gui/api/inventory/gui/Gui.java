@@ -52,7 +52,7 @@ public abstract class Gui<T> implements InventoryHolder {
     private List<Class<? extends Event>> updateEvents;
     private String message;
     private boolean childGui;
-    private final Map<String, Object> settings;
+    private final Map<String, String> settings;
 
     protected Gui() {
         this.currentPage = 1;
@@ -115,7 +115,7 @@ public abstract class Gui<T> implements InventoryHolder {
         return inventory;
     }
 
-    public Map<String, Object> getSettings() {
+    public Map<String, String> getSettings() {
         return settings;
     }
 

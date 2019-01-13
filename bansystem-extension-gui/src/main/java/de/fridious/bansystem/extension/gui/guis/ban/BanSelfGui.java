@@ -55,7 +55,7 @@ public class BanSelfGui extends PrivateGui {
         this.banType = BanType.parse((String) getSettings().get("bantype"));
         this.timeUnit = TimeUnit.valueOf(((String) getSettings().get("timeunit")).toUpperCase());
         this.reason = "";
-        this.duration = (long) getSettings().get("duration");
+        this.duration = Long.valueOf((String) getSettings().get("duration"));
         updatePage(null);
         fill(ItemStorage.get("placeholder"));
     }
