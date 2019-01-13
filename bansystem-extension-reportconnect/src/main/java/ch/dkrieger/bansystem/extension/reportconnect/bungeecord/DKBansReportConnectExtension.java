@@ -27,7 +27,7 @@ import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.report.Report;
-import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
@@ -46,7 +46,7 @@ public class DKBansReportConnectExtension extends Plugin implements Listener {
     @Override
     public void onEnable() {
         config = new DKBansReportConnectConfig();
-        BungeeCord.getInstance().getPluginManager().registerListener(this,this);
+        ProxyServer.getInstance().getPluginManager().registerListener(this,this);
     }
     @EventHandler
     public void onUpdate(ProxiedOnlineNetworkPlayerUpdateEvent event){
@@ -56,12 +56,12 @@ public class DKBansReportConnectExtension extends Plugin implements Listener {
         for(Report report : player.getProcessingReports()){
             if(!staffs.contains(report.getStaff())){
                 staffs.add(report.getStaff());
-                ProxiedPlayer staff = BungeeCord.getInstance().getPlayer(report.getStaff());
+                ProxiedPlayer staff = ProxyServer.getInstance().getPlayer(report.getStaff());
                 if(staff!=null && !(staff.getServer().getInfo().getName().equals(online.getServer()))){
                     staff.sendMessage(new TextComponent(config.message
                             .replace("[player]",player.getColoredName())
                             .replace("[prefix]", Messages.PREFIX_REPORT)));
-                    staff.connect(BungeeCord.getInstance().getServerInfo(online.getServer()));
+                    staff.connect(ProxyServer.getInstance().getServerInfo(online.getServer()));
                     BanSystem.getInstance().getPlatform().getTaskManager().runTaskLater(()->{
                         for(String command :  BanSystem.getInstance().getConfig().reportAutoCommandEnter)
                             staff.chat(command.replace("[player]",player.getName()));

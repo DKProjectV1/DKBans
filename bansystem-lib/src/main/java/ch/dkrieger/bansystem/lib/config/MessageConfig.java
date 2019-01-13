@@ -106,7 +106,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.STAFF_STATUS_LOGOUT = addAndGetMessageValue("staff.status.logout","&clogged out");
 
         Messages.REASON_NOT_FOUND = addAndGetMessageValue("reason.notfound","[prefix]&cThis reason was not found.");
-        Messages.REASON_NO_PERMISSION = addAndGetMessageValue("prefix.network","[prefix]&cYou don't have permission for this reason.");
+        Messages.REASON_NO_PERMISSION = addAndGetMessageValue("reason.nopermission","[prefix]&cYou don't have permission for this reason.");
 
         Messages.BAN_HELP_HEADER = addAndGetMessageValue("ban.help.header","[prefix]&6Ban Administration");
         Messages.BAN_HELP_REASON = addAndGetMessageValue("ban.help.reason","&8- &c[id] &8| &4[reason] &8» &4&l[banType]");

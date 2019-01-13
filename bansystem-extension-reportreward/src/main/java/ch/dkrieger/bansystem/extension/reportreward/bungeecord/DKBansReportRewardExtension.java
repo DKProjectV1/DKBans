@@ -27,7 +27,7 @@ import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.coinsystem.core.CoinSystem;
 import ch.dkrieger.coinsystem.core.manager.MessageManager;
 import ch.dkrieger.coinsystem.core.player.CoinPlayer;
-import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
@@ -41,12 +41,12 @@ public class DKBansReportRewardExtension extends Plugin implements Listener {
     @Override
     public void onEnable() {
         this.config = new ReportRewardConfig();
-        BungeeCord.getInstance().getPluginManager().registerListener(this,this);
+        ProxyServer.getInstance().getPluginManager().registerListener(this,this);
     }
     @EventHandler
     public void onAcceptedReport(ProxiedNetworkPlayerReportsAcceptEvent event){
         for(Report report : event.getReport()){
-            ProxiedPlayer player = BungeeCord.getInstance().getPlayer(report.getReporterUUID());
+            ProxiedPlayer player = ProxyServer.getInstance().getPlayer(report.getReporterUUID());
             if(player != null){
                 player.sendMessage(new TextComponent(config.reportRewardMessage.replace("[prefix]", Messages.PREFIX_BAN)
                         .replace("[coin-prefix]",MessageManager.getInstance().prefix)

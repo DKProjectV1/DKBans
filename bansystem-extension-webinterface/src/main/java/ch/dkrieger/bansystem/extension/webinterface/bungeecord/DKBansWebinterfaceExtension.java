@@ -27,7 +27,7 @@ import ch.dkrieger.bansystem.extension.webinterface.bukkit.ProxiedDKBansNetworkP
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.extension.restapi.DKBansRestAPIServer;
-import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.util.concurrent.TimeUnit;
@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 public class DKBansWebinterfaceExtension extends Plugin {
 
     public DKBansWebinterfaceExtension() {
-        BungeeCord.getInstance().getScheduler().schedule(this,()->{
+        ProxyServer.getInstance().getScheduler().schedule(this,()->{
             DKBansWebinterfaceConfig config = new DKBansWebinterfaceConfig() {
                 public boolean canAccess(NetworkPlayer player) {
                     ProxiedDKBansNetworkPlayerAccessWebinterface event = new ProxiedDKBansNetworkPlayerAccessWebinterface(player.getUUID(),System.currentTimeMillis(),false);
