@@ -83,7 +83,7 @@
 
     <properties>
         <timestamp>${maven.build.timestamp}</timestamp>
-        <maven.build.timestamp.format>yyyy.MM.dd HH:mm</maven.build.timestamp.format>
+        <maven.build.timestamp.format>dd.MM.yyyy HH:mm</maven.build.timestamp.format>
     </properties>
 
     <repositories>
@@ -116,11 +116,6 @@
             <version>2.1.6</version>
             <scope>provided</scope>
         </dependency>
-
-
-
-
-
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-all</artifactId>
