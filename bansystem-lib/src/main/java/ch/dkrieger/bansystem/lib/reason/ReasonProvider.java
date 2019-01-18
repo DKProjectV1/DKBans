@@ -434,7 +434,7 @@ public class ReasonProvider {
                 Configuration reasons = config.getSection("reasons");
                 this.kickReasons= new ArrayList<>();
                 if(reasons != null) {
-                    //translate 2.0.6 to 2.1.0
+                    //translate 2.0.6 to 2.1.1
                     for(String key : reasons.getKeys()) {
                         try{config.getInt("reasons."+key+".points.points");
                         }catch (Exception exception){
@@ -506,7 +506,7 @@ public class ReasonProvider {
                 if(reasons != null) {
                     for (String key : reasons.getKeys()) {
                         try{
-                            //translate 2.0.6 to 2.1.0
+                            //translate 2.0.6 to 2.1.1
                             try{config.getInt("reasons."+key+".points.points");
                             }catch (Exception exception){
                                 int points = config.getInt("reasons."+key+".points");

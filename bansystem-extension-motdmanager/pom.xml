@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+  ~ (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
   ~
   ~ @author Davide Wietlisbach
-  ~ @since 30.12.18 14:39
+  ~ @since 13.01.19 11:39
   ~ @Website https://github.com/DevKrieger/DKBans
   ~
   ~ The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -29,32 +29,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ch.dkrieger.bansystem.bungeecord</groupId>
-    <artifactId>bansystem-bungeecord</artifactId>
-    <repositories>
-        <repository>
-            <id>bungeecord-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-    </repositories>
-    <dependencies>
-        <dependency>
-            <groupId>ch.dkrieger.bansystem.lib</groupId>
-            <artifactId>bansystem-lib</artifactId>
-            <version>2.1.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-api</artifactId>
-            <version>LATEST</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-chat</artifactId>
-            <version>1.8-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+    <groupId>ch.dkrieger.bansystem.extension.motdmanager</groupId>
+    <artifactId>bansystem-extension-motdmanager</artifactId>
+
+
 </project>

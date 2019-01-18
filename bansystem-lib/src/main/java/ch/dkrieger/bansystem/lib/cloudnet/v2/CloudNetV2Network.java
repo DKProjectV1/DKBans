@@ -119,4 +119,10 @@ public abstract class CloudNetV2Network implements DKNetwork {
         CloudAPI.getInstance().sendCustomSubProxyMessage("DKBans","reloadBroadcast",new Document());
         CloudAPI.getInstance().sendCustomSubServerMessage("DKBans","reloadBroadcast",new Document());
     }
+
+    @Override
+    public void syncSetting(String name) {
+        CloudAPI.getInstance().sendCustomSubServerMessage("DKBans","syncSetting",new Document("name",name));
+        CloudAPI.getInstance().sendCustomSubProxyMessage("DKBans","syncSetting",new Document("name",name));
+    }
 }

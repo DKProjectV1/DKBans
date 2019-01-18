@@ -21,6 +21,7 @@
 package ch.dkrieger.bansystem.bungeecord.player.cloudnet;
 
 import ch.dkrieger.bansystem.bungeecord.BungeeCordBanSystemBootstrap;
+import ch.dkrieger.bansystem.bungeecord.event.ProxiedDKBansSettingUpdateEvent;
 import ch.dkrieger.bansystem.bungeecord.event.ProxiedOnlineNetworkPlayerUpdateEvent;
 import ch.dkrieger.bansystem.bungeecord.player.BungeeCordPlayerManager;
 import ch.dkrieger.bansystem.bungeecord.player.LocalBungeeCordOnlinePlayer;
@@ -235,6 +236,10 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
                 List<CloudNetV3OnlinePlayer> players = event.getData().get("players"
                         ,new TypeToken<List<CloudNetV3OnlinePlayer>>(){}.getType());
                 for(CloudNetV3OnlinePlayer player : players) this.externalPlayers.put(player.getUUID(),player);
+            }else if(event.getMessage().equalsIgnoreCase("syncSetting")){
+                BanSystem.getInstance().getSettingProvider().removeFromCache(event.getData().getString("name"));
+                ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedDKBansSettingUpdateEvent(event.getData().getString("name")
+                        ,System.currentTimeMillis(),false));
             }
         }
     }

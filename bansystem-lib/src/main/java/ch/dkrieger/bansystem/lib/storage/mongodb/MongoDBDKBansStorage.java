@@ -44,6 +44,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -59,7 +60,7 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     private MongoDatabase database;
 
     private MongoCollection<Document> playerCollection, chatlogCollection, historyCollection, reportCollection
-            , filterCollection, broadcastCollection, networkStatsCollection , ipBanCollection;
+            , filterCollection, broadcastCollection, networkStatsCollection , ipBanCollection, settingsCollection;
 
     public MongoDBDKBansStorage(Config config) {
         this.config = config;
@@ -83,6 +84,7 @@ public class MongoDBDKBansStorage implements DKBansStorage {
         this.filterCollection = database.getCollection("DKBans_filters",Document.class);
         this.networkStatsCollection = database.getCollection("DKBans_networkstats",Document.class);
         this.ipBanCollection = database.getCollection("DKBans_ipbans",Document.class);
+        this.settingsCollection = database.getCollection("DKBans_settings",Document.class);
 
         try{this.playerCollection.createIndex(Indexes.descending("id"),new IndexOptions().unique(true)); }catch (Exception exception){}
         try{this.historyCollection.createIndex(Indexes.descending("id"),new IndexOptions().unique(true)); }catch (Exception exception){}
@@ -392,5 +394,23 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     @Override
     public void unbanIp(UUID lastPlayer) {
         MongoDBUtil.deleteOne(ipBanCollection,eq("lastPlayer",lastPlayer.toString()));
+    }
+
+    @Override
+    public ch.dkrieger.bansystem.lib.utils.Document getSetting(String name) {
+        Document result =  this.settingsCollection.find(eq("settingTypeName",name)).first();
+        if(result != null) return ch.dkrieger.bansystem.lib.utils.Document.loadData(result.toJson());
+        return null;
+    }
+
+    @Override
+    public void saveSetting(String name, ch.dkrieger.bansystem.lib.utils.Document document) {
+        document.append("settingTypeName",name);
+        this.settingsCollection.updateOne(eq("settingTypeName",name),Document.parse(document.toJson()),new UpdateOptions().upsert(true));
+    }
+
+    @Override
+    public void deleteSetting(String name) {
+        this.settingsCollection.deleteOne(eq("settingTypeName",name));
     }
 }

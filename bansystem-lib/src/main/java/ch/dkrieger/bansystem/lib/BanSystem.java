@@ -56,7 +56,10 @@ public class BanSystem {
     private BroadcastManager broadcastManager;
     private FilterManager filterManager;
     private HistoryManager historyManager;
+
     private ReasonProvider reasonProvider;
+    private SettingProvider settingProvider;
+
     private DKBansStorage storage;
     private DKNetwork network;
 
@@ -79,8 +82,8 @@ public class BanSystem {
             this.version = properties.getProperty("version");
         } catch (Exception exception) {
             System.out.println(Messages.SYSTEM_PREFIX+"Could not load DKBans plugin build information.");
-            this.version = "Unknown";
         }
+        if(this.version == null) this.version = "Unknown";
         System.out.println(Messages.SYSTEM_PREFIX+"plugin is starting");
         System.out.println(Messages.SYSTEM_PREFIX+"BanSystem "+this.version+" by Davide Wietlisbach");
 
@@ -96,6 +99,7 @@ public class BanSystem {
         this.messageConfig.loadConfig();
 
         this.reasonProvider = new ReasonProvider(this.platform);
+        this.settingProvider = new SettingProvider();
         this.historyManager = new HistoryManager();
 
         HistoryEntry.buildAdapter();
@@ -221,6 +225,10 @@ public class BanSystem {
 
     public ReasonProvider getReasonProvider() {
         return reasonProvider;
+    }
+
+    public SettingProvider getSettingProvider() {
+        return settingProvider;
     }
 
     public HistoryManager getHistoryManager() {

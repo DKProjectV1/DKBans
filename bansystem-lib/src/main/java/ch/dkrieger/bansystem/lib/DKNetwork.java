@@ -60,4 +60,6 @@ public interface DKNetwork {
 
     public void reloadBroadcast();
 
+    public void syncSetting(String name);
+
 }

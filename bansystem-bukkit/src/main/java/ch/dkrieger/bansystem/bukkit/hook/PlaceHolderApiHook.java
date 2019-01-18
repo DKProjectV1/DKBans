@@ -25,6 +25,7 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import me.clip.placeholderapi.external.EZPlaceholderHook;
 import org.bukkit.entity.Player;
@@ -76,6 +77,10 @@ public class PlaceHolderApiHook extends EZPlaceholderHook {
                 return String.valueOf(player.getStats().getReports());
             }else if(identifier.endsWith("_reportsDenied")){
                 return String.valueOf(player.getStats().getReportsDenied());
+            }else if(identifier.endsWith("_bans")){
+                return String.valueOf(player.getHistory().getBan(BanType.NETWORK));
+            }else if(identifier.endsWith("_mutes")){
+                return String.valueOf(player.getHistory().getBan(BanType.CHAT));
             }else if(identifier.endsWith("_server")){
                 OnlineNetworkPlayer online = player.getOnlinePlayer();
                 if(online != null) return online.getServer();

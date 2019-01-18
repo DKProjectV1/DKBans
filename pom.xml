@@ -27,7 +27,7 @@
     <groupId>ch.dkrieger.bansystem</groupId>
     <artifactId>DKBans</artifactId>
     <packaging>pom</packaging>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
     <modules>
         <module>bansystem-lib</module>
         <module>bansystem-bungeecord</module>
@@ -39,6 +39,8 @@
         <module>bansystem-extension-webinterface</module>
         <module>bansystem-extension-gui</module>
         <module>bansystem-extension-reportconnect</module>
+        <module>bansystem-extension-maintenance</module>
+        <module>bansystem-extension-motdmanager</module>
     </modules>
 
     <licenses>
@@ -114,6 +116,11 @@
             <version>2.1.6</version>
             <scope>provided</scope>
         </dependency>
+
+
+
+
+
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-all</artifactId>

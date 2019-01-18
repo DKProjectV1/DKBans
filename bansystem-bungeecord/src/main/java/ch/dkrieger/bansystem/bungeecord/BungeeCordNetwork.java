@@ -20,6 +20,7 @@
 
 package ch.dkrieger.bansystem.bungeecord;
 
+import ch.dkrieger.bansystem.bungeecord.event.ProxiedDKBansSettingUpdateEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.DKNetwork;
 import ch.dkrieger.bansystem.lib.JoinMe;
@@ -121,5 +122,12 @@ public class BungeeCordNetwork implements DKNetwork {
     public void reloadBroadcast() {
         BanSystem.getInstance().getBroadcastManager().reloadLocal();
         connection.sendToAll("reloadBroadcast",new Document());
+    }
+
+    @Override
+    public void syncSetting(String name) {
+        ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedDKBansSettingUpdateEvent(
+                name,System.currentTimeMillis(),false));
+        connection.sendToAll("syncSetting",new Document().append("name",name));
     }
 }

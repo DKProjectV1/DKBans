@@ -118,4 +118,9 @@ public abstract class CloudNetV3Network implements DKNetwork {
     public void reloadBroadcast() {
         Wrapper.getInstance().sendChannelMessage("DKBans","reloadBroadcast",new Document());
     }
+
+    @Override
+    public void syncSetting(String name) {
+        Wrapper.getInstance().sendChannelMessage("DKBans","syncSetting",new Document("name",name));
+    }
 }

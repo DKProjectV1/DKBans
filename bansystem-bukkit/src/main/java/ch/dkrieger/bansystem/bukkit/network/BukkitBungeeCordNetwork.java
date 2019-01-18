@@ -22,6 +22,7 @@ package ch.dkrieger.bansystem.bukkit.network;
 
 import ch.dkrieger.bansystem.bukkit.BukkitBanSystemBootstrap;
 import ch.dkrieger.bansystem.bukkit.BungeeCordConnection;
+import ch.dkrieger.bansystem.bukkit.event.BukkitDKBansSettingUpdateEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.DKNetwork;
 import ch.dkrieger.bansystem.lib.JoinMe;
@@ -127,5 +128,11 @@ public class BukkitBungeeCordNetwork implements DKNetwork {
     public void reloadBroadcast() {
         connection.send("reloadBroadcast",new Document());
         BanSystem.getInstance().getBroadcastManager().reloadLocal();
+    }
+
+    @Override
+    public void syncSetting(String name) {
+        connection.send("syncSetting",new Document().append("name",name));
+        Bukkit.getPluginManager().callEvent(new BukkitDKBansSettingUpdateEvent(name,System.currentTimeMillis(),true));
     }
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+  ~ (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
   ~
   ~ @author Davide Wietlisbach
-  ~ @since 30.12.18 14:39
+  ~ @since 13.01.19 11:37
   ~ @Website https://github.com/DevKrieger/DKBans
   ~
   ~ The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -29,16 +29,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ch.dkrieger.bansystem.extension.banbroadcast</groupId>
-    <artifactId>bansystem-extension-banbroadcast</artifactId>
-
-    <repositories>
-        <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-
-    </repositories>
+    <groupId>ch.dkrieger.bansystem.extension.maintenance</groupId>
+    <artifactId>bansystem-extension-maintenance</artifactId>
 
     <dependencies>
         <dependency>

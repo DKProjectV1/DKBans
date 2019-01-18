@@ -72,7 +72,10 @@ public class MySQL extends SQL {
     @Override
 	public boolean connect() {
         loadDriver();
-        if(ssl) dataSourceProperties.put("ssl","true");
+        if(ssl){
+            dataSourceProperties.put("ssl","true");
+            dataSourceProperties.put("useSSL","true");
+        }
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:mysql://"+this.host+":"+this.port+"/"+this.database);
         config.setUsername(this.user);

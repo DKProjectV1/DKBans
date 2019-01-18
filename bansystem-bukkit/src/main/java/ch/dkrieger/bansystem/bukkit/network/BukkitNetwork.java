@@ -20,6 +20,7 @@
 
 package ch.dkrieger.bansystem.bukkit.network;
 
+import ch.dkrieger.bansystem.bukkit.event.BukkitDKBansSettingUpdateEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.DKNetwork;
 import ch.dkrieger.bansystem.lib.JoinMe;
@@ -134,5 +135,9 @@ public class BukkitNetwork implements DKNetwork {
     @Override
     public void reloadBroadcast() {
         BanSystem.getInstance().getBroadcastManager().reloadLocal();
+    }
+    @Override
+    public void syncSetting(String name) {
+        Bukkit.getPluginManager().callEvent(new BukkitDKBansSettingUpdateEvent(name,System.currentTimeMillis(),true));
     }
 }
