@@ -51,6 +51,9 @@ public class NetworkHandler extends RestApiHandler {
             }else if(query.get("action").equalsIgnoreCase("config")){
                 response.append("config",BanSystem.getInstance().getConfig());
                 return;
+            }else if(query.get("action").equalsIgnoreCase("check")){
+                response.append("available",true);
+                return;
             }
         }
         response.append("code", ResponseCode.BAD_REQUEST).append("message","Invalid request");
