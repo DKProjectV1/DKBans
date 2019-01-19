@@ -3,7 +3,7 @@
   ~ (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
   ~
   ~ @author Davide Wietlisbach
-  ~ @since 13.01.19 11:39
+  ~ @since 19.01.19 11:29
   ~ @Website https://github.com/DevKrieger/DKBans
   ~
   ~ The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -29,7 +29,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ch.dkrieger.bansystem.extension.motdmanager</groupId>
+    <groupId>ch.dkrieger.bansystem.motdmanager</groupId>
     <artifactId>bansystem-extension-motdmanager</artifactId>
 
 
