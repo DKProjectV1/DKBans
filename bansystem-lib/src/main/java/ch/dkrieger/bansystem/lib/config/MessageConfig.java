@@ -200,9 +200,9 @@ public class MessageConfig extends SimpleConfig{
         Messages.TEAMCHAT_MESSAGE_COLOR = addAndGetMessageValue("teamchat.message.color","&7");
         Messages.TEAMCHAT_MESSAGE_FORMAT = addAndGetMessageValue("teamchat.message.format","[prefix]&8[player] &8» &7[message]");
 
-        Messages.TEMPBAN_HELP = addAndGetMessageValue("tempban.help","[prefix]&cUsage&8: &7 /tempban <player> <reason> &7<time> &7{unit}");
+        Messages.TEMPBAN_HELP = addAndGetMessageValue("tempban.help","[prefix]&cUsage&8: &7 /tempban <player> <time> {unit} <reason>");
 
-        Messages.TEMPMUTE_HELP = addAndGetMessageValue("tempmute.help","[prefix]&cUsage&8: &7 /tempmute <player> <reason> &7<time> &7{unit}");
+        Messages.TEMPMUTE_HELP = addAndGetMessageValue("tempmute.help","[prefix]&cUsage&8: &7 /tempmute <player> &7<time> &7{unit} <reason>");
 
         Messages.HISTORY_HELP = addAndGetMessageValue("history.help","[prefix]&cUsage&8: &7 /history <player> {id}");
         Messages.HISTORY_NOTFOUND = addAndGetMessageValue("history.notfound","[prefix]&cThe history was not found.");

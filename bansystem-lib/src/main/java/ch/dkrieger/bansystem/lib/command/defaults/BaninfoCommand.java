@@ -37,7 +37,7 @@ import java.util.List;
 public class BaninfoCommand extends NetworkCommand {
 
     public BaninfoCommand() {
-        super("baninfo","","dkbans.baninfo");
+        super("baninfo","","dkbans.baninfo","","pcheck");
         setPrefix(Messages.PREFIX_BAN);
     }
 

@@ -51,7 +51,7 @@ public class DKBansMotdManagerExtension extends JavaPlugin implements Listener {
         if(event.getName().equalsIgnoreCase("mots")) this.motd = event.getSettings().getObject("motd",DKMotd.class);
     }
 
-    @EventHandler(priority= EventPriority.HIGHEST)
+    @EventHandler(priority= EventPriority.HIGH)
     public void onPing(ServerListPingEvent event){
         event.setMotd(motd.getMain()+"\n"+motd.getRandomMessage());
     }
