@@ -274,6 +274,8 @@ public class Messages {
 
     public static String NETWORK_STATS;
 
+    public static String MYHISTORYPOINTS;
+
     public static String STAFFSTATS_HELP;
     public static String STAFFSTATS_INFO;
 

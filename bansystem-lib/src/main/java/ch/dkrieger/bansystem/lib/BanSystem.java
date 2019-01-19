@@ -162,6 +162,7 @@ public class BanSystem {
         if(this.config.commandIPUnban) getCommandManager().registerCommand(new IpUnbanCommand());
         if(this.config.commandWarn) getCommandManager().registerCommand(new WarnCommand());
         if(this.config.commandEdit) getCommandManager().registerCommand(new EditBanCommand());
+        if(this.config.commandMyHistoryPoints) getCommandManager().registerCommand(new MyHistoryPointsCommand());
 
         getCommandManager().registerCommand(new DKBansCommand());
         getCommandManager().registerCommand(new BroadcastJumpCommand());

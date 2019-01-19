@@ -347,5 +347,8 @@ public class MessageConfig extends SimpleConfig{
         Messages.NETWORK_STATS = addAndGetMessageValue("networkstats","[prefix]&6Network stats&7\n&8» &7Players&8: &a[onlinePlayers]&8/&c[registeredPlayers]" +
                 "\n&8» &7Banned&8: &c[bans]\n&8» &7Muted&8: &c[mutes]\n&8» &7Kicked&8: &c[kicks]\n&8» &7Warned&8: &c[warns]\n&8» &7Unbanned&8: &c[unbans]\n&8» &7Reported&8: &a[reportsAccepted]&8/&c[reports]" +
                 "\n&8» &7Logins&8: &c[logins]\n&8» &7Messages&8: &c[messages]");
+
+        Messages.MYHISTORYPOINTS= addAndGetMessageValue("myhistorypoints","[prefix]&7Your history points" +
+                "\n&8» &7Ban&8: &c[points_network]\n&8» &7Mute&8: &c[points_chat]\n&8» &7Total&8: &c[points_all]");
     }
 }
