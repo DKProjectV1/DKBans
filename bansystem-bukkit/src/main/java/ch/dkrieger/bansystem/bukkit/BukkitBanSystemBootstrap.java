@@ -125,12 +125,20 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
         },12);
     }
 
+    public boolean isCloudNetV2() {
+        return cloudNetV2;
+    }
+
+    public boolean isCloudNetV3() {
+        return cloudNetV3;
+    }
+
     public BungeeCordConnection getBungeeCordConnection() {
         return bungeeCordConnection;
     }
 
     public String getPlatformName() {
-        return "Bukkit";
+        return "bukkit";
     }
 
     public String getServerVersion() {

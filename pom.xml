@@ -41,6 +41,7 @@
         <module>bansystem-extension-reportconnect</module>
         <module>bansystem-extension-maintenance</module>
         <module>bansystem-extension-motdmanager</module>
+        <module>bansystem-extension-offlinepermissionhook</module>
     </modules>
 
     <licenses>
