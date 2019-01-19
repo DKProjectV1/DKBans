@@ -69,7 +69,6 @@ public class Maintenance {
     }
     public String formatRemaining(boolean shortCut){
         long remaining = getRemaining()/1000;
-        System.out.println(remaining);
         if(remaining >= TimeUnit.HOURS.toSeconds(24)){
             remaining = Math.round(TimeUnit.SECONDS.toDays(remaining));
             return remaining+" "+(shortCut?Messages.TIME_DAY_SHORTCUT:(remaining>1?Messages.TIME_DAY_PLURAL:Messages.TIME_DAY_SINGULAR));
