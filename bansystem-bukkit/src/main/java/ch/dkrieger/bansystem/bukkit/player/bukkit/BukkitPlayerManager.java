@@ -21,7 +21,6 @@
 package ch.dkrieger.bansystem.bukkit.player.bukkit;
 
 import ch.dkrieger.bansystem.bukkit.BukkitBanSystemBootstrap;
-import ch.dkrieger.bansystem.bukkit.player.bukkit.BukkitOnlinePlayer;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayerUpdateCause;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;

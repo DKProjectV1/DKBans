@@ -20,10 +20,10 @@
 
 package ch.dkrieger.bansystem.extension.restapi;
 
+import ch.dkrieger.bansystem.extension.restapi.handler.RestApiHandler;
 import ch.dkrieger.bansystem.extension.restapi.handler.defaults.*;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.utils.Document;
-import ch.dkrieger.bansystem.extension.restapi.handler.RestApiHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DKBansRestAPIServer {
@@ -161,7 +162,7 @@ public class DKBansRestAPIServer {
                     response.append("code",ResponseCode.OK).append("message","Success");
                     if(handler != null){
                         httpResponse.setStatus(HttpResponseStatus.OK);
-                        handler.onRequest(new RestApiHandler.Query(uri),response);
+                        handler.onRequest(getQuery(uri),response);
                     }else response.append("code",ResponseCode.NOT_FOUND).append("message","This api page was not found.");
                 }else{
                     System.out.println(Messages.SYSTEM_PREFIX+"Unauthorized RestApi request from "+ctx.channel().remoteAddress().toString()+" (Canceled)");
@@ -178,5 +179,19 @@ public class DKBansRestAPIServer {
     }
     public static DKBansRestAPIServer getInstance() {
         return instance;
+    }
+
+    private Document getQuery(URI uri){
+        Map<String,String> values = new LinkedHashMap<>();
+        try{
+            String[] query = uri.getQuery().split("&");
+            for(String subQuery : query){
+                if(subQuery.length() >= 3 && subQuery.contains("=")){
+                    String[] rawSubQuery = subQuery.split("=");
+                    if(rawSubQuery.length >= 2) values.put(rawSubQuery[0],rawSubQuery[1]);
+                }
+            }
+        }catch (Exception ignored){}
+        return Document.loadData(values.get("query"));
     }
 }

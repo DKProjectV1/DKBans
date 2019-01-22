@@ -22,7 +22,8 @@ package ch.dkrieger.bansystem.extension.offlinepermissionhook;
 
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import me.lucko.luckperms.LuckPerms;
-import me.lucko.luckperms.api.*;
+import me.lucko.luckperms.api.Tristate;
+import me.lucko.luckperms.api.User;
 import me.lucko.luckperms.api.caching.PermissionData;
 
 public class LuckPermsHook implements SimplePermissionHook{

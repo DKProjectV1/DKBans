@@ -26,15 +26,12 @@ import ch.dkrieger.bansystem.bukkit.event.BukkitDKBansSettingUpdateEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.DKNetwork;
 import ch.dkrieger.bansystem.lib.JoinMe;
-import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.Document;
-import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;

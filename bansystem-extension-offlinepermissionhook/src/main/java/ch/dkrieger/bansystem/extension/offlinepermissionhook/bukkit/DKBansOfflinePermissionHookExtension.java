@@ -38,13 +38,15 @@ public class DKBansOfflinePermissionHookExtension extends JavaPlugin implements 
 
     @Override
     public void onEnable() {
-        if(checkPlugin("LuckPerms")) this.hook = new LuckPermsHook();
-        else if(BukkitBanSystemBootstrap.getInstance().isCloudNetV2()) this.hook = new CPermsHook();
+        Bukkit.getScheduler().runTaskLater(this,()->{
+            if(checkPlugin("LuckPerms")) this.hook = new LuckPermsHook();
+            else if(BukkitBanSystemBootstrap.getInstance().isCloudNetV2()) this.hook = new CPermsHook();
 
-        if(hook != null){
-            System.out.println(Messages.SYSTEM_PREFIX+"Invoked offline permission hook for "+hook.getName());
-            Bukkit.getPluginManager().registerEvents(this,this);
-        }else System.out.println(Messages.SYSTEM_PREFIX+"Could not invoke a offline permission hook, no permission system found.");
+            if(hook != null){
+                System.out.println(Messages.SYSTEM_PREFIX+"Invoked offline permission hook for "+hook.getName());
+                Bukkit.getPluginManager().registerEvents(this,this);
+            }else System.out.println(Messages.SYSTEM_PREFIX+"Could not invoke a offline permission hook, no permission system found.");
+        },60L);
     }
     private boolean checkPlugin(String name){
         Plugin plugin = Bukkit.getPluginManager().getPlugin(name);

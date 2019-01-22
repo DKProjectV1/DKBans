@@ -54,7 +54,6 @@ public class DKBansMotdManagerExtension extends Plugin implements Listener {
 
     @EventHandler(priority=80)
     public void onPing(ProxyPingEvent event){
-        System.out.println(event.getConnection().getName()+" | "+event.getConnection().getUniqueId());
         event.getResponse().setDescriptionComponent(new TextComponent(motd.getMain()+"\n"+motd.getRandomMessage()));
     }
 }

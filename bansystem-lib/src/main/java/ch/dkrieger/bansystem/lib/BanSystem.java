@@ -40,10 +40,8 @@ import ch.dkrieger.bansystem.lib.storage.json.JsonDKBansStorage;
 import ch.dkrieger.bansystem.lib.storage.mongodb.MongoDBDKBansStorage;
 import ch.dkrieger.bansystem.lib.storage.sql.SQLDKBansStorage;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.Properties;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class BanSystem {

@@ -28,8 +28,6 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.History;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.HistoryEntry;
-import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
-import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;

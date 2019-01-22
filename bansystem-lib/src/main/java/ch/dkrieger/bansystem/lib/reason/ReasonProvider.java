@@ -28,7 +28,6 @@ import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.Duration;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.YamlConfiguration;
 

@@ -31,19 +31,23 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 
+import java.util.concurrent.TimeUnit;
+
 public class DKBansOfflinePermissionHookExtension extends Plugin implements Listener {
 
     private SimplePermissionHook hook;
 
     @Override
     public void onEnable() {
-        if(checkPlugin("LuckPerms")) this.hook = new LuckPermsHook();
-        else if(BungeeCordBanSystemBootstrap.getInstance().isCloudNetV2()) this.hook = new CPermsHook();
+        ProxyServer.getInstance().getScheduler().schedule(this,()->{
+            if(checkPlugin("LuckPerms")) this.hook = new LuckPermsHook();
+            else if(BungeeCordBanSystemBootstrap.getInstance().isCloudNetV2()) this.hook = new CPermsHook();
 
-        if(hook != null){
-            System.out.println(Messages.SYSTEM_PREFIX+"Invoked offline permission hook for "+hook.getName());
-            ProxyServer.getInstance().getPluginManager().registerListener(this,this);
-        }else System.out.println(Messages.SYSTEM_PREFIX+"Could not invoke a offline permission hook, no permission system found.");
+            if(hook != null){
+                System.out.println(Messages.SYSTEM_PREFIX+"Invoked offline permission hook for "+hook.getName());
+                ProxyServer.getInstance().getPluginManager().registerListener(this,this);
+            }else System.out.println(Messages.SYSTEM_PREFIX+"Could not invoke a offline permission hook, no permission system found.");
+        },4L, TimeUnit.SECONDS);
     }
     private boolean checkPlugin(String name){
         Plugin plugin = ProxyServer.getInstance().getPluginManager().getPlugin(name);
@@ -51,6 +55,7 @@ public class DKBansOfflinePermissionHookExtension extends Plugin implements List
     }
     @EventHandler
     public void onCheck(ProxiedNetworkPlayerOfflinePermissionCheckEvent event){
+        System.out.println("check");
         event.setHasPermission(hook.hasPermission(event.getPlayer(),event.getPermission()));
     }
 }

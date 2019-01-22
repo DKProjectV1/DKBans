@@ -39,7 +39,6 @@ import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import com.google.gson.reflect.TypeToken;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.IndexOptions;
@@ -48,8 +47,10 @@ import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static com.mongodb.client.model.Filters.*;
 

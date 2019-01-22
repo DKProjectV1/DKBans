@@ -3,7 +3,6 @@ package de.fridious.bansystem.extension.gui.api.inventory.item;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
-import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.*;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
@@ -17,7 +16,6 @@ import de.fridious.bansystem.extension.gui.utils.StringReplacer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;

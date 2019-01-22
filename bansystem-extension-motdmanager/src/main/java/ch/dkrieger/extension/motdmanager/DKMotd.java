@@ -24,7 +24,8 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.ChatColor;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class DKMotd {
 

@@ -31,7 +31,6 @@ import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-
 import ch.dkrieger.bansystem.lib.utils.GoogleDiffMatchPatch;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;

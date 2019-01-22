@@ -25,7 +25,6 @@ import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
-import ch.dkrieger.bansystem.lib.reason.BanReason;
 import ch.dkrieger.bansystem.lib.reason.KickReason;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 

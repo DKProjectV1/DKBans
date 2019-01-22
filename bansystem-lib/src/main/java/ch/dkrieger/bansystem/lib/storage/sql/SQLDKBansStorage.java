@@ -51,9 +51,7 @@ import ch.dkrieger.bansystem.lib.storage.sql.table.Table;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import com.google.gson.reflect.TypeToken;
-import com.sun.org.apache.regexp.internal.RE;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;

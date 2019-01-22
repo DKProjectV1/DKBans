@@ -20,13 +20,13 @@
 
 package ch.dkrieger.bansystem.extension.webinterface.bungeecord;
 
+import ch.dkrieger.bansystem.extension.restapi.DKBansRestAPIServer;
 import ch.dkrieger.bansystem.extension.webinterface.DKBansWebinterfaceConfig;
 import ch.dkrieger.bansystem.extension.webinterface.WebinterfaceCommand;
 import ch.dkrieger.bansystem.extension.webinterface.WebinterfaceHandler;
 import ch.dkrieger.bansystem.extension.webinterface.bukkit.ProxiedDKBansNetworkPlayerAccessWebinterface;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
-import ch.dkrieger.bansystem.extension.restapi.DKBansRestAPIServer;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
