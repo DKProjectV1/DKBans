@@ -136,6 +136,7 @@ public class Config extends SimpleConfig{
     public boolean commandHistory;
     public boolean commandIpinfo;
     public boolean commandJoinme;
+    public boolean commandJumpto;
     public boolean commandKick;
     public boolean commandNetworkstats;
     public boolean commandOnlinetime;
@@ -284,6 +285,7 @@ public class Config extends SimpleConfig{
         this.commandHistory = addAndGetBooleanValue("command.history.enabled",true);
         this.commandIpinfo = addAndGetBooleanValue("command.ipinfo.enabled",true);
         this.commandJoinme = addAndGetBooleanValue("command.joinme.enabled",true);
+        this.commandJumpto = addAndGetBooleanValue("command.Jumpto.enabled",true);
         this.commandKick = addAndGetBooleanValue("command.kick.enabled",true);
         this.commandNetworkstats = addAndGetBooleanValue("command.networkstats.enabled",true);
         this.commandOnlinetime = addAndGetBooleanValue("command.onlinetime.enabled",true);

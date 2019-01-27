@@ -204,8 +204,10 @@ public class CloudNetV2PlayerManager extends PlayerManager implements Listener {
                 for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
                     if(player.hasPermission("dkbans.team")){
                         NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
-                        if(networkPlayer != null && (!event.getDocument().getBoolean("onlyLogin") || networkPlayer.isTeamChatLoggedIn()))
+                        if(networkPlayer != null){
+                            if(event.getDocument().getBoolean("onlyLogin") && !(networkPlayer.isTeamChatLoggedIn())) return;
                             player.sendMessage(event.getDocument().getObject("message",TextComponent.class));
+                        }
                     }
                 }
             }else if(event.getMessage().equalsIgnoreCase("reloadFilter")){

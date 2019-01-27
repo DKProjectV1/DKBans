@@ -141,7 +141,7 @@ public class BanSystem {
         if(this.config.commandHistory) getCommandManager().registerCommand(new HistoryCommand());
         if(this.config.commandIpinfo) getCommandManager().registerCommand(new IpInfoCommand());
         if(this.config.commandJoinme) getCommandManager().registerCommand(new JoinMeCommand());
-        if(this.config.commandJoinme) getCommandManager().registerCommand(new JumptoCommand());
+        if(this.config.commandJumpto) getCommandManager().registerCommand(new JumptoCommand());
         if(this.config.commandKick) getCommandManager().registerCommand(new KickCommand());
         if(this.config.commandBan) getCommandManager().registerCommand(new MuteCommand());
         if(this.config.commandNetworkstats) getCommandManager().registerCommand(new NetworkStatsCommand());

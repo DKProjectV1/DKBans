@@ -22,10 +22,6 @@ package ch.dkrieger.bansystem.lib;
 
 public class Messages {
 
-    public Messages(String systemname) {
-        SYSTEM_NAME = systemname;
-        SYSTEM_PREFIX = "["+systemname+"] ";
-    }
     public static String SYSTEM_NAME;
     public static String SYSTEM_PREFIX;
 
@@ -294,5 +290,9 @@ public class Messages {
     public static String JOINME_LINE9;
     public static String JOINME_LINE10;
 
+    public Messages(String systemname) {
+        SYSTEM_NAME = systemname;
+        SYSTEM_PREFIX = "["+systemname+"] ";
+    }
 
 }

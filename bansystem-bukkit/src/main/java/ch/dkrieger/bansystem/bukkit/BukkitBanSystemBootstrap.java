@@ -113,7 +113,10 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
             }
 
             Plugin placeHolderAPI = getServer().getPluginManager().getPlugin("PlaceholderAPI");
-            if(placeHolderAPI != null && placeHolderAPI.getDescription() != null) new PlaceHolderApiHook().hook();
+            if(placeHolderAPI != null && placeHolderAPI.getDescription() != null) {
+                System.out.println(Messages.SYSTEM_PREFIX+"PlaceholderAPI found");
+                new PlaceHolderApiHook().hook();
+            }
 
             for(WaitingRunnable runnable : this.waitingRunnables){
                 if(runnable.type == WaitingRunnableType.ASYNC){
@@ -124,7 +127,7 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
                     Bukkit.getScheduler().runTaskTimer(this,runnable.runnable,0L,runnable.ticks);
                 }
             }
-        },12);
+        },10);
     }
 
     public boolean isCloudNetV2() {
