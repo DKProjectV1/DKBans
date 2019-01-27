@@ -12,9 +12,15 @@ import de.fridious.bansystem.extension.gui.guis.Guis;
 import de.fridious.bansystem.extension.gui.utils.GuiExtensionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.Arrays;
+import java.util.List;
 
 /*
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)

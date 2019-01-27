@@ -21,13 +21,13 @@
 package ch.dkrieger.bansystem.extension.restapi.handler.defaults;
 
 import ch.dkrieger.bansystem.extension.restapi.ResponseCode;
-import ch.dkrieger.bansystem.extension.restapi.handler.RestApiHandler;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.filter.FilterType;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLog;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLogEntry;
 import ch.dkrieger.bansystem.lib.utils.Document;
+import ch.dkrieger.bansystem.extension.restapi.handler.RestApiHandler;
 
 import java.util.List;
 
@@ -37,25 +37,25 @@ public class ChatLogHandler extends RestApiHandler {
         super("chatlog/");
     }
     @Override
-    public void onRequest(Document query, Document response) {
+    public void onRequest(Query query, Document response) {
         ChatLog chatLog = null;
         if(query.contains("player") && query.contains("server")){
-            NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(query.getString("player"));
+            NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(query.get("player"));
             if(player == null){
                 response.append("code", ResponseCode.NO_CONTENT);
                 response.append("message","ChatLog not found");
                 return;
             }
-            chatLog = BanSystem.getInstance().getPlayerManager().getChatLog(player.getUUID(),query.getString("server"));
+            chatLog = BanSystem.getInstance().getPlayerManager().getChatLog(player.getUUID(),query.get("server"));
         }else if(query.contains("player")){
-            NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(query.getString("player"));
+            NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(query.get("player"));
             if(player == null){
                 response.append("code", ResponseCode.NO_CONTENT).append("message","ChatLog not found");
                 return;
             }
             chatLog = BanSystem.getInstance().getPlayerManager().getChatLog(player);
         }else if(query.contains("server")){
-            chatLog = BanSystem.getInstance().getPlayerManager().getChatLog(query.getString("server"));
+            chatLog = BanSystem.getInstance().getPlayerManager().getChatLog(query.get("server"));
         }
         if(chatLog == null){
             response.append("code", ResponseCode.NO_CONTENT);
@@ -63,9 +63,9 @@ public class ChatLogHandler extends RestApiHandler {
         }else{
             long from = 0;
             long to = 0;
-            try{to = Long.valueOf(query.getString("to"));}catch (Exception exception){}
-            try{from = Long.valueOf(query.getString("from"));}catch (Exception exception){}
-            List<ChatLogEntry> entries = chatLog.getEntries(new ChatLog.Filter(from,to,FilterType.ParseNull(query.getString("filter"))));
+            try{to = Long.valueOf(query.get("to"));}catch (Exception exception){}
+            try{from = Long.valueOf(query.get("from"));}catch (Exception exception){}
+            List<ChatLogEntry> entries = chatLog.getEntries(new ChatLog.Filter(from,to,FilterType.ParseNull(query.get("filter"))));
             if(entries.size() <= 0) {
                 response.append("code", ResponseCode.NO_CONTENT);
                 response.append("message", "ChatLog not found");

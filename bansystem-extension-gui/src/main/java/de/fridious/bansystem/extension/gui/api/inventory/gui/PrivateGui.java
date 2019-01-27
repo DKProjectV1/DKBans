@@ -1,5 +1,6 @@
 package de.fridious.bansystem.extension.gui.api.inventory.gui;
 
+import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;
 import de.fridious.bansystem.extension.gui.utils.StringReplacer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;

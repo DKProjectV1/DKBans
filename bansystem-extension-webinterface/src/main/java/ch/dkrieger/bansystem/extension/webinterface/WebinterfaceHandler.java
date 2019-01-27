@@ -21,11 +21,11 @@
 package ch.dkrieger.bansystem.extension.webinterface;
 
 import ch.dkrieger.bansystem.extension.restapi.ResponseCode;
-import ch.dkrieger.bansystem.extension.restapi.handler.RestApiHandler;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
+import ch.dkrieger.bansystem.extension.restapi.handler.RestApiHandler;
 
 public class WebinterfaceHandler extends RestApiHandler {
 
@@ -35,10 +35,10 @@ public class WebinterfaceHandler extends RestApiHandler {
         super("dkbanswi/");
         this.config = config;
     }
-    public void onRequest(Document query, Document response){
+    public void onRequest(Query query, Document response){
         if(query.contains("action")){
-            if(query.getString("action").equalsIgnoreCase("checkLogin") && query.contains("player") && query.contains("password")){
-                NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(query.getString("player"));
+            if(query.get("action").equalsIgnoreCase("checkLogin") && query.contains("player") && query.contains("password")){
+                NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(query.get("player"));
                 if(player == null){
                     response.append("loginSuccess",false).append("message","Player not found");
                     return;
@@ -47,7 +47,7 @@ public class WebinterfaceHandler extends RestApiHandler {
                     response.append("loginSuccess",false).append("message","No access to webinterface");
                     return;
                 }
-                if(player.getProperties().contains("password") && player.getProperties().getString("password").equals(GeneralUtil.encodeMD5(query.getString("password")))){
+                if(player.getProperties().contains("password") && player.getProperties().getString("password").equals(GeneralUtil.encodeMD5(query.get("password")))){
                     if(!config.canAccess(player)){
                         response.append("loginSuccess",false).append("message","Login canceled by event");
                         return;

@@ -26,7 +26,9 @@ import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.HistoryEntry;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class HistoryManager {

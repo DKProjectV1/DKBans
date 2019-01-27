@@ -21,7 +21,6 @@
 package ch.dkrieger.bansystem.bukkit;
 
 import ch.dkrieger.bansystem.bukkit.event.BukkitDKBansMessageReceiveEvent;
-import ch.dkrieger.bansystem.bukkit.event.BukkitDKBansSettingUpdateEvent;
 import ch.dkrieger.bansystem.bukkit.event.BukkitOnlineNetworkPlayerUpdateEvent;
 import ch.dkrieger.bansystem.bukkit.player.bungeecord.BukkitBungeeCordPlayerManager;
 import ch.dkrieger.bansystem.bukkit.player.bungeecord.BungeeCordOnlinePlayer;
@@ -80,10 +79,6 @@ public class BungeeCordConnection implements PluginMessageListener {
                         BanSystem.getInstance().getFilterManager().reloadLocal();
                     }else if(document.getString("action").equalsIgnoreCase("reloadBroadcast")){
                         BanSystem.getInstance().getBroadcastManager().reloadLocal();
-                    }else if(document.getString("action").equalsIgnoreCase("syncSetting")){
-                        BanSystem.getInstance().getSettingProvider().removeFromCache(document.getString("name"));
-                        Bukkit.getPluginManager().callEvent(new BukkitDKBansSettingUpdateEvent(document.getString("name")
-                                ,System.currentTimeMillis(),false));
                     }else Bukkit.getPluginManager().callEvent(new BukkitDKBansMessageReceiveEvent(document));
                 }catch (Exception exception){
                     exception.printStackTrace();

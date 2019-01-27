@@ -23,11 +23,10 @@ package ch.dkrieger.bansystem.lib.player.history;
 import ch.dkrieger.bansystem.lib.player.history.entry.*;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 public class History {
 

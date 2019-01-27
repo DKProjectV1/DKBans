@@ -28,6 +28,7 @@ import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.Duration;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.YamlConfiguration;
 
@@ -433,8 +434,16 @@ public class ReasonProvider {
                 Configuration reasons = config.getSection("reasons");
                 this.kickReasons= new ArrayList<>();
                 if(reasons != null) {
-                    //translate 2.0.6 to 2.1.3
+                    //translate 2.0.6 to 2.0.9
                     for(String key : reasons.getKeys()) {
+                        try{config.getInt("reasons."+key+".points.points");
+                        }catch (Exception exception){
+                            int points = config.getInt("reasons."+key+".points");
+                            config.set("reasons."+key+".points",null);
+                            config.set("reasons."+key+".points.points",points);
+                            config.set("reasons."+key+".points.type",BanType.NETWORK.toString());
+                            YamlConfiguration.getProvider(YamlConfiguration.class).save(config,file);
+                        }
                         try{
                             this.kickReasons.add(new KickReason(Integer.valueOf(key)
                                     ,new HistoryPoints(config.getInt("reasons."+key+".points.points")
@@ -497,6 +506,15 @@ public class ReasonProvider {
                 if(reasons != null) {
                     for (String key : reasons.getKeys()) {
                         try{
+                            //translate 2.0.6 to 2.0.9
+                            try{config.getInt("reasons."+key+".points.points");
+                            }catch (Exception exception){
+                                int points = config.getInt("reasons."+key+".points");
+                                config.set("reasons."+key+".points",null);
+                                config.set("reasons."+key+".points.points",points);
+                                config.set("reasons."+key+".points.type",BanType.NETWORK.toString());
+                                YamlConfiguration.getProvider(YamlConfiguration.class).save(config,file);
+                            }
                             this.warnReasons.add(new WarnReason(Integer.valueOf(key)
                                     ,new HistoryPoints(config.getInt("reasons."+key+".points.points")
                                     ,BanType.valueOf(config.getString("reasons."+key+".points.type")))

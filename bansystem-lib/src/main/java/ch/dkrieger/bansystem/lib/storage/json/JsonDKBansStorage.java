@@ -41,7 +41,9 @@ import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -50,7 +52,6 @@ public class JsonDKBansStorage implements DKBansStorage {
     private List<NetworkPlayer> players;
     private List<ChatLogEntry> chatLogEntries;
     private List<IPBan> ipBans;
-    private Map<String,Document> settings;
     private File storageFolder;
 
     private AtomicInteger nextPlayerID, nextHistoryID;
@@ -80,10 +81,6 @@ public class JsonDKBansStorage implements DKBansStorage {
         if(ipBans.contains("bans")) this.ipBans = ipBans.getObject("bans",new TypeToken<List<IPBan>>(){}.getType());
         else this.ipBans = new ArrayList<>();
 
-        Document settings = Document.loadData(new File(storageFolder,"settings.json"));
-        if(settings.contains("settings")) this.settings = settings.getObject("settings",new TypeToken<LinkedHashMap<String,Document>>(){}.getType());
-        else this.settings = new LinkedHashMap<>();
-
         BanSystem.getInstance().getPlatform().getTaskManager().scheduleTask(this::save,5L, TimeUnit.SECONDS);
         return true;
     }
@@ -103,8 +100,6 @@ public class JsonDKBansStorage implements DKBansStorage {
         new Document().append("entries",chatLogEntries).saveData(new File(storageFolder,"chatlogs.json"));
 
         new Document().append("bans",ipBans).saveData(new File(storageFolder,"ipbans.json"));
-
-        new Document().append("settings",settings).saveData(new File(storageFolder,"settings.json"));
     }
 
     @Override
@@ -365,20 +360,5 @@ public class JsonDKBansStorage implements DKBansStorage {
     public void updateNetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks, long warns) {
         new Document().append("networkStats",new NetworkStats(logins,reports,reportsAccepted,messages,bans,mutes,unbans,kicks,warns))
                 .saveData(new File(storageFolder,"networkstats.json"));
-    }
-
-    @Override
-    public Document getSetting(String name) {
-        return settings.get(name);
-    }
-
-    @Override
-    public void saveSetting(String name, Document document) {
-        settings.put(name,document);
-    }
-
-    @Override
-    public void deleteSetting(String name) {
-        settings.remove(name);
     }
 }

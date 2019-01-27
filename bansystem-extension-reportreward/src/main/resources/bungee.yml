@@ -1,8 +1,7 @@
 name: DKBansReportRewardExtension
 author: Davide Wietlisbach
 description: 
-version: ${project.version}
-depends: [DKBans]
+version: 1.0.0
 
 main: ch.dkrieger.bansystem.extension.reportreward.bungeecord.DKBansReportRewardExtension
 commands:

@@ -21,6 +21,7 @@
 package ch.dkrieger.bansystem.lib.player.history;
 
 import ch.dkrieger.bansystem.lib.Messages;
+import com.google.common.graph.Network;
 
 public enum BanType {
 

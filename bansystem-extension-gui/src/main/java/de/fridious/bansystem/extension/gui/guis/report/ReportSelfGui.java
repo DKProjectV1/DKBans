@@ -37,7 +37,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-
 import java.util.UUID;
 
 public class ReportSelfGui extends PrivateGui {

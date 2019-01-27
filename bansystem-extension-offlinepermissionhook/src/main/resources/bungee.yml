@@ -1,9 +1,0 @@
-name: DKBansOfflinePermissionHook
-author: Davide Wietlisbach
-description: 
-version: ${project.version}
-depends: [DKBans]
-softdepends: [CloudNetAPI, LuckPerms]
-
-main: ch.dkrieger.bansystem.extension.offlinepermissionhook.bungeecord.DKBansOfflinePermissionHookExtension
-commands:

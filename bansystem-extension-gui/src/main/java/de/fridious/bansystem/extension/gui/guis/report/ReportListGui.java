@@ -20,6 +20,8 @@ package de.fridious.bansystem.extension.gui.guis.report;
  * under the License.
  */
 
+import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerReportEvent;
+import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerReportsProcessEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
@@ -33,6 +35,10 @@ import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ReportListGui extends PrivateGui<Report> {
 

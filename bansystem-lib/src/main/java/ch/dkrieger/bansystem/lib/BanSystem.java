@@ -40,8 +40,10 @@ import ch.dkrieger.bansystem.lib.storage.json.JsonDKBansStorage;
 import ch.dkrieger.bansystem.lib.storage.mongodb.MongoDBDKBansStorage;
 import ch.dkrieger.bansystem.lib.storage.sql.SQLDKBansStorage;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
+import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class BanSystem {
@@ -54,10 +56,7 @@ public class BanSystem {
     private BroadcastManager broadcastManager;
     private FilterManager filterManager;
     private HistoryManager historyManager;
-
     private ReasonProvider reasonProvider;
-    private SettingProvider settingProvider;
-
     private DKBansStorage storage;
     private DKNetwork network;
 
@@ -80,8 +79,8 @@ public class BanSystem {
             this.version = properties.getProperty("version");
         } catch (Exception exception) {
             System.out.println(Messages.SYSTEM_PREFIX+"Could not load DKBans plugin build information.");
+            this.version = "Unknown";
         }
-        if(this.version == null) this.version = "Unknown";
         System.out.println(Messages.SYSTEM_PREFIX+"plugin is starting");
         System.out.println(Messages.SYSTEM_PREFIX+"BanSystem "+this.version+" by Davide Wietlisbach");
 
@@ -97,7 +96,6 @@ public class BanSystem {
         this.messageConfig.loadConfig();
 
         this.reasonProvider = new ReasonProvider(this.platform);
-        this.settingProvider = new SettingProvider();
         this.historyManager = new HistoryManager();
 
         HistoryEntry.buildAdapter();
@@ -141,7 +139,7 @@ public class BanSystem {
         if(this.config.commandHistory) getCommandManager().registerCommand(new HistoryCommand());
         if(this.config.commandIpinfo) getCommandManager().registerCommand(new IpInfoCommand());
         if(this.config.commandJoinme) getCommandManager().registerCommand(new JoinMeCommand());
-        if(this.config.commandJumpto) getCommandManager().registerCommand(new JumptoCommand());
+        if(this.config.commandJoinme) getCommandManager().registerCommand(new JumptoCommand());
         if(this.config.commandKick) getCommandManager().registerCommand(new KickCommand());
         if(this.config.commandBan) getCommandManager().registerCommand(new MuteCommand());
         if(this.config.commandNetworkstats) getCommandManager().registerCommand(new NetworkStatsCommand());
@@ -160,7 +158,6 @@ public class BanSystem {
         if(this.config.commandIPUnban) getCommandManager().registerCommand(new IpUnbanCommand());
         if(this.config.commandWarn) getCommandManager().registerCommand(new WarnCommand());
         if(this.config.commandEdit) getCommandManager().registerCommand(new EditBanCommand());
-        if(this.config.commandMyHistoryPoints) getCommandManager().registerCommand(new MyHistoryPointsCommand());
 
         getCommandManager().registerCommand(new DKBansCommand());
         getCommandManager().registerCommand(new BroadcastJumpCommand());
@@ -224,10 +221,6 @@ public class BanSystem {
 
     public ReasonProvider getReasonProvider() {
         return reasonProvider;
-    }
-
-    public SettingProvider getSettingProvider() {
-        return settingProvider;
     }
 
     public HistoryManager getHistoryManager() {

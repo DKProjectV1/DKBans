@@ -25,6 +25,8 @@ import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
+import net.md_5.bungee.api.chat.TextComponent;
+
 
 import java.util.List;
 

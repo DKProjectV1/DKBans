@@ -20,11 +20,8 @@
 
 package ch.dkrieger.bansystem.lib.command.defaults;
 
-import ch.dkrieger.bansystem.lib.BanSystem;
-import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
-import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,20 +35,17 @@ public class BroadcastJumpCommand extends NetworkCommand {
     public BroadcastJumpCommand() {
         super("broadcastjump");
         SERVER_WHITELISTS = new HashMap<>();
-        setPrefix(Messages.PREFIX_NETWORK);
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
-        if(args.length > 1){
-            if(SERVER_WHITELISTS.containsKey(args[1]) && (System.currentTimeMillis()+ TimeUnit.MINUTES.toMillis(10)) > SERVER_WHITELISTS.get(args[1])){
-                if(args[0].equalsIgnoreCase("group")){
-                    List<String> servers = BanSystem.getInstance().getNetwork().getGroupServers(args[1]);
-                    if(servers.size() > 0) sender.getAsOnlineNetworkPlayer().connect(servers.get(GeneralUtil.RANDOM.nextInt(servers.size())));
-                    else sender.sendMessage(Messages.SERVER_NOT_FOUND.replace("[prefix]",getPrefix()));
-                }else sender.getAsOnlineNetworkPlayer().connect(args[1]);
+        if(args.length > 0){
+            System.out.println(SERVER_WHITELISTS.containsKey(args[0]));
+            if(SERVER_WHITELISTS.containsKey(args[0]) && (System.currentTimeMillis()+ TimeUnit.MINUTES.toMillis(10)) > SERVER_WHITELISTS.get(args[0])){
+                System.out.println("test");
+                sender.getAsOnlineNetworkPlayer().connect(args[0]);
                 return;
             }
-            SERVER_WHITELISTS.remove(args[1]);
+            SERVER_WHITELISTS.remove(args[0]);
         }
     }
 

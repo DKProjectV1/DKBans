@@ -1,11 +1,14 @@
 package de.fridious.bansystem.extension.gui.guis.playerinfo;
 
+import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerBanEvent;
+import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerUnbanEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.config.mode.BanMode;
 import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.history.BanType;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
@@ -27,7 +30,11 @@ import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 /*

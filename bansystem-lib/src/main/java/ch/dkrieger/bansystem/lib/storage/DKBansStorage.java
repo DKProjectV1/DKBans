@@ -138,10 +138,4 @@ public interface DKBansStorage {
 
     public void updateNetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks, long warns);
 
-    public Document getSetting(String name);
-
-    public void saveSetting(String name, Document document);
-
-    public void deleteSetting(String name);
-
 }

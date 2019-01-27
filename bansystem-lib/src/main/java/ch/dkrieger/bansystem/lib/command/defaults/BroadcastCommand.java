@@ -26,7 +26,6 @@ import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -71,7 +70,7 @@ public class BroadcastCommand extends NetworkCommand {
                 else message += " " +args[i];
             }
             BanSystem.getInstance().getNetwork().broadcast(Messages.BROADCAST_FORMAT_DIRECT
-                    .replace("[message]",GeneralUtil.buildNextLineColor(ChatColor.translateAlternateColorCodes('&',message)))
+                    .replace("[message]",message)
                     .replace("[prefix]",getPrefix()));
             return;
         }else if(args[0].equalsIgnoreCase("create")){

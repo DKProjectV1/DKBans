@@ -21,14 +21,19 @@
 package ch.dkrieger.bansystem.bukkit.player.cloudnet;
 
 import ch.dkrieger.bansystem.bukkit.BukkitBanSystemBootstrap;
-import ch.dkrieger.bansystem.bukkit.event.BukkitDKBansSettingUpdateEvent;
 import ch.dkrieger.bansystem.bukkit.event.BukkitOnlineNetworkPlayerUpdateEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
+import ch.dkrieger.bansystem.lib.JoinMe;
+import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
+import ch.dkrieger.bansystem.lib.cloudnet.v2.CloudNetV2Network;
 import ch.dkrieger.bansystem.lib.cloudnet.v2.CloudNetV2OnlinePlayer;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayerUpdateCause;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.PlayerManager;
+import ch.dkrieger.bansystem.lib.player.history.BanType;
+import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
+import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import de.dytanic.cloudnet.api.CloudAPI;
 import de.dytanic.cloudnet.bridge.event.bukkit.BukkitPlayerUpdateEvent;
@@ -127,10 +132,6 @@ public class CloudNetV2PlayerManager extends PlayerManager implements Listener {
                 BanSystem.getInstance().getFilterManager().reloadLocal();
             }else if(event.getMessage().equalsIgnoreCase("reloadBroadcast")){
                 BanSystem.getInstance().getBroadcastManager().reloadLocal();
-            }else if(event.getMessage().equalsIgnoreCase("syncSetting")){
-                BanSystem.getInstance().getSettingProvider().removeFromCache(event.getDocument().getString("name"));
-                Bukkit.getPluginManager().callEvent(new BukkitDKBansSettingUpdateEvent(event.getDocument().getString("name")
-                        ,System.currentTimeMillis(),false));
             }
         }
     }

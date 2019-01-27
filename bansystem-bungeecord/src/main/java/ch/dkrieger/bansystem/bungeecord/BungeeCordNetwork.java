@@ -20,7 +20,6 @@
 
 package ch.dkrieger.bansystem.bungeecord;
 
-import ch.dkrieger.bansystem.bungeecord.event.ProxiedDKBansSettingUpdateEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.DKNetwork;
 import ch.dkrieger.bansystem.lib.JoinMe;
@@ -113,21 +112,6 @@ public class BungeeCordNetwork implements DKNetwork {
         if(serverInfo != null) for(ProxiedPlayer player : serverInfo.getPlayers()) players.add(player.getName());
         return players;
     }
-
-    @Override
-    public List<String> getGroupServers(String group) {
-        List<String> servers = new LinkedList<>();
-        for(ServerInfo server : ProxyServer.getInstance().getServers().values()){
-            int cid = 0, creplace = 0;
-            for(char c : server.getName().toCharArray()){
-                cid++;
-                if(c == BanSystem.getInstance().getConfig().serverGroupSplit) creplace = cid-1;
-            }
-            if(group.equalsIgnoreCase(creplace>0?server.getName().substring(0,creplace):server.getName())) servers.add(server.getName());
-        }
-        return servers;
-    }
-
     @Override
     public void reloadFilter() {
         BanSystem.getInstance().getFilterManager().reloadLocal();
@@ -137,12 +121,5 @@ public class BungeeCordNetwork implements DKNetwork {
     public void reloadBroadcast() {
         BanSystem.getInstance().getBroadcastManager().reloadLocal();
         connection.sendToAll("reloadBroadcast",new Document());
-    }
-
-    @Override
-    public void syncSetting(String name) {
-        ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedDKBansSettingUpdateEvent(
-                name,System.currentTimeMillis(),false));
-        connection.sendToAll("syncSetting",new Document().append("name",name));
     }
 }

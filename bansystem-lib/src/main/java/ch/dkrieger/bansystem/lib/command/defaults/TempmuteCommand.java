@@ -40,7 +40,7 @@ public class TempmuteCommand extends NetworkCommand {
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
-        if(args.length < 3 || !(GeneralUtil.isNumber(args[1]))){
+        if(args.length < 3 || !(GeneralUtil.isNumber(args[2]))){
             sender.sendMessage(Messages.TEMPMUTE_HELP.replace("[prefix]",getPrefix()));
             return;
         }
@@ -61,28 +61,16 @@ public class TempmuteCommand extends NetworkCommand {
                     .replace("[player]",player.getColoredName()));
             return;
         }
-        long millis = TimeUnit.DAYS.toMillis(Long.valueOf(args[1]));
-        int reasonStart = 3;
-        try{
-            millis = GeneralUtil.convertToMillis(Long.valueOf(args[1]),args[2]);
-            if(args.length < 4){
-                sender.sendMessage(Messages.TEMPBAN_HELP.replace("[prefix]",getPrefix()));
-                return;
-            }
-        }catch (Exception exception){
-            reasonStart = 2;
-        }
-        if(player.isBanned(BanType.NETWORK)){
+        String unit = "days";
+        if(args.length > 3) unit = args[3];
+        long millis = GeneralUtil.convertToMillis(Long.valueOf(args[2]),unit);
+        if(player.isBanned(BanType.CHAT)){
             sender.sendMessage(Messages.PLAYER_ALREADY_BANNED
                     .replace("[prefix]",getPrefix())
                     .replace("[player]",player.getColoredName()));
             return;
         }
-        String reason = "";
-        for(int i = reasonStart;i<args.length;i++) reason+= args[i]+" ";
-
-
-        Ban ban = player.ban(BanType.CHAT,millis,TimeUnit.MILLISECONDS,reason.substring(0,reason.length()-1),-1,sender.getUUID());
+        Ban ban = player.ban(BanType.CHAT,millis,TimeUnit.MILLISECONDS,args[1],-1,sender.getUUID());
         sender.sendMessage(Messages.BAN_SUCCESS
                 .replace("[prefix]",getPrefix())
                 .replace("[player]",player.getColoredName())

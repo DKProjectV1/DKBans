@@ -26,13 +26,13 @@ import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import de.dytanic.cloudnet.api.CloudAPI;
+import de.dytanic.cloudnet.api.player.PlayerExecutorBridge;
 import de.dytanic.cloudnet.lib.server.info.ServerInfo;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public abstract class CloudNetV2Network implements DKNetwork {
 
@@ -65,14 +65,6 @@ public abstract class CloudNetV2Network implements DKNetwork {
         ServerInfo serverInfo = CloudAPI.getInstance().getServerInfo(server);
         if(serverInfo != null) return serverInfo.getPlayers();
         return new ArrayList<>();
-    }
-
-    @Override
-    public List<String> getGroupServers(String group) {
-        Collection<ServerInfo> servers = CloudAPI.getInstance().getServers(group);
-        List<String> list = new LinkedList<>();
-        servers.forEach(server -> list.add(server.getServiceId().getServerId()));
-        return list;
     }
 
     @Override
@@ -126,11 +118,5 @@ public abstract class CloudNetV2Network implements DKNetwork {
     public void reloadBroadcast() {
         CloudAPI.getInstance().sendCustomSubProxyMessage("DKBans","reloadBroadcast",new Document());
         CloudAPI.getInstance().sendCustomSubServerMessage("DKBans","reloadBroadcast",new Document());
-    }
-
-    @Override
-    public void syncSetting(String name) {
-        CloudAPI.getInstance().sendCustomSubServerMessage("DKBans","syncSetting",new Document("name",name));
-        CloudAPI.getInstance().sendCustomSubProxyMessage("DKBans","syncSetting",new Document("name",name));
     }
 }

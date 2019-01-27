@@ -23,6 +23,7 @@ package ch.dkrieger.bansystem.lib.storage.sql.query;
 import ch.dkrieger.bansystem.lib.storage.sql.SQL;
 
 import java.sql.PreparedStatement;
+import java.util.function.Consumer;
 
 public class InsertQuery extends ExecuteQuery {
 

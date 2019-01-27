@@ -27,10 +27,7 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.chat.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BroadcastManager {
 
@@ -143,10 +140,7 @@ public class BroadcastManager {
         if(hover.length() > 1) component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder(hover).create()));
         if(click.length() > 1){
             if(broadcast.getClick().getType() == Broadcast.ClickType.SERVER){
-                component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/broadcastjump server "+broadcast.getClick().getMessage()));
-                BroadcastJumpCommand.SERVER_WHITELISTS.put(broadcast.getClick().getMessage(),System.currentTimeMillis());
-            }else if(broadcast.getClick().getType() == Broadcast.ClickType.SERVERGROUP){
-                component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/broadcastjump group "+broadcast.getClick().getMessage()));
+                component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/broadcastjump "+broadcast.getClick().getMessage()));
                 BroadcastJumpCommand.SERVER_WHITELISTS.put(broadcast.getClick().getMessage(),System.currentTimeMillis());
             }else component.setClickEvent(new ClickEvent(broadcast.getClick().getType().toClickAction(),click));
         }

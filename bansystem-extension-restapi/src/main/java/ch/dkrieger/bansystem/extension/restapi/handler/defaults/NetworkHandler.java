@@ -24,6 +24,7 @@ import ch.dkrieger.bansystem.extension.restapi.ResponseCode;
 import ch.dkrieger.bansystem.extension.restapi.handler.RestApiHandler;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.utils.Document;
+import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 public class NetworkHandler extends RestApiHandler {
 
@@ -32,26 +33,23 @@ public class NetworkHandler extends RestApiHandler {
     }
 
     @Override
-    public void onRequest(Document query, Document response) {
+    public void onRequest(Query query, Document response) {
         if(query.contains("action")){
-            if(query.getString("action").equalsIgnoreCase("info")){
+            if(query.get("action").equalsIgnoreCase("info")){
                 response.append("stats", BanSystem.getInstance().getNetworkStats())
                         .append("registerCount",BanSystem.getInstance().getPlayerManager().getRegisteredCount())
                         .append("onlineCount",BanSystem.getInstance().getPlayerManager().getOnlineCount());
                 return;
-            }else if(query.getString("action").equalsIgnoreCase("sendTeamMessage") && query.contains("message")){
-                BanSystem.getInstance().getNetwork().sendTeamMessage(query.getString("message"),Boolean.valueOf(query.getString("onlyLogin")));
+            }else if(query.get("action").equalsIgnoreCase("sendTeamMessage") && query.contains("message")){
+                BanSystem.getInstance().getNetwork().sendTeamMessage(query.get("message"),Boolean.valueOf(query.get("onlyLogin")));
                 return;
-            }else if(query.getString("action").equalsIgnoreCase("reasons")){
+            }else if(query.get("action").equalsIgnoreCase("reasons")){
                 response.append("banReasons",BanSystem.getInstance().getReasonProvider().getBanReasons())
                         .append("reportReasons",BanSystem.getInstance().getReasonProvider().getReportReasons())
                         .append("unbanReasons",BanSystem.getInstance().getReasonProvider().getBanReasons());
                 return;
-            }else if(query.getString("action").equalsIgnoreCase("config")){
+            }else if(query.get("action").equalsIgnoreCase("config")){
                 response.append("config",BanSystem.getInstance().getConfig());
-                return;
-            }else if(query.getString("action").equalsIgnoreCase("check")){
-                response.append("available",true);
                 return;
             }
         }

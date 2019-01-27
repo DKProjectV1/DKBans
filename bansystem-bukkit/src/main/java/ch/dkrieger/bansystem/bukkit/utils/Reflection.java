@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 
 
 /**
- * An utility class that simplifies reflection in bukkit plugins.
+ * An utility class that simplifies reflection in Bukkit plugins.
  *
  * @author Kristian
  */

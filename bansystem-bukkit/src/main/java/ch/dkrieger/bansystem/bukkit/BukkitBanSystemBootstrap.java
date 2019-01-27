@@ -24,8 +24,6 @@ import ch.dkrieger.bansystem.bukkit.event.*;
 import ch.dkrieger.bansystem.bukkit.hook.PlaceHolderApiHook;
 import ch.dkrieger.bansystem.bukkit.listener.BukkitPlayerListener;
 import ch.dkrieger.bansystem.bukkit.network.BukkitBungeeCordNetwork;
-import ch.dkrieger.bansystem.bukkit.network.BukkitNetwork;
-import ch.dkrieger.bansystem.bukkit.player.bukkit.BukkitPlayerManager;
 import ch.dkrieger.bansystem.bukkit.player.bungeecord.BukkitBungeeCordPlayerManager;
 import ch.dkrieger.bansystem.bukkit.player.cloudnet.CloudNetV2PlayerManager;
 import ch.dkrieger.bansystem.bukkit.player.cloudnet.CloudNetV3PlayerManager;
@@ -37,13 +35,13 @@ import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.cloudnet.v2.CloudNetV2Network;
 import ch.dkrieger.bansystem.lib.cloudnet.v3.CloudNetV3Network;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandManager;
-import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
-import ch.dkrieger.bansystem.lib.player.NetworkPlayerUpdateCause;
-import ch.dkrieger.bansystem.lib.player.PlayerColor;
+import ch.dkrieger.bansystem.lib.player.*;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
+import ch.dkrieger.bansystem.bukkit.network.BukkitNetwork;
+import ch.dkrieger.bansystem.bukkit.player.bukkit.BukkitPlayerManager;
 import com.google.gson.reflect.TypeToken;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -113,10 +111,7 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
             }
 
             Plugin placeHolderAPI = getServer().getPluginManager().getPlugin("PlaceholderAPI");
-            if(placeHolderAPI != null && placeHolderAPI.getDescription() != null) {
-                System.out.println(Messages.SYSTEM_PREFIX+"PlaceholderAPI found");
-                new PlaceHolderApiHook().hook();
-            }
+            if(placeHolderAPI != null && placeHolderAPI.getDescription() != null) new PlaceHolderApiHook().hook();
 
             for(WaitingRunnable runnable : this.waitingRunnables){
                 if(runnable.type == WaitingRunnableType.ASYNC){
@@ -127,15 +122,7 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
                     Bukkit.getScheduler().runTaskTimer(this,runnable.runnable,0L,runnable.ticks);
                 }
             }
-        },10);
-    }
-
-    public boolean isCloudNetV2() {
-        return cloudNetV2;
-    }
-
-    public boolean isCloudNetV3() {
-        return cloudNetV3;
+        },12);
     }
 
     public BungeeCordConnection getBungeeCordConnection() {
@@ -143,7 +130,7 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
     }
 
     public String getPlatformName() {
-        return "bukkit";
+        return "Bukkit";
     }
 
     public String getServerVersion() {

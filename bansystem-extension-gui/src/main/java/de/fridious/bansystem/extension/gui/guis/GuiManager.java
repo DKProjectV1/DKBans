@@ -4,7 +4,6 @@ import de.fridious.bansystem.extension.gui.api.inventory.gui.Gui;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;

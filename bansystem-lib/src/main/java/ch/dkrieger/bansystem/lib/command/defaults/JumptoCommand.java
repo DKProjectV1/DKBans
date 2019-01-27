@@ -26,7 +26,9 @@ import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
+import net.md_5.bungee.api.chat.TextComponent;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class JumptoCommand extends NetworkCommand {

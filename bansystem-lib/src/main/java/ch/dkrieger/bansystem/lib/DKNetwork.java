@@ -38,8 +38,6 @@ public interface DKNetwork {
 
     public List<String> getPlayersOnServer(String server);
 
-    public List<String> getGroupServers(String group);
-
     public void broadcast(String message);
 
     public void broadcast(TextComponent component);
@@ -61,7 +59,5 @@ public interface DKNetwork {
     public void reloadFilter();
 
     public void reloadBroadcast();
-
-    public void syncSetting(String name);
 
 }

@@ -25,10 +25,13 @@ import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.history.BanType;
+import ch.dkrieger.bansystem.lib.reason.BanReason;
 import ch.dkrieger.bansystem.lib.reason.WarnReason;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ConsoleWarnCommand extends NetworkCommand {
 

@@ -21,7 +21,6 @@
 package ch.dkrieger.bansystem.bungeecord.player.cloudnet;
 
 import ch.dkrieger.bansystem.bungeecord.BungeeCordBanSystemBootstrap;
-import ch.dkrieger.bansystem.bungeecord.event.ProxiedDKBansSettingUpdateEvent;
 import ch.dkrieger.bansystem.bungeecord.event.ProxiedOnlineNetworkPlayerUpdateEvent;
 import ch.dkrieger.bansystem.bungeecord.player.LocalBungeeCordOnlinePlayer;
 import ch.dkrieger.bansystem.lib.BanSystem;
@@ -204,10 +203,8 @@ public class CloudNetV2PlayerManager extends PlayerManager implements Listener {
                 for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
                     if(player.hasPermission("dkbans.team")){
                         NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
-                        if(networkPlayer != null){
-                            if(event.getDocument().getBoolean("onlyLogin") && !(networkPlayer.isTeamChatLoggedIn())) return;
+                        if(networkPlayer != null && (!event.getDocument().getBoolean("onlyLogin") || networkPlayer.isTeamChatLoggedIn()))
                             player.sendMessage(event.getDocument().getObject("message",TextComponent.class));
-                        }
                     }
                 }
             }else if(event.getMessage().equalsIgnoreCase("reloadFilter")){
@@ -220,10 +217,6 @@ public class CloudNetV2PlayerManager extends PlayerManager implements Listener {
                     Warn warn = event.getDocument().getObject("warn",Warn.class);
                     player.disconnect(warn.toMessage());
                 }
-            }else if(event.getMessage().equalsIgnoreCase("syncSetting")){
-                BanSystem.getInstance().getSettingProvider().removeFromCache(event.getDocument().getString("name"));
-                ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedDKBansSettingUpdateEvent(event.getDocument().getString("name")
-                        ,System.currentTimeMillis(),false));
             }
         }
     }

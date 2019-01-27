@@ -27,6 +27,7 @@ import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
+import ch.dkrieger.bansystem.lib.reason.BanReason;
 import ch.dkrieger.bansystem.lib.reason.WarnReason;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 

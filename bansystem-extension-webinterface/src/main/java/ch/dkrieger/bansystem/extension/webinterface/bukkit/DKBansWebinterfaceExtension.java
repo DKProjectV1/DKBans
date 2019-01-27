@@ -20,13 +20,13 @@
 
 package ch.dkrieger.bansystem.extension.webinterface.bukkit;
 
-import ch.dkrieger.bansystem.extension.restapi.DKBansRestAPIServer;
 import ch.dkrieger.bansystem.extension.webinterface.DKBansWebinterfaceConfig;
 import ch.dkrieger.bansystem.extension.webinterface.WebinterfaceCommand;
 import ch.dkrieger.bansystem.extension.webinterface.WebinterfaceHandler;
 import ch.dkrieger.bansystem.extension.webinterface.bungeecord.BukkitDKBansNetworkPlayerAccessWebinterface;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.extension.restapi.DKBansRestAPIServer;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 

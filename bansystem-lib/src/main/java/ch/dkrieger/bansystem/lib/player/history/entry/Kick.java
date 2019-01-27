@@ -22,8 +22,10 @@ package ch.dkrieger.bansystem.lib.player.history.entry;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
+import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.HistoryPoints;
 import ch.dkrieger.bansystem.lib.utils.Document;
+import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.UUID;
