@@ -38,6 +38,8 @@ public interface DKNetwork {
 
     public List<String> getPlayersOnServer(String server);
 
+    public List<String> getGroupServers(String group);
+
     public void broadcast(String message);
 
     public void broadcast(TextComponent component);

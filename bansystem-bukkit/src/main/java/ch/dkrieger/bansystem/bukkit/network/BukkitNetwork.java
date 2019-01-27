@@ -32,6 +32,7 @@ import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -64,6 +65,20 @@ public class BukkitNetwork implements DKNetwork {
         List<String> result = new ArrayList<>();
         for(Player player : Bukkit.getOnlinePlayers()) result.add(player.getName());
         return result;
+    }
+
+    @Override
+    public List<String> getGroupServers(String group) {
+        List<String> servers = new LinkedList<>();
+        for(World world : Bukkit.getWorlds()){
+            int cid = 0, creplace = 0;
+            for(char c : world.getName().toCharArray()){
+                cid++;
+                if(c == BanSystem.getInstance().getConfig().serverGroupSplit) creplace = cid-1;
+            }
+            if(group.equalsIgnoreCase(creplace>0?world.getName().substring(0,creplace):world.getName())) servers.add(world.getName());
+        }
+        return servers;
     }
 
     @Override

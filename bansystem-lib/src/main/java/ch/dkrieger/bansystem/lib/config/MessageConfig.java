@@ -174,7 +174,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.BROADCAST_CHANGED_AUTO_DISABLED = addAndGetMessageValue("broadcast.changed.auto.disabled","[prefix]&7Disabled auto sending for broadcast &c[id]");
         Messages.BROADCAST_CHANGED_AUTO_ENABLED = addAndGetMessageValue("broadcast.changed.auto.enabled","[prefix]&7Enabled auto sending for broadcast &c[id]");
         Messages.BROADCAST_NOTFOUND_CLICKTYPE = addAndGetMessageValue("broadcast.notfound.clicktype","[prefix]&cThis click type was not found, use:" +
-                "\n&8» &7Url\n&8» &7Command\n&8» &7OpenChat");
+                "\n&8» &7Url\n&8» &7Command\n&8» &7OpenChat\n&8» &7Server\n&8» &7ServerGroup");
         Messages.BROADCAST_NOTFOUND_BROADCAST = addAndGetMessageValue("broadcast.notfound.broadcast","[prefix]&cThe broadcast with the with the id &c[id] &cwas not found.");
         Messages.BROADCAST_FORMAT_DIRECT = addAndGetMessageValue("broadcast.format.direct","&8\n[prefix]&7[message]\n&8&8&8");
         Messages.BROADCAST_FORMAT_SEND = addAndGetMessageValue("broadcast.format.send","&8\n[prefix][message]\n&8&8&8");

@@ -56,6 +56,7 @@ public class Config extends SimpleConfig{
     public ReasonMode kickMode;
 
     public transient DateFormat dateFormat;
+    public char serverGroupSplit;
 
     public boolean joinMeEnabled;
     public long joinMeCooldown;
@@ -125,6 +126,8 @@ public class Config extends SimpleConfig{
     public int ipBanBanPoints;
     public boolean ipBanOnBanEnabled;
     public long ipBanOnBanDuration;
+
+
 
     public boolean commandBan;
     public boolean commandUnban;
@@ -206,6 +209,7 @@ public class Config extends SimpleConfig{
         this.warnAutoBanBanType  = BanType.parse(addAndGetStringValue("warn.autoban.type",BanType.NETWORK.toString()));
 
         this.dateFormat = new SimpleDateFormat(addAndGetStringValue("date.format","dd.MM.yyyy HH:mm"));
+        this.serverGroupSplit = addAndGetCharValue("servergroup.split",'-');
 
         this.joinMeEnabled = addAndGetBooleanValue("joinme.enabled",false);
         this.joinMeCooldown = addAndGetLongValue("joinme.cooldown",120000L);

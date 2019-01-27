@@ -56,7 +56,7 @@ public class DKBansMaintenanceExtension extends JavaPlugin implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLogin(PlayerLoginEvent event){
         if(maintenance.isEnabled()){
-            if(!event.getPlayer().hasPermission("dkbans.maintenance.join")){
+            if(!maintenance.getWhitelist().contains(event.getPlayer().getUniqueId()) && !event.getPlayer().hasPermission("dkbans.maintenance.join")){
                 event.disallow(PlayerLoginEvent.Result.KICK_BANNED,maintenance.replace(config.joinMessage));
             }
         }
@@ -67,7 +67,8 @@ public class DKBansMaintenanceExtension extends JavaPlugin implements Listener {
             this.maintenance = event.getSettings().getObject("maintenance",Maintenance.class);
             if(maintenance.isEnabled()){
                 for(Player player : Bukkit.getOnlinePlayers()){
-                    if(!player.hasPermission("dkbans.maintenance.join")) player.kickPlayer(maintenance.replace(config.joinMessage));
+                    if(!maintenance.getWhitelist().contains(player.getUniqueId()) && !player.hasPermission("dkbans.maintenance.join"))
+                        player.kickPlayer(maintenance.replace(config.joinMessage));
                 }
             }
         }

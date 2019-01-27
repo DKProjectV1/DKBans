@@ -140,6 +140,7 @@ public class Broadcast {
         URL(),
         COMMAND(),
         SERVER(),
+        SERVERGROUP(),
         OPENCHAT();
 
         public static ClickType parseNull(String parse){

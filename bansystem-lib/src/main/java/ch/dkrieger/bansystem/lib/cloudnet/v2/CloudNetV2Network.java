@@ -32,6 +32,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public abstract class CloudNetV2Network implements DKNetwork {
 
@@ -64,6 +65,14 @@ public abstract class CloudNetV2Network implements DKNetwork {
         ServerInfo serverInfo = CloudAPI.getInstance().getServerInfo(server);
         if(serverInfo != null) return serverInfo.getPlayers();
         return new ArrayList<>();
+    }
+
+    @Override
+    public List<String> getGroupServers(String group) {
+        Collection<ServerInfo> servers = CloudAPI.getInstance().getServers(group);
+        List<String> list = new LinkedList<>();
+        servers.forEach(server -> list.add(server.getServiceId().getServerId()));
+        return list;
     }
 
     @Override

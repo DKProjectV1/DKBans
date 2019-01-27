@@ -30,7 +30,8 @@ public class MaintenanceConfig {
 
     public List<String> playerInfo;
     public String versionInfo, motdLine1, motdLine2, joinMessage, commandEnabled, commandDisabled, commandInfo
-            , commandTimeOut, commandReason, commandReasonAndTimeOut, commandInvalidDate, commandHelp;
+            ,commandTimeOut, commandReason, commandReasonAndTimeOut, commandInvalidDate, commandWhitelistAdd
+            ,commandWhitelistRemove, commandWhitelistListHeader, commandWhitelistList, commandHelp;
 
     public MaintenanceConfig() {
         MessageConfig config = BanSystem.getInstance().getMessageConfig();
@@ -46,10 +47,14 @@ public class MaintenanceConfig {
         commandReasonAndTimeOut = config.addAndGetMessageValue("dkbans.extension.maintenance.command.change","[prefix]&7The network is now in &7maintenance &7mode &7for &c[reason] &7until &c[timeOut]&7.");
         commandInfo = config.addAndGetMessageValue("dkbans.extension.maintenance.command.info","[prefix]&7Maintenance\n&8» &7Enabled &c[enabled]\n&8» &7Reason &c[reason]\n&8» &7End &c[timeOut]");
         commandInvalidDate = config.addAndGetMessageValue("dkbans.extension.maintenance.invaliddateformat","[prefix]&cInvalid date format &8(&7dd.MM.yyyy HH:mm&8)");
+        commandWhitelistAdd = config.addAndGetMessageValue("dkbans.whitelist.add","[prefix]&7Added [player] to the maintenance whitelist.");
+        commandWhitelistRemove = config.addAndGetMessageValue("dkbans.whitelist.remove","[prefix]&7Removed [player] from the maintenance whitelist.");
+        commandWhitelistListHeader = config.addAndGetMessageValue("dkbans.whitelist.list.header","[prefix]&7Whitelisted players");
+        commandWhitelistList = config.addAndGetMessageValue("dkbans.whitelist.list.list","&8» [player]");
         commandHelp = config.addAndGetMessageValue("dkbans.extension.maintenance.command.help","[prefix]&7Maintenance" +
-                "\n&8» &e/maintenance enabled\n&8» &e/maintenance disable\n&8» &e/maintenance info\n&8» &e/maintenance setEnd <dd.MM.yyyy> <HH:mm>" +
+                "\n&8» &e/maintenance enabled\n&8» &e/maintenance disable\n&8» &e/maintenance info\n&8» &e/maintenance add <player>" +
+                "\n&8» &e/maintenance remove <player>\n&8» &e/maintenance list\n&8» &e/maintenance setEnd <dd.MM.yyyy> <HH:mm>" +
                 "\n&8» &e/maintenance setDuration <time> {unit}\n&8» &e/maintenance setReason <reason>\n&8» &e/maintenance set <dd.MM.yyyy> <HH:mm> <reason>");
-
         config.save();
     }
 }

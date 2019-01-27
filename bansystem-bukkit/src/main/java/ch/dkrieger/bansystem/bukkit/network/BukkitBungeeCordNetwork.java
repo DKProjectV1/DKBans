@@ -34,6 +34,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -67,6 +68,11 @@ public class BukkitBungeeCordNetwork implements DKNetwork {
             players.add(online.getName());
         }
         return players;
+    }
+
+    @Override
+    public List<String> getGroupServers(String group) {
+        return new LinkedList<>();
     }
 
     @Override

@@ -71,11 +71,13 @@ public class DKBansMaintenanceExtension extends Plugin implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLogin(LoginEvent event){
         if(maintenance.isEnabled()){
-            PermissionCheckEvent checkEvent = ProxyServer.getInstance().getPluginManager().callEvent(new PermissionCheckEvent(
-                    new ProxiedSimplePermissionCheckPlayer(event.getConnection()), "dkbans.maintenance.join", false));
-            if(!checkEvent.hasPermission()){
-                event.setCancelled(true);
-                event.setCancelReason(new TextComponent(maintenance.replace(config.joinMessage)));
+            if(!maintenance.getWhitelist().contains(event.getConnection().getUniqueId())){
+                PermissionCheckEvent checkEvent = ProxyServer.getInstance().getPluginManager().callEvent(new PermissionCheckEvent(
+                        new ProxiedSimplePermissionCheckPlayer(event.getConnection()), "dkbans.maintenance.join", false));
+                if(!checkEvent.hasPermission()){
+                    event.setCancelled(true);
+                    event.setCancelReason(new TextComponent(maintenance.replace(config.joinMessage)));
+                }
             }
         }
     }
@@ -86,7 +88,8 @@ public class DKBansMaintenanceExtension extends Plugin implements Listener {
             buildResponse();
             if(maintenance.isEnabled()){
                 for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
-                    if(!player.hasPermission("dkbans.maintenance.join")) player.disconnect(new TextComponent(maintenance.replace(config.joinMessage)));
+                    if(!maintenance.getWhitelist().contains(player.getUniqueId()) && !player.hasPermission("dkbans.maintenance.join"))
+                        player.disconnect(new TextComponent(maintenance.replace(config.joinMessage)));
                 }
             }
         }

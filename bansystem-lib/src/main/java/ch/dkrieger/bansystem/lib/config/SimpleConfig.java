@@ -176,6 +176,10 @@ public abstract class SimpleConfig {
         addValue(path,object);
         return this.config.getBooleanList(path);
     }
+    public char addAndGetCharValue(String path,Object object){
+        addValue(path,object);
+        return this.config.getChar(path);
+    }
     public Object addAndGetValue(String path,Object object){
         addValue(path,object);
         return this.config.getStringList(path);

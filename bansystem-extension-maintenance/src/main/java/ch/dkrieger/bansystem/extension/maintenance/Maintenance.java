@@ -23,6 +23,10 @@ package ch.dkrieger.bansystem.extension.maintenance;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class Maintenance {
@@ -31,10 +35,13 @@ public class Maintenance {
     private long timeOut;
     private String reason;
 
+    private List<UUID> whitelist;
+
     public Maintenance(boolean enabled, long timeOut, String reason) {
         this.enabled = enabled;
         this.timeOut = timeOut;
         this.reason = reason;
+        this.whitelist = new LinkedList<>();
     }
 
     public boolean isEnabled() {
@@ -46,6 +53,12 @@ public class Maintenance {
     public long getTimeOut() {
         return timeOut;
     }
+
+    public List<UUID> getWhitelist() {
+        if(this.whitelist == null) this.whitelist = new LinkedList<>();
+        return whitelist;
+    }
+
     public String getReason() {
         return reason;
     }

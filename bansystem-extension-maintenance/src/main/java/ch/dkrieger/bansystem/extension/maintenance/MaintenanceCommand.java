@@ -24,11 +24,13 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
+import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.UUID;
 
 public class MaintenanceCommand extends NetworkCommand {
 
@@ -64,6 +66,13 @@ public class MaintenanceCommand extends NetworkCommand {
                         .replace("[timeOut]",BanSystem.getInstance().getConfig().dateFormat.format(maintenance.getTimeOut()))
                         .replace("[prefix]",getPrefix()));
                 return;
+            }else if(args[0].equalsIgnoreCase("list")){
+                sender.sendMessage(config.commandWhitelistListHeader.replace("[prefix]",getPrefix()));
+                for(UUID uuid : maintenance.getWhitelist()){
+                    NetworkPlayer player = BanSystem.getInstance().getPlayerManager().getPlayer(uuid);
+                    if(player != null) sender.sendMessage(config.commandWhitelistList.replace("[player]",player.getColoredName()));
+                }
+                return;
             }else if (args.length >=2){
                 if(args[0].equalsIgnoreCase("setDuration") && GeneralUtil.isNumber(args[1])){
                     maintenance.setTimeOut(System.currentTimeMillis()+GeneralUtil.convertToMillis(Long.valueOf(args[1]),(args.length >2?args[2]:null)));
@@ -78,6 +87,26 @@ public class MaintenanceCommand extends NetworkCommand {
                     maintenance.setReason(reason);
                     sender.sendMessage(config.commandReason.replace("[reason]",reason).replace("[prefix]",getPrefix()));
                     save();
+                    return;
+                }else if(args[0].equalsIgnoreCase("add")){
+                    NetworkPlayer player = BanSystem.getInstance().getPlayerManager().getPlayer(args[1]);
+                    if(player == null){
+                        sender.sendMessage(Messages.PLAYER_NOT_FOUND.replace("[player]",args[1]).replace("[prefix]",getPrefix()));
+                        return;
+                    }
+                    maintenance.getWhitelist().add(player.getUUID());
+                    save();
+                    sender.sendMessage(config.commandWhitelistAdd.replace("[player]",player.getColoredName()).replace("[prefix]",getPrefix()));
+                    return;
+                }else if(args[0].equalsIgnoreCase("remove")){
+                    NetworkPlayer player = BanSystem.getInstance().getPlayerManager().getPlayer(args[1]);
+                    if(player == null){
+                        sender.sendMessage(Messages.PLAYER_NOT_FOUND.replace("[player]",args[1]).replace("[prefix]",getPrefix()));
+                        return;
+                    }
+                    maintenance.getWhitelist().remove(player.getUUID());
+                    save();
+                    sender.sendMessage(config.commandWhitelistRemove.replace("[player]",player.getColoredName()).replace("[prefix]",getPrefix()));
                     return;
                 }
                 if(args.length >=3){
