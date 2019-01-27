@@ -80,6 +80,7 @@ public class CloudNetV2OnlinePlayer implements OnlineNetworkPlayer {
         return -1;
     }
 
+
     @Override
     public NetworkPlayer getPlayer() {
         return BanSystem.getInstance().getPlayerManager().getPlayer(getUUID());

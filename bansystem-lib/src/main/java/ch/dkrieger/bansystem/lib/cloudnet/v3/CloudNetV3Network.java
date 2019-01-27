@@ -28,6 +28,7 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import de.dytanic.cloudnet.common.document.Document;
+import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
 import de.dytanic.cloudnet.wrapper.Wrapper;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -66,6 +67,14 @@ public abstract class CloudNetV3Network implements DKNetwork {
         GeneralUtil.iterateAcceptedForEach(BanSystem.getInstance().getPlayerManager().getOnlinePlayers()
                 , object -> object.getServer().equalsIgnoreCase(server), object -> players.add(object.getName()));
         return players;
+    }
+
+    @Override
+    public List<String> getGroupServers(String group) {
+        Collection<ServiceInfoSnapshot> servers = Wrapper.getInstance().getCloudServiceInfoByGroup(group);
+        List<String> list = new LinkedList<>();
+        servers.forEach(server -> list.add(server.getServiceId().getName()));
+        return list;
     }
 
     @Override
@@ -117,5 +126,10 @@ public abstract class CloudNetV3Network implements DKNetwork {
     @Override
     public void reloadBroadcast() {
         Wrapper.getInstance().sendChannelMessage("DKBans","reloadBroadcast",new Document());
+    }
+
+    @Override
+    public void syncSetting(String name) {
+        Wrapper.getInstance().sendChannelMessage("DKBans","syncSetting",new Document("name",name));
     }
 }

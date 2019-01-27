@@ -20,18 +20,19 @@
 
 package ch.dkrieger.bansystem.bukkit.player.bukkit;
 
+import ch.dkrieger.bansystem.bukkit.BukkitBanSystemBootstrap;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
-import ch.dkrieger.bansystem.bukkit.BukkitBanSystemBootstrap;
 import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+
 import java.util.UUID;
 
 public class BukkitOnlinePlayer implements OnlineNetworkPlayer {

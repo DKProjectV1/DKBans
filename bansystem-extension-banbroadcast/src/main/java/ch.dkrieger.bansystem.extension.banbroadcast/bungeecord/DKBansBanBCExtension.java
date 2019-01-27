@@ -33,7 +33,7 @@ import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
@@ -46,7 +46,7 @@ public class DKBansBanBCExtension extends Plugin implements Listener {
 
     @Override
     public void onEnable() {
-        BungeeCord.getInstance().getPluginManager().registerListener(this,this);
+        ProxyServer.getInstance().getPluginManager().registerListener(this,this);
         this.config = new BanBroadcastConfig();
     }
     @EventHandler
@@ -78,7 +78,7 @@ public class DKBansBanBCExtension extends Plugin implements Listener {
                 .replace("[remaining]",GeneralUtil.calculateRemaining(ban.getDuration(),false))
                 .replace("[remaining-short]",GeneralUtil.calculateRemaining(ban.getDuration(),true))
                 .replace("[prefix]",Messages.PREFIX_BAN));
-        for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
+        for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
             if(player.hasPermission("dkbans.banbroadcast.receive")) player.sendMessage(component);
         }
     }
@@ -96,7 +96,7 @@ public class DKBansBanBCExtension extends Plugin implements Listener {
                     .replace("[player]",""+kick.getPlayer().getColoredName())
                     .replace("[server]",kick.getServer())
                     .replace("[reason]",kick.getReason()));
-            for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
+            for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
                 if(player.hasPermission("dkbans.banbroadcast.receive")) player.sendMessage(component);
             }
         }
@@ -114,7 +114,7 @@ public class DKBansBanBCExtension extends Plugin implements Listener {
                     .replace("[points]",""+unban.getPoints())
                     .replace("[player]",""+unban.getPlayer().getColoredName())
                     .replace("[reason]",unban.getReason()));
-            for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
+            for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
                 if(player.hasPermission("dkbans.banbroadcast.receive")) player.sendMessage(component);
             }
         }
@@ -132,7 +132,7 @@ public class DKBansBanBCExtension extends Plugin implements Listener {
                     .replace("[points]",""+warn.getPoints())
                     .replace("[player]",""+warn.getPlayer().getColoredName())
                     .replace("[reason]",warn.getReason()));
-            for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
+            for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
                 if(player.hasPermission("dkbans.banbroadcast.receive")) player.sendMessage(component);
             }
         }

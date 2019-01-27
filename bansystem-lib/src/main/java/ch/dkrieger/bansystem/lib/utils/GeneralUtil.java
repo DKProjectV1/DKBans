@@ -24,6 +24,7 @@ import ch.dkrieger.bansystem.lib.Messages;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -268,6 +269,30 @@ public class GeneralUtil {
         List<String> result = new LinkedList<>();
         for(String name : options) if(name.toLowerCase().startsWith(search) && !(name.equalsIgnoreCase(not))) result.add(name);
         return result;
+    }
+
+    public static String buildNextLineColor(String message){
+        String newMessage = "";
+        String lastColor = null;
+        boolean nextColor = false;
+
+        for(char c : message.toCharArray()){
+            if(c == '§') nextColor = true;
+            else {
+                if(c == ' '){
+                    if(lastColor != null){
+                        newMessage += (" "+lastColor);
+                        continue;
+                    }
+                }else if(nextColor){
+                    ChatColor  color = ChatColor.getByChar(c);
+                    if(color != null) lastColor = "§"+c;
+                }
+                nextColor = false;
+            }
+            newMessage += c;
+        }
+        return newMessage;
     }
 
     public interface AcceptAble<T> {

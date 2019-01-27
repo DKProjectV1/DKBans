@@ -37,10 +37,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import java.util.Arrays;
-import java.util.List;
+
 import java.util.concurrent.TimeUnit;
 
 public class ReportGlobalGui extends PrivateGui<Player> {

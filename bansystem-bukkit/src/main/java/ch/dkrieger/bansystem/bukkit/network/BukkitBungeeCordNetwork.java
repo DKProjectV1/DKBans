@@ -22,20 +22,19 @@ package ch.dkrieger.bansystem.bukkit.network;
 
 import ch.dkrieger.bansystem.bukkit.BukkitBanSystemBootstrap;
 import ch.dkrieger.bansystem.bukkit.BungeeCordConnection;
+import ch.dkrieger.bansystem.bukkit.event.BukkitDKBansSettingUpdateEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.DKNetwork;
 import ch.dkrieger.bansystem.lib.JoinMe;
-import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.Document;
-import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,6 +68,11 @@ public class BukkitBungeeCordNetwork implements DKNetwork {
             players.add(online.getName());
         }
         return players;
+    }
+
+    @Override
+    public List<String> getGroupServers(String group) {
+        return new LinkedList<>();
     }
 
     @Override
@@ -127,5 +131,11 @@ public class BukkitBungeeCordNetwork implements DKNetwork {
     public void reloadBroadcast() {
         connection.send("reloadBroadcast",new Document());
         BanSystem.getInstance().getBroadcastManager().reloadLocal();
+    }
+
+    @Override
+    public void syncSetting(String name) {
+        connection.send("syncSetting",new Document().append("name",name));
+        Bukkit.getPluginManager().callEvent(new BukkitDKBansSettingUpdateEvent(name,System.currentTimeMillis(),true));
     }
 }

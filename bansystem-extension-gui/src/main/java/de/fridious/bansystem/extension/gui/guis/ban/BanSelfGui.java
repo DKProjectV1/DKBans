@@ -40,7 +40,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
-import java.util.*;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class BanSelfGui extends PrivateGui {

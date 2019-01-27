@@ -20,6 +20,8 @@
 
 package ch.dkrieger.bansystem.bukkit.network;
 
+import ch.dkrieger.bansystem.bukkit.BukkitBanSystemBootstrap;
+import ch.dkrieger.bansystem.bukkit.event.BukkitDKBansSettingUpdateEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.DKNetwork;
 import ch.dkrieger.bansystem.lib.JoinMe;
@@ -28,9 +30,9 @@ import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-import ch.dkrieger.bansystem.bukkit.BukkitBanSystemBootstrap;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -63,6 +65,20 @@ public class BukkitNetwork implements DKNetwork {
         List<String> result = new ArrayList<>();
         for(Player player : Bukkit.getOnlinePlayers()) result.add(player.getName());
         return result;
+    }
+
+    @Override
+    public List<String> getGroupServers(String group) {
+        List<String> servers = new LinkedList<>();
+        for(World world : Bukkit.getWorlds()){
+            int cid = 0, creplace = 0;
+            for(char c : world.getName().toCharArray()){
+                cid++;
+                if(c == BanSystem.getInstance().getConfig().serverGroupSplit) creplace = cid-1;
+            }
+            if(group.equalsIgnoreCase(creplace>0?world.getName().substring(0,creplace):world.getName())) servers.add(world.getName());
+        }
+        return servers;
     }
 
     @Override
@@ -134,5 +150,9 @@ public class BukkitNetwork implements DKNetwork {
     @Override
     public void reloadBroadcast() {
         BanSystem.getInstance().getBroadcastManager().reloadLocal();
+    }
+    @Override
+    public void syncSetting(String name) {
+        Bukkit.getPluginManager().callEvent(new BukkitDKBansSettingUpdateEvent(name,System.currentTimeMillis(),true));
     }
 }

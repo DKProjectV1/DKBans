@@ -36,7 +36,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import java.util.Arrays;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;

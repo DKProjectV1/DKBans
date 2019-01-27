@@ -44,15 +44,14 @@ import ch.dkrieger.bansystem.lib.stats.PlayerStats;
 import ch.dkrieger.bansystem.lib.storage.DKBansStorage;
 import ch.dkrieger.bansystem.lib.storage.StorageType;
 import ch.dkrieger.bansystem.lib.storage.sql.query.ColumnType;
+import ch.dkrieger.bansystem.lib.storage.sql.query.ExecuteQuery;
 import ch.dkrieger.bansystem.lib.storage.sql.query.QueryOption;
 import ch.dkrieger.bansystem.lib.storage.sql.query.SelectQuery;
 import ch.dkrieger.bansystem.lib.storage.sql.table.Table;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import com.google.gson.reflect.TypeToken;
-import com.sun.org.apache.regexp.internal.RE;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -61,7 +60,7 @@ public class SQLDKBansStorage implements DKBansStorage {
 
     private Config config;
     private SQL sql;
-    private Table players, chatlogs, histories, reports, filters, broadcasts,onlineSessions, networkstats, ipbans;
+    private Table players, chatlogs, histories, reports, filters, broadcasts,onlineSessions, networkStats, ipbans, settings;
     private boolean v1Detected;
 
     public SQLDKBansStorage(Config config) {
@@ -81,9 +80,10 @@ public class SQLDKBansStorage implements DKBansStorage {
             reports = new Table(sql,"DKBans_reports");
             filters = new Table(sql,"DKBans_filters");
             broadcasts = new Table(sql,"DKBans_broadcasts");
-            networkstats = new Table(sql,"DKBans_networkstats");
+            networkStats = new Table(sql,"DKBans_networkStats");
             onlineSessions = new Table(sql,"DKBans_onlinesessions");
             ipbans = new Table(sql,"DKBans_ipbans");
+            settings = new Table(sql,"DKBans_settings");
 
             if(sql instanceof MySQL) tryTranslateFromV1ToV2();
 
@@ -159,7 +159,7 @@ public class SQLDKBansStorage implements DKBansStorage {
                         .create("clientVersion",ColumnType.VARCHAR,50,QueryOption.NOT_NULL)
                         .create("connected",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("disconnected",ColumnType.BIG_INT,QueryOption.NOT_NULL).execute();
-                this.networkstats.create().create("logins",ColumnType.BIG_INT,QueryOption.NOT_NULL)
+                this.networkStats.create().create("logins",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("reports",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("reportsAccepted",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("messages",ColumnType.BIG_INT,QueryOption.NOT_NULL)
@@ -173,21 +173,22 @@ public class SQLDKBansStorage implements DKBansStorage {
                         .create("lastPlayer",ColumnType.VARCHAR,80,QueryOption.NOT_NULL)
                         .create("timeStamp",ColumnType.BIG_INT,QueryOption.NOT_NULL)
                         .create("timeOut",ColumnType.BIG_INT,QueryOption.NOT_NULL).execute();
-
-                if(networkstats.select().execute("SELECT COUNT(*) FROM "+networkstats.getName(), result -> {
+                this.settings.create().create("name",ColumnType.VARCHAR,150,QueryOption.NOT_NULL,QueryOption.PRIMARY_KEY)
+                        .create("value",ColumnType.MEDIUMTEXT,QueryOption.NOT_NULL).execute();
+                if(networkStats.select().execute("SELECT COUNT(*) FROM "+networkStats.getName(), result -> {
                     try{
                         if(result.next())return result.getInt(1);
                     }catch (Exception exception){}
                     return 0;
                 }) == 0){
-                    this.networkstats.insert().insert("logins").insert("reports").insert("reportsAccepted").insert("messages")
+                    this.networkStats.insert().insert("logins").insert("reports").insert("reportsAccepted").insert("messages")
                             .insert("bans").insert("mutes").insert("unbans").insert("kicks").insert("warns").value(0).value(0).value(0)
                             .value(0).value(0).value(0).value(0).value(0).value(0).execute();
                 }else{
                     try{
                         this.players.execute("ALTER TABLE "+players.getName()+" ADD COLUMN watchingReportedPlayer varchar(80) AFTER reportLogin");
                         this.players.execute("ALTER TABLE "+players.getName()+" ADD COLUMN statsStaffWarns bigint AFTER statsStaffKicks");
-                        this.networkstats.execute("ALTER TABLE "+networkstats.getName()+" ADD COLUMN warns bigint");
+                        this.networkStats.execute("ALTER TABLE "+networkStats.getName()+" ADD COLUMN warns bigint");
                     }catch (Exception exception){}
                 }
                 if(v1Detected) translateFromV1ToV2();
@@ -383,7 +384,7 @@ public class SQLDKBansStorage implements DKBansStorage {
 
     @Override
     public ChatLog getChatLog(String server) {
-        return getChatLog(chatlogs.select().where("uuid",server));
+        return getChatLog(chatlogs.select().where("server",server));
     }
     @Override
     public ChatLog getChatLog(UUID player, String server) {
@@ -606,7 +607,7 @@ public class SQLDKBansStorage implements DKBansStorage {
 
     @Override
     public NetworkStats getNetworkStats() {
-        return networkstats.select().execute(result -> {
+        return networkStats.select().execute(result -> {
             try{
                 if(result.next()){
                     return new NetworkStats(result.getLong("logins"),result.getLong("reports")
@@ -621,7 +622,7 @@ public class SQLDKBansStorage implements DKBansStorage {
 
     @Override
     public void updateNetworkStats(long logins, long reports, long reportsAccepted, long messages, long bans, long mutes, long unbans, long kicks, long warns) {
-        networkstats.update().set("logins",logins).set("reports",reports).set("reportsAccepted",reportsAccepted).set("messages",messages)
+        networkStats.update().set("logins",logins).set("reports",reports).set("reportsAccepted",reportsAccepted).set("messages",messages)
                 .set("bans",bans).set("mutes",mutes).set("unbans",unbans).set("kicks",kicks).set("warns",warns).execute();
     }
 
@@ -671,6 +672,30 @@ public class SQLDKBansStorage implements DKBansStorage {
         }catch (Exception ignored){}
         v1Detected = false;
     }
+
+    @Override
+    public Document getSetting(String name) {
+        return this.settings.select().where("name",name).execute(result -> {
+            try{while(result.next()) return Document.loadData(result.getString("value"));
+            }catch (Exception exception){}
+            return null;
+        });
+    }
+
+    @Override
+    public void saveSetting(String name, Document document) {
+        ExecuteQuery query = new ExecuteQuery(sql,"INSERT INTO "+settings.getName()+" (name,value) VALUES (?,?) ON DUPLICATE KEY UPDATE value=VALUES(value)");
+        query.getValues().add(name);
+        query.getValues().add(document.toJson());
+        query.execute();
+    }
+
+    @Override
+    public void deleteSetting(String name) {
+        this.settings.delete().where("name",name).execute();
+    }
+
+
     private void translateFromV1ToV2(){
         if(!v1Detected) return;
         Table playersOld = new Table(sql,"DKBans_playersOld");

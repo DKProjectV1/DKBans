@@ -56,6 +56,7 @@ public class Config extends SimpleConfig{
     public ReasonMode kickMode;
 
     public transient DateFormat dateFormat;
+    public char serverGroupSplit;
 
     public boolean joinMeEnabled;
     public long joinMeCooldown;
@@ -126,6 +127,8 @@ public class Config extends SimpleConfig{
     public boolean ipBanOnBanEnabled;
     public long ipBanOnBanDuration;
 
+
+
     public boolean commandBan;
     public boolean commandUnban;
     public boolean commandBaninfo;
@@ -136,6 +139,7 @@ public class Config extends SimpleConfig{
     public boolean commandHistory;
     public boolean commandIpinfo;
     public boolean commandJoinme;
+    public boolean commandJumpto;
     public boolean commandKick;
     public boolean commandNetworkstats;
     public boolean commandOnlinetime;
@@ -152,6 +156,7 @@ public class Config extends SimpleConfig{
     public boolean commandIPUnban;
     public boolean commandWarn;
     public boolean commandEdit;
+    public boolean commandMyHistoryPoints;
 
     private transient DKBansPlatform platform;
 
@@ -204,6 +209,7 @@ public class Config extends SimpleConfig{
         this.warnAutoBanBanType  = BanType.parse(addAndGetStringValue("warn.autoban.type",BanType.NETWORK.toString()));
 
         this.dateFormat = new SimpleDateFormat(addAndGetStringValue("date.format","dd.MM.yyyy HH:mm"));
+        this.serverGroupSplit = addAndGetCharValue("servergroup.split",'-');
 
         this.joinMeEnabled = addAndGetBooleanValue("joinme.enabled",false);
         this.joinMeCooldown = addAndGetLongValue("joinme.cooldown",120000L);
@@ -283,6 +289,7 @@ public class Config extends SimpleConfig{
         this.commandHistory = addAndGetBooleanValue("command.history.enabled",true);
         this.commandIpinfo = addAndGetBooleanValue("command.ipinfo.enabled",true);
         this.commandJoinme = addAndGetBooleanValue("command.joinme.enabled",true);
+        this.commandJumpto = addAndGetBooleanValue("command.Jumpto.enabled",true);
         this.commandKick = addAndGetBooleanValue("command.kick.enabled",true);
         this.commandNetworkstats = addAndGetBooleanValue("command.networkstats.enabled",true);
         this.commandOnlinetime = addAndGetBooleanValue("command.onlinetime.enabled",true);
@@ -299,6 +306,7 @@ public class Config extends SimpleConfig{
         this.commandIPUnban = addAndGetBooleanValue("command.ipunban.enabled",true);
         this.commandWarn = addAndGetBooleanValue("command.warn.enabled",true);
         this.commandEdit = addAndGetBooleanValue("command.edit.enabled",true);
+        this.commandMyHistoryPoints = addAndGetBooleanValue("command.myhistorypoints.enabled",true);
     }
     public Ban createAltAccountBan(NetworkPlayer player, String ip){
         return new Ban(player.getUUID(),ip,ipBanBanReason,"",System.currentTimeMillis(),-1,new HistoryPoints(ipBanBanPoints,BanType.NETWORK),666

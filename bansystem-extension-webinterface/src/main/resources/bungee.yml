@@ -1,10 +1,8 @@
 name: DKBansWebinterface
 author: Davide Wietlisbach
 description: 
-version: 1.0.0
+version: ${project.version}
 depends: [DKBans, DKBansRestApiServer]
-softdepends: [DKBans, DKBansRestApiServer]
-loadbefores: [DKBans, DKBansRestApiServer]
 
 main: ch.dkrieger.bansystem.extension.webinterface.bungeecord.DKBansWebinterfaceExtension
 commands:

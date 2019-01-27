@@ -106,7 +106,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.STAFF_STATUS_LOGOUT = addAndGetMessageValue("staff.status.logout","&clogged out");
 
         Messages.REASON_NOT_FOUND = addAndGetMessageValue("reason.notfound","[prefix]&cThis reason was not found.");
-        Messages.REASON_NO_PERMISSION = addAndGetMessageValue("prefix.network","[prefix]&cYou don't have permission for this reason.");
+        Messages.REASON_NO_PERMISSION = addAndGetMessageValue("reason.nopermission","[prefix]&cYou don't have permission for this reason.");
 
         Messages.BAN_HELP_HEADER = addAndGetMessageValue("ban.help.header","[prefix]&6Ban Administration");
         Messages.BAN_HELP_REASON = addAndGetMessageValue("ban.help.reason","&8- &c[id] &8| &4[reason] &8» &4&l[banType]");
@@ -174,7 +174,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.BROADCAST_CHANGED_AUTO_DISABLED = addAndGetMessageValue("broadcast.changed.auto.disabled","[prefix]&7Disabled auto sending for broadcast &c[id]");
         Messages.BROADCAST_CHANGED_AUTO_ENABLED = addAndGetMessageValue("broadcast.changed.auto.enabled","[prefix]&7Enabled auto sending for broadcast &c[id]");
         Messages.BROADCAST_NOTFOUND_CLICKTYPE = addAndGetMessageValue("broadcast.notfound.clicktype","[prefix]&cThis click type was not found, use:" +
-                "\n&8» &7Url\n&8» &7Command\n&8» &7OpenChat");
+                "\n&8» &7Url\n&8» &7Command\n&8» &7OpenChat\n&8» &7Server\n&8» &7ServerGroup");
         Messages.BROADCAST_NOTFOUND_BROADCAST = addAndGetMessageValue("broadcast.notfound.broadcast","[prefix]&cThe broadcast with the with the id &c[id] &cwas not found.");
         Messages.BROADCAST_FORMAT_DIRECT = addAndGetMessageValue("broadcast.format.direct","&8\n[prefix]&7[message]\n&8&8&8");
         Messages.BROADCAST_FORMAT_SEND = addAndGetMessageValue("broadcast.format.send","&8\n[prefix][message]\n&8&8&8");
@@ -200,9 +200,9 @@ public class MessageConfig extends SimpleConfig{
         Messages.TEAMCHAT_MESSAGE_COLOR = addAndGetMessageValue("teamchat.message.color","&7");
         Messages.TEAMCHAT_MESSAGE_FORMAT = addAndGetMessageValue("teamchat.message.format","[prefix]&8[player] &8» &7[message]");
 
-        Messages.TEMPBAN_HELP = addAndGetMessageValue("tempban.help","[prefix]&cUsage&8: &7 /tempban <player> <reason> &7<time> &7{unit}");
+        Messages.TEMPBAN_HELP = addAndGetMessageValue("tempban.help","[prefix]&cUsage&8: &7 /tempban <player> <time> {unit} <reason>");
 
-        Messages.TEMPMUTE_HELP = addAndGetMessageValue("tempmute.help","[prefix]&cUsage&8: &7 /tempmute <player> <reason> &7<time> &7{unit}");
+        Messages.TEMPMUTE_HELP = addAndGetMessageValue("tempmute.help","[prefix]&cUsage&8: &7 /tempmute <player> &7<time> &7{unit} <reason>");
 
         Messages.HISTORY_HELP = addAndGetMessageValue("history.help","[prefix]&cUsage&8: &7 /history <player> {id}");
         Messages.HISTORY_NOTFOUND = addAndGetMessageValue("history.notfound","[prefix]&cThe history was not found.");
@@ -347,5 +347,8 @@ public class MessageConfig extends SimpleConfig{
         Messages.NETWORK_STATS = addAndGetMessageValue("networkstats","[prefix]&6Network stats&7\n&8» &7Players&8: &a[onlinePlayers]&8/&c[registeredPlayers]" +
                 "\n&8» &7Banned&8: &c[bans]\n&8» &7Muted&8: &c[mutes]\n&8» &7Kicked&8: &c[kicks]\n&8» &7Warned&8: &c[warns]\n&8» &7Unbanned&8: &c[unbans]\n&8» &7Reported&8: &a[reportsAccepted]&8/&c[reports]" +
                 "\n&8» &7Logins&8: &c[logins]\n&8» &7Messages&8: &c[messages]");
+
+        Messages.MYHISTORYPOINTS= addAndGetMessageValue("myhistorypoints","[prefix]&7Your history points" +
+                "\n&8» &7Ban&8: &c[points_network]\n&8» &7Mute&8: &c[points_chat]\n&8» &7Total&8: &c[points_all]");
     }
 }

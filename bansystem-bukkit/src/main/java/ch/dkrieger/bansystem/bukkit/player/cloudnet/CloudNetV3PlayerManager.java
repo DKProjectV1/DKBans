@@ -21,6 +21,7 @@
 package ch.dkrieger.bansystem.bukkit.player.cloudnet;
 
 import ch.dkrieger.bansystem.bukkit.BukkitBanSystemBootstrap;
+import ch.dkrieger.bansystem.bukkit.event.BukkitDKBansSettingUpdateEvent;
 import ch.dkrieger.bansystem.bukkit.event.BukkitOnlineNetworkPlayerUpdateEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.cloudnet.v3.CloudNetV3OnlinePlayer;
@@ -133,6 +134,10 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
                 List<CloudNetV3OnlinePlayer> players = event.getData().get("players"
                         ,new TypeToken<List<CloudNetV3OnlinePlayer>>(){}.getType());
                 for(CloudNetV3OnlinePlayer player : players) this.externalPlayers.put(player.getUUID(),player);
+            }else if(event.getMessage().equalsIgnoreCase("syncSetting")){
+                BanSystem.getInstance().getSettingProvider().removeFromCache(event.getData().getString("name"));
+                Bukkit.getPluginManager().callEvent(new BukkitDKBansSettingUpdateEvent(event.getData().getString("name")
+                        ,System.currentTimeMillis(),false));
             }
         }
     }

@@ -1,6 +1,5 @@
 package de.fridious.bansystem.extension.gui.api.inventory.gui;
 
-import ch.dkrieger.bansystem.lib.utils.Document;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemBuilder;
 import de.fridious.bansystem.extension.gui.api.inventory.item.ItemStorage;

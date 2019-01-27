@@ -22,14 +22,12 @@ package ch.dkrieger.bansystem.lib.storage.sql;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
-import java.io.File;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class MySQL extends SQL {
 
@@ -72,7 +70,10 @@ public class MySQL extends SQL {
     @Override
 	public boolean connect() {
         loadDriver();
-        if(ssl) dataSourceProperties.put("ssl","true");
+        if(ssl){
+            dataSourceProperties.put("ssl","true");
+            dataSourceProperties.put("useSSL","true");
+        }
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:mysql://"+this.host+":"+this.port+"/"+this.database);
         config.setUsername(this.user);
