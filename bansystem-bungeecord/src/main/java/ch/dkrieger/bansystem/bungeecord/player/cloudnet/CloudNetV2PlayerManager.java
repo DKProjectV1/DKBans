@@ -187,7 +187,7 @@ public class CloudNetV2PlayerManager extends PlayerManager implements Listener {
                 if(player != null){
                     Ban ban = event.getDocument().getObject("ban", Ban.class);
                     if(ban.getBanType() == BanType.NETWORK) player.disconnect(ban.toMessage());
-                    else player.sendMessage(ban.toMessage());;
+                    else player.sendMessage(ban.toMessage());
                 }
             }else if(event.getMessage().equalsIgnoreCase("broadcast")){
                 if(event.getDocument().contains("message")){

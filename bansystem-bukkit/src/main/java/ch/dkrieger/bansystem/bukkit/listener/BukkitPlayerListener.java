@@ -191,19 +191,17 @@ public class BukkitPlayerListener implements Listener {
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event){
         event.setMessage(event.getMessage().replace("bungeecord:","").replace("minecraft:","").replace("bungeecord:",""));
-        if(BanSystem.getInstance().getConfig().chatBlockPlugin){
-            if(event.getMessage().startsWith("/pl ")
-                    || event.getMessage().startsWith("/plugins ")
-                    || event.getMessage().startsWith("/plugin ")
-                    || event.getMessage().equalsIgnoreCase("/pl") ||
-                    event.getMessage().equalsIgnoreCase("/plugin")
-                    || event.getMessage().equalsIgnoreCase("/plugins")){
-                if(!(event.getPlayer().hasPermission("dkbans.bypass.plugin"))){
-                    event.setCancelled(true);
-                    event.getPlayer().sendMessage(Messages.CHAT_PLUGIN.replace("[prefix]",Messages.PREFIX_NETWORK));
-                }
-                return;
+        if(BanSystem.getInstance().getConfig().chatBlockPlugin && (event.getMessage().startsWith("/pl ")
+                || event.getMessage().startsWith("/plugins ")
+                || event.getMessage().startsWith("/plugin ")
+                || event.getMessage().equalsIgnoreCase("/pl")
+                || event.getMessage().equalsIgnoreCase("/plugin")
+                || event.getMessage().equalsIgnoreCase("/plugins"))){
+            if(!(event.getPlayer().hasPermission("dkbans.bypass.plugin"))){
+                event.setCancelled(true);
+                event.getPlayer().sendMessage(Messages.CHAT_PLUGIN.replace("[prefix]",Messages.PREFIX_NETWORK));
             }
+            return;
         }
         if(!event.getPlayer().hasPermission("dkbans.bypass.chat") && BanSystem.getInstance().getFilterManager().isBlocked(FilterType.COMMAND,event.getMessage())){
             event.getPlayer().sendMessage(Messages.CHAT_FILTER_COMMAND.replace("[prefix]",Messages.PREFIX_CHAT));

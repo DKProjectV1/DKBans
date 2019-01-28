@@ -168,6 +168,7 @@ public abstract class SimpleConfig {
         addValue(path,object);
         return this.config.getDoubleList(path);
     }
+
     public List<Long> addAndGetLongListValue(String path,Object object){
         addValue(path,object);
         return this.config.getLongList(path);

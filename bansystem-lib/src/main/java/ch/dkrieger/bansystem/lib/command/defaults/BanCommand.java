@@ -41,12 +41,9 @@ import java.util.UUID;
 
 public class BanCommand extends NetworkCommand {
 
-    private Map<UUID,String> lastPlayers;
-
     public BanCommand() {
         super("ban","","dkbans.ban");
         setPrefix(Messages.PREFIX_BAN);
-        this.lastPlayers = new HashMap<>();
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {

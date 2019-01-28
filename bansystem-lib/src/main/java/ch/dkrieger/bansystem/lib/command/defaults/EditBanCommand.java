@@ -124,13 +124,11 @@ public class EditBanCommand extends NetworkCommand {
                 sender.sendMessage(new TextComponent(Messages.BAN_NOTFOUND.replace("[prefix]",getPrefix())));
                 return;
             }
-            if(!sender.hasPermission("dkbans.editban.all") && !sender.hasPermission("dkbans.*")){
-                if(!ban.getStaff().equals(sender.getUUID().toString())){
-                    sender.sendMessage(Messages.EDITBAN_NOTALLOWED
-                            .replace("[player]",player.getColoredName())
-                            .replace("[prefix]",getPrefix()));
-                    return;
-                }
+            if(!sender.hasPermission("dkbans.editban.all") && !sender.hasPermission("dkbans.*") && !ban.getStaff().equals(sender.getUUID().toString())){
+                sender.sendMessage(Messages.EDITBAN_NOTALLOWED
+                        .replace("[player]",player.getColoredName())
+                        .replace("[prefix]",getPrefix()));
+                return;
             }
             if(args[1].equalsIgnoreCase("setReason")){
                 String message = "";

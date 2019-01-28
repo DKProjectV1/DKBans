@@ -111,7 +111,7 @@ public class BungeeCordConnection implements PluginMessageListener {
             }
             for(Player player : Bukkit.getOnlinePlayers()){
                 player.sendPluginMessage(BukkitBanSystemBootstrap.getInstance(),"dkbans:dkbans",b.toByteArray());
-                return;
+                break;
             }
         }catch (IOException exception){
             System.out.println(Messages.SYSTEM_PREFIX+"Updater: Could not send data to bukkit.");

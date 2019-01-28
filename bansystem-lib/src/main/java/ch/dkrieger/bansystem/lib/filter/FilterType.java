@@ -28,7 +28,7 @@ public enum FilterType {
     COMMAND(),
     MUTECOMMAND();
 
-    public static FilterType ParseNull(String parse){
+    public static FilterType parseNull(String parse){
         try{
             return valueOf(parse.toUpperCase());
         }catch (Exception e){}

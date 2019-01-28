@@ -27,7 +27,7 @@ public enum FilterOperation {
     STARTSWITH(),
     ENDSWITH();
 
-    public static FilterOperation ParseNull(String parse){
+    public static FilterOperation parseNull(String parse){
         try{
             return valueOf(parse.toUpperCase());
         }catch (Exception e){}

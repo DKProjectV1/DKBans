@@ -80,9 +80,7 @@ public class KickCommand implements CommandExecutor {
                         .create(Guis.KICK_SELF, new KickSelfGui(player, target.getUUID())).open();
 
             }
-        } else {
-
-        }
+        }//USAGE
         return true;
     }
 }

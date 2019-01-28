@@ -27,17 +27,17 @@ import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class BroadcastJumpCommand extends NetworkCommand {
 
-    public static Map<String,Long> SERVER_WHITELISTS;
+    public final static Map<String,Long> SERVER_WHITELISTS = new LinkedHashMap<>();
 
     public BroadcastJumpCommand() {
         super("broadcastjump");
-        SERVER_WHITELISTS = new HashMap<>();
         setPrefix(Messages.PREFIX_NETWORK);
     }
     @Override

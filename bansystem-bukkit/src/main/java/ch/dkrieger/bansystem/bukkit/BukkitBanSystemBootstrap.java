@@ -284,23 +284,21 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
             List<Report> reports = properties.getObject("reports",new TypeToken<List<Report>>(){}.getType());
             Bukkit.getPluginManager().callEvent(new BukkitNetworkPlayerBanEvent(player
                     ,System.currentTimeMillis(),onThisServer,properties.getObject("ban", Ban.class)));
-            if(!BanSystem.getInstance().getConfig().bungeecord){
-                if(reports.size() > 0){
-                    List<UUID> sentStaffs = new ArrayList<>();
-                    GeneralUtil.iterateForEach(reports, object -> {
-                        Player reporter = Bukkit.getPlayer(object.getReporterUUID());
-                        if(reporter != null) sendTextComponent(reporter,new TextComponent(Messages.REPORT_ACCEPTED
-                                .replace("[player]",object.getPlayer().getColoredName())
-                                .replace("[prefix]",Messages.PREFIX_REPORT)));
-                        if(!sentStaffs.contains(object.getStaff())){
-                            sentStaffs.add(object.getStaff());
-                            Player staff = Bukkit.getPlayer(object.getStaff());
-                            if(staff != null) reportExit(staff);
-                        }
-                    });
-                    Bukkit.getPluginManager().callEvent(new BukkitNetworkPlayerReportsAcceptEvent(player
-                            ,System.currentTimeMillis(),onThisServer,reports));
-                }
+            if(!BanSystem.getInstance().getConfig().bungeecord && reports.size() > 0){
+                List<UUID> sentStaffs = new ArrayList<>();
+                GeneralUtil.iterateForEach(reports, object -> {
+                    Player reporter = Bukkit.getPlayer(object.getReporterUUID());
+                    if(reporter != null) sendTextComponent(reporter,new TextComponent(Messages.REPORT_ACCEPTED
+                            .replace("[player]",object.getPlayer().getColoredName())
+                            .replace("[prefix]",Messages.PREFIX_REPORT)));
+                    if(!sentStaffs.contains(object.getStaff())){
+                        sentStaffs.add(object.getStaff());
+                        Player staff = Bukkit.getPlayer(object.getStaff());
+                        if(staff != null) reportExit(staff);
+                    }
+                });
+                Bukkit.getPluginManager().callEvent(new BukkitNetworkPlayerReportsAcceptEvent(player
+                        ,System.currentTimeMillis(),onThisServer,reports));
             }
         }else if(cause == NetworkPlayerUpdateCause.KICK){
             Bukkit.getPluginManager().callEvent(new BukkitNetworkPlayerKickEvent(player,System.currentTimeMillis(),onThisServer));

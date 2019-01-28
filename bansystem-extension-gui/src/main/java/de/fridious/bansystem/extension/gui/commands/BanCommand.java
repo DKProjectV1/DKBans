@@ -79,9 +79,7 @@ public class BanCommand implements CommandExecutor {
                 DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                         .create(Guis.BAN_SELF, new BanSelfGui(player, target.getUUID())).open();
             }
-        } else {
-            //USAGE
-        }
+        }//USAGE
         return true;
     }
 }

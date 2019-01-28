@@ -170,7 +170,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.BROADCAST_CHANGED_CLICK = addAndGetMessageValue("broadcast.changed.clicked","[prefix]&7Changed click from broadcast &c[id] &7to &c[clickType] &8| &c[clickMessage]");
         Messages.BROADCAST_CHANGED_HOVER = addAndGetMessageValue("broadcast.changed.hover","[prefix]&7Changed hover from broadcast &c[id] &7to &c[hover]");
         Messages.BROADCAST_CHANGED_MESSAGE = addAndGetMessageValue("broadcast.changed.message","[prefix]&7Changed message from broadcast &c[id] &7to &c[message]");
-        Messages.BROADCAST_CHANGED_PERMISSION = addAndGetMessageValue("broadcast.changed.PERMISSION","[prefix]&7Changed permission from broadcast &c[id] &7to &c[permission]");
+        Messages.BROADCAST_CHANGED_PERMISSION = addAndGetMessageValue("broadcast.changed.permission","[prefix]&7Changed permission from broadcast &c[id] &7to &c[permission]");
         Messages.BROADCAST_CHANGED_AUTO_DISABLED = addAndGetMessageValue("broadcast.changed.auto.disabled","[prefix]&7Disabled auto sending for broadcast &c[id]");
         Messages.BROADCAST_CHANGED_AUTO_ENABLED = addAndGetMessageValue("broadcast.changed.auto.enabled","[prefix]&7Enabled auto sending for broadcast &c[id]");
         Messages.BROADCAST_NOTFOUND_CLICKTYPE = addAndGetMessageValue("broadcast.notfound.clicktype","[prefix]&cThis click type was not found, use:" +

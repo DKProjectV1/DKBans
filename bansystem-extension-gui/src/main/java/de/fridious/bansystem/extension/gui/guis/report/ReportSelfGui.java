@@ -105,7 +105,7 @@ public class ReportSelfGui extends PrivateGui {
                                 .replace("[prefix]", Messages.PREFIX_REPORT));
                         player.closeInventory();
                         return;
-                    }else; //@Todo remove report if delay
+                    } //@Todo remove report if delay
                 }
                 report = targetNetworkPlayer.report(player.getUniqueId(), reason, getMessage(), -1, targetOnlineNetworkPlayer.getServer());
                 if(report != null){

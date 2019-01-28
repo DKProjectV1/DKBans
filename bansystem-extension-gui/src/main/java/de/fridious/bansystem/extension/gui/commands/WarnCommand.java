@@ -79,9 +79,7 @@ public class WarnCommand implements CommandExecutor {
                 DKBansGuiExtension.getInstance().getGuiManager().getCachedGuis(player)
                         .create(Guis.WARN_SELF, new WarnSelfGui(player, target.getUUID())).open();
             }
-        } else {
-
-        }
+        } //USAGE
         return true;
     }
 }

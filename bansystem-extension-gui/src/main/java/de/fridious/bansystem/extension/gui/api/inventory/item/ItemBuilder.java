@@ -42,7 +42,7 @@ import java.util.List;
 public class ItemBuilder {
 
     private ItemStack itemStack;
-    List<String> lore = new LinkedList<>();
+    private List<String> lore = new LinkedList<>();
 
     public ItemBuilder(){
     }
