@@ -162,7 +162,7 @@ public class ReportCommand extends NetworkCommand {
                     if(reportReason != null) reason =  BanSystem.getInstance().getReasonProvider().getBanReason(reportReason.getForBan());
 
                     TextComponent accept = new TextComponent(Messages.REPORT_PROCESS_CONTROL_FORREASON
-                            .replace("[reason]",reason==null?"Unknown":reason.getDisplay()));
+                            .replace("[reason]",reason==null?Messages.UNKNOWN:reason.getDisplay()));
                     accept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/report accept "+player.getUUID()));
 
                     TextComponent other = new TextComponent(Messages.REPORT_PROCESS_CONTROL_OTHERREASON);

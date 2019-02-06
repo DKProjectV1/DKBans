@@ -127,8 +127,6 @@ public class Config extends SimpleConfig{
     public boolean ipBanOnBanEnabled;
     public long ipBanOnBanDuration;
 
-
-
     public boolean commandBan;
     public boolean commandUnban;
     public boolean commandBaninfo;
@@ -155,6 +153,7 @@ public class Config extends SimpleConfig{
     public boolean commandIPban;
     public boolean commandIPUnban;
     public boolean commandWarn;
+    public boolean commandUnwarn;
     public boolean commandEdit;
     public boolean commandMyHistoryPoints;
 
@@ -305,6 +304,7 @@ public class Config extends SimpleConfig{
         this.commandIPban = addAndGetBooleanValue("command.ipban.enabled",true);
         this.commandIPUnban = addAndGetBooleanValue("command.ipunban.enabled",true);
         this.commandWarn = addAndGetBooleanValue("command.warn.enabled",true);
+        //this.commandUnwarn = addAndGetBooleanValue("command.unwarn.enabled",true);
         this.commandEdit = addAndGetBooleanValue("command.edit.enabled",true);
         this.commandMyHistoryPoints = addAndGetBooleanValue("command.myhistorypoints.enabled",true);
     }

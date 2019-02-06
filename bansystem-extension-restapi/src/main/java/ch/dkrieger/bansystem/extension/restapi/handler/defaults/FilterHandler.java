@@ -40,7 +40,7 @@ public class FilterHandler extends RestApiHandler {
         if(query.contains("action")){
             if(query.getString("action").equalsIgnoreCase("list")){
                 if(query.contains("type")){
-                    FilterType type = FilterType.ParseNull(query.getString("type"));
+                    FilterType type = FilterType.parseNull(query.getString("type"));
                     if(type == null){
                         response.append("code", ResponseCode.BAD_REQUEST).append("message","Invalid filter type");
                         return;
@@ -49,9 +49,9 @@ public class FilterHandler extends RestApiHandler {
                 }else response.append("filters",BanSystem.getInstance().getFilterManager().getFilters());
                 return;
             }else if(query.getString("action").equalsIgnoreCase("create") && query.contains("message")&& query.contains("type")){
-                FilterType type = FilterType.ParseNull(query.getString("type"));
+                FilterType type = FilterType.parseNull(query.getString("type"));
                 FilterOperation operation;
-                if(query.contains("operation")) operation = FilterOperation.ParseNull(query.getString("operation"));
+                if(query.contains("operation")) operation = FilterOperation.parseNull(query.getString("operation"));
                 else operation = FilterOperation.CONTAINS;
 
                 if(type == null){

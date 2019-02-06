@@ -396,7 +396,7 @@ public class SQLDKBansStorage implements DKBansStorage {
             try{
                 while(result.next()){
                     entries.add(new ChatLogEntry(UUID.fromString(result.getString("uuid")),result.getString("message")
-                            ,result.getString("server"),result.getLong("time"), FilterType.ParseNull(result.getString("filter"))));
+                            ,result.getString("server"),result.getLong("time"), FilterType.parseNull(result.getString("filter"))));
                 }
             }catch (SQLException e){
                 e.printStackTrace();
@@ -737,7 +737,7 @@ public class SQLDKBansStorage implements DKBansStorage {
                             case "KICK":
                                 createHistoryEntry(player,new Kick(player.getUUID(),player.getIP(),result.getString("reason")
                                         ,"",timeStamp,-1,new HistoryPoints(0,BanType.NETWORK),-1
-                                        ,result.getString("staffuuid"),new Document(),"Unknown"));
+                                        ,result.getString("staffuuid"),new Document(),Messages.UNKNOWN));
                                 break;
                             case "NETWORKBAN":
                                 long timeOut = timeStamp+result.getLong("duration");

@@ -41,6 +41,9 @@ public class MessageConfig extends SimpleConfig{
 
         Messages.ERROR = addAndGetMessageValue("error","[prefix]&cAn error occurred, please contact a network administrator.");
         Messages.NOPERMISSIONS = addAndGetMessageValue("nopermissions","[prefix]&cYou don't have permission for this command.");
+        Messages.UNKNOWN = addAndGetMessageValue("unknown","Unknown");
+        Messages.TRUE = addAndGetMessageValue("true","true");
+        Messages.FALSE = addAndGetMessageValue("false","false");
         Messages.HELP = addAndGetMessageValue("help","[prefix]&6Information\n&8» &e/hub &8| &7Connect to the Hub-Server" +
                 "\n&8» &e/report &8| &7Report a player\n&7&8\n&8» &eTeamSpeak&8: &bts.example.net\n&8» &eForum&8: &bforum.example.net\n&8» &eShop&8: &bshop.example.net");
 
@@ -141,6 +144,10 @@ public class MessageConfig extends SimpleConfig{
         Messages.WARN_BYPASS = addAndGetMessageValue("warn.bypass","[prefix]&cYou can not warn &8[player]&c.");
         Messages.WARN_SUCCESS = addAndGetMessageValue("warn.success","[prefix]&7was warned for &4[reason]&7.");
         Messages.WARN_MESSAGE = addAndGetMessageValue("warn.message","&5\n[prefix]&cYou were warned\n&8» &3Reason&8: &4&l[reason]\n&8» &3WarnID&8: &7[id]\n&5");
+
+        Messages.UNWARN_SUCCESS_ALL = addAndGetMessageValue("unwarn.all","[prefix] &7Unwarnd all warns from &8[player]&7.");
+        Messages.UNWARN_SUCCESS_DEFINED = addAndGetMessageValue("unwarn.all","[prefix] &7Unwarnd warn &c[warnId] &7from &8[player]&7.");
+        Messages.UNWARN_HELP = addAndGetMessageValue("unwarn.all","[prefix] &cUsage&8: &7/unwarn <player> {warnId} {reason}");
 
         Messages.EDITBAN_HELP = addAndGetMessageValue("editban.help","[prefix]&7Ban edit Administration" +
                 "\n&8» &e/editban <player/banId> setReason <reason> {message}\n&8» &e/editban <player/banId> setMessage <message>" +

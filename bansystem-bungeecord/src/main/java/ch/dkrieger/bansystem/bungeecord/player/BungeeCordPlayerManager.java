@@ -23,6 +23,7 @@ package ch.dkrieger.bansystem.bungeecord.player;
 import ch.dkrieger.bansystem.bungeecord.BungeeCordBanSystemBootstrap;
 import ch.dkrieger.bansystem.bungeecord.SubServerConnection;
 import ch.dkrieger.bansystem.bungeecord.event.ProxiedOnlineNetworkPlayerUpdateEvent;
+import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayerUpdateCause;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
@@ -114,7 +115,7 @@ public class BungeeCordPlayerManager extends PlayerManager implements Listener {
         List<PlayerUpdateObject> players = new ArrayList<>();
         for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
             Server server = player.getServer();
-            players.add(new PlayerUpdateObject(player.getUniqueId(),player.getName(),server==null?"Unknown":server.getInfo().getName(),"Proxy-1"));
+            players.add(new PlayerUpdateObject(player.getUniqueId(),player.getName(),server==null? Messages.UNKNOWN :server.getInfo().getName(),"Proxy-1"));
         }
         connection.send(sendServer,"updateOnlinePlayers",new Document().append("players",players));
     }

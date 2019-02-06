@@ -21,6 +21,7 @@
 package ch.dkrieger.bansystem.lib.player;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
+import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.filter.FilterType;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLog;
 import ch.dkrieger.bansystem.lib.player.chatlog.ChatLogEntry;
@@ -191,9 +192,9 @@ public abstract class PlayerManager {
             InputStream stream = new URL("http://ip-api.com/json/"+ip+"?fields=country").openStream();
             Scanner scanner = new Scanner(stream, "UTF-8").useDelimiter("\\A");
             Document document = Document.loadData(scanner.next());
-            return document.contains("country")?document.getString("country"):"Unknown";
+            return document.contains("country")?document.getString("country"): Messages.UNKNOWN;
         }catch (Exception exception){}
-        return "Unknown";
+        return Messages.UNKNOWN;
     }
 
     public abstract OnlineNetworkPlayer getOnlinePlayer(int id);

@@ -50,7 +50,7 @@ public class MotdCommand extends NetworkCommand {
             if(args[0].equalsIgnoreCase("removeMessage") && GeneralUtil.isNumber(args[1])){
                 String message = motd.getMessage(Integer.valueOf(args[1]));
                 if(message != null) motd.removeMessage(Integer.valueOf(args[1]));
-                else message = "Unknown";
+                else message = Messages.UNKNOWN;
                 sender.sendMessage(new TextComponent(config.commandRemoveMessage
                         .replace("[id]",args[1])
                         .replace("[message]",message)

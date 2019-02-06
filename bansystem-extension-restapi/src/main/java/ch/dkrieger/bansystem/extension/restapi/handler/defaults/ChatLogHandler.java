@@ -65,7 +65,7 @@ public class ChatLogHandler extends RestApiHandler {
             long to = 0;
             try{to = Long.valueOf(query.getString("to"));}catch (Exception exception){}
             try{from = Long.valueOf(query.getString("from"));}catch (Exception exception){}
-            List<ChatLogEntry> entries = chatLog.getEntries(new ChatLog.Filter(from,to,FilterType.ParseNull(query.getString("filter"))));
+            List<ChatLogEntry> entries = chatLog.getEntries(new ChatLog.Filter(from,to,FilterType.parseNull(query.getString("filter"))));
             if(entries.size() <= 0) {
                 response.append("code", ResponseCode.NO_CONTENT);
                 response.append("message", "ChatLog not found");

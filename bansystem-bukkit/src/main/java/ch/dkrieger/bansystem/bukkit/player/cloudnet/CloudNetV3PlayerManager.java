@@ -24,6 +24,7 @@ import ch.dkrieger.bansystem.bukkit.BukkitBanSystemBootstrap;
 import ch.dkrieger.bansystem.bukkit.event.BukkitDKBansSettingUpdateEvent;
 import ch.dkrieger.bansystem.bukkit.event.BukkitOnlineNetworkPlayerUpdateEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
+import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.cloudnet.v3.CloudNetV3OnlinePlayer;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayerUpdateCause;
@@ -104,7 +105,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
         CloudNetV3OnlinePlayer player = externalPlayers.get(event.getNetworkConnectionInfo().getUniqueId());
         if(player == null){
             player = new CloudNetV3OnlinePlayer(event.getNetworkConnectionInfo().getUniqueId(),event.getNetworkConnectionInfo().getName()
-                    ,event.getNetworkServiceInfo().getServerName(),"Unknown");
+                    ,event.getNetworkServiceInfo().getServerName(), Messages.UNKNOWN);
             this.externalPlayers.put(player.getUUID(),player);
         }else player.setServer(event.getNetworkServiceInfo().getServerName());
         Bukkit.getPluginManager().callEvent(new BukkitOnlineNetworkPlayerUpdateEvent(player.getUUID(),System.currentTimeMillis(),false));

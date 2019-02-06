@@ -159,6 +159,7 @@ public class BanSystem {
         if(this.config.commandIPban) getCommandManager().registerCommand(new IpBanCommand());
         if(this.config.commandIPUnban) getCommandManager().registerCommand(new IpUnbanCommand());
         if(this.config.commandWarn) getCommandManager().registerCommand(new WarnCommand());
+        //if(this.config.commandUnwarn) getCommandManager().registerCommand(new UnwarnCommand());
         if(this.config.commandEdit) getCommandManager().registerCommand(new EditBanCommand());
         if(this.config.commandMyHistoryPoints) getCommandManager().registerCommand(new MyHistoryPointsCommand());
 

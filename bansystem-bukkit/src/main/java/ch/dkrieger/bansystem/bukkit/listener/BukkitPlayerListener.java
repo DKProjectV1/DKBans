@@ -120,7 +120,7 @@ public class BukkitPlayerListener implements Listener {
                 }
             }//event.getPlayer().getLocale().getLanguage() ((CraftPlayer) player).getHandle().playerConnection.networkManager.getVersion();
             player.playerLogin(event.getPlayer().getName(),event.getPlayer().getAddress().getAddress().getHostAddress()
-                    ,0,"Unknown","Proxy-1"
+                    ,0,Messages.UNKNOWN,"Proxy-1"
                     ,BukkitBanSystemBootstrap.getInstance().getColor(player),event.getPlayer().hasPermission("dkbans.bypass"));
         });
     }
@@ -129,7 +129,7 @@ public class BukkitPlayerListener implements Listener {
         Bukkit.getScheduler().runTaskAsynchronously(BukkitBanSystemBootstrap.getInstance(),()->{
             NetworkPlayer player = BanSystem.getInstance().getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
             if(player == null) return;
-            String server = "Unknown";
+            String server = Messages.UNKNOWN;
             World world = event.getPlayer().getWorld();
             if(world != null) server = world.getName();
             player.playerLogout(BukkitBanSystemBootstrap.getInstance().getColor(player),event.getPlayer().hasPermission("dkbans.bypass")

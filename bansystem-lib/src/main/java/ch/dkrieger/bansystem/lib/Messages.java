@@ -35,6 +35,9 @@ public class Messages {
     public static String ERROR;
     public static String NOPERMISSIONS;
     public static String HELP;
+    public static String UNKNOWN;
+    public static String TRUE;
+    public static String FALSE;
 
     public static String TIME_DAY_SINGULAR;
     public static String TIME_DAY_PLURAL;
@@ -124,6 +127,10 @@ public class Messages {
     public static String WARN_BYPASS;
     public static String WARN_SUCCESS;
     public static String WARN_MESSAGE;
+
+    public static String UNWARN_HELP;
+    public static String UNWARN_SUCCESS_ALL;
+    public static String UNWARN_SUCCESS_DEFINED;
 
     public static String PING_SELF;
     public static String PING_OTHER;

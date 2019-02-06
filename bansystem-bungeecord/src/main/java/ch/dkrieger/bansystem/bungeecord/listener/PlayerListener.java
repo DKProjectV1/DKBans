@@ -31,7 +31,6 @@ import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-import ch.dkrieger.bansystem.lib.utils.GoogleDiffMatchPatch;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -51,13 +50,11 @@ public class PlayerListener implements Listener {
     private Map<UUID,lastMessage> lastMessage;
     private Map<UUID,Integer> banPoints;
     private Map<UUID,Integer> currentMessageCount;
-    private GoogleDiffMatchPatch diffChecker;
 
     public PlayerListener() {
         this.lastMessage = new HashMap<>();
         this.banPoints = new HashMap<>();
         this.currentMessageCount = new HashMap<>();
-        this.diffChecker = new GoogleDiffMatchPatch();
     }
 
     @EventHandler
@@ -144,7 +141,7 @@ public class PlayerListener implements Listener {
         ProxyServer.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
             NetworkPlayer player = BanSystem.getInstance().getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
             if(player == null) return;
-            String server = "Unknown";
+            String server = Messages.UNKNOWN;
             Server serverInfo = event.getPlayer().getServer();
             if(serverInfo != null) server = serverInfo.getInfo().getName();
             player.playerLogout(BungeeCordBanSystemBootstrap.getInstance().getColor(player),event.getPlayer().hasPermission("dkbans.bypass")
@@ -184,23 +181,25 @@ public class PlayerListener implements Listener {
             player.sendMessage(ban.toMessage());
             event.setCancelled(true);
         }else if(!event.isCommand()){
-            lastMessage lastMessage = this.lastMessage.get(player.getUniqueId());
-            if(lastMessage != null){
-                if(lastMessage.time < (System.currentTimeMillis()+TimeUnit.MINUTES.toMillis(1)) && repeat(event.getMessage(),lastMessage.message)){
-                    event.setCancelled(true);
-                    player.sendMessage(new TextComponent(Messages.CHAT_FILTER_SPAM_REPEAT.replace("[prefix]",Messages.PREFIX_CHAT)));
-                    return;
-                }else if(lastMessage.time+BanSystem.getInstance().getConfig().chatDelay >= System.currentTimeMillis()){
-                    event.setCancelled(true);
-                    player.sendMessage(new TextComponent(Messages.CHAT_FILTER_SPAM_TOFAST.replace("[prefix]",Messages.PREFIX_CHAT)));
-                    return;
-                }else{
-                    lastMessage.message = event.getMessage();
-                    lastMessage.time = System.currentTimeMillis();
-                }
-            }else this.lastMessage.put(player.getUniqueId(),new lastMessage(event.getMessage(),System.currentTimeMillis()));
             FilterType filter = null;
             if(!player.hasPermission("dkbans.bypass.chat")){
+                lastMessage lastMessage = this.lastMessage.get(player.getUniqueId());
+                if(lastMessage != null){
+                    if(lastMessage.time < (System.currentTimeMillis()+TimeUnit.MINUTES.toMillis(1)) && repeat(event.getMessage(),lastMessage.message)){
+                        event.setCancelled(true);
+                        player.sendMessage(new TextComponent(Messages.CHAT_FILTER_SPAM_REPEAT.replace("[prefix]",Messages.PREFIX_CHAT)));
+                        return;
+                    }else if(lastMessage.time+BanSystem.getInstance().getConfig().chatDelay >= System.currentTimeMillis()){
+                        event.setCancelled(true);
+                        player.sendMessage(new TextComponent(Messages.CHAT_FILTER_SPAM_TOFAST.replace("[prefix]",Messages.PREFIX_CHAT)));
+                        return;
+                    }else{
+                        lastMessage.message = event.getMessage();
+                        lastMessage.time = System.currentTimeMillis();
+                    }
+                }else this.lastMessage.put(player.getUniqueId(),new lastMessage(event.getMessage(),System.currentTimeMillis()));
+
+
                 if(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.MESSAGE,event.getMessage())){
                     filter = FilterType.MESSAGE;
                     event.setCancelled(true);

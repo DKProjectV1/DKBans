@@ -84,7 +84,7 @@ public class PlaceHolderApiHook extends EZPlaceholderHook {
             }else if(identifier.endsWith("_server")){
                 OnlineNetworkPlayer online = player.getOnlinePlayer();
                 if(online != null) return online.getServer();
-                else return "Unknown";
+                else return Messages.UNKNOWN;
             }
         }
         return "&cPlaceHolderNotFound";

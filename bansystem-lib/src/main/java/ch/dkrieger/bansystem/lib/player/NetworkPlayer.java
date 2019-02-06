@@ -21,6 +21,7 @@
 package ch.dkrieger.bansystem.lib.player;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
+import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.config.Config;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.History;
@@ -564,7 +565,8 @@ public class NetworkPlayer {
                 report.getReporter().addStatsReportAccepted();
             }
         });
-        if(ban.getBanType() == BanType.NETWORK && !(noAltBan) && BanSystem.getInstance().getConfig().ipBanOnBanEnabled && !(lastIP.equalsIgnoreCase("Unknown"))){
+        if(ban.getBanType() == BanType.NETWORK && !(noAltBan) && BanSystem.getInstance().getConfig().ipBanOnBanEnabled
+                && !(lastIP.equalsIgnoreCase("Unknown")) && !(lastIP.equalsIgnoreCase(Messages.UNKNOWN))){
             BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(()->{
                 if(!BanSystem.getInstance().getPlayerManager().isIPBanned(lastIP))
                     BanSystem.getInstance().getPlayerManager().banIp(lastIP,BanSystem.getInstance().getConfig().ipBanOnBanDuration,TimeUnit.MILLISECONDS,uuid);
@@ -634,7 +636,7 @@ public class NetworkPlayer {
     }
     public Kick kick(KickReason reason,String message, String staff){
         OnlineNetworkPlayer online = getOnlinePlayer();
-        return kick(reason.toKick(this,message,staff,online!=null?online.getServer():"Unknown"));
+        return kick(reason.toKick(this,message,staff,online!=null?online.getServer(): Messages.UNKNOWN));
     }
     public Kick kick(KickReason reason,String message, UUID staff, String server){
         return kick(reason,message,staff==null?"Console":staff.toString(),server);
@@ -797,6 +799,51 @@ public class NetworkPlayer {
         return warn;
     }
 
+    public Unwarn unwarn(){
+        return unwarn(-1);
+    }
+
+    public Unwarn unwarn(int warnId){
+        return unwarn(warnId,"");
+    }
+
+
+    public Unwarn unwarn(int warnId,String reason){
+        return unwarn(warnId,reason,"");
+    }
+
+    public Unwarn unwarn(int warnId,String reason, UUID staff){
+        return unwarn(warnId,reason,"",new HistoryPoints(0,BanType.NETWORK),staff);
+    }
+
+    public Unwarn unwarn(int warnId,String reason,String message){
+        return unwarn(warnId,reason,message,new HistoryPoints(0,BanType.NETWORK));
+    }
+
+    public Unwarn unwarn(int warnId,String reason,String message, HistoryPoints points){
+        return unwarn(warnId,reason,message,points,(UUID)null);
+    }
+
+    public Unwarn unwarn(int warnId,String reason,String message, HistoryPoints points, UUID staff){
+        return unwarn(warnId,reason,message,points,staff!=null?staff.toString():"",new Document());
+    }
+
+    public Unwarn unwarn(int warnId,String reason,String message, HistoryPoints points, String staff){
+        return unwarn(warnId,reason,message,points,staff,new Document());
+    }
+
+    public Unwarn unwarn(int warnId,String reason,String message, HistoryPoints points, UUID staff, Document properties){
+        return unwarn(warnId,reason,message,points,staff!=null?staff.toString():"",properties);
+    }
+
+    public Unwarn unwarn(int warnId,String reason,String message, HistoryPoints points, String staff, Document properties){
+        return unwarn(new Unwarn(this.uuid,this.lastIP,reason,message,System.currentTimeMillis(),-1,points,-1,staff,properties,warnId));
+    }
+
+    public Unwarn unwarn(Unwarn unwarn){
+        unwarn.setID(addToHistory(unwarn));
+        return unwarn;
+    }
 
     public Report report(String reason){
         return report(null,reason);
@@ -809,7 +856,7 @@ public class NetworkPlayer {
     }
     public Report report(UUID reporter,String reason, String message, int reasonID){
         OnlineNetworkPlayer online = getOnlinePlayer();
-        return report(reporter,reason,message,reasonID,online!=null?online.getServer():"Unknown");
+        return report(reporter,reason,message,reasonID,online!=null?online.getServer():Messages.UNKNOWN);
     }
 
     public Report report(UUID reporter, String reason, String message, int reasonID, String lastServer){
@@ -822,12 +869,12 @@ public class NetworkPlayer {
 
     public Report report(ReportReason reason,UUID reporter) {
         OnlineNetworkPlayer online = getOnlinePlayer();
-        return report(reason.toReport(this,reporter,"",online!=null?online.getServer():"Unknown"));
+        return report(reason.toReport(this,reporter,"",online!=null?online.getServer():Messages.UNKNOWN));
     }
 
     public Report report(ReportReason reason,String message,UUID reporter) {
         OnlineNetworkPlayer online = getOnlinePlayer();
-        return report(reason.toReport(this,reporter,message,online!=null?online.getServer():"Unknown"));
+        return report(reason.toReport(this,reporter,message,online!=null?online.getServer():Messages.UNKNOWN));
     }
 
     public Report report(ReportReason reason,String message,UUID reporter, String lastServer) {
@@ -967,10 +1014,10 @@ public class NetworkPlayer {
         this.bypass = bypass;
         this.lastIP = ip;
         this.lastCountry = BanSystem.getInstance().getPlayerManager().getCountry(ip);
-        if(!BanSystem.getInstance().getConfig().playerSaveIP) this.lastIP = "Unknown";
+        if(!BanSystem.getInstance().getConfig().playerSaveIP) this.lastIP = Messages.UNKNOWN;
         this.lastLogin = System.currentTimeMillis();
         if(BanSystem.getInstance().getConfig().playerOnlineSessionSaving){
-            OnlineSession session = new OnlineSession(ip,lastCountry,"Unknown",proxy,clientLanguage,clientVersion,lastLogin,lastLogin);
+            OnlineSession session = new OnlineSession(ip,lastCountry,Messages.UNKNOWN,proxy,clientLanguage,clientVersion,lastLogin,lastLogin);
             this.onlineSessions.add(session);
             BanSystem.getInstance().getStorage().createOnlineSession(this,session);
         }

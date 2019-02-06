@@ -27,6 +27,7 @@ import ch.dkrieger.bansystem.bungeecord.player.BungeeCordPlayerManager;
 import ch.dkrieger.bansystem.bungeecord.player.LocalBungeeCordOnlinePlayer;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.JoinMe;
+import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.cloudnet.v3.CloudNetV3Network;
 import ch.dkrieger.bansystem.lib.cloudnet.v3.CloudNetV3OnlinePlayer;
@@ -139,7 +140,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
         CloudNetV3OnlinePlayer player = externalPlayers.get(event.getNetworkConnectionInfo().getUniqueId());
         if(player == null){
             player = new CloudNetV3OnlinePlayer(event.getNetworkConnectionInfo().getUniqueId(),event.getNetworkConnectionInfo().getName()
-                    ,event.getNetworkServiceInfo().getServerName(),"Unknown");
+                    ,event.getNetworkServiceInfo().getServerName(), Messages.UNKNOWN);
             this.externalPlayers.put(player.getUUID(),player);
         }else player.setServer(event.getNetworkServiceInfo().getServerName());
         ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedOnlineNetworkPlayerUpdateEvent(player.getUUID(),System.currentTimeMillis(),false));
@@ -230,7 +231,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
                 for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
                     ServerInfo server = player.getServer().getInfo();
                     players.add(new BungeeCordPlayerManager.PlayerUpdateObject(player.getUniqueId(),player.getName()
-                            ,server==null?"Unknown":server.getName(),Wrapper.getInstance().getServiceId().getName()));
+                            ,server==null?Messages.UNKNOWN:server.getName(),Wrapper.getInstance().getServiceId().getName()));
                 }
                 Wrapper.getInstance().sendChannelMessage("DKBans","syncOnlinePlayers"
                         ,new de.dytanic.cloudnet.common.document.Document().append("players",players));
