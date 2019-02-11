@@ -433,7 +433,6 @@ public class ReasonProvider {
                 Configuration reasons = config.getSection("reasons");
                 this.kickReasons= new ArrayList<>();
                 if(reasons != null) {
-                    //translate 2.0.6 to 2.1.4
                     for(String key : reasons.getKeys()) {
                         try{
                             this.kickReasons.add(new KickReason(Integer.valueOf(key)

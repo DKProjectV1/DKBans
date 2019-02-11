@@ -27,7 +27,7 @@
     <groupId>ch.dkrieger.bansystem</groupId>
     <artifactId>DKBans</artifactId>
     <packaging>pom</packaging>
-    <version>2.1.4</version>
+    <version>2.1.5</version>
     <modules>
         <module>bansystem-lib</module>
         <module>bansystem-bungeecord</module>

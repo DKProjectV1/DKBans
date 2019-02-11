@@ -62,7 +62,7 @@ public class DKBansMaintenanceExtension extends Plugin implements Listener {
         buildResponse();
         ProxyServer.getInstance().getPluginManager().registerListener(this,this);
         BanSystem.getInstance().getCommandManager().registerCommand(new MaintenanceCommand(config,maintenance));
-        ProxyServer.getInstance().getScheduler().schedule(this,this::buildResponse,5L, TimeUnit.SECONDS);
+        ProxyServer.getInstance().getScheduler().schedule(this,this::buildResponse,0L,5L, TimeUnit.SECONDS);
     }
     @EventHandler(priority=90)
     public void onPing(ProxyPingEvent event){

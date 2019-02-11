@@ -56,12 +56,13 @@ public class TeamChatCommand extends NetworkCommand {
                         .replace("[prefix]",getPrefix()));
                 return;
             }
-            String message = "";
-            for(int i = 0; i < args.length;i++)  message += args[i]+" "+Messages.TEAMCHAT_MESSAGE_COLOR;
+            StringBuilder message = new StringBuilder();
+            for(int i = 0; i < args.length;i++)  message.append(args[i]).append(" ").append(Messages.TEAMCHAT_MESSAGE_COLOR);
             BanSystem.getInstance().getNetwork().sendTeamMessage(Messages.TEAMCHAT_MESSAGE_FORMAT
+                    .replace("[server]",sender.getServer())
                     .replace("[prefix]",getPrefix())
                     .replace("[player]",player.getColoredName())
-                    .replace("[message]",message),true);
+                    .replace("[message]", message.toString()),true);
         }
     }
     private void changeLogin(NetworkCommandSender sender, NetworkPlayer player, boolean login){
