@@ -43,6 +43,10 @@ import net.md_5.bungee.api.score.Scoreboard;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -95,7 +99,18 @@ public class DKBansMaintenanceExtension extends Plugin implements Listener {
         }
     }
     private void buildResponse() {
-        if(this.pingResponse == null) this.pingResponse = new ServerPing();
+        if(this.pingResponse == null){
+            this.pingResponse = new ServerPing();
+            File serverIcon = new File("maintenance-server-icon.png");
+            if(!serverIcon.exists()) serverIcon = new File("server-icon.png");
+            if(serverIcon.exists()){
+                try {
+                    this.pingResponse.setFavicon(Favicon.create(ImageIO.read(serverIcon)));
+                } catch (IOException exception) {
+                    System.out.println("Could not load server-icon.png ("+exception.getMessage()+")");
+                }
+            }
+        }
         pingResponse.setVersion(new ServerPing.Protocol(maintenance.replace(config.versionInfo),-1));
         pingResponse.setDescriptionComponent(new TextComponent(maintenance.replace(config.motdLine1)+"\n"+maintenance.replace(config.motdLine2)));
 

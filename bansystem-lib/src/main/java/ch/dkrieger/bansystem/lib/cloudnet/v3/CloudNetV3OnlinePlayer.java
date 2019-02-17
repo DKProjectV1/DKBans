@@ -26,7 +26,7 @@ import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
 import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
-import de.dytanic.cloudnet.common.document.Document;
+import de.dytanic.cloudnet.common.document.gson.JsonDocument;
 import de.dytanic.cloudnet.wrapper.Wrapper;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -75,7 +75,7 @@ public class CloudNetV3OnlinePlayer implements OnlineNetworkPlayer {
     public int getPing() {
         PINGGETTER.remove(getUUID());
         Wrapper.getInstance().sendChannelMessage("DKBans","getPing"
-                ,new Document().append("uuid",getUUID()));
+                ,new JsonDocument().append("uuid",getUUID()));
         int timeOut = 0;
 
         while(!PINGGETTER.containsKey(getUUID()) && timeOut < 1000){
@@ -97,36 +97,36 @@ public class CloudNetV3OnlinePlayer implements OnlineNetworkPlayer {
 
     @Override
     public void sendMessage(TextComponent component) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","sendMessage",new Document()
+        Wrapper.getInstance().sendChannelMessage("DKBans","sendMessage",new JsonDocument()
                 .append("uuid",getUUID()).append("message",component));
     }
 
     @Override
     public void connect(String server) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","connect",new Document()
+        Wrapper.getInstance().sendChannelMessage("DKBans","connect",new JsonDocument()
                 .append("uuid",getUUID()).append("server",server));
     }
 
     @Override
     public void executeCommand(String command) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","executeCommand",new Document()
+        Wrapper.getInstance().sendChannelMessage("DKBans","executeCommand",new JsonDocument()
                 .append("uuid",getUUID()).append("command",command));
     }
 
     @Override
     public void sendBan(Ban ban) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","sendBan",new Document()
+        Wrapper.getInstance().sendChannelMessage("DKBans","sendBan",new JsonDocument()
                 .append("uuid",getUUID()).append("ban",ban));
     }
 
     @Override
     public void sendKick(Kick kick) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","kick",new Document()
+        Wrapper.getInstance().sendChannelMessage("DKBans","kick",new JsonDocument()
                 .append("uuid",getUUID()).append("kick",kick));
     }
     @Override
     public void sendWarn(Warn warn) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","warn",new Document()
+        Wrapper.getInstance().sendChannelMessage("DKBans","warn",new JsonDocument()
                 .append("uuid",getUUID()).append("warn",warn));
     }
 

@@ -42,6 +42,7 @@ import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import com.google.gson.reflect.TypeToken;
+import de.dytanic.cloudnet.common.document.gson.JsonDocument;
 import de.dytanic.cloudnet.ext.bridge.bungee.event.BungeeBridgeProxyPlayerDisconnectEvent;
 import de.dytanic.cloudnet.ext.bridge.bungee.event.BungeeBridgeProxyPlayerServerSwitchEvent;
 import de.dytanic.cloudnet.ext.bridge.bungee.event.BungeeChannelMessageReceiveEvent;
@@ -64,7 +65,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
     public CloudNetV3PlayerManager() {
         this.localPlayers = new HashMap<>();
         this.externalPlayers = new HashMap<>();
-        Wrapper.getInstance().sendChannelMessage("DKBans","getOnlinePlayers",new de.dytanic.cloudnet.common.document.Document());
+        Wrapper.getInstance().sendChannelMessage("DKBans","getOnlinePlayers",new JsonDocument());
     }
 
     @Override
@@ -116,7 +117,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
 
     @Override
     public void updatePlayer(NetworkPlayer player, NetworkPlayerUpdateCause cause, Document properties) {
-        de.dytanic.cloudnet.common.document.Document data = de.dytanic.cloudnet.common.document.Document.newDocument(properties.toJson());
+        JsonDocument data = JsonDocument.newDocument(properties.toJson());
         Wrapper.getInstance().sendChannelMessage("DKBans","updatePlayer",data
                 .append("uuid",player.getUUID()).append("sender",Wrapper.getInstance().getServiceId().getName()).append("cause",cause));
         BungeeCordBanSystemBootstrap.getInstance().executePlayerUpdateEvents(player.getUUID(),cause,properties,true);
@@ -167,7 +168,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
                 ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
                 if(player != null){
                     int ping = player.getPing();
-                    Wrapper.getInstance().sendChannelMessage("DKBans","pingResult",new de.dytanic.cloudnet.common.document.Document()
+                    Wrapper.getInstance().sendChannelMessage("DKBans","pingResult",new JsonDocument()
                             .append("uuid",uuid).append("ping",ping));
                 }
             }else if(event.getMessage().equalsIgnoreCase("pingResult")){
@@ -234,7 +235,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
                             ,server==null?Messages.UNKNOWN:server.getName(),Wrapper.getInstance().getServiceId().getName()));
                 }
                 Wrapper.getInstance().sendChannelMessage("DKBans","syncOnlinePlayers"
-                        ,new de.dytanic.cloudnet.common.document.Document().append("players",players));
+                        ,new JsonDocument().append("players",players));
             }else if(event.getMessage().equalsIgnoreCase("syncOnlinePlayers")){
                 List<CloudNetV3OnlinePlayer> players = event.getData().get("players"
                         ,new TypeToken<List<CloudNetV3OnlinePlayer>>(){}.getType());

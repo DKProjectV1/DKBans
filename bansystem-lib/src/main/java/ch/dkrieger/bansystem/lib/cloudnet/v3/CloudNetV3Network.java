@@ -27,7 +27,7 @@ import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-import de.dytanic.cloudnet.common.document.Document;
+import de.dytanic.cloudnet.common.document.gson.JsonDocument;
 import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
 import de.dytanic.cloudnet.wrapper.Wrapper;
 import net.md_5.bungee.api.ChatColor;
@@ -71,7 +71,7 @@ public abstract class CloudNetV3Network implements DKNetwork {
 
     @Override
     public List<String> getGroupServers(String group) {
-        Collection<ServiceInfoSnapshot> servers = Wrapper.getInstance().getCloudServiceInfoByGroup(group);
+        Collection<ServiceInfoSnapshot> servers = Wrapper.getInstance().getCloudServiceByGroup(group);
         List<String> list = new LinkedList<>();
         servers.forEach(server -> list.add(server.getServiceId().getName()));
         return list;
@@ -84,17 +84,17 @@ public abstract class CloudNetV3Network implements DKNetwork {
 
     @Override
     public void broadcast(TextComponent component) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","broadcast",new Document().append("message",component));
+        Wrapper.getInstance().sendChannelMessage("DKBans","broadcast",new JsonDocument().append("message",component));
     }
 
     @Override
     public void broadcast(Broadcast broadcast) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","broadcast",new Document().append("message",broadcast));
+        Wrapper.getInstance().sendChannelMessage("DKBans","broadcast",new JsonDocument().append("message",broadcast));
     }
 
     @Override
     public void sendJoinMe(JoinMe joinMe) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","sendJoinMe",new Document().append("joinme",joinMe));
+        Wrapper.getInstance().sendChannelMessage("DKBans","sendJoinMe",new JsonDocument().append("joinme",joinMe));
     }
 
     @Override
@@ -114,22 +114,22 @@ public abstract class CloudNetV3Network implements DKNetwork {
 
     @Override
     public void sendTeamMessage(TextComponent component, boolean onlyLogin) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","sendTeamMessage",new Document().append("message",component)
+        Wrapper.getInstance().sendChannelMessage("DKBans","sendTeamMessage",new JsonDocument().append("message",component)
                 .append("onlyLogin",onlyLogin));
     }
 
     @Override
     public void reloadFilter() {
-        Wrapper.getInstance().sendChannelMessage("DKBans","reloadFilter",new Document());
+        Wrapper.getInstance().sendChannelMessage("DKBans","reloadFilter",new JsonDocument());
     }
 
     @Override
     public void reloadBroadcast() {
-        Wrapper.getInstance().sendChannelMessage("DKBans","reloadBroadcast",new Document());
+        Wrapper.getInstance().sendChannelMessage("DKBans","reloadBroadcast",new JsonDocument());
     }
 
     @Override
     public void syncSetting(String name) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","syncSetting",new Document("name",name));
+        Wrapper.getInstance().sendChannelMessage("DKBans","syncSetting",new JsonDocument("name",name));
     }
 }

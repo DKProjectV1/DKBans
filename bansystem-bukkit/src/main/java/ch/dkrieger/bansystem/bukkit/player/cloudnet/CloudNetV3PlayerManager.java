@@ -33,6 +33,7 @@ import ch.dkrieger.bansystem.lib.player.PlayerManager;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import com.google.gson.reflect.TypeToken;
+import de.dytanic.cloudnet.common.document.gson.JsonDocument;
 import de.dytanic.cloudnet.ext.bridge.bukkit.event.BukkitBridgeProxyPlayerDisconnectEvent;
 import de.dytanic.cloudnet.ext.bridge.bukkit.event.BukkitBridgeProxyPlayerServerSwitchEvent;
 import de.dytanic.cloudnet.ext.bridge.bukkit.event.BukkitChannelMessageReceiveEvent;
@@ -49,7 +50,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
 
     public CloudNetV3PlayerManager() {
         this.externalPlayers = new HashMap<>();
-        Wrapper.getInstance().sendChannelMessage("DKBans","getOnlinePlayers",new de.dytanic.cloudnet.common.document.Document());
+        Wrapper.getInstance().sendChannelMessage("DKBans","getOnlinePlayers",new JsonDocument());
     }
     @Override
     public OnlineNetworkPlayer getOnlinePlayer(int id) {
@@ -87,7 +88,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
 
     @Override
     public void updatePlayer(NetworkPlayer player, NetworkPlayerUpdateCause cause, Document properties) {
-        de.dytanic.cloudnet.common.document.Document data = de.dytanic.cloudnet.common.document.Document.newDocument(properties.toJson());
+        JsonDocument data = JsonDocument.newDocument(properties.toJson());
         Wrapper.getInstance().sendChannelMessage("DKBans","updatePlayer",data
                 .append("uuid",player.getUUID()).append("sender",Wrapper.getInstance().getServiceId().getName()).append("cause",cause).append("properties",properties));
         BukkitBanSystemBootstrap.getInstance().executePlayerUpdateEvents(player.getUUID(),cause,properties,true);

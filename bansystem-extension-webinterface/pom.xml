@@ -25,7 +25,7 @@
     <parent>
         <artifactId>DKBans</artifactId>
         <groupId>ch.dkrieger.bansystem</groupId>
-        <version>2.1.5</version>
+        <version>2.1.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -62,25 +62,25 @@
         <dependency>
             <groupId>ch.dkrieger.bansystem.lib</groupId>
             <artifactId>bansystem-lib</artifactId>
-            <version>2.1.5</version>
+            <version>2.1.6</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>ch.dkrieger.bansystem.bukkit</groupId>
             <artifactId>bansystem-bukkit</artifactId>
-            <version>2.1.5</version>
+            <version>2.1.6</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>ch.dkrieger.bansystem.bungeecord</groupId>
             <artifactId>bansystem-bungeecord</artifactId>
-            <version>2.1.5</version>
+            <version>2.1.6</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>ch.dkrieger.bansystem.extension.restapi</groupId>
             <artifactId>bansystem-extension-restapi</artifactId>
-            <version>2.1.5</version>
+            <version>2.1.6</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

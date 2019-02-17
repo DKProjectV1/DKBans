@@ -91,7 +91,7 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
         Bukkit.getScheduler().runTaskLater(this,()->{
             checkCloudNet();
             if(cloudNetV2){
-                BanSystem.getInstance().setNetwork(new CloudNetV2Network() {
+                BanSystem.getInstance().setNetwork(    new CloudNetV2Network() {
                     @Override
                     public void broadcastLocal(Broadcast broadcast) {sendLocalBroadcast(broadcast);}
                 });
