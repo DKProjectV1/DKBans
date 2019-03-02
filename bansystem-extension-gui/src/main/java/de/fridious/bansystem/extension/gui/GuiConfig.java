@@ -100,21 +100,7 @@ public class GuiConfig extends SimpleConfig {
         guiData.put(WarnSelfGui.class, addAndGetGuiData("warn.self", new GuiData(true, "&6Warn")));
         guiData.put(WarnTemplateGui.class, addAndGetGuiData("warn.template", new GuiData(true, "&6Warn")));
 
-
-        /*
-        Stained glass --
-        ?Watch --
-        Skull_Item, PLAYER_HEAD --
-        ?Iron_Fence --
-        ink sac lime_dye --
-        clay 13 green_terracotta --
-        clay 14 red_terracotta --
-         */
-        boolean itemIds = DKBansGuiExtension.getInstance().isConfigItemIds();
         //General
-        /*
-        Material.STAINED_GLASS_PANE
-         */
         ItemStorage.put("placeholder", addAndGetItemStack("items.placeholder", new ItemBuilder(ItemStackTranslator.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").build()));
         ItemStorage.put("nextpage", addAndGetItemStack("items.nextpage", new ItemBuilder(Material.ARROW).setDisplayName("&aNext page").setLore("Go to page [next_page]").build()));
         ItemStorage.put("currentpage", addAndGetItemStack("items.currentpage", new ItemBuilder(ItemStackTranslator.WATCH).setDisplayName("&6Current page:").setLore("&7[current_page]&8/&7[max_pages]").build()));
@@ -122,7 +108,7 @@ public class GuiConfig extends SimpleConfig {
         ItemStorage.put("custom_message", addAndGetItemStack("items.custommessage", new ItemBuilder(Material.PAPER).setDisplayName(" ").build()));
         //Player info
         ItemStorage.put("playerinfo_skull_online", addAndGetItemStack("playerinfo.player.items.skull.online", new ItemBuilder(ItemStackTranslator.SKULL_ITEM).setDisplayName("[player]").setLore("&7Id&8: &c[id]", "&7UUID&8: &c[uuid]", "&7Current server&8: &c[server]", "&7Current proxy&8: &c[proxy]", "&7Country&8: &c[country]", "&7Ip&8: &c[ip]", "&7First login&8: &c[firstLogin]", "&7Last login&8: &c[lastLogin]", "&7Online time&8: &c[onlineTime]", "&7Messages&8: &c[messages]", "&7Bans&8: &c[bans]", "&7Mutes&8: &c[mutes]", "&7Logins&8: &c[logins]").build()));
-        ItemStorage.put("playerinfo_skull_offline", addAndGetItemStack("playerinfo.player.items.skull.offline", new ItemBuilder(ItemStackTranslator.SKULL_ITEM).setDisplayName("[player]").setLore("&7Id&8: &c[id]", "UUID&8: &c[uuid]", "&7Country&8: &c[country]", "&7Ip&8: &c[ip]", "&7First login&8: &c[firstLogin]", "&7Last login&8: &c[lastLogin]", "&7Online time&8: &c[onlineTime]", "&7Messages&8: &c[messages]", "&7Bans&8: &c[bans]", "&7Mutes&8: &c[mutes]", "&7Logins&8: &c[logins]").build()));
+        ItemStorage.put("playerinfo_skull_offline", addAndGetItemStack("playerinfo.player.items.skull.offline", new ItemBuilder(ItemStackTranslator.SKULL_ITEM).setDisplayName("[player]").setLore("&7Id&8: &c[id]", "&7UUID&8: &c[uuid]", "&7Country&8: &c[country]", "&7Ip&8: &c[ip]", "&7First login&8: &c[firstLogin]", "&7Last login&8: &c[lastLogin]", "&7Online time&8: &c[onlineTime]", "&7Messages&8: &c[messages]", "&7Bans&8: &c[bans]", "&7Mutes&8: &c[mutes]", "&7Logins&8: &c[logins]").build()));
         ItemStorage.put("playerinfo_ban", addAndGetItemStack("playerinfo.player.items.ban", new ItemBuilder(Material.BARRIER).setDisplayName("&4Ban").setLore("&7Ban the player").build()));
         ItemStorage.put("playerinfo_unban", addAndGetItemStack("playerinfo.player.items.unban", new ItemBuilder(ItemStackTranslator.IRON_FENCE).setDisplayName("&4Unban").setLore("&7Unban the player").build()));
         ItemStorage.put("playerinfo_kick", addAndGetItemStack("playerinfo.player.items.kick", new ItemBuilder(Material.RABBIT_FOOT).setDisplayName("&4Kick").setLore("&7Kick the player").build()));
@@ -191,7 +177,6 @@ public class GuiConfig extends SimpleConfig {
         ItemStorage.put("historydelete_accept", addAndGetItemStack("history.delete.items.accept", new ItemBuilder(ItemStackTranslator.GREEN_STAINED_CLAY).setDisplayName("&aYes").build()));
         ItemStorage.put("historydelete_deny", addAndGetItemStack("history.delete.items.deny", new ItemBuilder(ItemStackTranslator.RED_STAINED_CLAY).setDisplayName("&cNo").build()));
         ItemStorage.put("globalhistory_skull", addAndGetItemStack("history.global.items.skull", new ItemBuilder(ItemStackTranslator.SKULL_ITEM).setDisplayName("[player]").setLore("&7Click to open history").build()));
-
     }
 
     private ItemStack addAndGetItemStack(String path, ItemStack itemStack) {

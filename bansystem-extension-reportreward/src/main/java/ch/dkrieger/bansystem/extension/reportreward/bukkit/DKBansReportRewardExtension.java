@@ -48,7 +48,7 @@ public class DKBansReportRewardExtension extends JavaPlugin implements Listener 
             Player player = Bukkit.getPlayer(report.getReporterUUID());
             if(player != null){
                 player.sendMessage(config.reportRewardMessage.replace("[prefix]", Messages.PREFIX_BAN)
-                        .replace("[coin-prefix]",MessageManager.getInstance().prefix)
+                        .replace("[coin-prefix]", MessageManager.getInstance().prefix)
                         .replace("[coins]",""+config.reportRewardCoins));
                 CoinPlayer coinPlayer = CoinSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
                 if(coinPlayer != null) coinPlayer.addCoins(config.reportRewardCoins,"DKBansReportReward");

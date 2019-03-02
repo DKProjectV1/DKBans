@@ -1,0 +1,554 @@
+prefix:
+  network: '&8» &4Serveur &8| &f'
+  ban: '&8» &4DKBans &8| &f'
+  report: '&8» &6DKReport &8| &f'
+  teamchat: '&8» &eTeamChat &8| &f'
+  chat: '&8» &eChat &8| &f'
+  chatlog: '&8» &eChatLog &8| &f'
+error: '[prefix]&cUne erreur à été détectée, merci de contacter l''admin'
+nopermissions: '[prefix]&cTu n''as pas la permission de faire ça'
+unknown: Inconnu
+'true': 'true'
+'false': 'false'
+help: |-
+  [prefix]&6Information
+  &8» &e/hub &8| &7Connection au hub
+  &8» &e/report &8| &7Report un joueur
+  &7&8
+  &8» &eTeamSpeak&8: &bts.example.net
+  &8» &eForum&8: &bforum.example.net
+  &8» &eBoutique&8: &bboutique.example.net
+time:
+  day:
+    singular: Jour
+    plural: Jours
+    shortcut: D
+  hour:
+    singular: Heure
+    plural: Heures
+    shortcut: H
+  minute:
+    singular: Minute
+    plural: Minutes
+    shortcuts: M
+  second:
+    singular: Seconde
+    plural: Secondes
+    shortcut: S
+  permanently:
+    normal: Permanent
+    shortcut: Perma
+  finish: '-'
+server:
+  notfound: '[prefix]&cLe serveur &c[server] &cn''a pas été trouvé'
+  already: '[prefix]&cTu es déjà connecté sur le serveur'
+  connecting: '[prefix]&7Connection au serveur ...'
+player:
+  not:
+    found: '[prefix]&cLe joueur n''a pas été trouvé'
+    online: '[prefix]&cLe joueur n''est pas en ligne'
+    banned: '[prefix]&8[player] &cn''est pas banni'
+  already:
+    banned: '[prefix]&8[player] &cest déjà banni'
+    muted: '[prefix]&8[player] &cest déjà mute'
+    reported: '[prefix] &8[player] &ca déjà été report'
+  has:
+    morebans:
+      header: '[prefix]&8[player] &7a été banni sur un chat et un serveur'
+      chat: '&8» &6Mute &8- &4[reason] &8| &7[remaining-short]'
+  morebans:
+    network: '&8» &cBan &8- &4[reason] &8| &7[remaining-short]'
+  unmuted: '[prefix]&7Le joueur &8[player] &7a été démute'
+  unbanned: '[prefix]&7Le joueur &8[player] &7a été débanni'
+  info:
+    help: '[prefix]&cUtilisation&8: &7 /playerinfo <joueur>'
+    online: |-
+      &7
+      &8» &7Nom&8: &c[player] &8(&aEn ligne&8)&7
+      &8» &7UUID&8: &c[uuid]
+      &8» &7ID&8: &c[id]
+      &8» &7Première connection&8: &c[firstLogin]
+      &8» &7Serveur&8: &c[server]
+      &8» &7Temps passé en ligne&8: &c[onlineTime-short]
+      &8» &7IP&8: &c[ip]
+      &8» &7Pays&8: &c[country]
+      &8» &7Banni&8: &c[isBanned]
+      &8» &7Mute&8: &c[isMuted]
+      &8» &7Points&8: &c[chatPoints] &8| &c[banPoints]
+      &8» &7Bans&8: &c[bans]
+      &8» &7Mutes&8: &c[mutes]
+      &8» &7Avertissement&8: &c[warns-since-last-ban]
+      &8» &7Login&8: &c[logins]
+      &8» &7Reports reçus&8: &c[reportsReceived]
+      &8» &7Reports envoyés&8: &a[reportsAccepted]&8/&c[reportsSent]
+      &5
+      &8» [history] [sessions] [ips]
+      &7
+    offline: |-
+      &7
+      &8» &7Nom&8: &c[player] &8(&cHors-ligne&8)&7
+      &8» &7UUID&8: &c[uuid]
+      &8» &7ID&8: &c[id]
+      &8» &7Première connection&8: &c[firstLogin]
+      &8» &7Dernière connection&8: &c[lastLogin]
+      &8» &7Temps passé en ligne&8: &c[onlineTime]
+      &8» &7IP&8: &c[ip]
+      &8» &7Pays&8: &c[country]
+      &8» &7Banni&8: &c[isBanned]
+      &8» &7Mute&8: &c[isMuted]
+      &8» &7Points&8: &c[chatPoints] &8| &c[banPoints]
+      &8» &7Bans&8: &c[bans]
+      &8» &7Mutes&8: &c[mutes]
+      &8» &7Connection&8: &c[logins]
+      &8» &7Reports reçus&8: &c[reportsReceived]
+      &8» &7Reports envoyés&8: &a[reportsAccepted]&8/&c[reportsSent]
+      &5
+      &8» [history] [sessions] [ips]
+      &7
+    history: '&8[&bHistorique&8]'
+    sessions: '&8[&aSessions&8]'
+    ips: '&8[&eIps&8]'
+    session:
+      header: '[prefix]&7Sessions en ligne de [player]'
+      list: '&8» &7[connected] &8- &7[disconnected] &8| &c[duration]'
+staff:
+  status:
+    now: '[prefix]&7Tu es [status]'
+    already: '[prefix]&7Tu es déjà [status]'
+    changed: '[prefix]&7Tu as [status]'
+    not: '[prefix]&7Tu n''es pas [status]'
+    login: '&aConnecté'
+    logout: '&cDéconnecté'
+reason:
+  notfound: '[prefix]&cLa raison n''a pas été trouvée'
+  nopermission: '[prefix]&cTu n''as pas la permission pour cette raison'
+ban:
+  help:
+    header: '[prefix]&6Ban Administration'
+    reason: '&8- &c[id] &8| &4[reason] &8» &4&l[banType]'
+    help: '&8» &cUtilisation&8: &7 /ban <joueur> <raison> {message}'
+  type:
+    network: Network
+    chat: Chat
+  self: '[prefix]&cTu ne peux pas t''autobannir ...'
+  bypass: '[prefix]&cTu ne peux pas bannir &7[player]&c.'
+  success: '[prefix]&8[player] &7a été bannir pour [reason]&7.'
+  overwrite:
+    info: '[prefix]&7Voulez-vous le remplacer ?&8[&7Click&8]'
+    notallowed: '[prefix]&cVous n''êtes pas autorisé à remplacer ce ban.'
+  notfound: '[prefix]&cCe ban n''a pas été trouvé'
+  message:
+    network:
+      temporary: |-
+        &e&lexample.net
+        &5
+        &cTu es &e&l[duration] &cbanni de ce serveur
+        &3Raison&8: &4&l[reason]
+        &3BanID&8: &7[banid]
+        &e
+        &3Temps restant&8: &e[remaining]
+        &5
+        &aTu peux faire une demande ici --> &eforum.example.net
+      permanent: |-
+        &e&lexample.net
+        &5&6&7&8
+        &cTu es &4&lbanni de manière permanante &cde ce serveur
+        &3Raison&8: &4&l[reason]
+        &3BanID&8: &7[banid]
+        &5
+        &aTu peux faire une demande ici --> &eforum.example.net.
+    chat:
+      temporary: |-
+        &5
+        [prefix]&cTu es &e&l[duration] &cbanni de ce chat
+        &8» &3Raison&8: &4&l[reason]
+        &8» &3BanID&8: &7[banid]
+        &e
+        &8» &3Temps restant&8: &e[remaining]
+        &7
+      permanent: |-
+        &5
+        [prefix]&cTu es &4&lbanni de manière permanante du chat
+        &8» &3Raison&8: &4&l[reason]
+        &8» &3BanID&8: &7[banid]
+        &5
+kick:
+  help:
+    header: '[prefix]&6Kick Administration'
+    reason: ' &8- &c[id] &8| &4[reason]'
+    help: '&8» &cUtilisation&8: &7 /kick <joueur> <raison> {message}'
+  self: '[prefix]&cTu ne peux pas t''autokick ...'
+  bypass: '[prefix]&cTu ne peux pas kick &8[player]&c.'
+  success: '[prefix]&8[player] &7a été kick pour &4[reason]&7.'
+  message: |
+    &e&lexample.net
+    &5&6&7&8
+    &cTu as été kick de ce serveur
+    &3Raison&8: &4&l[reason]
+warn:
+  help:
+    header: '[prefix]&6Avertissement Administration'
+    reason: ' &8- &c[id] &8| &4[reason]'
+    help: '&8» &cUtilisation&8: &7 /warn <joueur> <raison> {message}'
+  self: '[prefix]&cTu ne peux te donner un avertissement à toi même ...'
+  bypass: '[prefix]&cTu ne peux pas donner un avertissement à &8[player]&c.'
+  success: '[prefix]&7Tu as été averti pour &4[reason]&7.'
+  message: |-
+    &5
+    [prefix]&cTu as été averti
+    &8» &3Raison&8: &4&l[reason]
+    &8» &3ID&8: &7[id]
+    &5
+unwarn:
+  all: '[prefix] &7Tous les avertissements ont été retirés pour &8[player]&7.'
+editban:
+  help: |-
+    [prefix]&7Ban edit Administration
+    &8» &e/editban <joueur/banId> setReason <raison> {message}
+    &8» &e/editban <joueur/banId> setMessage <message>
+    &8» &e/editban <joueur/banId> setPoints <points> {message}
+    &8» &e/editban <joueur/banId> setDuration <temps> <unit> {message}
+    &8» &e/editban <joueur/banId> addDuration <temps> <unit> {message}
+  changed: '[prefix]&7Le &4[type] &7de bannisement [player] &7a été changé'
+  notallowed: '[prefix]&cTu n''es pas autorisé à éditer ce bannisement'
+ping:
+  self: '[prefix]&7Ton ping est de &a[ping]&cms'
+  other: '[prefix]&7Le ping de [player] &7est &a[ping]&cms'
+broadcast:
+  help: |-
+    [prefix]&7Aide Broadcast (message dans le chat)
+    &8» &e/bc reload &8| &7Reload tous les broadcasts
+    &8» &e/bc list &8| &7List de tous les broadcasts
+    &8» &e/bc direct <message> &8| &7Envoie un message directement
+    &8» &e/bc create <message> &8| &7Créer un broadcast
+    &8» &e/bc <id> info &8| &7Montre ce broadcast
+    &8» &e/bc <id> send &8| &7Envoie un broadcast
+    &8» &e/bc <id> delete &8| &7Supprime un broadcast
+    &8» &e/bc <id> setHover <message> &8| &7Défini un message
+    &8» &e/bc <id> setClick <type> <message> &8| &7Défini un message à clicker dans le chat
+    &8» &e/bc <id> setMessage <message> &8| &7Change le message
+    &8» &e/bc <id> addMessage <message> &8| &7Ajoute un message
+    &8» &e/bc <id> setPermission <permission> &8| &7Défini une permission
+    &8» &e/bc <id> setAuto <true/false> &8| &7Défini un broadcast automatiquement
+  reloaded: '[prefix]&7Reloaded tous les broadcasts'
+  created: '[prefix]&7Créer un broadcast &c[id] &7avec le message &c[message]'
+  deleted: '[prefix]&7Le broadcast &c[id] &7a été supprimé'
+  list:
+    header: '[prefix]&7Broadcast disponible'
+    list: '&8» &7[id] &8| &7[message]'
+  info: |-
+    [prefix]&7Broadcast &c[id]
+    &8» &7ID&8: &c[id]
+    &8» &7Auto&8: &c[auto]
+    &8» &7Message&8: &c[message]
+    &8» &7Hover&8: &c[hover]
+    &8» &7Clic&8: &c[clickType] &8| &c[clickMessage]
+  changed:
+    clicked: '[prefix]&7Changement du message cliquable dans le chat &c[id] &7to &c[clickType] &8|
+      &c[clickMessage]'
+    hover: '[prefix]&7Changement du hover ?? du broadcast &c[id] &7en &c[hover]'
+    message: '[prefix]&7Changement du message du broadcast &c[id] &7en &c[message]'
+    permission: '[prefix]&7Changement de la permission du broadcast &c[id] &7en &c[permission]'
+    auto:
+      disabled: '[prefix]&7Desactivation de l''envoie automatique du broadcast &c[id]'
+      enabled: '[prefix]&7Activation de l''envoie automatique du broadcast &c[id]'
+  notfound:
+    clicktype: |-
+      [prefix]&cCe type de message cliquable n'a pas été trouvé, utilise:
+      &8» &7Url
+      &8» &7Commande
+      &8» &7Chat
+      &8» &7Serveur
+      &8» &7ServerGroup
+    broadcast: '[prefix]&cLe broadcast avec l''id &c[id] &cn''a pas été trouvé'
+  format:
+    direct: |-
+      &8
+      [prefix]&7[message]
+      &8&8&8
+    send: |-
+      &8
+      [prefix][message]
+      &8&8&8
+jumpto:
+  help: '[prefix]&cUtilisation&8: &7 /jumpto <joueur>'
+joinme:
+  head: true
+  cooldown: '[prefix]&cAttends un moment avant d''utilise joinme'
+  notfound: '[prefix]&cCe joinme n''a pas été trouvé'
+  notallowedonserver: '[prefix]&cTu ne peux pas envoyer un joinme dans ce serveur'
+  line:
+    '1': '&6'
+    '2': '&6'
+    '3': '&6'
+    '4': '&6'
+    '5': '  [player] &7joue sur &e[server]'
+    '6': '           &7Click pour le rejoindre'
+    '7': '&6'
+    '8': '&6'
+    '9': '&6'
+    '10': '&6'
+teamchat:
+  help: '[prefix]&cUtilisation&8: &7 /teamchat <message>'
+  message:
+    color: '&7'
+    format: '[prefix]&8[player] &8» &7[message]'
+tempban:
+  help: '[prefix]&cUtilisation&8: &7 /tempban <joueur> <temps> {unit} <raison>'
+tempmute:
+  help: '[prefix]&cUtilisation&8: &7 /tempmute <joueur> &7<temps> &7{unit} <raison>'
+history:
+  help: '[prefix]&cUtilisation&8: &7 /history <joueur> {id}'
+  notfound: '[prefix]&cCette historique n''a pas été trouvé'
+  list:
+    header: '[prefix]&7Historique de &8[player]'
+    ban:
+      chat: '&8» &9Mute &8| &7[time] - &7[reason]'
+      network: '&8» &cBan &8| &7[time] - &7[reason]'
+      changes: '&c[changeCount] &7Change'
+    kick: '&8» &eKick &8| &7[time] - &7[reason]'
+    unban: '&8» &aUnban &8| &7[time] - &7[reason]'
+    warn: '&8» &6Avertissement &8| &7[time] - &7[reason]'
+  info:
+    ban:
+      network: "[prefix]&7Ban &c[id] &7de [player]\n&8» &7ID&8: &c[id]\n&8» &7Reaison&8:\
+        \ [reason] \n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]\n&8» &7Points&8:\
+        \ &c[points] &8| &c[pointsType]\n&8» &7Durée&8: &c[duration]\n&8» &7Restants&8:\
+        \ &c[remaining-short]\n&8» &7Temps&8: &c[time]\n&8» &7Temps 'libre'&8: &c[timeout]\n\
+        &7\n&8» [changes]\n&7"
+      chat: "[prefix]&7Mute &c[id] &7de [player]\n&8» &7ID&8: &c[id]\n&8» &7Reaison&8:\
+        \ [reason] \n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]\n&8» &7Points&8:\
+        \ &c[points] &8| &c[pointsType]\n&8» &7Durée&8: &c[duration]\n&8» &7Restants&8:\
+        \ &c[remaining-short]\n&8» &7Temps&8: &c[time]\n&8» &7Temps 'libre'&8: &c[timeout]\n\
+        &7\n&8» [changes]\n&7"
+      version:
+        list:
+          header: '[prefix]&7Changements du ban &c[id] &8| [player]'
+          first: '&8» &aOriginale &8| &7[time]'
+          reason: '&8» &9Raison &8| &7[time] - &7[reason]'
+          message: '&8» &eMessage &8| &7[time] - &7[message]'
+          points: '&8» &bPoints &8| &7[time] - &7[points] &8| &7[pointsType]'
+          timeout: '&8» &cTemps "libre" &8| &7[time] - &7[duration]'
+        info:
+          reason: |-
+            [prefix]&7Changement de la raison &c[id] &7de &c[entryID] &8| [player]
+            &8» &7ID&8: &c[id]
+            &8» &7Raison&8: [reason]
+            &8» &7Message&8: &c[message]
+            &8» &7Staff&8: &c[staff]
+            &8» &7Temps&8: &c[time]
+          message: |-
+            [prefix]&7Message changer &c[id] &7de &c[entryID] &8| [player]
+            &8» &7ID&8: &c[id]
+            &8» &7Message&8: &c[message]
+            &8» &7Message2&8: &c[localMessage]
+            &8» &7Staff&8: &c[staff]
+            &8» &7Temps&8: &c[time]
+          points: |-
+            [prefix]&7Points changer &c[id] &7de &c[entryID] &8| [player]
+            &8» &7ID&8: &c[id]
+            &8» &7Points&8: &c[points] &8| &c[pointsType]
+            &8» &7Message&8: &c[message]
+            &8» &7Staff&8: &c[staff]
+            &8» &7Temps&8: &c[time]
+          timeout: "[prefix]&7Temps 'libre' changé &c[id] &7de &c[entryID] &8| [player]\n\
+            &8» &7ID&8: &c[id]\n&8» &7Temps 'libre'&8: &c[timeOut]\n&8» &7Durée&8: &c[duration]\n\
+            &8» &7Restants&8: &c[remaining-short] \n&8» &7Message&8: &c[message]\n\
+            &8» &7Staff&8: &c[staff]\n&8» &7Temps&8: &c[time]"
+    kick: |-
+      [prefix]&7Kick &c[id] &7de [player]
+      &8» &7ID&8: &c[id]
+      &8» &7Raison&8: [reason]
+      &8» &7Message&8: &c[message]
+      &8» &7Staff&8: &c[staff]
+      &8» &7Points&8: &c[points] &8| &c[pointsType]
+      &8» &7Temps&8: &c[time]
+    warn: |-
+      [prefix]&7Avertissement &c[id] &7de [player]
+      &8» &7ID&8: &c[id]
+      &8» &7Pour&8: &c[banType]
+      &8» &7Raison&8: [reason]
+      &8» &7Message&8: &c[message]
+      &8» &7Staff&8: &c[staff]
+      &8» &7Points&8: &c[points] &8| &c[pointsType]
+      &8» &7Temps&8: &c[time]
+    unban: |-
+      [prefix]&7Unban &c[id] &7de [player]
+      &8» &7ID&8: &c[id]
+      &8» &7Pour&8: &c[banType]
+      &8» &7Raison&8: [reason]
+      &8» &7Message&8: &c[message]
+      &8» &7Staff&8: &c[staff]
+      &8» &7Points&8: &c[points] &8| &c[pointsType]
+      &8» &7Temps&8: &c[time]
+  reset:
+    all: '[prefix]&7L''historique de &8[player] &7a été réinitialisé'
+    one: '[prefix]&7L''historique &c[id] de [player] &7a été réinitialisé'
+onlinetime: '[prefix]&7Ton temps en lign est &c[time-short]'
+unban:
+  help:
+    header: '[prefix]&6Unban Administration'
+    help: '[prefix]&cUtilisation&8: &7 /unban <joueur> <raison> '
+    reason: ' &8- &c[id] &8| &c[reason]'
+  notallowed: '[prefix]&cTu n''es pas autorisé à unban'
+  notforthistype: '[prefix]&cLa raison n''est pas &cautorisé &cpour &cce &ctype &cban'
+  tomanypoints: '[prefix]&cCe joueur a beaucoup de &cpoints &cpour &cunbannir
+    &cce &cjoueur &cavec &ccette &craison'
+report:
+  help:
+    header: '[prefix]&6Report Administration'
+    reason: '&8- &c[id] &8| &c[reason]'
+    help: '[prefix]&cUtilisation&8: &7 /report <joueur> <raison> '
+  self: '[prefix]&cTu ne peux pas t''autoreport ...'
+  success: '[prefix]&7Le joueur &8[player] &7a bien été report, merci'
+  bypass: '[prefix]&cTu ne peux pas report ce joueur'
+  accepted: '[prefix]&aLe report de &8[player] &aa été accepté, merci &apour votre
+    coopération'
+  other: '[prefix]&7Clique sur une raison'
+  denied:
+    staff: '[prefix]&7Vous avez refusé le repport de &8[player]&7'
+    user: '[prefix]&cLe report de &8[player] &ca été refusé'
+  notfound: '[prefix]&cLe repport n''a pas été trouvé'
+  process:
+    take: |-
+      [prefix]&7Vous vous occupez de &8[player]
+      &8» &7Report&8: &c[reporter]
+      &8» &7Raison&8: &c[reason]
+      &8» &7Message&8: &c[message]
+      &8» &7Serveur&8: &c[server]
+      &7
+    already: '[prefix]&cVous vous occupez déjà un report'
+    control:
+      message: |-
+        &8» [deny] [forReason] [otherReason]
+        &7
+      deny: '&8[&c&lRefuser&8]'
+    accept: '&8[&a&lAccepter&8]'
+    otherreason: '&8[&c&lAutres raisons&8]'
+  leaved:
+    staff: '[prefix]&8[player] &ca quitté le serveur'
+    user: '[prefix]&cLe repport de [player] &ca été refusé, parce que le &cjoueur &ca quitté
+      le serveur'
+  list:
+    'no': '[prefix]&cPas de report trouvé'
+    header: '[prefix]&7Ouvre une page de report &c[page]&8/&c[maxPage]'
+    list: '&8» &8[player] &8&l>> &c[reason] &8[&7Click&8]'
+  info: '[prefix]&7Le report est ouvert'
+  message:
+    text: '[prefix]&e[player] &8&l>> &e[reason] &8[&7Click&8]'
+    hover: |-
+      &8» &7Joueur&8: &c[player]
+      &8» &7Reporter&8: &c[reporter]
+      &8» &7Raison&8: &c[reason]
+      &8» &7Message&8: &c[message]
+      &8» &7Serveur&8: &c[server]
+chat:
+  plugin: '&fPlugins(1): &aDKBans'
+  filter:
+    spam:
+      repeat: '[prefix]&cVous vous répétez trop ...'
+      tofast: '[prefix]&cVous écrivez rapidement'
+      message: '[prefix]&cFaites attention à ce que vous dites'
+      promotion: '[prefix]&cS''il vous plaît n''annoncer pas'
+      nickname: |-
+        &e&lexample.net
+        &5&6&7&8
+        &cVotre pseudo n'est pas autorisé sur ce serveur
+        &7
+        &aSi tu changes de nom, tu pourras te connecter :D
+      command: '&fCommande inconnue, Tape "/help" pour de l''aide'
+filter:
+  help: |-
+    [prefix] &6Filter Administration
+    &8» &e/filter reload &8| &7Reload tous les filtres
+    &8» &e/filter list {type} &8| &7Liste de tous les filtres
+    &8» &e/filter create <type> <message> {operation} &8| &7Créer un filtre
+    &8» &e/filter delete <id> &8| &7Supprime un filtre
+    &8» &eTypes&8: &7Message, Promotion, NickName, Commande, MuteCommand
+    &8» &eOperation&8: &7Contains, Equals, StartsWith, EndsWith
+  reload: '[prefix]&7Reloaded tous les filtres'
+  delete: '[prefix]&7Le filtre &c[id] &8- &c[word] &7pour le type &c[type] &7a été
+    supprimé'
+  create: '[prefix]&7Créer un filtre &c[id] &8- &c[word] &8(&c[operation]&8) &7pour
+    le type &c[type]&7.'
+  notfound: '[prefix]&cLe filtre n''a pas été trouvé'
+  type:
+    notfound: |-
+      [prefix]&cCe type de filtre n'a pas été trouvé, utilise:
+      &8» &7Message
+      &8» &7Promotion
+      &8» &7Nickname
+      &8» &7Command
+      &8» &7MuteCommand
+  operator:
+    notfound: |-
+      [prefix]&cCette opération de filtre n'a pas été trouvé, utilise:
+      &8» &7Contains
+      &8» &7Equals
+      &8» &7StartsWith
+      &8» &7EndsWith
+  list:
+    header: '[prefix]&7Flitres disponibles'
+    list: '&8» &7[type] &8| &7[id] &8- &7[word] &8(&7[operation]&8)'
+ipinfo:
+  header: '[prefix]&cUtilisation&8: &7/ipinfo <joueur/ip>'
+  ip:
+    header: '[prefix]&7Ips de &c[player]'
+    list: ' &8- &c[ip]'
+  player:
+    header: '[prefix]&7Joueur avec l''i &c[ip]'
+    list: ' &8- &8[player] &8| &c[status]'
+    online: '&aÊn ligne'
+    offline: '&cHors-ligne'
+    muted: '&6Mute'
+    banned: '&cBanni'
+ipban:
+  help: '[prefix]&cUtilisation&8: &7/ipban <ip/joueur> {duration} {unit}'
+  success: '[prefix]&7L''ip &c[ip] &7a été banni'
+  info: |-
+    [prefix]&7Ipban de &c[ip]
+    &8» &7Durée&8: &c[duration]
+    &8» &7Restant&8: &c[remaining-short]
+    &8» &7Temps&8: &c[time]
+    &8» &7TimeOut&8: &c[timeOut]
+  notbanned: '[prefix]&7Cette ip n''est pas banni'
+  alreadybanned: '[prefix]&7Cette ip n''est pas banni'
+ipunban:
+  help: '[prefix]&cUtilisation&8: &7/ipunban <ip>'
+  success: '[prefix]&7Cette ip &c[ip] &7a été débanni'
+chatlog:
+  help: '[prefix]&cUtilisation&8: &7/chatlog joueur/serveur <joueur/serveur>'
+  notfound: '[prefix]&cLe logchat n''a pas été trouvé'
+  player:
+    header: '[prefix]&7Chatlog de &8[player]'
+    list:
+      allowed: '&8» &9[time] &8| &e[server]&8: &7[message]'
+      blocked: '&8» &9[time] &8| &e[server]&8: &c[message]'
+  server:
+    header: '[prefix]&7Chatlog de &9[server]'
+    list:
+      allowed: '&8» &9[time] &8| &e[player]&8: &7[message]'
+staffstats:
+  help: '[prefix]&cUtilisation&8: &7/staffStats <player>'
+  info: |-
+    [prefix]&cStaffStats de [player]
+    &8» &7Bans&8: &c[bans]
+    &8» &7Mutes&8: &c[mutes]
+    &8» &7KIcks&8: &c[kicks]
+    &8» &7Unbans&8: &c[unbans]
+networkstats: |-
+  [prefix]&6Serveur stats&7
+  &8» &7Joueur&8: &a[onlinePlayers]&8/&c[registeredPlayers]
+  &8» &7Banni&8: &c[bans]
+  &8» &7Mute&8: &c[mutes]
+  &8» &7Kick&8: &c[kicks]
+  &8» &7Avertissement&8: &c[warns]
+  &8» &7Unban&8: &c[unbans]
+  &8» &7Report&8: &a[reportsAccepted]&8/&c[reports]
+  &8» &7Connecter&8: &c[logins]
+  &8» &7Message&8: &c[messages]
+myhistorypoints: |-
+  [prefix]&7Ton historique de points
+  &8» &7Ban&8: &c[points_network]
+  &8» &7Mute&8: &c[points_chat]
+  &8» &7Total&8: &c[points_all]
