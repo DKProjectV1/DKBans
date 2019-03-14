@@ -132,7 +132,9 @@ ban:
     chat: Chat
   self: '[prefix]&cTu ne peux pas t''autobannir ...'
   bypass: '[prefix]&cTu ne peux pas bannir &7[player]&c.'
-  success: '[prefix]&8[player] &7a été bannir pour [reason]&7.'
+  success:
+    network: '[prefix]&8[player] &7a été bannir pour [reason]&7.'
+    chat: '[prefix]&8[player] &7a été muet pour [reason]&7.'
   overwrite:
     info: '[prefix]&7Voulez-vous le remplacer ?&8[&7Click&8]'
     notallowed: '[prefix]&cVous n''êtes pas autorisé à remplacer ce ban.'

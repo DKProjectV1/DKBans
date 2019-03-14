@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 14.03.19 19:43
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -100,13 +100,15 @@ public class KickCommand extends NetworkCommand {
         if(BanSystem.getInstance().getConfig().kickMode == ReasonMode.TEMPLATE) {
             sender.sendMessage(Messages.KICK_HELP_HEADER.replace("[prefix]",getPrefix()));
             for (KickReason reason : BanSystem.getInstance().getReasonProvider().getKickReasons()) {
-                if (!sender.hasPermission(reason.getPermission()) && !sender.hasPermission("dkbans.*")) continue;
-                sender.sendMessage(Messages.KICK_HELP_REASON
-                        .replace("[prefix]", getPrefix())
-                        .replace("[id]", "" + reason.getID())
-                        .replace("[reason]", reason.getDisplay())
-                        .replace("[name]", reason.getDisplay())
-                        .replace("[points]", "" + reason.getPoints()));
+                if(!reason.isHidden() && (!BanSystem.getInstance().getConfig().reasonShowOnlyPermitted
+                        || sender.hasPermission(reason.getPermission()) || sender.hasPermission("dkbans.*"))){
+                    sender.sendMessage(Messages.KICK_HELP_REASON
+                            .replace("[prefix]", getPrefix())
+                            .replace("[id]", "" + reason.getID())
+                            .replace("[reason]", reason.getDisplay())
+                            .replace("[name]", reason.getDisplay())
+                            .replace("[points]", "" + reason.getPoints()));
+                }
             }
         }
         sender.sendMessage(Messages.KICK_HELP_HELP.replace("[prefix]",getPrefix()));

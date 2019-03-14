@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+  ~ (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
   ~
   ~ @author Davide Wietlisbach
-  ~ @since 30.12.18 14:39
+  ~ @since 14.03.19 19:43
   ~ @Website https://github.com/DevKrieger/DKBans
   ~
   ~ The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -27,7 +27,8 @@
     <groupId>ch.dkrieger.bansystem</groupId>
     <artifactId>DKBans</artifactId>
     <packaging>pom</packaging>
-    <version>2.1.6</version>
+    <version>2.1.7</version>
+
     <modules>
         <module>bansystem-lib</module>
         <module>bansystem-bungeecord</module>
@@ -103,18 +104,18 @@
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-chat</artifactId>
             <version>LATEST</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-config</artifactId>
-            <version>1.13-SNAPSHOT</version>
-            <scope>provided</scope>
+            <version>LATEST</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-api-bridge</artifactId>
-            <version>2.1.6</version>
+            <version>2.1.7</version>
             <scope>provided</scope>
         </dependency>
 

@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 14.03.19 19:43
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -182,7 +182,7 @@ public class PlayerListener implements Listener {
             event.setCancelled(true);
         }else if(!event.isCommand()){
             FilterType filter = null;
-            if(!player.hasPermission("dkbans.bypass.chat")){
+            if(BanSystem.getInstance().getConfig().chatBlockRepeat && !player.hasPermission("dkbans.bypass.chat")){
                 lastMessage lastMessage = this.lastMessage.get(player.getUniqueId());
                 if(lastMessage != null){
                     if(lastMessage.time < (System.currentTimeMillis()+TimeUnit.MINUTES.toMillis(1)) && repeat(event.getMessage(),lastMessage.message)){
@@ -198,7 +198,6 @@ public class PlayerListener implements Listener {
                         lastMessage.time = System.currentTimeMillis();
                     }
                 }else this.lastMessage.put(player.getUniqueId(),new lastMessage(event.getMessage(),System.currentTimeMillis()));
-
 
                 if(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.MESSAGE,event.getMessage())){
                     filter = FilterType.MESSAGE;

@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 14.03.19 19:43
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -54,6 +54,7 @@ public class StaffStatsCommand extends NetworkCommand {
                 .replace("[mutes]",String.valueOf(player.getStats().getMutes()))
                 .replace("[kicks]",String.valueOf(player.getStats().getKicks()))
                 .replace("[unbans]",String.valueOf(player.getStats().getUnbans()))
+                .replace("[warns]",String.valueOf(player.getStats().getWarns()))
                 .replace("[prefix]",getPrefix()));
     }
 

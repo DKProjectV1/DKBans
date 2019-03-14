@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 31.12.18 12:04
+ * @since 14.03.19 19:43
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -92,7 +92,8 @@ public class WarnCommand extends NetworkCommand {
     private void sendHelp(NetworkCommandSender sender){
         sender.sendMessage(Messages.WARN_HELP_HEADER.replace("[prefix]",getPrefix()));
         for(WarnReason reason : BanSystem.getInstance().getReasonProvider().getWarnReasons()){
-            if(!reason.isHidden() && (sender.hasPermission(reason.getPermission()) || sender.hasPermission("dkbans.*"))){
+            if(!reason.isHidden() && (!BanSystem.getInstance().getConfig().reasonShowOnlyPermitted
+                    || sender.hasPermission(reason.getPermission()) || sender.hasPermission("dkbans.*"))){
                 sender.sendMessage(Messages.WARN_HELP_REASON
                         .replace("[prefix]",getPrefix())
                         .replace("[id]",""+reason.getID())

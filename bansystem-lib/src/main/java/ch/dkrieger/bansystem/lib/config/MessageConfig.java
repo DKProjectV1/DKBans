@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 14.03.19 19:43
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -118,7 +118,8 @@ public class MessageConfig extends SimpleConfig{
         Messages.BAN_HELP_HELP = addAndGetMessageValue("ban.help.help","&8» &cUsage&8: &7 /ban <player> <reason> {message}");
         Messages.BAN_SELF = addAndGetMessageValue("ban.self","[prefix]&cYou can not ban your self.");
         Messages.BAN_BYPASS = addAndGetMessageValue("ban.bypass","[prefix]&cYou can not ban &7[player]&c.");
-        Messages.BAN_SUCCESS = addAndGetMessageValue("ban.success","[prefix]&8[player] &7was banned for [reason]&7.");
+        Messages.BAN_NETWORK_SUCCESS = addAndGetMessageValue("ban.success.network","[prefix]&8[player] &7was banned for [reason]&7.");
+        Messages.BAN_CHAT_SUCCESS = addAndGetMessageValue("ban.success.chat","[prefix]&8[player] &7was muted for [reason]&7.");
         Messages.BAN_OVERWRITE_INFO = addAndGetMessageValue("ban.overwrite.info","[prefix]&7Do you want override it? &8[&7Click&8]");
         Messages.BAN_NOTFOUND = addAndGetMessageValue("ban.notfound","[prefix]&cThis ban was not found.");
 
@@ -143,7 +144,9 @@ public class MessageConfig extends SimpleConfig{
         Messages.WARN_SELF = addAndGetMessageValue("warn.self","[prefix]&cYou can not warn your self.");
         Messages.WARN_BYPASS = addAndGetMessageValue("warn.bypass","[prefix]&cYou can not warn &8[player]&c.");
         Messages.WARN_SUCCESS = addAndGetMessageValue("warn.success","[prefix]&7was warned for &4[reason]&7.");
-        Messages.WARN_MESSAGE = addAndGetMessageValue("warn.message","&5\n[prefix]&cYou were warned\n&8» &3Reason&8: &4&l[reason]\n&8» &3WarnID&8: &7[id]\n&5");
+
+        Messages.WARN_CHAT_MESSAGE = addAndGetMessageValue("warn.chat.message","&5\n[prefix]&cYou were warned.\n&8» &3Reason&8: &4&l[reason]\n&8» &3WarnID&8: &7[id]\n&5");
+        Messages.WARN_KICK_MESSAGE = addAndGetMessageValue("warn.kick.message","&e&lexample.net\n&5&5\n[prefix]&cYou were warned.\n&8» &3Reason&8: &4&l[reason]\n&8» &3WarnID&8: &7[id]\n&5");
 
         Messages.UNWARN_SUCCESS_ALL = addAndGetMessageValue("unwarn.all","[prefix] &7Unwarnd all warns from &8[player]&7.");
         Messages.UNWARN_SUCCESS_DEFINED = addAndGetMessageValue("unwarn.all","[prefix] &7Unwarnd warn &c[warnId] &7from &8[player]&7.");

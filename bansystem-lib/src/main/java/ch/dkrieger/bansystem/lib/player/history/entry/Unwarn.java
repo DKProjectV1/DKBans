@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 01.02.19 20:28
+ * @since 14.03.19 19:43
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -55,7 +55,7 @@ public class Unwarn extends HistoryEntry{
         return new TextComponent(replace(Messages.HISTORY_INFO_KICK));
     }
     public TextComponent toMessage(){
-        return new TextComponent(replace(Messages.WARN_MESSAGE));
+        return new TextComponent(replace(Messages.WARN_CHAT_MESSAGE));
 
     }
     public String replace(String message){

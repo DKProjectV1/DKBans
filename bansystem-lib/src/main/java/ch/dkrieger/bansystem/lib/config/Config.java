@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 14.03.19 19:43
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -72,7 +72,7 @@ public class Config extends SimpleConfig{
     public List<String> reportAutoCommandExit;
 
     public ReasonMode warnMode;
-    public String  warnStaffName;
+    public String warnStaffName;
     public int warnAutoBanCount;
     public boolean warnAutoBanBanForLastReason;
     public long warnAutoBanCustomDuration;
@@ -90,6 +90,7 @@ public class Config extends SimpleConfig{
 
     public boolean chatBlockPlugin;
     public long chatDelay;
+    public boolean chatBlockRepeat;
     public boolean chatFilterEnabled;
     public int chatFilterRepeatMatchesPercent;
     public int chatFilterAutobanCount;
@@ -103,9 +104,10 @@ public class Config extends SimpleConfig{
     public long banPointsNetworkTime;
     public int banPointsNetworkPermanently;
 
+    public boolean reasonShowOnlyPermitted;
+
     public boolean playerSaveIP;
     public boolean playerOnlineSessionSaving;
-    public int playerIPDeletionInDays;
     public boolean playerColorLiveUpdate;
     public String playerColorDefault;
     public String playerColorConsole;
@@ -187,6 +189,8 @@ public class Config extends SimpleConfig{
                 ,addAndGetStringValue("ban.points.network.duration.unit",TimeUnit.DAYS.toString()));
         this.banPointsNetworkPermanently = addAndGetIntValue("ban.points.network.permanently",80);
 
+        this.reasonShowOnlyPermitted = addAndGetBooleanValue("reasons.showonlypremitted",true);
+
         this.unbanMode = ReasonMode.parse(addAndGetStringValue("unban.mode",BanMode.SELF.toString()));
         this.kickMode = ReasonMode.parse(addAndGetStringValue("kick.mode",BanMode.SELF.toString()));
 
@@ -235,6 +239,7 @@ public class Config extends SimpleConfig{
 
         this.chatBlockPlugin = addAndGetBooleanValue("chat.block.plugin",true);
         this.chatDelay = addAndGetLongValue("chat.delay",500);
+        this.chatBlockRepeat = addAndGetBooleanValue("chat.block.repeat",true);
         this.chatFilterEnabled = addAndGetBooleanValue("chat.filter.enabled",true);
         this.chatFilterRepeatMatchesPercent =  (100-addAndGetIntValue("chat.filter.repeat.matchespercent",40));
         if(this.chatFilterRepeatMatchesPercent < 0) this.chatFilterRepeatMatchesPercent = 0;

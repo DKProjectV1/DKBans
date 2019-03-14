@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 31.12.18 12:51
+ * @since 14.03.19 19:43
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -29,12 +29,13 @@ import java.util.List;
 
 public class WarnReason extends KickReason{
 
-    private int autoBanCount, forBan;
+    private int autoBanCount, forBan, kickFrom;
 
-    public WarnReason(int id, HistoryPoints points, String name, String display, String permission, boolean hidden, List<String> aliases, Document properties, int autoBanCount, int forBan) {
+    public WarnReason(int id, HistoryPoints points, String name, String display, String permission, boolean hidden, List<String> aliases, Document properties, int autoBanCount, int forBan, int kickFrom) {
         super(id, points, name, display, permission, hidden, aliases,properties);
         this.autoBanCount = autoBanCount;
         this.forBan = forBan;
+        this.kickFrom = kickFrom;
     }
 
     public int getAutoBanCount() {
@@ -45,8 +46,12 @@ public class WarnReason extends KickReason{
         return forBan;
     }
 
-    public Warn toWarn(NetworkPlayer player,String message, String staff){
+    public int getKickFrom() {
+        return kickFrom;
+    }
+
+    public Warn toWarn(NetworkPlayer player, String message, String staff){
         return new Warn(player.getUUID(),player.getIP(),getRawDisplay(),message,System.currentTimeMillis(),-1
-                ,getPoints(),getID(),staff,new Document());
+                ,getPoints(),getID(),staff,new Document(),kickFrom>0&&(player.getHistory().getWarnCountSinceLastBan(getID())+1)>=kickFrom);
     }
 }

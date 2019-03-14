@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 14.03.19 19:43
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -102,7 +102,8 @@ public class Messages {
     public static String BAN_TYPE_CHAT;
     public static String BAN_SELF;
     public static String BAN_BYPASS;
-    public static String BAN_SUCCESS;
+    public static String BAN_CHAT_SUCCESS;
+    public static String BAN_NETWORK_SUCCESS;
     public static String BAN_OVERWRITE_INFO;
     public static String BAN_OVERWRITE_NOTALLOWED;
     public static String BAN_NOTFOUND;
@@ -126,7 +127,8 @@ public class Messages {
     public static String WARN_SELF;
     public static String WARN_BYPASS;
     public static String WARN_SUCCESS;
-    public static String WARN_MESSAGE;
+    public static String WARN_CHAT_MESSAGE;
+    public static String WARN_KICK_MESSAGE;
 
     public static String UNWARN_HELP;
     public static String UNWARN_SUCCESS_ALL;

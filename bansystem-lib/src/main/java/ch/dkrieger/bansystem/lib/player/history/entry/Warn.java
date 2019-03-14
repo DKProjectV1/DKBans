@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 19:42
+ * @since 14.03.19 19:43
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -30,8 +30,24 @@ import java.util.UUID;
 
 public class Warn extends HistoryEntry{
 
+    private boolean kick;
+
     public Warn(UUID uuid, String ip, String reason, String message, long timeStamp, int id, HistoryPoints points, int reasonID, String staff, Document properties) {
         super(uuid, ip, reason, message, timeStamp, id, points, reasonID, staff, properties);
+        this.kick = false;
+    }
+
+    public Warn(UUID uuid, String ip, String reason, String message, long timeStamp, int id, HistoryPoints points, int reasonID, String staff, Document properties, boolean kick) {
+        super(uuid, ip, reason, message, timeStamp, id, points, reasonID, staff, properties);
+        this.kick = kick;
+    }
+
+    public boolean isKick() {
+        return kick;
+    }
+
+    public void setKick(boolean kick){
+        this.kick = kick;
     }
 
     @Override
@@ -47,8 +63,12 @@ public class Warn extends HistoryEntry{
     public TextComponent getInfoMessage() {
         return new TextComponent(replace(Messages.HISTORY_INFO_KICK));
     }
-    public TextComponent toMessage(){
-        return new TextComponent(replace(Messages.WARN_MESSAGE));
+    public TextComponent toChatMessage(){
+        return new TextComponent(replace(Messages.WARN_CHAT_MESSAGE));
+
+    }
+    public TextComponent toKickMessage(){
+        return new TextComponent(replace(Messages.WARN_KICK_MESSAGE));
 
     }
     public String replace(String message){

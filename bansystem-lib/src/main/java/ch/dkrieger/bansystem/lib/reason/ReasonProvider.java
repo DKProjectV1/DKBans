@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 14.03.19 19:43
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -459,7 +459,7 @@ public class ReasonProvider {
                     exception.printStackTrace();
                 }
             }
-        }//int id, int points, String name, String display, String permission, boolean hidden, List<String> aliases, int forban
+        }
         config = new Configuration();
         this.kickReasons.add(new KickReason(1,new HistoryPoints(3,BanType.CHAT),"Provocation","Provocation","dkbans.kick.reason.provocation"
                 ,false,Arrays.asList("provocation","provo"),new Document()));
@@ -506,7 +506,7 @@ public class ReasonProvider {
                                     ,config.getStringList("reasons."+key+".aliases")
                                     ,loadProperties(config,"reasons."+key+".properties")
                                     ,config.getInt("reasons."+key+".autoban.count")
-                                    ,config.getInt("reasons."+key+".autoban.banid")));
+                                    ,config.getInt("reasons."+key+".autoban.banid"),config.getInt("reasons."+key+".kickcount")));
                         }catch (Exception exception){
                             exception.printStackTrace();
                             System.out.println(Messages.SYSTEM_PREFIX+"Could not load warn-reason "+key);
@@ -524,11 +524,11 @@ public class ReasonProvider {
         }
         config = new Configuration();
         this.warnReasons.add(new WarnReason(1,new HistoryPoints(3,BanType.CHAT),"Provocation","Provocation","dkbans.warn.reason.provocation"
-                ,false,Arrays.asList("provocation","provo"),new Document(),3,2));
+                ,false,Arrays.asList("provocation","provo"),new Document(),3,2,2));
         this.warnReasons.add(new WarnReason(2,new HistoryPoints(4,BanType.CHAT),"Insult","Insult","dkbans.warn.reason.insult"
-                ,false,Arrays.asList("insult"),new Document(),3,3));
+                ,false,Arrays.asList("insult"),new Document(),3,3,2));
         this.warnReasons.add(new WarnReason(3,new HistoryPoints(8,BanType.NETWORK),"Spam/promotion","Spam/Promotion","dkbans.warn.reason.promotion"
-                ,false,Arrays.asList("spamming","spam","promotion"),new Document(),2,4));
+                ,false,Arrays.asList("spamming","spam","promotion"),new Document(),2,4,2));
 
         for(WarnReason reason : this.warnReasons){
             config.set("reasons."+reason.getID()+".name",reason.getName());
@@ -540,6 +540,7 @@ public class ReasonProvider {
             config.set("reasons."+reason.getID()+".points.type",reason.getPoints().getHistoryType().toString());
             config.set("reasons."+reason.getID()+".autoban.count",reason.getAutoBanCount());
             config.set("reasons."+reason.getID()+".autoban.banid",reason.getForBan());
+            config.set("reasons."+reason.getID()+".kickcount",reason.getKickFrom());
             config.set("reasons."+reason.getID()+".properties.MyProperty","Hey");
             config.set("reasons."+reason.getID()+".properties.AnotherProperty",10);
         }

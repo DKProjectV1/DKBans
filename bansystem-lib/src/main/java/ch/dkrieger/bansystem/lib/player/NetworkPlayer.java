@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 14.03.19 19:43
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -535,7 +535,7 @@ public class NetworkPlayer {
 
     public Ban ban(BanType type, long duration, TimeUnit unit,String reason,String message,HistoryPoints points, int reasonID, String staff, Document properties){
         return ban(new Ban(this.uuid,this.lastIP,reason,message,System.currentTimeMillis(),-1,points,reasonID,staff,properties
-                ,System.currentTimeMillis()+unit.toMillis(duration),type));
+                ,duration==-1?-1:System.currentTimeMillis()+unit.toMillis(duration),type));
     }
     public Ban ban(BanReason reason){
         return ban(reason.toBan(this,"",null));
@@ -910,7 +910,7 @@ public class NetworkPlayer {
         update(NetworkPlayerUpdateCause.REPORTDENY,new Document().append("reports",this.reports));
         BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(() ->{
             NetworkPlayer staff = BanSystem.getInstance().getPlayerManager().getPlayer(getReportStaff());
-            staff.setWatchingReportedPlayer(null);
+            if(staff != null) staff.setWatchingReportedPlayer(null);
         });
         this.reports.clear();
     }

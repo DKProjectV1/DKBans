@@ -118,7 +118,9 @@ ban:
     chat: Chat
   self: '[prefix]&cDu kannst dich nicht selbst bannen.'
   bypass: '[prefix]&cDu kannst &7[player] &cnicht bannen.'
-  success: '[prefix]&8[player] &7wurde für [reason] &7gebannt.'
+  success:
+    network: '[prefix]&8[player] &7wurde für [reason]&7gebannt.'
+    chat: '[prefix]&8[player] &7wurde für [reason]&7gemutet.'
   overwrite:
     info: '[prefix]&7Willst du diesem überschreiben? &8[&7Click&8]'
     notallowed: '[prefix]&cDu bist nicht berechtigt diesen Ban zu übschreiben.'
@@ -179,12 +181,21 @@ warn:
   self: '[prefix]&cDu kann dich selber nicht verwarnen.'
   bypass: '[prefix]&cDu kannst &8[player] &cnicht verwarnen.'
   success: '[prefix]&8[player] &7wurde für &4[reason] &7verwarnt.'
-  message: |-
-    &5
-    [prefix]&cDu wurdest verwarnt
-    &8» &3Grund&8: &4&l[reason]
-    &8» &3WarnID&8: &7[id]
-    &5
+  chat:
+    message: |-
+      &5
+      [prefix]&cDu wurdest verwarnt
+      &8» &3Grund&8: &4&l[reason]
+      &8» &3WarnID&8: &7[id]
+      &5
+  kick:
+    message: |-
+      &e&lexample.net 
+      &5&5
+      &cDu wurdest verwarnt
+      &8» &3Reason&8: &4&l[reason]
+      &8» &3WarnID&8: &7[id]
+      &5
 editban:
   help: |-
     [prefix]&7Ban edit Administration
@@ -245,8 +256,6 @@ broadcast:
       &8» &7Url
       &8» &7Command
       &8» &7OpenChat
-      &8» &7Server
-      &8» &7ServerGroup
     broadcast: '[prefix]&cDer Broadcast &c[id] &cwurde nicht gefunden.'
   format:
     direct: |-

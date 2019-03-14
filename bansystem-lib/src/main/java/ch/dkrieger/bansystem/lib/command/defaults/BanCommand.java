@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 14.03.19 19:43
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -35,6 +35,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class BanCommand extends NetworkCommand {
 
@@ -52,10 +53,6 @@ public class BanCommand extends NetworkCommand {
             sender.sendMessage(Messages.BAN_SELF.replace("[prefix]",getPrefix()));
             return;
         }
-        if(BanSystem.getInstance().getConfig().banMode == BanMode.SELF){
-            sender.executeCommand("tempban "+GeneralUtil.arrayToString(args," "));
-            return;
-        }
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
         if(player == null){
             sender.sendMessage(Messages.PLAYER_NOT_FOUND
@@ -69,6 +66,14 @@ public class BanCommand extends NetworkCommand {
                     .replace("[player]",player.getColoredName()));
             return;
         }
+
+        if(BanSystem.getInstance().getConfig().banMode == BanMode.SELF){
+            StringBuilder message = new StringBuilder();
+            for(int i = 1; i< args.length;i++) message.append(args[i]).append(" ");
+            sendBanMessage(sender,player,player.ban(BanType.NETWORK,-1,TimeUnit.MICROSECONDS,message.toString()));
+            return;
+        }
+
         BanReason reason = BanSystem.getInstance().getReasonProvider().searchBanReason(args[1]);
         if(reason == null){
             sendReasons(sender);
@@ -86,12 +91,12 @@ public class BanCommand extends NetworkCommand {
                     .replace("[prefix]",getPrefix()));
             return;
         }
-        String message = "";
+        StringBuilder message = new StringBuilder();
         boolean overwrite = false;
 
         if(args.length > 2) for(int i = 2; i< args.length;i++) {
             if(args[i].equalsIgnoreCase("--overwrite")) overwrite = true;
-            else message += args[i] + " ";
+            else message.append(args[i]).append(" ");
         }
         if(player.isBanned(value.getType())){
             if(overwrite){
@@ -124,9 +129,35 @@ public class BanCommand extends NetworkCommand {
                 return;
             }
         }
-        Ban ban = player.ban(reason,message,sender.getUUID());
-        sender.sendMessage(Messages.BAN_SUCCESS
-                .replace("[prefix]",getPrefix())
+        sendBanMessage(sender,player,player.ban(reason, message.toString(),sender.getUUID()));
+    }
+    @Override
+    public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
+        if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],sender.getName(),BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));
+        return null;
+    }
+    private void sendReasons(NetworkCommandSender sender){
+        if(BanSystem.getInstance().getConfig().banMode != BanMode.SELF){
+            sender.sendMessage(Messages.BAN_HELP_HEADER.replace("[prefix]",getPrefix()));
+            for(BanReason reason : BanSystem.getInstance().getReasonProvider().getBanReasons()){
+                if(!reason.isHidden() && (!BanSystem.getInstance().getConfig().reasonShowOnlyPermitted
+                        || sender.hasPermission(reason.getPermission()) || sender.hasPermission("dkbans.*"))){
+                    sender.sendMessage(Messages.BAN_HELP_REASON
+                            .replace("[prefix]",getPrefix())
+                            .replace("[id]",""+reason.getID())
+                            .replace("[name]",reason.getDisplay())
+                            .replace("[historyType]",reason.getHistoryType().getDisplay())
+                            .replace("[banType]",reason.getBanType().getDisplay())
+                            .replace("[reason]",reason.getDisplay())
+                            .replace("[points]",""+reason.getPoints()));
+                }
+            }
+        }
+        sender.sendMessage(Messages.BAN_HELP_HELP.replace("[prefix]",getPrefix()));
+    }
+    public static void sendBanMessage(NetworkCommandSender sender,NetworkPlayer player,Ban ban){
+        sender.sendMessage(ban.getBanType()==BanType.CHAT?Messages.BAN_CHAT_SUCCESS:Messages.BAN_NETWORK_SUCCESS
+                .replace("[prefix]",Messages.PREFIX_BAN)
                 .replace("[player]",player.getColoredName())
                 .replace("[type]",ban.getBanType().getDisplay())
                 .replace("[reason]",ban.getReason())
@@ -137,26 +168,5 @@ public class BanCommand extends NetworkCommand {
                 .replace("[duration]",GeneralUtil.calculateDuration(ban.getDuration()))
                 .replace("[remaining]",GeneralUtil.calculateRemaining(ban.getDuration(),false))
                 .replace("[remaining-short]",GeneralUtil.calculateRemaining(ban.getDuration(),true)));
-    }
-    private void sendReasons(NetworkCommandSender sender){
-        sender.sendMessage(Messages.BAN_HELP_HEADER.replace("[prefix]",getPrefix()));
-        for(BanReason reason : BanSystem.getInstance().getReasonProvider().getBanReasons()){
-            if(!reason.isHidden() && (sender.hasPermission(reason.getPermission()) || sender.hasPermission("dkbans.*"))){
-                sender.sendMessage(Messages.BAN_HELP_REASON
-                        .replace("[prefix]",getPrefix())
-                        .replace("[id]",""+reason.getID())
-                        .replace("[name]",reason.getDisplay())
-                        .replace("[historyType]",reason.getHistoryType().getDisplay())
-                        .replace("[banType]",reason.getBanType().getDisplay())
-                        .replace("[reason]",reason.getDisplay())
-                        .replace("[points]",""+reason.getPoints()));
-            }
-        }
-        sender.sendMessage(Messages.BAN_HELP_HELP.replace("[prefix]",getPrefix()));
-    }
-    @Override
-    public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
-        if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],sender.getName(),BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));
-        return null;
     }
 }

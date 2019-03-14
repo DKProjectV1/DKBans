@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 14.03.19 19:43
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -83,18 +83,7 @@ public class TempbanCommand extends NetworkCommand {
         for(int i = reasonStart;i<args.length;i++) reason+= args[i]+" ";
 
         Ban ban = player.ban(BanType.NETWORK,millis,TimeUnit.MILLISECONDS,reason.substring(0,reason.length()-1),-1,sender.getUUID());
-        sender.sendMessage(Messages.BAN_SUCCESS
-                .replace("[prefix]",getPrefix())
-                .replace("[player]",player.getColoredName())
-                .replace("[type]",ban.getBanType().getDisplay())
-                .replace("[reason]",ban.getReason())
-                .replace("[points]",String.valueOf(ban.getPoints()))
-                .replace("[staff]",ban.getStaffName())
-                .replace("[reasonID]",String.valueOf(ban.getReasonID()))
-                .replace("[ip]",ban.getIp())
-                .replace("[duration]",GeneralUtil.calculateDuration(ban.getDuration()))
-                .replace("[remaining]",GeneralUtil.calculateRemaining(ban.getDuration(),false))
-                .replace("[remaining-short]",GeneralUtil.calculateRemaining(ban.getDuration(),true)));
+        BanCommand.sendBanMessage(sender,player,ban);
     }
 
     @Override
