@@ -143,7 +143,7 @@ public class BanSelfGui extends PrivateGui {
             if(this.banType != null) {
                 NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getTarget());
                 Ban ban  = targetNetworkPlayer.ban(this.banType, this.duration, this.timeUnit, this.reason, getMessage(), -1, player.getUniqueId());
-                player.sendMessage(Messages.BAN_SUCCESS
+                player.sendMessage(Messages.IPBAN_SUCCESS
                         .replace("[prefix]", Messages.PREFIX_BAN)
                         .replace("[player]", targetNetworkPlayer.getColoredName())
                         .replace("[type]", ban.getBanType().getDisplay())

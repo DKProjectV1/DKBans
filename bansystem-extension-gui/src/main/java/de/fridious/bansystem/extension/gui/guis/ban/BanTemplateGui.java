@@ -87,7 +87,7 @@ public class BanTemplateGui extends PrivateGui<BanReason> {
                     && (!BanSystem.getInstance().getPlayerManager().getPlayer(getTarget()).hasBypass() || player.hasPermission("dkbans.bypass.ignore"))) {
                 NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getTarget());
                 Ban ban = networkPlayer.ban(banReason, getMessage(), player.getUniqueId());
-                player.sendMessage(Messages.BAN_SUCCESS
+                player.sendMessage(Messages.IPBAN_SUCCESS
                         .replace("[prefix]", Messages.PREFIX_BAN)
                         .replace("[player]", networkPlayer.getColoredName())
                         .replace("[type]", ban.getBanType().getDisplay())

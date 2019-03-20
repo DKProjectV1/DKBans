@@ -87,7 +87,7 @@ public class ReportControlGui extends PrivateGui {
                 Report report = targetNetworkPlayer.getProcessingReport();
                 ReportReason reason = BanSystem.getInstance().getReasonProvider().getReportReason(report.getReasonID());
                 Ban ban = targetNetworkPlayer.ban(BanSystem.getInstance().getReasonProvider().getBanReason(reason.getForBan()), getMessage(), player.getUniqueId());
-                player.sendMessage(Messages.BAN_SUCCESS
+                player.sendMessage(Messages.IPBAN_SUCCESS
                         .replace("[prefix]", Messages.PREFIX_BAN)
                         .replace("[player]", targetNetworkPlayer.getColoredName())
                         .replace("[type]", ban.getBanType().getDisplay())
