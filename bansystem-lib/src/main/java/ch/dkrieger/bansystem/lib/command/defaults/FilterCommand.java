@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 05.04.19 22:47
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -27,10 +27,14 @@ import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.filter.Filter;
 import ch.dkrieger.bansystem.lib.filter.FilterOperation;
 import ch.dkrieger.bansystem.lib.filter.FilterType;
+import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class FilterCommand extends NetworkCommand {
+
+    private final static List<String> ARGUMENTS = Arrays.asList("reload","list","remove","delete","add","create");
 
     public FilterCommand() {
         super("filter","","dkbans.filter");
@@ -118,6 +122,7 @@ public class FilterCommand extends NetworkCommand {
     }
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
+        if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],null,ARGUMENTS);
         return null;
     }
 }

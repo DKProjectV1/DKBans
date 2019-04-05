@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 05.04.19 22:47
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -28,6 +28,7 @@ import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
+import ch.dkrieger.bansystem.lib.reason.KickReason;
 import ch.dkrieger.bansystem.lib.reason.ReportReason;
 import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
@@ -36,8 +37,11 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 public class ReportCommand extends NetworkCommand {
+
+    private final static Function<ReportReason,String> REASON_FORMATTER = KickReason::getName;
 
     public ReportCommand() {
         super("report","","dkbans.report");
@@ -133,7 +137,7 @@ public class ReportCommand extends NetworkCommand {
                     return;
                 }
                 Report report = player.getOpenReportWhenNoProcessing();
-                if(player.getReportStaff() != null || report == null){
+                if(player.getReportStaff() != null || report == null || report.getUUID().equals(sender.getUUID())){
                     sender.sendMessage(Messages.REPORT_NOTFOUND
                             .replace("[player]",player.getColoredName())
                             .replace("[prefix]",getPrefix()));
@@ -275,6 +279,8 @@ public class ReportCommand extends NetworkCommand {
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
         if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],sender.getName(),BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));
+        else if(args.length == 2 && BanSystem.getInstance().getConfig().reportMode != ReasonMode.SELF)
+            return GeneralUtil.calculateTabComplete(args[1],null,BanSystem.getInstance().getReasonProvider().getReportReasons(),REASON_FORMATTER);
         return null;
     }
 }

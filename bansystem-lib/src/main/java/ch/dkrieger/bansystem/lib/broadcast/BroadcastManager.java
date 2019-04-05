@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 05.04.19 22:47
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -110,9 +110,9 @@ public class BroadcastManager {
     }
     public TextComponent build(Broadcast broadcast, NetworkPlayer player){
         List<BaseComponent> components = new ArrayList<>();
-        String message = broadcast.getMessage();
-        String click = broadcast.getClick().getMessage();
-        String hover = broadcast.getHover();
+        String message = GeneralUtil.buildNextLineColor(broadcast.getMessage());
+        String click = GeneralUtil.buildNextLineColor(broadcast.getClick().getMessage());
+        String hover = GeneralUtil.buildNextLineColor(broadcast.getHover());
         String before = "";
         String id = "";
         if(player != null){

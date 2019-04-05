@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 04.01.19 13:35
+ * @since 05.04.19 22:47
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -44,15 +44,6 @@ public class EditBanCommand extends NetworkCommand {
 
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
-        /*
-
-        editban <player/id> setReason <reason> CHAT/network {message}
-
-        editban <player/id> addDuration <duration> <unit> {message}
-
-        editban <player/id> setDuration <duration> <unit> {message}
-
-         */
 
         if(args.length >= 3){
             BanType type = null;
@@ -174,6 +165,7 @@ public class EditBanCommand extends NetworkCommand {
     }
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
+        if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],sender.getName(),BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));
         return null;
     }
 }

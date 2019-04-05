@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 05.04.19 22:47
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -33,6 +33,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 public class GeneralUtil {
 
@@ -42,6 +43,8 @@ public class GeneralUtil {
     public static Gson GSON = GSON_BUILDER.create();
     public static Gson GSON_NOT_PRETTY = GSON_BUILDER_NOT_PRETTY.create();
     public static final JsonParser PARSER = new JsonParser();
+
+    public static final Function<String,String> STRING_FORMATTER = s -> s;
 
     public static void createGSON(){
         GSON = GSON_BUILDER.create();
@@ -265,9 +268,16 @@ public class GeneralUtil {
         }
     }
     public static List<String> calculateTabComplete(String search, String not, List<String> options){
+        return calculateTabComplete(search, not, options,STRING_FORMATTER);
+    }
+
+    public static <T> List<String> calculateTabComplete(String search, String not, List<T> options, Function<T,String> formatter){
         search = search.toLowerCase();
         List<String> result = new LinkedList<>();
-        for(String name : options) if(name.toLowerCase().startsWith(search) && !(name.equalsIgnoreCase(not))) result.add(name);
+        for(T name : options){
+            String object = formatter.apply(name).toLowerCase();
+            if(object.toLowerCase().startsWith(search) && !(object.equalsIgnoreCase(not))) result.add(object);
+        }
         return result;
     }
 

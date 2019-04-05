@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 05.04.19 22:47
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -28,6 +28,7 @@ import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.Document;
+import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -60,7 +61,7 @@ public class BungeeCordNetwork implements DKNetwork {
     }
     @Override
     public void broadcast(String message) {
-        broadcast(new TextComponent(ChatColor.translateAlternateColorCodes('&',message)));
+        broadcast(new TextComponent(GeneralUtil.buildNextLineColor(ChatColor.translateAlternateColorCodes('&',message))));
     }
     @Override
     public void broadcast(TextComponent component) {

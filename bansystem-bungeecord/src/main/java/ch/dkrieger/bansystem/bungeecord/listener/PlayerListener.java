@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 14.03.19 19:43
+ * @since 05.04.19 22:47
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -47,14 +47,16 @@ import java.util.concurrent.TimeUnit;
 
 public class PlayerListener implements Listener {
 
-    private Map<UUID,lastMessage> lastMessage;
-    private Map<UUID,Integer> banPoints;
-    private Map<UUID,Integer> currentMessageCount;
+    private final Map<UUID,lastMessage> lastMessage;
+    private final Map<UUID,Integer> banPoints;
+    private final Map<UUID,Integer> currentMessageCount;
+    private final Map<UUID,String> lastCursors;
 
     public PlayerListener() {
         this.lastMessage = new HashMap<>();
         this.banPoints = new HashMap<>();
         this.currentMessageCount = new HashMap<>();
+        this.lastCursors = new HashMap<>();
     }
 
     @EventHandler
@@ -253,14 +255,24 @@ public class PlayerListener implements Listener {
     }
     @EventHandler
     public void onTabComplete(TabCompleteEvent event){
-        if(!(event.getSender() instanceof ProxiedPlayer)) return;
-        ProxiedPlayer player = (ProxiedPlayer) event.getSender();
-        if(event.getCursor().startsWith("/") && !event.getCursor().contains(" ") && BanSystem.getInstance().getConfig().tabCompleteBlockEnabled){
-            final String search = event.getCursor();
-            if(!player.hasPermission("dkbans.bypass.tabcomplete")) event.getSuggestions().clear();
-            GeneralUtil.iterateAcceptedForEach(BanSystem.getInstance().getConfig().tabCompleteOptions
-                    ,option -> (option.getPermission() == null || player.hasPermission(option.getPermission())) && option.getOption().startsWith(search)
-                    ,option -> event.getSuggestions().add(option.getOption()));
+        if(BanSystem.getInstance().getConfig().tabCompleteBlockEnabled && event.getSender() instanceof ProxiedPlayer){
+            this.lastCursors.put(((ProxiedPlayer) event.getSender()).getUniqueId(),event.getCursor());
+        }
+    }
+
+    @EventHandler
+    public void onTabComplete(TabCompleteResponseEvent event){
+        if(event.getReceiver() instanceof ProxiedPlayer){
+            ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
+            String cursor = this.lastCursors.get(((ProxiedPlayer) event.getReceiver()).getUniqueId());
+            if(cursor != null && cursor.startsWith("/")){
+                if(!cursor.contains(" ")){
+                    if(!player.hasPermission("dkbans.bypass.tabcomplete")) event.getSuggestions().clear();
+                    GeneralUtil.iterateAcceptedForEach(BanSystem.getInstance().getConfig().tabCompleteOptions
+                            ,option -> option.getPermission() == null || player.hasPermission(option.getPermission()) && option.getOption().startsWith(cursor)
+                            ,option -> event.getSuggestions().add(option.getOption()));
+                }
+            }
         }
     }
 

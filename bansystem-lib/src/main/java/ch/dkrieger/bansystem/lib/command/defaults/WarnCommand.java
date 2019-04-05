@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 14.03.19 19:43
+ * @since 05.04.19 22:47
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -27,12 +27,16 @@ import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.config.mode.ReasonMode;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
+import ch.dkrieger.bansystem.lib.reason.KickReason;
 import ch.dkrieger.bansystem.lib.reason.WarnReason;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class WarnCommand extends NetworkCommand {
+
+    private final static Function<WarnReason,String> REASON_FORMATTER = KickReason::getName;
 
     public WarnCommand() {
         super("warn","","dkbans.warn");
@@ -107,6 +111,8 @@ public class WarnCommand extends NetworkCommand {
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
         if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],sender.getName(), BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));
+        else if(args.length == 2 && BanSystem.getInstance().getConfig().warnMode != ReasonMode.SELF)
+            return GeneralUtil.calculateTabComplete(args[1],null,BanSystem.getInstance().getReasonProvider().getWarnReasons(),REASON_FORMATTER);
         return null;
     }
 }

@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 05.04.19 22:47
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -85,7 +85,7 @@ public class KickReason {
     }
 
     public boolean hasAlias(String alias){
-        return this.name.equalsIgnoreCase(alias) ||this.aliases.contains(alias);
+        return this.name.equalsIgnoreCase(alias) || this.aliases.contains(alias);
     }
     public Kick toKick(NetworkPlayer player,String message,String server, String staff){
         return new Kick(player.getUUID(),player.getIP(),getRawDisplay(),message,System.currentTimeMillis(),-1,points,getID(),staff,new Document(),server);
