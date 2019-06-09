@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 09.06.19 12:15
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -110,11 +110,13 @@ public class BukkitNetwork implements DKNetwork {
 
     @Override
     public void sendJoinMe(JoinMe joinMe) {
-        this.joinmes.put(joinMe.getUUID(),joinMe);
-        List<TextComponent> components = joinMe.create();
-        for(Player player : Bukkit.getOnlinePlayers()){
-            for(TextComponent component : components) BukkitBanSystemBootstrap.getInstance().sendTextComponent(player,component);
-        }
+       Bukkit.getScheduler().runTaskAsynchronously(BukkitBanSystemBootstrap.getInstance(),()->{
+           this.joinmes.put(joinMe.getUUID(),joinMe);
+           List<TextComponent> components = joinMe.create();
+           for(Player player : Bukkit.getOnlinePlayers()){
+               for(TextComponent component : components) BukkitBanSystemBootstrap.getInstance().sendTextComponent(player,component);
+           }
+       });
     }
 
     @Override

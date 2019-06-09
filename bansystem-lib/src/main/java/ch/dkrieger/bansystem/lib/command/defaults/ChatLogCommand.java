@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 05.04.19 22:47
+ * @since 09.06.19 12:15
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -106,6 +106,7 @@ public class ChatLogCommand extends NetworkCommand {
 
          */
     }
+
     private ChatLog.Filter filter(String[] args){
         ChatLog.Filter filter = new ChatLog.Filter();
         String typeKey = "";

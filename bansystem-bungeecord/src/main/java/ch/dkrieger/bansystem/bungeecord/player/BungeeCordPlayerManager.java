@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 09.06.19 12:15
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -111,6 +111,7 @@ public class BungeeCordPlayerManager extends PlayerManager implements Listener {
     public int getOnlineCount() {
         return ProxyServer.getInstance().getOnlineCount();
     }
+
     public void sendOnlinePlayers(ServerInfo sendServer){
         List<PlayerUpdateObject> players = new ArrayList<>();
         for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){

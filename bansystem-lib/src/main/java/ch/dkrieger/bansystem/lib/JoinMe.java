@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 09.06.19 12:15
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -58,6 +58,7 @@ public class JoinMe {
     public long getTimeOut() {
         return timeOut;
     }
+
     public List<TextComponent> create(){
         List<TextComponent> components = new ArrayList<>();
         components.add(createComponent(Messages.JOINME_LINE1));
@@ -73,7 +74,12 @@ public class JoinMe {
 
         if(Messages.JOINME_HEAD){
             try{
-                BufferedImage image = ImageIO.read(new URL("https://minotar.net/avatar/"+player+"/8.png"));
+                BufferedImage image = null;
+                try{
+                    image = ImageIO.read(new URL("https://minotar.net/avatar/"+player+"/8.png"));
+                }catch (Exception exception){
+                    System.out.println("Could not load image from player "+player+" ("+exception.getMessage()+")");
+                }
                 if(image != null){
                     List<TextComponent> newComponents = new ArrayList<>();
                     ImageMessage message = new ImageMessage(image,8, '█');

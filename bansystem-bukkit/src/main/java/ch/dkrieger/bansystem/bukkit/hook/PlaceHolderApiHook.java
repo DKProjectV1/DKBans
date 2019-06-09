@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 09.06.19 12:15
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -20,20 +20,35 @@
 
 package ch.dkrieger.bansystem.bukkit.hook;
 
-import ch.dkrieger.bansystem.bukkit.BukkitBanSystemBootstrap;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
-import me.clip.placeholderapi.external.EZPlaceholderHook;
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 
-public class PlaceHolderApiHook extends EZPlaceholderHook {
+public class PlaceHolderApiHook extends PlaceholderExpansion {
 
-    public PlaceHolderApiHook() {
-        super(BukkitBanSystemBootstrap.getInstance(),"dkbans");
+    @Override
+    public String getIdentifier() {
+        return Messages.SYSTEM_NAME.toLowerCase();
+    }
+
+    @Override
+    public String getPlugin() {
+        return Messages.SYSTEM_NAME;
+    }
+
+    @Override
+    public String getAuthor() {
+        return "Dkrieger";
+    }
+
+    @Override
+    public String getVersion() {
+        return BanSystem.getInstance().getVersion();
     }
 
     @Override

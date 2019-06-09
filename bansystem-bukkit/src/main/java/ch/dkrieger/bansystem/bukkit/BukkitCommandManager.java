@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 09.06.19 12:15
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -136,15 +136,18 @@ public class BukkitCommandManager implements NetworkCommandManager {
             if(sender instanceof Player) BukkitBanSystemBootstrap.getInstance().sendTextComponent((Player)sender,component);
             else sender.sendMessage(component.toLegacyText());
         }
+
         @Override
         public void executeCommand(String command) {
             Bukkit.dispatchCommand(sender,command);
         }
+
         @Override
         public OnlineNetworkPlayer getAsOnlineNetworkPlayer() {
             if(this.sender instanceof Player) return BanSystem.getInstance().getPlayerManager().getOnlinePlayer(getUUID());
             return null;
         }
+
         @Override
         public void executeCommandOnServer(String message) {
             executeCommand(message);

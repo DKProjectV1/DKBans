@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 14.03.19 19:43
+ * @since 09.06.19 12:15
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -208,12 +208,14 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
                     ProxyServer.getInstance().broadcast(event.getData().get("message",TextComponent.class));
                 }else BanSystem.getInstance().getNetwork().broadcastLocal(event.getData().get("broadcast", Broadcast.class));
             }else if(event.getMessage().equalsIgnoreCase("sendJoinMe")){
-                JoinMe joinme = event.getData().get("joinme", JoinMe.class);
-                ((CloudNetV3Network)BanSystem.getInstance().getNetwork()).insertJoinMe(joinme);
-                List<TextComponent> components = joinme.create();
-                for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
-                    for(TextComponent component : components) player.sendMessage(component);
-                }
+                ProxyServer.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
+                    JoinMe joinme = event.getData().get("joinme", JoinMe.class);
+                    ((CloudNetV3Network)BanSystem.getInstance().getNetwork()).insertJoinMe(joinme);
+                    List<TextComponent> components = joinme.create();
+                    for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
+                        for(TextComponent component : components) player.sendMessage(component);
+                    }
+                });
             }else if(event.getMessage().equalsIgnoreCase("sendTeamMessage")){
                 for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
                     if(player.hasPermission("dkbans.team")){

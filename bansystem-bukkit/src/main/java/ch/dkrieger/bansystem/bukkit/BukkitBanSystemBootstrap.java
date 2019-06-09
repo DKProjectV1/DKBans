@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 09.06.19 12:15
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -115,7 +115,7 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
             Plugin placeHolderAPI = getServer().getPluginManager().getPlugin("PlaceholderAPI");
             if(placeHolderAPI != null && placeHolderAPI.getDescription() != null) {
                 System.out.println(Messages.SYSTEM_PREFIX+"PlaceholderAPI found");
-                new PlaceHolderApiHook().hook();
+                new PlaceHolderApiHook().register();
             }
 
             for(WaitingRunnable runnable : this.waitingRunnables){

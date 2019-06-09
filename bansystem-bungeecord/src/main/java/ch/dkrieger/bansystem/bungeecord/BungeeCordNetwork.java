@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 05.04.19 22:47
+ * @since 09.06.19 12:15
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -80,11 +80,13 @@ public class BungeeCordNetwork implements DKNetwork {
 
     @Override
     public void sendJoinMe(JoinMe joinMe) {
-        this.joinme.put(joinMe.getUUID(),joinMe);
-        List<TextComponent> components = joinMe.create();
-        for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
-            for(TextComponent component : components) player.sendMessage(component);
-        }
+        ProxyServer.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
+            this.joinme.put(joinMe.getUUID(),joinMe);
+            List<TextComponent> components = joinMe.create();
+            for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
+                for(TextComponent component : components) player.sendMessage(component);
+            }
+        });
     }
     @Override
     public void sendTeamMessage(String message) {

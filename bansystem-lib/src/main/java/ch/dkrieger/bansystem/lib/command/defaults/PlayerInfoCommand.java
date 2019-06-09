@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 09.06.19 12:15
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -41,6 +41,7 @@ public class PlayerInfoCommand extends NetworkCommand {
         getAliases().add("pinfo");
         setPrefix(Messages.PREFIX_BAN);
     }
+
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
         if(args.length < 1){
@@ -85,6 +86,7 @@ public class PlayerInfoCommand extends NetworkCommand {
                     ,player));
         }else sender.sendMessage(replace(Messages.PLAYER_INFO_OFFLINE,player));
     }
+
     private TextComponent replace(String replace, NetworkPlayer player){
         TextComponent history = new TextComponent(Messages.PLAYER_INFO_HISTORY);
         history.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/history "+player.getUUID()));

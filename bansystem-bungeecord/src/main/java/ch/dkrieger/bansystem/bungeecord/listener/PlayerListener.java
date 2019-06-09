@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 05.04.19 22:47
+ * @since 09.06.19 12:15
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -156,7 +156,7 @@ public class PlayerListener implements Listener {
         ProxiedPlayer player = (ProxiedPlayer)event.getSender();
         NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
         if(event.isCommand()){
-            event.setMessage(event.getMessage().replace("bungeecord:","").replace("minecraft:","").replace("bungeecord:",""));
+            event.setMessage(event.getMessage().replace("bukkit:","").replace("minecraft:","").replace("bungeecord:",""));
             if(BanSystem.getInstance().getConfig().chatBlockPlugin){
                 if(event.getMessage().startsWith("/pl ")
                         || event.getMessage().startsWith("/plugins ")
@@ -228,6 +228,7 @@ public class PlayerListener implements Listener {
             }
         }
     }
+
     private boolean checkBan(NetworkPlayer player, int reasonID){
         if(this.banPoints.containsKey(player.getUUID())){
             int bans = this.banPoints.get(player.getUUID());
