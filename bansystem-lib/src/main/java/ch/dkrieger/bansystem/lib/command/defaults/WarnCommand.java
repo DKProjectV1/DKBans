@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 05.04.19 22:47
+ * @since 15.07.19 11:31
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -93,6 +93,7 @@ public class WarnCommand extends NetworkCommand {
                 .replace("[prefix]",getPrefix())
                 .replace("[player]",player.getColoredName()));
     }
+
     private void sendHelp(NetworkCommandSender sender){
         sender.sendMessage(Messages.WARN_HELP_HEADER.replace("[prefix]",getPrefix()));
         for(WarnReason reason : BanSystem.getInstance().getReasonProvider().getWarnReasons()){
@@ -108,6 +109,7 @@ public class WarnCommand extends NetworkCommand {
         }
         sender.sendMessage(Messages.WARN_HELP_HELP.replace("[prefix]",getPrefix()));
     }
+
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
         if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],sender.getName(), BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));

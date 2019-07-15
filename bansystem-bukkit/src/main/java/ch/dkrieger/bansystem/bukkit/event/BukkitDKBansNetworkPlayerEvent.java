@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 09.06.19 12:15
+ * @since 15.07.19 11:31
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -23,6 +23,7 @@ package ch.dkrieger.bansystem.bukkit.event;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -37,7 +38,7 @@ public class BukkitDKBansNetworkPlayerEvent extends Event {
     private boolean onThisServer;
 
     public BukkitDKBansNetworkPlayerEvent(UUID uuid, long timeStamp, boolean onThisServer) {
-        super(true);
+        super(!Bukkit.isPrimaryThread());
         this.uuid = uuid;
         this.timeStamp = timeStamp;
         this.onThisServer = onThisServer;

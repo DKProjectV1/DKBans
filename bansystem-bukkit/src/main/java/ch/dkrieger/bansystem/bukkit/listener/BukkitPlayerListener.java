@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 15.07.19 11:31
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -133,7 +133,7 @@ public class BukkitPlayerListener implements Listener {
             World world = event.getPlayer().getWorld();
             if(world != null) server = world.getName();
             player.playerLogout(BukkitBanSystemBootstrap.getInstance().getColor(player),event.getPlayer().hasPermission("dkbans.bypass")
-            ,server,this.currentMessageCount.get(player.getUUID()));
+                    ,server,this.currentMessageCount.get(player.getUUID()));
         });
     }
     @EventHandler

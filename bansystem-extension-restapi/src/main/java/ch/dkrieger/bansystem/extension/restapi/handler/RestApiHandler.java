@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 01.01.19 13:25
+ * @since 15.07.19 11:31
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -31,9 +31,11 @@ public abstract class RestApiHandler {
         if(!path.startsWith("/")) path = "/"+path;
         this.path = path;
     }
+
     public String getPath() {
         return this.path;
     }
+
     public abstract void onRequest(Document query, Document response);
 
 }

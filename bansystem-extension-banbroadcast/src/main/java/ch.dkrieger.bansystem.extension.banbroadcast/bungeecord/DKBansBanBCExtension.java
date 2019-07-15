@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 15.07.19 11:31
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -62,7 +62,7 @@ public class DKBansBanBCExtension extends Plugin implements Listener {
             else message = config.ChatBanMessageTemporary;
         }
         if(message == null) return;
-        TextComponent component = new TextComponent(message
+        TextComponent component = new TextComponent(TextComponent.fromLegacyText(message
                 .replace("[player]",ban.getPlayer().getColoredName())
                 .replace("[id]",""+ban.getID())
                 .replace("[reason]",ban.getReason())
@@ -77,7 +77,7 @@ public class DKBansBanBCExtension extends Plugin implements Listener {
                 .replace("[duration]", GeneralUtil.calculateDuration(ban.getDuration()))
                 .replace("[remaining]",GeneralUtil.calculateRemaining(ban.getDuration(),false))
                 .replace("[remaining-short]",GeneralUtil.calculateRemaining(ban.getDuration(),true))
-                .replace("[prefix]",Messages.PREFIX_BAN));
+                .replace("[prefix]",Messages.PREFIX_BAN)));
         for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
             if(player.hasPermission("dkbans.banbroadcast.receive")) player.sendMessage(component);
         }
@@ -86,7 +86,7 @@ public class DKBansBanBCExtension extends Plugin implements Listener {
     public void onKick(ProxiedNetworkPlayerKickEvent event){
         if(config.KickMessageEnabled){
             Kick kick = event.getKick();
-            TextComponent component = new TextComponent(config.KickMessage
+            TextComponent component = new TextComponent(TextComponent.fromLegacyText(config.KickMessage
                     .replace("[prefix]", Messages.PREFIX_BAN)
                     .replace("[message]",kick.getMessage())
                     .replace("[staff]",kick.getStaffName())
@@ -95,7 +95,7 @@ public class DKBansBanBCExtension extends Plugin implements Listener {
                     .replace("[points]",""+kick.getPoints())
                     .replace("[player]",""+kick.getPlayer().getColoredName())
                     .replace("[server]",kick.getServer())
-                    .replace("[reason]",kick.getReason()));
+                    .replace("[reason]",kick.getReason())));
             for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
                 if(player.hasPermission("dkbans.banbroadcast.receive")) player.sendMessage(component);
             }
@@ -105,7 +105,7 @@ public class DKBansBanBCExtension extends Plugin implements Listener {
     public void onUnban(ProxiedNetworkPlayerUnbanEvent event){
         if(config.UnbanMessageEnabled){
             Unban unban = event.getUnban();
-            TextComponent component = new TextComponent(config.UnbanMessage
+            TextComponent component = new TextComponent(TextComponent.fromLegacyText(config.UnbanMessage
                     .replace("[prefix]", Messages.PREFIX_BAN)
                     .replace("[message]",unban.getMessage())
                     .replace("[staff]",unban.getStaffName())
@@ -113,7 +113,7 @@ public class DKBansBanBCExtension extends Plugin implements Listener {
                     .replace("[ip]",unban.getIp())
                     .replace("[points]",""+unban.getPoints())
                     .replace("[player]",""+unban.getPlayer().getColoredName())
-                    .replace("[reason]",unban.getReason()));
+                    .replace("[reason]",unban.getReason())));
             for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
                 if(player.hasPermission("dkbans.banbroadcast.receive")) player.sendMessage(component);
             }
@@ -123,7 +123,7 @@ public class DKBansBanBCExtension extends Plugin implements Listener {
     public void onWarn(ProxiedNetworkPlayerWarnEvent event){
         if(config.WarnMessageEnabled){
             Warn warn = event.getWarn();
-            TextComponent component = new TextComponent(config.WarnMessage
+            TextComponent component = new TextComponent(TextComponent.fromLegacyText(config.WarnMessage
                     .replace("[prefix]", Messages.PREFIX_BAN)
                     .replace("[message]",warn.getMessage())
                     .replace("[staff]",warn.getStaffName())
@@ -131,7 +131,7 @@ public class DKBansBanBCExtension extends Plugin implements Listener {
                     .replace("[ip]",warn.getIp())
                     .replace("[points]",""+warn.getPoints())
                     .replace("[player]",""+warn.getPlayer().getColoredName())
-                    .replace("[reason]",warn.getReason()));
+                    .replace("[reason]",warn.getReason())));
             for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()){
                 if(player.hasPermission("dkbans.banbroadcast.receive")) player.sendMessage(component);
             }

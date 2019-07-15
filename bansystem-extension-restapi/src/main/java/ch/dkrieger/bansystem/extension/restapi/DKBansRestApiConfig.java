@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 01.01.19 13:25
+ * @since 15.07.19 11:31
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -50,6 +50,7 @@ public class DKBansRestApiConfig {
         this.sslPrivateKey = new File(config.addAndGetStringValue("extension.restapi.custom.privatekey","private.key"));
         config.save();
     }
+
     private String getAddress() {
         try {
             return InetAddress.getLocalHost().getHostAddress();

@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 09.06.19 12:15
+ * @since 15.07.19 11:31
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -22,6 +22,7 @@ package ch.dkrieger.bansystem.bukkit.event;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.utils.Document;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -34,7 +35,7 @@ public class BukkitDKBansSettingUpdateEvent extends Event {
     private final boolean onThisServer;
 
     public BukkitDKBansSettingUpdateEvent(String name, long timeStamp, boolean onThisServer) {
-        super(true);
+        super(!Bukkit.isPrimaryThread());
         this.name = name;
         this.timeStamp = timeStamp;
         this.onThisServer = onThisServer;

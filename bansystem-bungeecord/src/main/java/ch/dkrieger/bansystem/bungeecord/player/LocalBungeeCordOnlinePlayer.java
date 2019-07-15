@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 14.03.19 19:43
+ * @since 15.07.19 11:31
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -74,7 +74,7 @@ public class LocalBungeeCordOnlinePlayer implements OnlineNetworkPlayer {
     }
     @Override
     public void sendMessage(String message) {
-        sendMessage(new TextComponent(message));
+        sendMessage(new TextComponent(TextComponent.fromLegacyText(message)));
     }
 
     @Override
