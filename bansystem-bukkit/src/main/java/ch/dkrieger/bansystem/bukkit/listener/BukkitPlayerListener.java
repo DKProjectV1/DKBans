@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 15.07.19 11:31
+ * @since 10.08.19, 21:12
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -88,7 +88,7 @@ public class BukkitPlayerListener implements Listener {
         }
         if(BanSystem.getInstance().getConfig().ipBanBanOnlyNewPlayers && !(newPlayer)) return;
         if(BanSystem.getInstance().getPlayerManager().isIPBanned(event.getAddress().getHostAddress())){
-            Ban ban = BanSystem.getInstance().getConfig().createAltAccountBan(player,event.getPlayer().getAddress().getAddress().getHostAddress());
+            Ban ban = BanSystem.getInstance().getConfig().createAltAccountBan(player,event.getAddress().getHostAddress());
             player.ban(ban,true);
             event.disallow(PlayerLoginEvent.Result.KICK_BANNED,ban.toMessage().toLegacyText());
             return;

@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 05.04.19 22:47
+ * @since 10.08.19, 21:12
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -66,7 +66,7 @@ public class TeamChatCommand extends NetworkCommand {
                     .replace("[server]",sender.getServer())
                     .replace("[prefix]",getPrefix())
                     .replace("[player]",player.getColoredName())
-                    .replace("[message]", message.toString()),true);
+                    .replace("[message]", (Messages.TEAMCHAT_MESSAGE_COLOR+message.toString())),true);
         }
     }
     private void changeLogin(NetworkCommandSender sender, NetworkPlayer player, boolean login){

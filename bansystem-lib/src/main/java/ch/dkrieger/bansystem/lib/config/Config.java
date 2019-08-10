@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 14.03.19 19:43
+ * @since 10.08.19, 21:12
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -128,6 +128,8 @@ public class Config extends SimpleConfig{
     public int ipBanBanPoints;
     public boolean ipBanOnBanEnabled;
     public long ipBanOnBanDuration;
+
+    public boolean networkSync;
 
     public boolean commandBan;
     public boolean commandUnban;
@@ -282,6 +284,8 @@ public class Config extends SimpleConfig{
         this.ipBanOnBanEnabled = addAndGetBooleanValue("ipban.onban.enabled",true);
         this.ipBanOnBanDuration = GeneralUtil.convertToMillis(addAndGetLongValue("ipban.onban.duration.time",24)
                 ,addAndGetStringValue("ipban.onban.duration.unit",TimeUnit.HOURS.toString()));
+
+        this.networkSync = addAndGetBooleanValue("network.sync",true);
 
         this.commandBan = addAndGetBooleanValue("command.ban.enabled",true);
         this.commandUnban = addAndGetBooleanValue("command.unban.enabled",true);

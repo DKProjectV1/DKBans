@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 19.01.19 15:36
+ * @since 10.08.19, 21:12
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -18,7 +18,7 @@
  * under the License.
  */
 
-package ch.dkrieger.bansystem.extension.maintenance.spigot;
+package ch.dkrieger.bansystem.extension.maintenance.bukkit;
 
 import ch.dkrieger.bansystem.bukkit.event.BukkitDKBansSettingUpdateEvent;
 import ch.dkrieger.bansystem.extension.maintenance.Maintenance;

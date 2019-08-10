@@ -1,4 +1,4 @@
-name: DKBansReportRewardExtension
+name: DKBansConsoleCommandExtension
 author: Davide Wietlisbach
 description: 
 version: ${project.version}

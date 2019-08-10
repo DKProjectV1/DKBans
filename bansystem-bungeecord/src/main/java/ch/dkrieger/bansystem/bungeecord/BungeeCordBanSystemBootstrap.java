@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 10.08.19, 21:12
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -88,7 +88,11 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
                 ProxyServer.getInstance().getPluginManager().registerListener(this,(CloudNetV3PlayerManager)BanSystem.getInstance().getPlayerManager());
             }else {
                 ProxyServer.getInstance().getPluginManager().registerListener(this,this.subServerConnection);
-                ProxyServer.getInstance().getPluginManager().registerListener(this,(BungeeCordPlayerManager)BanSystem.getInstance().getPlayerManager());
+
+                if(BanSystem.getInstance().getConfig().networkSync){
+                    ProxyServer.getInstance().getPluginManager().registerListener(this,(BungeeCordPlayerManager)BanSystem.getInstance().getPlayerManager());
+                }
+
                 this.subServerConnection.enable();
             }
         },1L, TimeUnit.SECONDS);
