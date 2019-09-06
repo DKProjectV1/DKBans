@@ -380,6 +380,7 @@ history:
   reset:
     all: '[prefix]&7Die History von &8[player] &7wurde zurückgesetzt.'
     one: '[prefix]&7Der History Eintrag &9[id] von [player] &7wurde gelöscht.'
+    help: '[prefix]&cBenutze&8: &7 /resethistory <player> {id}'
 onlinetime: '[prefix]&7Deine Onlinezeit ist &c[time-short]'
 unban:
   help:

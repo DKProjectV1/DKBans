@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 05.04.19 22:47
+ * @since 06.09.19, 22:57
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -147,8 +147,7 @@ public class BanCommand extends NetworkCommand {
         if(BanSystem.getInstance().getConfig().banMode != BanMode.SELF){
             sender.sendMessage(Messages.BAN_HELP_HEADER.replace("[prefix]",getPrefix()));
             for(BanReason reason : BanSystem.getInstance().getReasonProvider().getBanReasons()){
-                if(!reason.isHidden() && (!BanSystem.getInstance().getConfig().reasonShowOnlyPermitted
-                        || sender.hasPermission(reason.getPermission()) || sender.hasPermission("dkbans.*"))){
+                if(!reason.isHidden() && (!BanSystem.getInstance().getConfig().reasonShowOnlyPermitted || sender.hasPermission(reason.getPermission()) || sender.hasPermission("dkbans.*"))){
                     sender.sendMessage(Messages.BAN_HELP_REASON
                             .replace("[prefix]",getPrefix())
                             .replace("[id]",""+reason.getID())

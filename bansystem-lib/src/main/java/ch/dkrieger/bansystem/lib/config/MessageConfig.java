@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 14.03.19 19:43
+ * @since 06.09.19, 22:57
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -258,6 +258,8 @@ public class MessageConfig extends SimpleConfig{
         Messages.HISTORY_INFO_UNBAN = addAndGetMessageValue("history.info.unban","[prefix]&7Unban &c[id] &7from [player]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7For type&8: &c[banType]\n&8» &7Reason&8: [reason]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
                 "\n&8» &7Points&8: &c[points] &8| &c[pointsType]\n&8» &7Time&8: &c[time]");
+
+        Messages.HISTORY_RESET_HELP = addAndGetMessageValue("history.reset.help","[prefix]&cUsage&8: &7 /resethistory <player> {id}");
         Messages.HISTORY_RESET_ALL = addAndGetMessageValue("history.reset.all","[prefix]&7The history from &8[player] &7was reset.");
         Messages.HISTORY_RESET_ONE = addAndGetMessageValue("history.reset.one","[prefix]&7The history entry &c[id] from [player] &7was reset.");
 

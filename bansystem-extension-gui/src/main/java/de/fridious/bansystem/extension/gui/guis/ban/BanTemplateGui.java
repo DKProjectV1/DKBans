@@ -1,11 +1,31 @@
+/*
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ *
+ * @author Davide Wietlisbach
+ * @since 06.09.19, 22:57
+ * @Website https://github.com/DevKrieger/DKBans
+ *
+ * The DKBans Project is under the Apache License, version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ */
+
 package de.fridious.bansystem.extension.gui.guis.ban;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
-import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.MessageAnvilInputGui;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.PrivateGui;
@@ -21,26 +41,6 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-
-/*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
- *
- * @author Philipp Elvin Friedhoff
- * @since 04.01.19 00:52
- * @Website https://github.com/DevKrieger/DKBans
- *
- * The DKBans Project is under the Apache License, version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at:
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations
- * under the License.
- */
 
 public class BanTemplateGui extends PrivateGui<BanReason> {
 
@@ -87,18 +87,8 @@ public class BanTemplateGui extends PrivateGui<BanReason> {
                     && (!BanSystem.getInstance().getPlayerManager().getPlayer(getTarget()).hasBypass() || player.hasPermission("dkbans.bypass.ignore"))) {
                 NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getTarget());
                 Ban ban = networkPlayer.ban(banReason, getMessage(), player.getUniqueId());
-                player.sendMessage(Messages.BAN_SUCCESS
-                        .replace("[prefix]", Messages.PREFIX_BAN)
-                        .replace("[player]", networkPlayer.getColoredName())
-                        .replace("[type]", ban.getBanType().getDisplay())
-                        .replace("[reason]", ban.getReason())
-                        .replace("[points]", String.valueOf(ban.getPoints()))
-                        .replace("[staff]", ban.getStaffName())
-                        .replace("[reasonID]", String.valueOf(ban.getReasonID()))
-                        .replace("[ip]", ban.getIp())
-                        .replace("[duration]", GeneralUtil.calculateDuration(ban.getDuration()))
-                        .replace("[remaining]", GeneralUtil.calculateRemaining(ban.getDuration(),false))
-                        .replace("[remaining-short]", GeneralUtil.calculateRemaining(ban.getDuration(),true)));
+                if(ban.getBanType() == BanType.NETWORK) player.sendMessage(ban.replace(Messages.BAN_NETWORK_SUCCESS,false));
+                else player.sendMessage(ban.replace(Messages.BAN_CHAT_SUCCESS,false));
                 player.closeInventory();
             }
         } else if(event.getSlot() == 45) {

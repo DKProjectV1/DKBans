@@ -1,8 +1,6 @@
 name: DKBansRestApiServer
 author: Davide Wietlisbach
-description: 
 version: ${project.version}
 depends: [DKBans]
 
 main: ch.dkrieger.bansystem.extension.restapi.bungeecord.DKBansRestAPIExtension
-commands:

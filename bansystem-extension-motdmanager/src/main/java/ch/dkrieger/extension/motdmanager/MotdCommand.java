@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 19.01.19 11:32
+ * @since 06.09.19, 22:57
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -48,8 +48,8 @@ public class MotdCommand extends NetworkCommand {
     public void onExecute(NetworkCommandSender sender, String[] args) {
         if(args.length > 0){
             if(args[0].equalsIgnoreCase("removeMessage") && GeneralUtil.isNumber(args[1])){
-                String message = motd.getMessage(Integer.valueOf(args[1]));
-                if(message != null) motd.removeMessage(Integer.valueOf(args[1]));
+                String message = motd.getMessage(Integer.parseInt(args[1]));
+                if(message != null) motd.removeMessage(Integer.parseInt(args[1]));
                 else message = Messages.UNKNOWN;
                 sender.sendMessage(new TextComponent(config.commandRemoveMessage
                         .replace("[id]",args[1])

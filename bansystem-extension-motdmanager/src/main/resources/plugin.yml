@@ -1,9 +1,7 @@
 name: DKBansMotdManagerExtension
 author: Davide Wietlisbach
-description: 
 version: ${project.version}
 api-version: 1.13
 depend: [DKBans]
 
 main: ch.dkrieger.extension.motdmanager.bukkit.DKBansMotdManagerExtension
-commands:

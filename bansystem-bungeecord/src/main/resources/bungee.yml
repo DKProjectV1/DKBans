@@ -1,6 +1,5 @@
 name: DKBans
 author: Davide Wietlisbach
-description: 
 version: ${project.version}
 
 main: ch.dkrieger.bansystem.bungeecord.BungeeCordBanSystemBootstrap

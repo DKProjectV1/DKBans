@@ -1,10 +1,8 @@
-package de.fridious.bansystem.extension.gui.guis.ban;
-
 /*
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
- * @author Philipp Elvin Friedhoff
- * @since 05.01.19 01:34
+ * @author Davide Wietlisbach
+ * @since 06.09.19, 22:57
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -20,12 +18,13 @@ package de.fridious.bansystem.extension.gui.guis.ban;
  * under the License.
  */
 
+package de.fridious.bansystem.extension.gui.guis.ban;
+
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
-import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import de.fridious.bansystem.extension.gui.DKBansGuiExtension;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.AnvilInputGui;
 import de.fridious.bansystem.extension.gui.api.inventory.gui.MessageAnvilInputGui;
@@ -143,18 +142,8 @@ public class BanSelfGui extends PrivateGui {
             if(this.banType != null) {
                 NetworkPlayer targetNetworkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(getTarget());
                 Ban ban  = targetNetworkPlayer.ban(this.banType, this.duration, this.timeUnit, this.reason, getMessage(), -1, player.getUniqueId());
-                player.sendMessage(Messages.BAN_SUCCESS
-                        .replace("[prefix]", Messages.PREFIX_BAN)
-                        .replace("[player]", targetNetworkPlayer.getColoredName())
-                        .replace("[type]", ban.getBanType().getDisplay())
-                        .replace("[reason]", ban.getReason())
-                        .replace("[points]", String.valueOf(ban.getPoints()))
-                        .replace("[staff]", ban.getStaffName())
-                        .replace("[reasonID]", String.valueOf(ban.getReasonID()))
-                        .replace("[ip]", ban.getIp())
-                        .replace("[duration]", GeneralUtil.calculateDuration(ban.getDuration()))
-                        .replace("[remaining]", GeneralUtil.calculateRemaining(ban.getDuration(),false))
-                        .replace("[remaining-short]", GeneralUtil.calculateRemaining(ban.getDuration(),true)));
+                if(ban.getBanType() == BanType.NETWORK) player.sendMessage(ban.replace(Messages.BAN_NETWORK_SUCCESS,false));
+                else player.sendMessage(ban.replace(Messages.BAN_CHAT_SUCCESS,false));
                 player.closeInventory();
             }
         }

@@ -1,6 +1,5 @@
 name: DKBansOfflinePermissionHook
 author: Davide Wietlisbach
-description: 
 version: ${project.version}
 depends: [DKBans]
 softdepends: [CloudNetAPI, LuckPerms]

@@ -1,9 +1,7 @@
 name: DKBans
 author: Davide Wietlisbach
-description: 
 version: ${project.version}
 api-version: 1.13
 softdepend: [PlaceholderAPI]
 
 main: ch.dkrieger.bansystem.bukkit.BukkitBanSystemBootstrap
-commands:

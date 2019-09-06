@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 06.09.19, 22:57
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -28,22 +28,12 @@ import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class MySQL extends SQL {
 
     private DataSource dataSource;
     private String host, port, database, user, password;
     private boolean ssl;
-    private Map<String, String> dataSourceProperties;
-    public static Map<String, String> DEFAULT_DATASOURCE_PROPERTIES;
-
-    static {
-        DEFAULT_DATASOURCE_PROPERTIES = new LinkedHashMap<>();
-        DEFAULT_DATASOURCE_PROPERTIES.put("cachePrepStmts", "true");
-        DEFAULT_DATASOURCE_PROPERTIES.put("allowMultiQueries", "true");
-    }
 
     public MySQL(String host, String port, String database, String user, String password, boolean ssl) {
         this.host = host;
@@ -51,7 +41,6 @@ public class MySQL extends SQL {
         this.database = database;
         this.user = user;
         this.password = password;
-        this.dataSourceProperties = new LinkedHashMap<>();
         this.ssl = ssl;
         setSupportNoCase(false);
         setOptionsOnEnd(true);
@@ -61,17 +50,9 @@ public class MySQL extends SQL {
         this(host, String.valueOf(port), database, user, password,ssl);
     }
 
-    public Map<String, String> getDataSourceProperties() {
-        return dataSourceProperties;
-    }
-
     @Override
 	public boolean connect() {
         loadDriver();
-        if(ssl){
-            dataSourceProperties.put("ssl","true");
-            dataSourceProperties.put("useSSL","true");
-        }
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:mysql://"+this.host+":"+this.port+"/"+this.database);
         config.setUsername(this.user);
@@ -79,8 +60,14 @@ public class MySQL extends SQL {
         config.setMaximumPoolSize(BanSystem.getInstance().getConfig().storageMaxConnections);
         config.setPoolName(Messages.SYSTEM_NAME);
 
-        DEFAULT_DATASOURCE_PROPERTIES.forEach(config::addDataSourceProperty);
-        this.dataSourceProperties.forEach(config::addDataSourceProperty);
+        config.addDataSourceProperty("cachePrepStmts",true);
+        config.addDataSourceProperty("characterEncoding","utf-8");
+        config.addDataSourceProperty("useUnicode",true);
+        config.addDataSourceProperty("allowMultiQueries",true);
+
+        config.addDataSourceProperty("ssl",ssl);
+        config.addDataSourceProperty("useSSL",ssl);
+
         this.dataSource = new HikariDataSource(config);
         return true;
 	}

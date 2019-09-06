@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 19.01.19 11:33
+ * @since 06.09.19, 22:57
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -48,11 +48,13 @@ public class DKMotd {
     public Map<Integer,String> getMessages() {
         return messages;
     }
+
     public String getMessage(int id) {
         String message = this.messages.get(id);
         if(message != null) return ChatColor.translateAlternateColorCodes('&',message);
         return null;
     }
+
     public String getRandomMessage() {
         if(this.messages.size() < 1) return "§7This server is running §cDKBans v"+ BanSystem.getInstance().getVersion();
         return ChatColor.translateAlternateColorCodes('&',this.messages.values().toArray(new String[0])[GeneralUtil.RANDOM.nextInt(messages.size())]);
@@ -69,12 +71,14 @@ public class DKMotd {
     public void clearMessages(){
         messages.clear();
     }
+
     public int addMessage(String message){
         int i = 1;
         while(this.messages.containsKey(i)) i++;
         this.messages.put(i,message);
         return i;
     }
+
     public void removeMessage(int id){
         this.messages.remove(id);
     }

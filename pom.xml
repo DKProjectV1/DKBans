@@ -3,7 +3,7 @@
   ~ (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
   ~
   ~ @author Davide Wietlisbach
-  ~ @since 10.08.19, 21:12
+  ~ @since 06.09.19, 22:57
   ~ @Website https://github.com/DevKrieger/DKBans
   ~
   ~ The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -27,7 +27,7 @@
     <groupId>ch.dkrieger.bansystem</groupId>
     <artifactId>DKBans</artifactId>
     <packaging>pom</packaging>
-    <version>2.2.3</version>
+    <version>2.2.4</version>
 
     <modules>
         <module>bansystem-lib</module>
@@ -69,6 +69,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.1</version>
                 <configuration>
                     <source>8</source>
                     <target>8</target>
@@ -87,6 +88,7 @@
     <properties>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>dd.MM.yyyy HH:mm</maven.build.timestamp.format>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <repositories>
@@ -104,15 +106,16 @@
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-chat</artifactId>
-            <version>LATEST</version>
+            <version>1.14-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-config</artifactId>
-            <version>LATEST</version>
+            <version>1.14-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-api-bridge</artifactId>

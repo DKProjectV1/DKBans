@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 06.09.19, 22:57
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -134,7 +134,7 @@ public class Ban extends HistoryEntry {
     public String getFirstMessage(){
         return this.message;
     }
-    public long getFirstTomeOut(){
+    public long getFirstTimeOut(){
         return this.timeOut;
     }
     public ReasonBanEdit setReason(String reason){
@@ -240,7 +240,7 @@ public class Ban extends HistoryEntry {
                 .replace("[reason]",(first?getFirstReason():getReason()))
                 .replace("[reasonID]",""+getReasonID())
                 .replace("[time]",BanSystem.getInstance().getConfig().dateFormat.format(getTimeStamp()))
-                .replace("[timeout]",BanSystem.getInstance().getConfig().dateFormat.format((first?getFirstTomeOut():getTimeOut())))
+                .replace("[timeout]",BanSystem.getInstance().getConfig().dateFormat.format((first?getFirstTimeOut():getTimeOut())))
                 .replace("[message]",(first?getFirstMessage():getMessage()))
                 .replace("[type]",getTypeName())
                 .replace("[staff]",getStaffName())

@@ -1,8 +1,6 @@
 name: DKBansMotdManagerExtension
 author: Davide Wietlisbach
-description: 
 version: ${project.version}
 depends: [DKBans]
 
 main: ch.dkrieger.extension.motdmanager.bungeecord.DKBansMotdManagerExtension
-commands:

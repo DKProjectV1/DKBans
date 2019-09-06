@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 06.09.19, 22:57
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -40,7 +40,7 @@ public class ResetHistoryCommand extends NetworkCommand {
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
         if(args.length < 1){
-            sender.sendMessage(Messages.HISTORY_HELP.replace("[prefix]",getPrefix()));
+            sender.sendMessage(Messages.HISTORY_RESET_HELP.replace("[prefix]",getPrefix()));
             return;
         }
         NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
@@ -58,7 +58,7 @@ public class ResetHistoryCommand extends NetworkCommand {
             return;
         }
         if(args.length > 1 && GeneralUtil.isNumber(args[1])) {
-            HistoryEntry entry = history.getEntry(Integer.valueOf(args[1]));
+            HistoryEntry entry = history.getEntry(Integer.parseInt(args[1]));
             if(entry == null){
                 sender.sendMessage(Messages.HISTORY_NOTFOUND
                         .replace("[prefix]",getPrefix())

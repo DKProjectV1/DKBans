@@ -1,8 +1,6 @@
 name: DKBansBanBroadcastExtension
 author: Davide Wietlisbach
-description: 
 version: ${project.version}
 depends: [DKBans]
 
 main: ch.dkrieger.bansystem.extension.banbroadcast.bungeecord.DKBansBanBCExtension
-commands:

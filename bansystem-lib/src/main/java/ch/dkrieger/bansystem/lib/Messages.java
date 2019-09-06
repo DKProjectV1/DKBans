@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 14.03.19 19:43
+ * @since 06.09.19, 22:57
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -189,6 +189,7 @@ public class Messages {
     public static String HISTORY_INFO_KICK;
     public static String HISTORY_INFO_UNBAN;
     public static String HISTORY_INFO_WARN;
+    public static String HISTORY_RESET_HELP;
     public static String HISTORY_RESET_ALL;
     public static String HISTORY_RESET_ONE;
 

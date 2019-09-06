@@ -3,7 +3,7 @@
   ~ (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
   ~
   ~ @author Davide Wietlisbach
-  ~ @since 10.08.19, 21:12
+  ~ @since 06.09.19, 22:57
   ~ @Website https://github.com/DevKrieger/DKBans
   ~
   ~ The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -25,36 +25,50 @@
     <parent>
         <artifactId>DKBans</artifactId>
         <groupId>ch.dkrieger.bansystem</groupId>
-        <version>2.2.3</version>
+        <version>2.2.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ch.dkrieger.bansystem.extension.offlinepermissionhook</groupId>
     <artifactId>bansystem-extension-offlinepermissionhook</artifactId>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.1</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-api</artifactId>
-            <version>LATEST</version>
+            <version>1.14-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>ch.dkrieger.bansystem.lib</groupId>
+            <groupId>ch.dkrieger.bansystem</groupId>
             <artifactId>bansystem-lib</artifactId>
-            <version>2.2.3</version>
+            <version>2.2.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>ch.dkrieger.bansystem.bungeecord</groupId>
+            <groupId>ch.dkrieger.bansystem</groupId>
             <artifactId>bansystem-bungeecord</artifactId>
-            <version>2.2.3</version>
+            <version>2.2.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>ch.dkrieger.bansystem.bukkit</groupId>
+            <groupId>ch.dkrieger.bansystem</groupId>
             <artifactId>bansystem-bukkit</artifactId>
-            <version>2.2.3</version>
+            <version>2.2.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
