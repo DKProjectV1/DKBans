@@ -20,6 +20,8 @@
 
 package ch.dkrieger.bansystem.lib.storage.sql;
 
+import ch.dkrieger.bansystem.lib.BanSystem;
+import ch.dkrieger.bansystem.lib.Messages;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -40,11 +42,7 @@ public class MySQL extends SQL {
     static {
         DEFAULT_DATASOURCE_PROPERTIES = new LinkedHashMap<>();
         DEFAULT_DATASOURCE_PROPERTIES.put("cachePrepStmts", "true");
-        DEFAULT_DATASOURCE_PROPERTIES.put("prepStmtCacheSize", "250");
-        DEFAULT_DATASOURCE_PROPERTIES.put("prepStmtCacheSqlLimit", "2048");
-        DEFAULT_DATASOURCE_PROPERTIES.put("autoReconnect", "true");
         DEFAULT_DATASOURCE_PROPERTIES.put("allowMultiQueries", "true");
-        DEFAULT_DATASOURCE_PROPERTIES.put("reconnectAtTxEnd", "true");
     }
 
     public MySQL(String host, String port, String database, String user, String password, boolean ssl) {
@@ -78,8 +76,9 @@ public class MySQL extends SQL {
         config.setJdbcUrl("jdbc:mysql://"+this.host+":"+this.port+"/"+this.database);
         config.setUsername(this.user);
         config.setPassword(this.password);
-        config.setMaximumPoolSize(10);
-        //config.setAutoCommit(false);
+        config.setMaximumPoolSize(BanSystem.getInstance().getConfig().storageMaxConnections);
+        config.setPoolName(Messages.SYSTEM_NAME);
+
         DEFAULT_DATASOURCE_PROPERTIES.forEach(config::addDataSourceProperty);
         this.dataSourceProperties.forEach(config::addDataSourceProperty);
         this.dataSource = new HikariDataSource(config);

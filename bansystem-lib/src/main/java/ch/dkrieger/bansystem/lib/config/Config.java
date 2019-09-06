@@ -42,13 +42,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class Config extends SimpleConfig{
+public class Config extends SimpleConfig {
 
     public boolean bungeecord;
 
     public StorageType storageType;
     public transient File storageFolder;
     public transient String storageHost, storagePort, storageUser, storagePassword, storageDatabase, mongoDbAuthDB;
+    public transient int storageMaxConnections;
     public boolean storageSSL, mongoDbSrv, mongoDbAuthentication;
 
     public BanMode banMode;
@@ -178,6 +179,7 @@ public class Config extends SimpleConfig{
         this.storageSSL = addAndGetBooleanValue("storage.ssl",false);
         this.storagePassword = addAndGetStringValue("storage.password","password");
         this.storageDatabase = addAndGetStringValue("storage.database","DKBans");
+        this.storageMaxConnections = addAndGetIntValue("storage.maxConnections", 10);
         this.mongoDbAuthentication = addAndGetBooleanValue("storage.mongodb.authentication",false);
         this.mongoDbAuthDB = addAndGetStringValue("storage.mongodb.authdb","admin");
         this.mongoDbSrv = addAndGetBooleanValue("storage.mongodb.srv",false);
