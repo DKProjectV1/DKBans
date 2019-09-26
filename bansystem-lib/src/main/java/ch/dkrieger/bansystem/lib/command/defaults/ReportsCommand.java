@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 26.09.19, 20:38
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -48,7 +48,7 @@ public class ReportsCommand extends NetworkCommand {
             return;
         }
         int page = 1;
-        if(args.length > 0 && GeneralUtil.isNumber(args[0])) page = Integer.valueOf(args[0]);
+        if(args.length > 0 && GeneralUtil.isNumber(args[0])) page = Integer.parseInt(args[0]);
 
         int from = 1;
         if(page > 1) from = 8 * (page - 1) + 1;

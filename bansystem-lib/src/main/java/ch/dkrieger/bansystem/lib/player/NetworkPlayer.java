@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 14.03.19 19:43
+ * @since 26.09.19, 20:38
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -29,6 +29,7 @@ import ch.dkrieger.bansystem.lib.player.history.HistoryPoints;
 import ch.dkrieger.bansystem.lib.player.history.entry.*;
 import ch.dkrieger.bansystem.lib.reason.*;
 import ch.dkrieger.bansystem.lib.report.Report;
+import ch.dkrieger.bansystem.lib.report.ReportManager;
 import ch.dkrieger.bansystem.lib.stats.PlayerStats;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
@@ -894,42 +895,54 @@ public class NetworkPlayer {
         update(NetworkPlayerUpdateCause.REPORTSEND,new Document().append("report",report));
         return report;
     }
+
     public void processOpenReports(NetworkPlayer staff){
         GeneralUtil.iterateForEach(this.reports, object -> object.setStaff(staff.getUUID()));
         BanSystem.getInstance().getStorage().processReports(this,staff);
         update(NetworkPlayerUpdateCause.REPORTPROCESS,new Document().append("staff",staff.getUUID()));
         staff.setWatchingReportedPlayer(this.uuid);
     }
+
     public void deleteReports(){
-        this.reports.clear();
-        BanSystem.getInstance().getStorage().deleteReports(this);
+        deleteReportsSilent();
         update(NetworkPlayerUpdateCause.REPORTDELETE);
     }
-    public void denyReports(){
+
+    public void deleteReportsSilent(){
+        this.reports.clear();
+        BanSystem.getInstance().getReportManager().clearCachedReports();
         BanSystem.getInstance().getStorage().deleteReports(this);
+    }
+
+    public void denyReports(){
+        deleteReportsSilent();
         update(NetworkPlayerUpdateCause.REPORTDENY,new Document().append("reports",this.reports));
         BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(() ->{
             NetworkPlayer staff = BanSystem.getInstance().getPlayerManager().getPlayer(getReportStaff());
             if(staff != null) staff.setWatchingReportedPlayer(null);
         });
-        this.reports.clear();
     }
+
     public void resetHistory(){
         this.history = new History();
         BanSystem.getInstance().getStorage().clearHistory(this);
         update(NetworkPlayerUpdateCause.HISTORYUPDATE);
     }
+
     public void resetHistory(int id){
         this.history.getRawEntries().remove(id);
         BanSystem.getInstance().getStorage().deleteHistoryEntry(this,id);
         update(NetworkPlayerUpdateCause.HISTORYUPDATE);
     }
+
     public int addToHistory(HistoryEntry entry) {
         return addToHistory(entry,NetworkPlayerUpdateCause.HISTORYUPDATE);
     }
+
     public int addToHistory(HistoryEntry entry,NetworkPlayerUpdateCause cause){
         return addToHistory(entry, cause,new Document());
     }
+
     public int addToHistory(HistoryEntry entry,NetworkPlayerUpdateCause cause,Document properties) {
         int id = BanSystem.getInstance().getStorage().createHistoryEntry(this,entry);
         entry.setID(id);
@@ -937,10 +950,12 @@ public class NetworkPlayer {
         update(cause,properties);
         return id;
     }
+
     private void saveStaffSettings(){
         BanSystem.getInstance().getStorage().saveStaffSettings(this.uuid,reportLogin,teamChatLogin);
         update(NetworkPlayerUpdateCause.STAFFSETTINGS);
     }
+
     public void setColor(String color){
         if(color == null) return;
         this.color = color;
@@ -949,48 +964,60 @@ public class NetworkPlayer {
     public void update(){
         update(NetworkPlayerUpdateCause.NOTSET);
     }
+
     public void update(NetworkPlayerUpdateCause cause){
         update(cause,new Document());
     }
+
     public void update(Document properties){
         update(NetworkPlayerUpdateCause.NOTSET,properties);
     }
+
     public void update(NetworkPlayerUpdateCause cause,Document properties){
         BanSystem.getInstance().getPlayerManager().updatePlayer(this,cause,properties);
     }
+
     public void addStatsReportSent(){
         this.stats.addReports();
         updatePlayerStatsAsync();
     }
+
     public void setWatchingReportedPlayer(UUID uuid){
         this.watchingReportedPlayer = uuid;
         BanSystem.getInstance().getStorage().updateWatchReportPlayer(this.uuid,uuid);
         update(NetworkPlayerUpdateCause.REPORTTAKE);
     }
+
     public void addStatsReportAccepted(){
         this.stats.addReportsAccepted();
         updatePlayerStatsAsync();
     }
+
     public void addStatsBaned(){
         this.stats.addBans();
         updatePlayerStatsAsync();
     }
+
     public void addStatsMuted(){
         this.stats.addMutes();
         updatePlayerStatsAsync();
     }
+
     public void addStatsKicked(){
         this.stats.addKicks();
         updatePlayerStatsAsync();
     }
+
     public void addStatsWarned(){
         this.stats.addWarns();
         updatePlayerStatsAsync();
     }
+
     public void addStatsUnbanned(){
         this.stats.addUnbans();
         updatePlayerStatsAsync();
     }
+
     @SuppressWarnings("Only for databse id creation")
     public void setID(int id) {
         this.id = id;
@@ -1022,7 +1049,7 @@ public class NetworkPlayer {
             BanSystem.getInstance().getStorage().createOnlineSession(this,session);
         }
         BanSystem.getInstance().getStorage().updatePlayerLoginInfos(this.uuid,name,this.lastLogin,this.color,bypass,ip,lastCountry,stats.getLogins()+1);
-        BanSystem.getInstance().getStorage().deleteReports(this);
+        deleteReportsSilent();
         update(NetworkPlayerUpdateCause.LOGIN);
     }
     public void playerLogout(String color ,boolean bypass,String lastServer,int messages){
@@ -1044,7 +1071,7 @@ public class NetworkPlayer {
         BanSystem.getInstance().getStorage().deleteReports(this);
         stats.setMessages(stats.getMessages()+messages);
         update(NetworkPlayerUpdateCause.LOGOUT,new Document().append("reports",reports).append("watchingReportedPlayer",watching));
-        this.reports.clear();
+        deleteReportsSilent();
     }
     public void updatePlayerStatsAsync(){
         BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(this::updatePlayerStats);

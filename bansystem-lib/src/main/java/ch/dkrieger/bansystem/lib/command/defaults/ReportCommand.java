@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 15.07.19 11:31
+ * @since 26.09.19, 20:38
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -47,6 +47,7 @@ public class ReportCommand extends NetworkCommand {
         super("report","","dkbans.report");
         setPrefix(Messages.PREFIX_REPORT);
     }
+
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
         if(args.length < 1){

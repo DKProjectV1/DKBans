@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 26.09.19, 20:38
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -25,6 +25,7 @@ import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ReportManager {
 
@@ -33,17 +34,25 @@ public class ReportManager {
     public ReportManager() {
         this.cachedReports = new ArrayList<>();
     }
+
     public List<Report> getReports(){
         if(this.cachedReports == null) loadReports();
         return this.cachedReports;
     }
+
     public List<Report> getOpenReports(){
         if(this.cachedReports == null) loadReports();
         return GeneralUtil.iterateAcceptedReturn(this.cachedReports, object -> object.getStaff() == null);
     }
+
     public void loadReports(){
         this.cachedReports = BanSystem.getInstance().getStorage().getReports();
     }
+
+    public void deleteCachedReports(List<Report> reports){
+        reports.forEach(report -> GeneralUtil.iterateAndRemove(cachedReports, object -> object.equals(report)));
+    }
+
     public void clearCachedReports(){
         this.cachedReports = null;
     }
