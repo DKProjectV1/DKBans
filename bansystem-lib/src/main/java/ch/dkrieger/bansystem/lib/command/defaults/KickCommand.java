@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 15.07.19 11:31
+ * @since 18.10.19, 21:00
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -87,9 +87,9 @@ public class KickCommand extends NetworkCommand {
         String message = "";
         for(int i = 2;i < args.length;i++) message += args[i]+" ";
 
-        Kick kick = null;
+        Kick kick;
         if(BanSystem.getInstance().getConfig().kickMode == ReasonMode.TEMPLATE) kick = player.kick(reason,message,sender.getUUID());
-        else kick = player.kick(args[1],message,sender.getUUID());
+        else kick = player.kick(args[1]+" "+message,"",sender.getUUID());
 
         sender.sendMessage(Messages.KICK_SUCCESS
                 .replace("[prefix]",getPrefix())

@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 10.08.19, 21:12
+ * @since 18.10.19, 21:00
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -145,23 +145,26 @@ public class BukkitPlayerListener implements Listener {
             BukkitBanSystemBootstrap.getInstance().sendTextComponent(player,ban.toMessage());
             event.setCancelled(true);
         }else {
-            lastMessage lastMessage = this.lastMessage.get(player.getUniqueId());
-            if(lastMessage != null){
-                if(event.getMessage().equalsIgnoreCase(lastMessage.message)){
-                    event.setCancelled(true);
-                    player.sendMessage(Messages.CHAT_FILTER_SPAM_REPEAT.replace("[prefix]",Messages.PREFIX_CHAT));
-                    return;
-                }else if(lastMessage.time+BanSystem.getInstance().getConfig().chatDelay >= System.currentTimeMillis()){
-                    event.setCancelled(true);
-                    player.sendMessage(Messages.CHAT_FILTER_SPAM_TOFAST.replace("[prefix]",Messages.PREFIX_CHAT));
-                    return;
-                }else{
-                    lastMessage.message = event.getMessage();
-                    lastMessage.time = System.currentTimeMillis();
-                }
-            }else this.lastMessage.put(player.getUniqueId(),new lastMessage(event.getMessage(),System.currentTimeMillis()));
             FilterType filter = null;
             if(!player.hasPermission("dkbans.bypass.chat")){
+                if(BanSystem.getInstance().getConfig().chatBlockRepeat){
+                    lastMessage lastMessage = this.lastMessage.get(player.getUniqueId());
+                    if(lastMessage != null){
+                        if(event.getMessage().equalsIgnoreCase(lastMessage.message)){
+                            event.setCancelled(true);
+                            player.sendMessage(Messages.CHAT_FILTER_SPAM_REPEAT.replace("[prefix]",Messages.PREFIX_CHAT));
+                            return;
+                        }else if(lastMessage.time+BanSystem.getInstance().getConfig().chatDelay >= System.currentTimeMillis()){
+                            event.setCancelled(true);
+                            player.sendMessage(Messages.CHAT_FILTER_SPAM_TOFAST.replace("[prefix]",Messages.PREFIX_CHAT));
+                            return;
+                        }else{
+                            lastMessage.message = event.getMessage();
+                            lastMessage.time = System.currentTimeMillis();
+                        }
+                    }else this.lastMessage.put(player.getUniqueId(),new lastMessage(event.getMessage(),System.currentTimeMillis()));
+                }
+
                 if(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.MESSAGE,event.getMessage())){
                     filter = FilterType.MESSAGE;
                     event.setCancelled(true);
