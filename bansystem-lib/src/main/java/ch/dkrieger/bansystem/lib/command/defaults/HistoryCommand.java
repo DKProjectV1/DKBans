@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 06.11.19, 20:31
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -61,7 +61,7 @@ public class HistoryCommand extends NetworkCommand {
             return;
         }
         if(args.length > 1 && GeneralUtil.isNumber(args[1])){
-            HistoryEntry entry = history.getEntry(Integer.valueOf(args[1]));
+            HistoryEntry entry = history.getEntry(Integer.parseInt(args[1]));
             if(entry != null){
                 if(args.length > 2 && entry instanceof Ban){
                     if(args[2].equalsIgnoreCase("list")){

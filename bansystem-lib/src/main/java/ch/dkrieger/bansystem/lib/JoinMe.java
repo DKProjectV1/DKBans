@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 09.06.19 12:15
+ * @since 06.11.19, 20:31
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -62,15 +62,17 @@ public class JoinMe {
     public List<TextComponent> create(){
         List<TextComponent> components = new ArrayList<>();
         components.add(createComponent(Messages.JOINME_LINE1));
-        components.add(createComponent(Messages.JOINME_LINE2));
-        components.add(createComponent(Messages.JOINME_LINE3));
-        components.add(createComponent(Messages.JOINME_LINE4));
-        components.add(createComponent(Messages.JOINME_LINE5));
-        components.add(createComponent(Messages.JOINME_LINE6));
-        components.add(createComponent(Messages.JOINME_LINE7));
-        components.add(createComponent(Messages.JOINME_LINE8));
-        components.add(createComponent(Messages.JOINME_LINE9));
-        components.add(createComponent(Messages.JOINME_LINE10));
+        if(Messages.JOINME_MULTIPLELINES){
+            components.add(createComponent(Messages.JOINME_LINE2));
+            components.add(createComponent(Messages.JOINME_LINE3));
+            components.add(createComponent(Messages.JOINME_LINE4));
+            components.add(createComponent(Messages.JOINME_LINE5));
+            components.add(createComponent(Messages.JOINME_LINE6));
+            components.add(createComponent(Messages.JOINME_LINE7));
+            components.add(createComponent(Messages.JOINME_LINE8));
+            components.add(createComponent(Messages.JOINME_LINE9));
+            components.add(createComponent(Messages.JOINME_LINE10));
+        }
 
         if(Messages.JOINME_HEAD){
             try{

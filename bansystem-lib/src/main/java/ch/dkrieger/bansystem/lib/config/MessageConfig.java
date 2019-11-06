@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 06.09.19, 22:57
+ * @since 06.11.19, 20:31
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -192,6 +192,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.JUMPTO_HELP = addAndGetMessageValue("jumpto.help","[prefix]&cUsage&8: &7 /jumpto <player>");
 
         Messages.JOINME_HEAD = addAndGetBooleanValue("joinme.head",true);
+        Messages.JOINME_MULTIPLELINES = addAndGetBooleanValue("joinme.multiplelines",true);
         Messages.JOINME_COOLDOWN = addAndGetMessageValue("joinme.cooldown","[prefix]&cWait a moment before sending the next joinme.");
         Messages.JOINME_NOTFOUND = addAndGetMessageValue("joinme.notfound","[prefix]&cThis Joinme was not found.");
         Messages.JOINME_NOTALLOWEDONSERVER = addAndGetMessageValue("joinme.notallowedonserver","[prefix]&cYou can not send a joinme on this server.");
@@ -200,7 +201,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.JOINME_LINE3 = addAndGetMessageValue("joinme.line.3","&6");
         Messages.JOINME_LINE4 = addAndGetMessageValue("joinme.line.4","&6");
         Messages.JOINME_LINE5 = addAndGetMessageValue("joinme.line.5","  [player] &7is playing on &e[server]");
-        Messages.JOINME_LINE6= addAndGetMessageValue("joinme.line.6","           &7Click to join");
+        Messages.JOINME_LINE6 = addAndGetMessageValue("joinme.line.6","           &7Click to join");
         Messages.JOINME_LINE7 = addAndGetMessageValue("joinme.line.7","&6");
         Messages.JOINME_LINE8 = addAndGetMessageValue("joinme.line.8","&6");
         Messages.JOINME_LINE9 = addAndGetMessageValue("joinme.line.9","&6");
@@ -362,5 +363,6 @@ public class MessageConfig extends SimpleConfig{
 
         Messages.MYHISTORYPOINTS= addAndGetMessageValue("myhistorypoints","[prefix]&7Your history points" +
                 "\n&8» &7Ban&8: &c[points_network]\n&8» &7Mute&8: &c[points_chat]\n&8» &7Total&8: &c[points_all]");
+
     }
 }

@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 06.09.19, 22:57
+ * @since 06.11.19, 20:31
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -234,6 +234,7 @@ public class Ban extends HistoryEntry {
     public String replace(String message, boolean first){
         return message
                 .replace("[player]",getPlayer().getColoredName())
+                .replace("[uuid]",getPlayer().getUUID().toString())
                 .replace("[id]",""+getID())
                 .replace("[banId]",""+getID())
                 .replace("[banid]",""+getID())

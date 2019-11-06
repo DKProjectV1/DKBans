@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 06.11.19, 20:31
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -46,17 +46,21 @@ public class BungeeCordCommandManager implements NetworkCommandManager {
     public BungeeCordCommandManager() {
         this.commands = new LinkedHashSet<>();
     }
+
     public Collection<NetworkCommand> getCommands() {
         return this.commands;
     }
+
     public NetworkCommand getCommand(String name) {
         for(NetworkCommand command : this.commands) if(command.getName().equalsIgnoreCase(name)) return command;
         return null;
     }
+
     public void registerCommand(final NetworkCommand command) {
         ProxyServer.getInstance().getPluginManager().registerCommand(BungeeCordBanSystemBootstrap.getInstance()
                 ,new BungeeCordNetworkCommand(command));
     }
+
     private class BungeeCordNetworkCommand extends Command implements TabExecutor {
 
         private NetworkCommand command;

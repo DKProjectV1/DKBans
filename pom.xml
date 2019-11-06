@@ -3,7 +3,7 @@
   ~ (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
   ~
   ~ @author Davide Wietlisbach
-  ~ @since 26.09.19, 20:38
+  ~ @since 06.11.19, 20:31
   ~ @Website https://github.com/DevKrieger/DKBans
   ~
   ~ The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -44,6 +44,7 @@
         <module>bansystem-extension-motdmanager</module>
         <module>bansystem-extension-offlinepermissionhook</module>
         <module>bansystem-sponge</module>
+        <module>bansystem-extension-commandonban</module>
     </modules>
 
     <licenses>

@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 14.03.19 19:43
+ * @since 06.11.19, 20:31
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -122,19 +122,23 @@ public class SubServerConnection implements Listener {
             });
         }
     }
+
     public void sendToAll(String action,Document document){
         sendToAll(action,document,null);
     }
+
     public void sendToAll(String action,Document document, String from){
         for(ServerInfo server : ProxyServer.getInstance().getServers().values()){
             if(from != null && server.getName().equalsIgnoreCase(from)) return;
             send(server,action,document);
         }
     }
+
     public void enable(){
         active = true;
         ProxyServer.getInstance().registerChannel("dkbans:dkbans");
     }
+
     public void send(ServerInfo server,String action, Document document){
         if(!active) throw new IllegalArgumentException("SubServerConnection is not enabled");
         try {

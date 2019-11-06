@@ -1,0 +1,6 @@
+name: DKBansCommandOnBan
+author: Davide Wietlisbach
+version: ${project.version}
+depends: [DKBans]
+
+main: ch.dkrieger.bansystem.extension.commandsonban.bungeecord.DKBansCommandsOnBanExtension

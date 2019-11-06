@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 06.09.19, 22:57
+ * @since 06.11.19, 20:31
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -286,6 +286,7 @@ public class Messages {
     public static String STAFFSTATS_INFO;
 
     public static boolean JOINME_HEAD;
+    public static boolean JOINME_MULTIPLELINES;
     public static String JOINME_COOLDOWN;
     public static String JOINME_NOTFOUND;
     public static String JOINME_NOTALLOWEDONSERVER;

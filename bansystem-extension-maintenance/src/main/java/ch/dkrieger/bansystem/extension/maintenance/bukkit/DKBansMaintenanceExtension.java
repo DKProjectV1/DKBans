@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 10.08.19, 21:12
+ * @since 06.11.19, 20:31
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -49,10 +49,12 @@ public class DKBansMaintenanceExtension extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this,this);
         BanSystem.getInstance().getCommandManager().registerCommand(new MaintenanceCommand(config,maintenance));
     }
+
     @EventHandler(priority= EventPriority.HIGHEST)
     public void onPing(ServerListPingEvent event){
         if(maintenance.isEnabled()) event.setMotd(maintenance.replace(config.motdLine1)+"\n"+maintenance.replace(config.motdLine2));
     }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLogin(PlayerLoginEvent event){
         if(maintenance.isEnabled()){
@@ -61,6 +63,7 @@ public class DKBansMaintenanceExtension extends JavaPlugin implements Listener {
             }
         }
     }
+
     @EventHandler
     public void onSettingUpdate(BukkitDKBansSettingUpdateEvent event){
         if(event.getName().equalsIgnoreCase("maintenance") ){
