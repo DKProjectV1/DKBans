@@ -305,6 +305,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.CHAT_FILTER_PROMOTION = addAndGetMessageValue("chat.filter.spam.promotion","[prefix]&cPlease donn't advertise.");
         Messages.CHAT_FILTER_NICKNAME = addAndGetMessageValue("chat.filter.spam.nickname","&e&lexample.net\n&5&6&7&8\n&cYour nickname is not allowed on this server\n&7\n&aIf you change you name, you can connect :D");
         Messages.CHAT_FILTER_COMMAND = addAndGetMessageValue("chat.filter.spam.command","&fUnknown command. Type \"/help\" for help.");
+        Messages.CHAT_FIRST_JOIN_DELAY_CANCELLED = addAndGetMessageValue("chat.firstJoinDelay.message", "[prefix]&cYou have to wait still &e[delay]&7, until you can write in the chat.");
 
         Messages.FILTER_HELP = addAndGetMessageValue("filter.help","[prefix] &6Filter Administration\n&8» &e/filter reload &8| &7Reload all filters" +
                 "\n&8» &e/filter list {type} &8| &7List all filters\n&8» &e/filter create <type> <message> {operation} &8| &7Create a filter" +

@@ -239,6 +239,7 @@ public class Messages {
     public static String CHAT_FILTER_PROMOTION;
     public static String CHAT_FILTER_NICKNAME;
     public static String CHAT_FILTER_COMMAND;
+    public static String CHAT_FIRST_JOIN_DELAY_CANCELLED;
 
     public static String FILTER_HELP;
     public static String FILTER_RELOAD;

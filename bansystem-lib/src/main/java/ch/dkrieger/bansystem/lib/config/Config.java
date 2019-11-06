@@ -98,6 +98,8 @@ public class Config extends SimpleConfig {
     public boolean chatFilterAutobanEnabled;
     public int chatFilterAutobanMessageBanID;
     public int chatFilterAutobanPromotionBanID;
+    public boolean chatFirstJoinDelayEnabled;
+    public int chatFirstJoinDelay;
 
     public boolean banPointsSeparateChatAndNetwork;
     public long banPointsChatTime;
@@ -251,6 +253,10 @@ public class Config extends SimpleConfig {
         this.chatFilterAutobanCount = addAndGetIntValue("chat.filter.autoban.count",8);
         this.chatFilterAutobanMessageBanID = addAndGetIntValue("chat.filter.autoban.banid.message",3);
         this.chatFilterAutobanPromotionBanID = addAndGetIntValue("chat.filter.autoban.banid.promotion",4);
+        this.chatFirstJoinDelayEnabled = addAndGetBooleanValue("chat.firstJoinDelay.enabled", false);
+        this.chatFirstJoinDelay = addAndGetIntValue("chat.firstJoinDelay.time", 600);
+
+
 
         this.playerSaveIP = addAndGetBooleanValue("player.saveip",true);
         //this.playerIPDeletionInDays = addAndGetIntValue("player.ipautodeleteindays",-1);

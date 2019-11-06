@@ -40,6 +40,7 @@ import org.bukkit.event.player.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class BukkitPlayerListener implements Listener {
 
@@ -141,9 +142,18 @@ public class BukkitPlayerListener implements Listener {
         Player player = event.getPlayer();
         NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
         Ban ban = networkPlayer.getBan(BanType.CHAT);
-        if(ban != null){
-            BukkitBanSystemBootstrap.getInstance().sendTextComponent(player,ban.toMessage());
+        if(ban != null) {
+            BukkitBanSystemBootstrap.getInstance().sendTextComponent(player, ban.toMessage());
             event.setCancelled(true);
+        } else if(BanSystem.getInstance().getConfig().chatFirstJoinDelayEnabled) {
+            int firstJoinDelay = BanSystem.getInstance().getConfig().chatFirstJoinDelay;
+            if(TimeUnit.MILLISECONDS.toSeconds(networkPlayer.getFirstLogin())+firstJoinDelay > System.currentTimeMillis()) {
+                event.setCancelled(true);
+                player.sendMessage(Messages.CHAT_FIRST_JOIN_DELAY_CANCELLED
+                        .replace("[prefix]", Messages.PREFIX_CHAT)
+                        .replace("[player]", networkPlayer.getColoredName())
+                        .replace("[delay]", String.valueOf(firstJoinDelay)));
+            }
         }else {
             FilterType filter = null;
             if(!player.hasPermission("dkbans.bypass.chat")){
