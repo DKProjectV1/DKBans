@@ -113,7 +113,14 @@ public abstract class PlayerManager {
             try{
                 player = BanSystem.getInstance().getStorage().getPlayer(name);
                 if(player != null) this.loadedPlayers.put(player.getUUID(),player);
-            }catch (Exception exception){}
+            }catch (Exception exception){
+                UUID uuid = GeneralUtil.getMojangUUIDByName(name);
+                if(uuid != null) {
+                    player = new NetworkPlayer(uuid, name, "unknown", "unknown");
+                    int id = BanSystem.getInstance().getStorage().createPlayer(player);
+                    player.setID(id);
+                }
+            }
         }
         return player;
     }

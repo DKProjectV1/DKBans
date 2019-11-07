@@ -55,6 +55,7 @@ public class Config extends SimpleConfig {
     public BanMode banMode;
     public ReasonMode unbanMode;
     public ReasonMode kickMode;
+    public boolean allowOfflineBan;
 
     public transient DateFormat dateFormat;
     public char serverGroupSplit;
@@ -194,6 +195,7 @@ public class Config extends SimpleConfig {
         this.banPointsNetworkTime =  GeneralUtil.convertToMillis(addAndGetLongValue("ban.points.network.duration.time",1)
                 ,addAndGetStringValue("ban.points.network.duration.unit",TimeUnit.DAYS.toString()));
         this.banPointsNetworkPermanently = addAndGetIntValue("ban.points.network.permanently",80);
+        this.allowOfflineBan = addAndGetBooleanValue("ban.allowOfflineBan", false);
 
         this.reasonShowOnlyPermitted = addAndGetBooleanValue("reasons.showonlypremitted",true);
 
