@@ -136,6 +136,9 @@ public class PlayerListener implements Listener {
             player.playerLogin(event.getPlayer().getName(),event.getPlayer().getAddress().getAddress().getHostAddress()
                     ,event.getPlayer().getPendingConnection().getVersion(),"Unknown",BungeeCordBanSystemBootstrap.getInstance().getProxyName()
                     ,BungeeCordBanSystemBootstrap.getInstance().getColor(player),event.getPlayer().hasPermission("dkbans.bypass"));
+            if(event.getPlayer().hasPermission("dkbans.admin") && BanSystem.getInstance().getUpdateChecker().hasNewVersion()) {
+                event.getPlayer().sendMessage(TextComponent.fromLegacyText(Messages.PREFIX_BAN + "§7New version available §e" + BanSystem.getInstance().getUpdateChecker().getLatestVersionString()));
+            }
         });
     }
     @EventHandler
@@ -155,6 +158,7 @@ public class PlayerListener implements Listener {
         if(!(event.getSender() instanceof ProxiedPlayer)) return;
         ProxiedPlayer player = (ProxiedPlayer)event.getSender();
         NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
+
         if(event.isCommand()){
             event.setMessage(event.getMessage().replace("bukkit:","").replace("minecraft:","").replace("bungeecord:",""));
             if(BanSystem.getInstance().getConfig().chatBlockPlugin){
@@ -182,6 +186,17 @@ public class PlayerListener implements Listener {
             if(event.isCommand() && !(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.MUTECOMMAND,event.getMessage()))) return;
             player.sendMessage(ban.toMessage());
             event.setCancelled(true);
+        } else if(BanSystem.getInstance().getConfig().chatFirstJoinDelayEnabled) {
+            System.out.println("first join delay");
+            long firstJoinDelay = BanSystem.getInstance().getConfig().chatFirstJoinDelay*1000;
+            long remaining = System.currentTimeMillis()-(networkPlayer.getFirstLogin()+firstJoinDelay);
+            if(remaining < 0) {
+                event.setCancelled(true);
+                player.sendMessage(TextComponent.fromLegacyText(Messages.CHAT_FIRST_JOIN_DELAY_CANCELLED
+                        .replace("[prefix]", Messages.PREFIX_CHAT)
+                        .replace("[player]", networkPlayer.getColoredName())
+                        .replace("[remaining]", String.valueOf(TimeUnit.MILLISECONDS.toSeconds(remaining*(-1))))));
+            }
         }else if(!event.isCommand()){
             FilterType filter = null;
             if(!player.hasPermission("dkbans.bypass.chat")){

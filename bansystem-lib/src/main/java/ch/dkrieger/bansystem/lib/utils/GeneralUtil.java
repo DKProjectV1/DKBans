@@ -23,12 +23,18 @@ package ch.dkrieger.bansystem.lib.utils;
 import ch.dkrieger.bansystem.lib.Messages;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -45,6 +51,8 @@ public class GeneralUtil {
     public static final JsonParser PARSER = new JsonParser();
 
     public static final Function<String,String> STRING_FORMATTER = s -> s;
+
+    private static final String MOJANG_PLAYER_BY_NAME = "https://api.mojang.com/users/profiles/minecraft/%s";
 
     public static void createGSON(){
         GSON = GSON_BUILDER.create();
@@ -214,7 +222,7 @@ public class GeneralUtil {
         else if(equalsOne(timeType,"week","weeks","woche","wochen","w")) return TimeUnit.DAYS.toMillis(time*7);
         else if(equalsOne(timeType,"month","months","monate","monaten","mo")) return TimeUnit.DAYS.toMillis(time*30);
         else if(equalsOne(timeType,"year","years","jahr","jahre","y","j")) return TimeUnit.DAYS.toMillis(time*360);
-       throw new IllegalArgumentException("False time unit");
+        throw new IllegalArgumentException("False time unit");
     }
     public static TextComponent replaceTextComponent(TextComponent text, String replacement, TextComponent component){
         final List<BaseComponent> components = text.getExtra();
@@ -303,6 +311,40 @@ public class GeneralUtil {
             newMessage += c;
         }
         return newMessage;
+    }
+
+    public static UUID getMojangUUIDByName(String name) {
+        String url = String.format(MOJANG_PLAYER_BY_NAME, name);
+        String content = getWebsiteContent(url);
+        JsonObject jsonObject = GSON.fromJson(content, JsonObject.class);
+        if(jsonObject == null) return null;
+        String uuidString = jsonObject.get("id").getAsString();
+        StringBuilder dashBuilder = new StringBuilder(uuidString)
+                .insert(20, '-')
+                .insert(16, '-')
+                .insert(12, '-')
+                .insert(8, '-');
+        return UUID.fromString(dashBuilder.toString());
+    }
+
+    private static String getWebsiteContent(String url) {
+        try {
+            URL website = new URL(url);
+            HttpURLConnection connection = (HttpURLConnection) website.openConnection();
+            int statusCode = connection.getResponseCode();
+            if (statusCode >= 200 && statusCode < 400) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+                return response.toString();
+            } else return null;
+        } catch(IOException ignored) {
+            return null;
+        }
     }
 
     public interface AcceptAble<T> {

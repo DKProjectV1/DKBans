@@ -55,6 +55,7 @@ public class Config extends SimpleConfig {
     public BanMode banMode;
     public ReasonMode unbanMode;
     public ReasonMode kickMode;
+    public boolean allowOfflineBan;
 
     public transient DateFormat dateFormat;
     public char serverGroupSplit;
@@ -98,6 +99,8 @@ public class Config extends SimpleConfig {
     public boolean chatFilterAutobanEnabled;
     public int chatFilterAutobanMessageBanID;
     public int chatFilterAutobanPromotionBanID;
+    public boolean chatFirstJoinDelayEnabled;
+    public int chatFirstJoinDelay;
 
     public boolean banPointsSeparateChatAndNetwork;
     public long banPointsChatTime;
@@ -161,6 +164,7 @@ public class Config extends SimpleConfig {
     public boolean commandUnwarn;
     public boolean commandEdit;
     public boolean commandMyHistoryPoints;
+    public boolean commandNotify;
 
     private transient DKBansPlatform platform;
 
@@ -192,6 +196,7 @@ public class Config extends SimpleConfig {
         this.banPointsNetworkTime =  GeneralUtil.convertToMillis(addAndGetLongValue("ban.points.network.duration.time",1)
                 ,addAndGetStringValue("ban.points.network.duration.unit",TimeUnit.DAYS.toString()));
         this.banPointsNetworkPermanently = addAndGetIntValue("ban.points.network.permanently",80);
+        this.allowOfflineBan = addAndGetBooleanValue("ban.allowOfflineBan", false);
 
         this.reasonShowOnlyPermitted = addAndGetBooleanValue("reasons.showonlypremitted",true);
 
@@ -251,6 +256,10 @@ public class Config extends SimpleConfig {
         this.chatFilterAutobanCount = addAndGetIntValue("chat.filter.autoban.count",8);
         this.chatFilterAutobanMessageBanID = addAndGetIntValue("chat.filter.autoban.banid.message",3);
         this.chatFilterAutobanPromotionBanID = addAndGetIntValue("chat.filter.autoban.banid.promotion",4);
+        this.chatFirstJoinDelayEnabled = addAndGetBooleanValue("chat.firstJoinDelay.enabled", false);
+        this.chatFirstJoinDelay = addAndGetIntValue("chat.firstJoinDelay.time", 600);
+
+
 
         this.playerSaveIP = addAndGetBooleanValue("player.saveip",true);
         //this.playerIPDeletionInDays = addAndGetIntValue("player.ipautodeleteindays",-1);
@@ -318,6 +327,7 @@ public class Config extends SimpleConfig {
         //this.commandUnwarn = addAndGetBooleanValue("command.unwarn.enabled",true);
         this.commandEdit = addAndGetBooleanValue("command.edit.enabled",true);
         this.commandMyHistoryPoints = addAndGetBooleanValue("command.myhistorypoints.enabled",true);
+        this.commandNotify = addAndGetBooleanValue("command.notify.enabled", true);
     }
     public Ban createAltAccountBan(NetworkPlayer player, String ip){
         return new Ban(player.getUUID(),ip,ipBanBanReason,"",System.currentTimeMillis(),-1,new HistoryPoints(ipBanBanPoints,BanType.NETWORK),666

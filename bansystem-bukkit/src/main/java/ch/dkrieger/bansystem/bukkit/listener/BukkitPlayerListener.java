@@ -40,6 +40,7 @@ import org.bukkit.event.player.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class BukkitPlayerListener implements Listener {
 
@@ -122,6 +123,9 @@ public class BukkitPlayerListener implements Listener {
             player.playerLogin(event.getPlayer().getName(),event.getPlayer().getAddress().getAddress().getHostAddress()
                     ,0,Messages.UNKNOWN,"Proxy-1"
                     ,BukkitBanSystemBootstrap.getInstance().getColor(player),event.getPlayer().hasPermission("dkbans.bypass"));
+            if(!BanSystem.getInstance().getConfig().bungeecord && event.getPlayer().hasPermission("dkbans.admin") && BanSystem.getInstance().getUpdateChecker().hasNewVersion()) {
+                event.getPlayer().sendMessage(Messages.PREFIX_BAN + "§7New version available §e" + BanSystem.getInstance().getUpdateChecker().getLatestVersionString());
+            }
         });
     }
     @EventHandler
@@ -141,9 +145,20 @@ public class BukkitPlayerListener implements Listener {
         Player player = event.getPlayer();
         NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
         Ban ban = networkPlayer.getBan(BanType.CHAT);
-        if(ban != null){
-            BukkitBanSystemBootstrap.getInstance().sendTextComponent(player,ban.toMessage());
+        if(ban != null) {
+            BukkitBanSystemBootstrap.getInstance().sendTextComponent(player, ban.toMessage());
             event.setCancelled(true);
+        } else if(!BanSystem.getInstance().getConfig().bungeecord && BanSystem.getInstance().getConfig().chatFirstJoinDelayEnabled) {
+            System.out.println("first join delay");
+            long firstJoinDelay = BanSystem.getInstance().getConfig().chatFirstJoinDelay*1000;
+            long remaining = System.currentTimeMillis()-(networkPlayer.getFirstLogin()+firstJoinDelay);
+            if(remaining < 0) {
+                event.setCancelled(true);
+                player.sendMessage(Messages.CHAT_FIRST_JOIN_DELAY_CANCELLED
+                        .replace("[prefix]", Messages.PREFIX_CHAT)
+                        .replace("[player]", networkPlayer.getColoredName())
+                        .replace("[remaining]", String.valueOf(TimeUnit.MILLISECONDS.toSeconds(remaining*(-1)))));
+            }
         }else {
             FilterType filter = null;
             if(!player.hasPermission("dkbans.bypass.chat")){

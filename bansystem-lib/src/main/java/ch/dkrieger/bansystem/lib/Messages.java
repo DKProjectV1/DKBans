@@ -31,6 +31,7 @@ public class Messages {
     public static String PREFIX_TEAMCHAT;
     public static String PREFIX_CHAT;
     public static String PREFIX_CHATLOG;
+    public static String PREFIX_NOTIFY;
 
     public static String ERROR;
     public static String NOPERMISSIONS;
@@ -239,6 +240,7 @@ public class Messages {
     public static String CHAT_FILTER_PROMOTION;
     public static String CHAT_FILTER_NICKNAME;
     public static String CHAT_FILTER_COMMAND;
+    public static String CHAT_FIRST_JOIN_DELAY_CANCELLED;
 
     public static String FILTER_HELP;
     public static String FILTER_RELOAD;
@@ -300,6 +302,8 @@ public class Messages {
     public static String JOINME_LINE8;
     public static String JOINME_LINE9;
     public static String JOINME_LINE10;
+
+    public static String NOTIFY_HELP;
 
     public Messages(String systemname) {
         SYSTEM_NAME = systemname;
