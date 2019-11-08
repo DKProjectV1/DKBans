@@ -32,7 +32,6 @@ public class NotifyCommand extends NetworkCommand {
 
     public NotifyCommand() {
         super("notify","","dkbans.notify");
-        setPrefix(Messages.PREFIX_NOTIFY);
     }
 
     @Override
@@ -63,21 +62,21 @@ public class NotifyCommand extends NetworkCommand {
         if(player.isTeamChatLoggedIn() == teamChatLogin){
             sender.sendMessage(Messages.STAFF_STATUS_ALREADY
                     .replace("[status]",(teamChatLogin?Messages.STAFF_STATUS_LOGIN:Messages.STAFF_STATUS_LOGOUT))
-                    .replace("[prefix]",getPrefix()));
+                    .replace("[prefix]", Messages.PREFIX_TEAMCHAT));
         }else{
             sender.sendMessage(Messages.STAFF_STATUS_CHANGE
                     .replace("[status]",(teamChatLogin?Messages.STAFF_STATUS_LOGIN:Messages.STAFF_STATUS_LOGOUT))
-                    .replace("[prefix]",getPrefix()));
+                    .replace("[prefix]", Messages.PREFIX_TEAMCHAT));
         }
         player.setTeamChatLogin(teamChatLogin);
         if(player.isReportLoggedIn() == reportLogin){
             sender.sendMessage(Messages.STAFF_STATUS_ALREADY
                     .replace("[status]",(reportLogin?Messages.STAFF_STATUS_LOGIN:Messages.STAFF_STATUS_LOGOUT))
-                    .replace("[prefix]",getPrefix()));
+                    .replace("[prefix]", Messages.PREFIX_REPORT));
         }else{
             sender.sendMessage(Messages.STAFF_STATUS_CHANGE
                     .replace("[status]",(reportLogin?Messages.STAFF_STATUS_LOGIN:Messages.STAFF_STATUS_LOGOUT))
-                    .replace("[prefix]",getPrefix()));
+                    .replace("[prefix]", Messages.PREFIX_REPORT));
         }
         player.setReportLogin(reportLogin);
     }

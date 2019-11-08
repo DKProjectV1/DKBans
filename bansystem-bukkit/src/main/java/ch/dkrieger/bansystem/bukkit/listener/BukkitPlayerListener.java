@@ -123,10 +123,8 @@ public class BukkitPlayerListener implements Listener {
             player.playerLogin(event.getPlayer().getName(),event.getPlayer().getAddress().getAddress().getHostAddress()
                     ,0,Messages.UNKNOWN,"Proxy-1"
                     ,BukkitBanSystemBootstrap.getInstance().getColor(player),event.getPlayer().hasPermission("dkbans.bypass"));
-            if(event.getPlayer().hasPermission("dkbans.admin")) {
-                if(BanSystem.getInstance().getUpdateChecker().hasNewVersion()) {
-                    event.getPlayer().sendMessage(Messages.PREFIX_BAN + "New version available &e" + BanSystem.getInstance().getUpdateChecker().getLatestVersionString());
-                }
+            if(!BanSystem.getInstance().getConfig().bungeecord && event.getPlayer().hasPermission("dkbans.admin") && BanSystem.getInstance().getUpdateChecker().hasNewVersion()) {
+                event.getPlayer().sendMessage(Messages.PREFIX_BAN + "§7New version available §e" + BanSystem.getInstance().getUpdateChecker().getLatestVersionString());
             }
         });
     }
@@ -150,14 +148,16 @@ public class BukkitPlayerListener implements Listener {
         if(ban != null) {
             BukkitBanSystemBootstrap.getInstance().sendTextComponent(player, ban.toMessage());
             event.setCancelled(true);
-        } else if(BanSystem.getInstance().getConfig().chatFirstJoinDelayEnabled) {
-            int firstJoinDelay = BanSystem.getInstance().getConfig().chatFirstJoinDelay;
-            if(TimeUnit.MILLISECONDS.toSeconds(networkPlayer.getFirstLogin())+firstJoinDelay > System.currentTimeMillis()) {
+        } else if(!BanSystem.getInstance().getConfig().bungeecord && BanSystem.getInstance().getConfig().chatFirstJoinDelayEnabled) {
+            System.out.println("first join delay");
+            long firstJoinDelay = BanSystem.getInstance().getConfig().chatFirstJoinDelay*1000;
+            long remaining = System.currentTimeMillis()-(networkPlayer.getFirstLogin()+firstJoinDelay);
+            if(remaining < 0) {
                 event.setCancelled(true);
                 player.sendMessage(Messages.CHAT_FIRST_JOIN_DELAY_CANCELLED
                         .replace("[prefix]", Messages.PREFIX_CHAT)
                         .replace("[player]", networkPlayer.getColoredName())
-                        .replace("[delay]", String.valueOf(firstJoinDelay)));
+                        .replace("[remaining]", String.valueOf(TimeUnit.MILLISECONDS.toSeconds(remaining*(-1)))));
             }
         }else {
             FilterType filter = null;
