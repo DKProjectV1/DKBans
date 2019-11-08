@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -173,7 +173,7 @@ public class BanSystem {
         if(this.config.commandIPban) getCommandManager().registerCommand(new IpBanCommand());
         if(this.config.commandIPUnban) getCommandManager().registerCommand(new IpUnbanCommand());
         if(this.config.commandWarn) getCommandManager().registerCommand(new WarnCommand());
-        //if(this.config.commandUnwarn) getCommandManager().registerCommand(new UnwarnCommand());
+        if(this.config.commandUnwarn) getCommandManager().registerCommand(new UnwarnCommand());
         if(this.config.commandEdit) getCommandManager().registerCommand(new EditBanCommand());
         if(this.config.commandMyHistoryPoints) getCommandManager().registerCommand(new MyHistoryPointsCommand());
         if(this.config.commandNotify) getCommandManager().registerCommand(new NotifyCommand());

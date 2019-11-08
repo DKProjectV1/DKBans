@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 05.04.19 22:47
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -51,6 +51,7 @@ public class BroadcastManager {
 
         reloadLocal();
     }
+
     public Broadcast getNext(){
         List<Broadcast> broadcasts = getAutoBroadcasts();
         broadcasts.sort((o1, o2) -> (o1.getID()>o2.getID()?1:-1));
@@ -72,42 +73,54 @@ public class BroadcastManager {
             return broadcast;
         }else return broadcasts.get(GeneralUtil.RANDOM.nextInt(broadcasts.size()));
     }
+
     public void registerBuildAdapter(String replace, BuildAdapter adapter){
         this.buildAdapters.put(replace,adapter);
     }
+
     public Broadcast getBroadcast(int id){
         return this.broadcasts.get(id);
     }
+
     public List<Broadcast> getAutoBroadcasts(){
         List<Broadcast> broadcasts = new ArrayList<>();
         GeneralUtil.iterateAcceptedForEach(this.broadcasts.values(),Broadcast::isAuto,broadcasts::add);
         return broadcasts;
     }
+
     public List<Broadcast> getBroadcasts(){
         return new ArrayList<>(broadcasts.values());
     }
+
     public Broadcast createBroadcast(String message){
         return createBroadcast(new Broadcast(-1,message,null,null,System.currentTimeMillis()
                 ,System.currentTimeMillis(),false,new Broadcast.Click("", Broadcast.ClickType.URL)));
     }
+
     public Broadcast createBroadcast(Broadcast broadcast){
         broadcast.setID(BanSystem.getInstance().getStorage().createBroadcast(broadcast));
         this.broadcasts.put(broadcast.getID(),broadcast);
         return broadcast;
     }
+
     public void updateBroadcast(Broadcast broadcast){
         this.broadcasts.put(broadcast.getID(),broadcast);
         BanSystem.getInstance().getStorage().updateBroadcast(broadcast);
     }
+
     public void deleteBroadcast(Broadcast broadcast){
         deleteBroadcast(broadcast.getID());
     }
+
     public void deleteBroadcast(int id){
         this.broadcasts.remove(id);
+        BanSystem.getInstance().getStorage().deleteBroadcast(id);
     }
+
     public TextComponent build(Broadcast broadcast){
         return build(broadcast,null);
     }
+
     public TextComponent build(Broadcast broadcast, NetworkPlayer player){
         List<BaseComponent> components = new ArrayList<>();
         String message = GeneralUtil.buildNextLineColor(broadcast.getMessage());
@@ -127,7 +140,7 @@ public class BroadcastManager {
                 if(c == ']'){
                     components.add(new TextComponent(before.substring(0,before.length()-9)));
                     Broadcast subBroadcast = null;
-                    if(GeneralUtil.isNumber(id) && broadcast.getID() != Integer.valueOf(id)) subBroadcast = getBroadcast(Integer.valueOf(id));
+                    if(GeneralUtil.isNumber(id) && broadcast.getID() != Integer.parseInt(id)) subBroadcast = getBroadcast(Integer.parseInt(id));
                     if(subBroadcast != null){
                         components.add(build(subBroadcast,player));
                         before = "";
@@ -152,10 +165,12 @@ public class BroadcastManager {
         }
         return component;
     }
+
     public void reloadLocal(){
         this.broadcasts.clear();
         GeneralUtil.iterateForEach(BanSystem.getInstance().getStorage().loadBroadcasts(),object ->broadcasts.put(object.getID(),object));
     }
+
     public interface BuildAdapter {
         String build(NetworkPlayer player);
     }

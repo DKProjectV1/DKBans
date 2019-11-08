@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 06.11.19, 20:31
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -52,6 +52,7 @@ public class DKBansMaintenanceExtension extends JavaPlugin implements Listener {
 
     @EventHandler(priority= EventPriority.HIGHEST)
     public void onPing(ServerListPingEvent event){
+        System.out.println("Ping");
         if(maintenance.isEnabled()) event.setMotd(maintenance.replace(config.motdLine1)+"\n"+maintenance.replace(config.motdLine2));
     }
 

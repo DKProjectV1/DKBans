@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 06.11.19, 20:31
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -22,7 +22,6 @@ package ch.dkrieger.bansystem.extension.commandsonban.bukkit;
 
 import ch.dkrieger.bansystem.bukkit.event.BukkitNetworkPlayerBanEvent;
 import ch.dkrieger.bansystem.extension.commandsonban.CommandsOnBanConfig;
-import net.md_5.bungee.api.ProxyServer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -41,7 +40,7 @@ public class DKBansCommandsOnBanExtension extends JavaPlugin implements Listener
     @EventHandler
     public void onBan(BukkitNetworkPlayerBanEvent event){
         if(!config.executeOnAllServers && !event.isOnThisServer()) return;
-        config.commands.forEach(command -> ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole()
+        config.commands.forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender()
                 ,event.getBan().replace(command.replace("[player]",event.getPlayer().getName()),true)));
     }
 }

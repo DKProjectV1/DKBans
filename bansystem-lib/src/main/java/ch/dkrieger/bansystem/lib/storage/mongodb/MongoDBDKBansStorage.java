@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -174,7 +174,7 @@ public class MongoDBDKBansStorage implements DKBansStorage {
 
     @Override
     public int getRegisteredPlayerCount() {
-        return Integer.valueOf(String.valueOf(playerCollection.countDocuments()-1));
+        return Integer.parseInt(String.valueOf(playerCollection.countDocuments()-1));
     }
 
     @Override
@@ -400,14 +400,16 @@ public class MongoDBDKBansStorage implements DKBansStorage {
     @Override
     public ch.dkrieger.bansystem.lib.utils.Document getSetting(String name) {
         Document result =  this.settingsCollection.find(eq("settingTypeName",name)).first();
-        if(result != null) return ch.dkrieger.bansystem.lib.utils.Document.loadData(result.toJson());
+        if(result != null){
+            return ch.dkrieger.bansystem.lib.utils.Document.loadData(result.toJson(MongoDBUtil.MONGOJSONSETTINGS));
+        }
         return null;
     }
 
     @Override
     public void saveSetting(String name, ch.dkrieger.bansystem.lib.utils.Document document) {
         document.append("settingTypeName",name);
-        this.settingsCollection.updateOne(eq("settingTypeName",name),Document.parse(document.toJson()),new UpdateOptions().upsert(true));
+        this.settingsCollection.replaceOne(eq("settingTypeName",name),Document.parse(document.toJson()),new UpdateOptions().upsert(true));
     }
 
     @Override

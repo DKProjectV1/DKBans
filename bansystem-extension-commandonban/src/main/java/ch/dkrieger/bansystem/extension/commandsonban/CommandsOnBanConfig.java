@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 06.11.19, 20:31
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -22,6 +22,7 @@ package ch.dkrieger.bansystem.extension.commandsonban;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class CommandsOnBanConfig {
@@ -31,7 +32,7 @@ public class CommandsOnBanConfig {
 
     public CommandsOnBanConfig() {
         executeOnAllServers = BanSystem.getInstance().getConfig().addAndGetBooleanValue("extension.commandOnBan.executeOnAllServers",false);
-        commands = BanSystem.getInstance().getConfig().addAndGetStringListValue("extension.commandOnBan.commands",true);
+        commands = BanSystem.getInstance().getConfig().addAndGetStringListValue("extension.commandOnBan.commands", Arrays.asList("say Hey from Ban"));
         BanSystem.getInstance().getConfig().save();
     }
 

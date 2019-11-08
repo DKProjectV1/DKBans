@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 06.09.19, 22:57
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -139,8 +139,9 @@ public class BanCommand extends NetworkCommand {
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
         if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],sender.getName(),BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));
-        else if(args.length == 2 && BanSystem.getInstance().getConfig().banMode != BanMode.SELF)
+        else if(args.length == 2 && BanSystem.getInstance().getConfig().banMode != BanMode.SELF){
             return GeneralUtil.calculateTabComplete(args[1],null,BanSystem.getInstance().getReasonProvider().getBanReasons(),REASON_FORMATTER);
+        }
         return null;
     }
     private void sendReasons(NetworkCommandSender sender){

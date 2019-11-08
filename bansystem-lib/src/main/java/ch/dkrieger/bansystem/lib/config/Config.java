@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 10.08.19, 21:12
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -324,7 +324,7 @@ public class Config extends SimpleConfig {
         this.commandIPban = addAndGetBooleanValue("command.ipban.enabled",true);
         this.commandIPUnban = addAndGetBooleanValue("command.ipunban.enabled",true);
         this.commandWarn = addAndGetBooleanValue("command.warn.enabled",true);
-        //this.commandUnwarn = addAndGetBooleanValue("command.unwarn.enabled",true);
+        this.commandUnwarn = addAndGetBooleanValue("command.unwarn.enabled",true);
         this.commandEdit = addAndGetBooleanValue("command.edit.enabled",true);
         this.commandMyHistoryPoints = addAndGetBooleanValue("command.myhistorypoints.enabled",true);
         this.commandNotify = addAndGetBooleanValue("command.notify.enabled", true);

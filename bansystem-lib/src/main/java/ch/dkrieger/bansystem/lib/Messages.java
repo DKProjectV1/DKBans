@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 06.11.19, 20:31
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -134,6 +134,8 @@ public class Messages {
     public static String UNWARN_HELP;
     public static String UNWARN_SUCCESS_ALL;
     public static String UNWARN_SUCCESS_DEFINED;
+    public static String UNWARN_NOT_WARN;
+    public static String UNWARN_NO_WARNS;
 
     public static String PING_SELF;
     public static String PING_OTHER;
@@ -174,6 +176,7 @@ public class Messages {
     public static String HISTORY_LIST_KICK;
     public static String HISTORY_LIST_UNBAN;
     public static String HISTORY_LIST_WARN;
+    public static String HISTORY_LIST_UNWARN;
     public static String HISTORY_INFO_BAN_CHAT;
     public static String HISTORY_INFO_BAN_NETWORK;
     public static String HISTORY_INFO_BAN_CHANGES;
@@ -190,6 +193,7 @@ public class Messages {
     public static String HISTORY_INFO_KICK;
     public static String HISTORY_INFO_UNBAN;
     public static String HISTORY_INFO_WARN;
+    public static String HISTORY_INFO_UNWARN;
     public static String HISTORY_RESET_HELP;
     public static String HISTORY_RESET_ALL;
     public static String HISTORY_RESET_ONE;

@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -38,11 +38,13 @@ public class HistoryManager {
         if(entry != null) return entry.getPlayer();
         return null;
     }
+
     public NetworkPlayer getPlayerByBan(int id){
         HistoryEntry entry = getHistoryEntry(id);
         if(entry instanceof Ban) return entry.getPlayer();
         return null;
     }
+
     public HistoryEntry getHistoryEntry(int id){
         return BanSystem.getInstance().getStorage().getHistoryEntry(id);
     }
@@ -56,14 +58,17 @@ public class HistoryManager {
         });
         return this.activeBans;
     }
+
     @SuppressWarnings("This methode is dangerous, it (can) return many datas and have a long delay.")
     public List<Ban> getActiveBans(BanType type, String reason){
         return GeneralUtil.iterateAcceptedReturn(getActiveBans(type), object -> object.getReason().equalsIgnoreCase(reason));
     }
+
     @SuppressWarnings("This methode is dangerous, it (can) return many datas and have a long delay.")
     public List<Ban> getActiveBans(BanType type,int reasonID){
         return GeneralUtil.iterateAcceptedReturn(getActiveBans(type), object -> object.getID() == reasonID);
     }
+
     @SuppressWarnings("This methode is dangerous, it (can) return many datas and have a long delay.")
     public List<Ban> getActiveBans(BanType type,UUID staff){
         return GeneralUtil.iterateAcceptedReturn(getActiveBans(type), object -> object.getStaff().equals(staff.toString()));

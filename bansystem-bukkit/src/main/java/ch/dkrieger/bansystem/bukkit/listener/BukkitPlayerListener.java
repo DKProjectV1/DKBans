@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 18.10.19, 21:00
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -119,7 +119,7 @@ public class BukkitPlayerListener implements Listener {
                             .replace("[size]",""+BanSystem.getInstance().getReportManager().getOpenReports().size())
                             .replace("[prefix]",Messages.PREFIX_REPORT));
                 }
-            }//event.getPlayer().getLocale().getLanguage() ((CraftPlayer) player).getHandle().playerConnection.networkManager.getVersion();
+            }
             player.playerLogin(event.getPlayer().getName(),event.getPlayer().getAddress().getAddress().getHostAddress()
                     ,0,Messages.UNKNOWN,"Proxy-1"
                     ,BukkitBanSystemBootstrap.getInstance().getColor(player),event.getPlayer().hasPermission("dkbans.bypass"));
@@ -149,7 +149,6 @@ public class BukkitPlayerListener implements Listener {
             BukkitBanSystemBootstrap.getInstance().sendTextComponent(player, ban.toMessage());
             event.setCancelled(true);
         } else if(!BanSystem.getInstance().getConfig().bungeecord && BanSystem.getInstance().getConfig().chatFirstJoinDelayEnabled) {
-            System.out.println("first join delay");
             long firstJoinDelay = BanSystem.getInstance().getConfig().chatFirstJoinDelay*1000;
             long remaining = System.currentTimeMillis()-(networkPlayer.getFirstLogin()+firstJoinDelay);
             if(remaining < 0) {

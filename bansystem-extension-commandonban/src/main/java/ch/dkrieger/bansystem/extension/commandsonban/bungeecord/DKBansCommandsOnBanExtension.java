@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 06.11.19, 20:31
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -21,26 +21,11 @@
 package ch.dkrieger.bansystem.extension.commandsonban.bungeecord;
 
 import ch.dkrieger.bansystem.bungeecord.event.ProxiedNetworkPlayerBanEvent;
-import ch.dkrieger.bansystem.bungeecord.event.ProxiedNetworkPlayerKickEvent;
-import ch.dkrieger.bansystem.bungeecord.event.ProxiedNetworkPlayerUnbanEvent;
-import ch.dkrieger.bansystem.bungeecord.event.ProxiedNetworkPlayerWarnEvent;
 import ch.dkrieger.bansystem.extension.commandsonban.CommandsOnBanConfig;
-import ch.dkrieger.bansystem.lib.BanSystem;
-import ch.dkrieger.bansystem.lib.Messages;
-import ch.dkrieger.bansystem.lib.player.history.BanType;
-import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
-import ch.dkrieger.bansystem.lib.player.history.entry.Kick;
-import ch.dkrieger.bansystem.lib.player.history.entry.Unban;
-import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
-import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
-
-import java.util.function.Consumer;
 
 public class DKBansCommandsOnBanExtension extends Plugin implements Listener {
 

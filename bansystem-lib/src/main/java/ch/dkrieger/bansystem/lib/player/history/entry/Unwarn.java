@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 14.03.19 19:43
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -48,21 +48,19 @@ public class Unwarn extends HistoryEntry{
 
     @Override
     public TextComponent getListMessage() {
-        return new TextComponent(replace(Messages.HISTORY_LIST_WARN));
+        return new TextComponent(replace(Messages.HISTORY_LIST_UNWARN));
     }
+
     @Override
     public TextComponent getInfoMessage() {
-        return new TextComponent(replace(Messages.HISTORY_INFO_KICK));
+        return new TextComponent(replace(Messages.HISTORY_INFO_UNWARN));
     }
-    public TextComponent toMessage(){
-        return new TextComponent(replace(Messages.WARN_CHAT_MESSAGE));
 
-    }
     public String replace(String message){
         return message
                 .replace("[prefix]",Messages.PREFIX_BAN)
                 .replace("[id]",""+getID())
-                .replace("[banId]",""+warnId)
+                .replace("[warnId]",warnId==-1?"All":""+warnId)
                 .replace("[reason]",getReason())
                 .replace("[type]",getTypeName())
                 .replace("[points]",""+getPoints().getPoints())

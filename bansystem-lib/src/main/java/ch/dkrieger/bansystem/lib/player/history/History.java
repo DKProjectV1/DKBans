@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -37,44 +37,56 @@ public class History {
     public History(){
         this.entries = new HashMap<>();
     }
+
     public History(Map<Integer, HistoryEntry> entries) {
         this.entries = entries;
     }
+
     public int size(){
         return this.entries.size();
     }
+
     public  Map<Integer, HistoryEntry> getRawEntries(){
         return this.entries;
     }
+
     public List<HistoryEntry> getEntries(){
         return new ArrayList<>(this.entries.values());
     }
+
     public List<HistoryEntry> getEntriesSorted(){
         List<HistoryEntry> entries = getEntries();
         entries.sort((o1, o2) -> o1.getTimeStamp() > o2.getTimeStamp()?1:-1);
         return entries;
     }
+
     public HistoryEntry getEntry(int id){
         return entries.get(id);
     }
+
     public int getPoints(){
         return getPoints(null);
     }
+
     public int getPoints(BanType type){
         AtomicInteger points = new AtomicInteger(0);
         GeneralUtil.iterateAcceptedForEach(this.entries.values(), object -> type == null || object.getPoints().getHistoryType().equals(type)
                 , object ->{ points.getAndAdd(object.getPoints().getPoints());});
         return points.get();
     }
+
     public int getBanCount(){
         return getBanCount(BanType.NETWORK)+getBanCount(BanType.CHAT);
     }
+
     public int getBanCount(BanType type){
         return getBans(type).size();
     }
+
     public boolean isBanned(){
         return isBanned(BanType.NETWORK) || isBanned(BanType.CHAT);
     }
+
     public boolean isBanned(BanType type){
         return getBan(type) != null;
     }
@@ -106,6 +118,7 @@ public class History {
     public List<Ban> getBans(){
         return getBans((BanType)null);
     }
+
     public List<Ban> getBans(BanType type){
         List<Ban> bans = new ArrayList<>();
         GeneralUtil.iterateAcceptedForEach(this.entries.values()
@@ -115,11 +128,13 @@ public class History {
                 });
         return bans;
     }
+
     public List<Ban> getBans(int reasonID){
         List<Ban> bans = new ArrayList<>();
         GeneralUtil.iterateAcceptedForEach(this.entries.values(),object -> object.getID() == reasonID,object -> bans.add((Ban)object));
         return bans;
     }
+
     public List<Ban> getBans(String reason){
         List<Ban> bans = new ArrayList<>();
         GeneralUtil.iterateAcceptedForEach(this.entries.values(),object -> object.getReason().equalsIgnoreCase(reason),object -> bans.add((Ban)object));
@@ -129,16 +144,20 @@ public class History {
     public int getWarnCount(){
         return getWarns().size();
     }
+
     public int getWarnCountSinceLastBan(){
         return getWarnsSinceLastBan().size();
     }
+
     public int getWarnCountSinceLastBan(int reasonId){
         return getWarnsSinceLastBan(reasonId).size();
     }
+
     public Warn getLastWarn(){
         final Warn[] warn = new Warn[1];
         final long[] timeStamp = {0};
-        GeneralUtil.iterateAcceptedForEach(this.entries.values(),object -> object instanceof Warn && object.getTimeStamp() > timeStamp[0], object -> {
+        GeneralUtil.iterateAcceptedForEach(this.entries.values(),object -> object instanceof Warn
+                && object.getTimeStamp() > timeStamp[0] && !isUnwarned(object.getID(),object.getTimeStamp()), object -> {
             warn[0] = (Warn) object;
             timeStamp[0] = object.getTimeStamp();
         });
@@ -150,17 +169,26 @@ public class History {
        GeneralUtil.iterateAcceptedForEach(this.entries.values(), object -> object instanceof Warn, object -> warns.add((Warn) object));
        return warns;
     }
+
     public List<Warn> getWarnsSinceLastBan(int reasonId){
         final List<Warn> warns = getWarnsSinceLastBan();
         GeneralUtil.iterateAndRemove(warns, object -> object.getReasonID() != reasonId);
         return warns;
     }
+
     public List<Warn> getWarnsSinceLastBan(){
         final List<Warn> warns = getWarns();
         Ban ban = getLastBan();
         final long lastBanTimeStamp = ban!= null?ban.getTimeStamp():0;
-        GeneralUtil.iterateAndRemove(warns, object -> object.getTimeStamp() < lastBanTimeStamp);
+        GeneralUtil.iterateAndRemove(warns, object -> object.getTimeStamp() < lastBanTimeStamp || isUnwarned(object.getID(),object.getTimeStamp()));
         return warns;
+    }
+
+    private boolean isUnwarned(int warnId, long time){
+        for (HistoryEntry value : this.entries.values()) {
+            if(value instanceof Unwarn && ((((Unwarn) value).getWarnId() == -1 && value.getTimeStamp() > time) || ((Unwarn) value).getWarnId() == warnId)) return true;
+        }
+        return false;
     }
 
     public Ban getLastBan(){
@@ -172,6 +200,7 @@ public class History {
         });
         return ban[0];
     }
+
     public Unban getLastUnban(){
         final Unban[] unban = new Unban[1];
         final long[] timeStamp = {0};
@@ -181,6 +210,7 @@ public class History {
         });
         return unban[0];
     }
+
     public Kick getLastKick(){
         final Kick[] kick = new Kick[1];
         final long[] timeStamp = {0};
@@ -194,7 +224,8 @@ public class History {
     public List<HistoryEntry> getEntries(Filter filter){
         return GeneralUtil.iterateAcceptedReturn(this.entries.values(),filter::accepted);
     }
-    private class Filter {
+
+    private static class Filter {
 
         private Class<HistoryEntry> type;
         private long from, to;

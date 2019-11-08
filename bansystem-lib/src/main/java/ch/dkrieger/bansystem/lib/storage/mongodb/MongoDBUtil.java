@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -38,9 +38,11 @@ public class MongoDBUtil {
     public static <O> O toObject(Document document, Class<O> clazz){
         return GeneralUtil.GSON.fromJson(document.toJson(MONGOJSONSETTINGS),clazz);
     }
+
     public static Document toDocument(Object object){
         return Document.parse(GeneralUtil.GSON.toJson(object));
     }
+
     public static void insertOne(MongoCollection collection, Object object){
         collection.insertOne(toDocument(object));
     }

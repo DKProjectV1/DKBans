@@ -1,10 +1,8 @@
-package ch.dkrieger.bansystem.lib.command.defaults;
-
 /*
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
- * @author Philipp Elvin Friedhoff
- * @since 07.11.19, 19:36
+ * @author Davide Wietlisbach
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -20,6 +18,8 @@ package ch.dkrieger.bansystem.lib.command.defaults;
  * under the License.
  */
 
+package ch.dkrieger.bansystem.lib.command.defaults;
+
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
@@ -32,6 +32,7 @@ public class NotifyCommand extends NetworkCommand {
 
     public NotifyCommand() {
         super("notify","","dkbans.notify");
+        setPrefix(Messages.PREFIX_NETWORK);
     }
 
     @Override

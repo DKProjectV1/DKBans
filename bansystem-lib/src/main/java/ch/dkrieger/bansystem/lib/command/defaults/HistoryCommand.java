@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 06.11.19, 20:31
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -40,6 +40,7 @@ public class HistoryCommand extends NetworkCommand {
         super("history","","dkbans.history");
         setPrefix(Messages.PREFIX_BAN);
     }
+
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
         if(args.length < 1){
@@ -91,7 +92,7 @@ public class HistoryCommand extends NetworkCommand {
                         sender.sendMessage(((Ban) entry).getInfo(true));
                         return;
                     }else if(GeneralUtil.isNumber(args[2])){
-                        Ban.BanEditVersion version = ((Ban) entry).getVersion(Integer.valueOf(args[2]));
+                        Ban.BanEditVersion version = ((Ban) entry).getVersion(Integer.parseInt(args[2]));
                         if(version != null){
                             sender.sendMessage(new TextComponent(version.getInfoMessage()
                                     .replace("[id]",""+version.getID())
@@ -118,6 +119,7 @@ public class HistoryCommand extends NetworkCommand {
 
         //change to page System
     }
+
     @Override
     public List<String> onTabComplete(NetworkCommandSender sender, String[] args) {
         if(args.length == 1) return GeneralUtil.calculateTabComplete(args[0],sender.getName(),BanSystem.getInstance().getNetwork().getPlayersOnServer(sender.getServer()));

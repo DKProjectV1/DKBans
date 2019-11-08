@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 09.06.19 12:15
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -44,6 +44,7 @@ public abstract class HistoryEntry {
         GSONTYPEADAPTER.put("KICK",Kick.class);
         GSONTYPEADAPTER.put("UNBAN",Unban.class);
         GSONTYPEADAPTER.put("WARN",Warn.class);
+        GSONTYPEADAPTER.put("UNWARN",Unwarn.class);
         buildAdapter();
     }
 

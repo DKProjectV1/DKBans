@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 06.11.19, 20:31
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -150,6 +150,9 @@ public class MessageConfig extends SimpleConfig{
 
         Messages.UNWARN_SUCCESS_ALL = addAndGetMessageValue("unwarn.all","[prefix] &7Unwarnd all warns from &8[player]&7.");
         Messages.UNWARN_SUCCESS_DEFINED = addAndGetMessageValue("unwarn.all","[prefix] &7Unwarnd warn &c[warnId] &7from &8[player]&7.");
+        Messages.UNWARN_NO_WARNS = addAndGetMessageValue("unwarn.nowarn","[prefix]&C[player] &7has no warns.");
+        Messages.UNWARN_NO_WARNS = addAndGetMessageValue("unwarn.nowarn","[prefix]&C[player] &7has no warns.");
+        Messages.UNWARN_NOT_WARN = addAndGetMessageValue("unwarn.notwarn","[prefix]&c[player] &7has no warn with the id &c[warnId]&7.");
         Messages.UNWARN_HELP = addAndGetMessageValue("unwarn.all","[prefix] &cUsage&8: &7/unwarn <player> {warnId} {reason}");
 
         Messages.EDITBAN_HELP = addAndGetMessageValue("editban.help","[prefix]&7Ban edit Administration" +
@@ -224,6 +227,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.HISTORY_LIST_KICK = addAndGetMessageValue("history.list.kick","&8» &eKick &8| &7[time] - &7[reason]");
         Messages.HISTORY_LIST_UNBAN = addAndGetMessageValue("history.list.unban","&8» &aUnban &8| &7[time] - &7[reason]");
         Messages.HISTORY_LIST_WARN = addAndGetMessageValue("history.list.warn","&8» &6Warn &8| &7[time] - &7[reason]");
+        Messages.HISTORY_LIST_UNWARN = addAndGetMessageValue("history.list.unwarn","&8» &2Unwarn &8| &7[time] - &7[warnId]");
         Messages.HISTORY_INFO_BAN_NETWORK = addAndGetMessageValue("history.info.ban.network","[prefix]&7Ban &c[id] &7from [player]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7Reason&8: [reason] \n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
                 "\n&8» &7Points&8: &c[points] &8| &c[pointsType]\n&8» &7Duration&8: &c[duration]\n&8» &7Remaining&8: &c[remaining-short]\n&8» &7Time&8: &c[time]\n&8» &7TimeOut&8: &c[timeout]\n&7\n&8» [changes]\n&7");
@@ -256,6 +260,8 @@ public class MessageConfig extends SimpleConfig{
         Messages.HISTORY_INFO_WARN = addAndGetMessageValue("history.info.warn","[prefix]&7Warn &c[id] &7from [player]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7For type&8: &c[banType]\n&8» &7Reason&8: [reason]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
                 "\n&8» &7Points&8: &c[points] &8| &c[pointsType]\n&8» &7Time&8: &c[time]");
+        Messages.HISTORY_INFO_UNWARN = addAndGetMessageValue("history.info.unwarn","[prefix]&2Unwarn &c[id] &7from [player]" +
+                "\n&8» &7ID&8: &c[id]\n&8» &7For warn&8: &c[warnId]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]");
         Messages.HISTORY_INFO_UNBAN = addAndGetMessageValue("history.info.unban","[prefix]&7Unban &c[id] &7from [player]" +
                 "\n&8» &7ID&8: &c[id]\n&8» &7For type&8: &c[banType]\n&8» &7Reason&8: [reason]\n&8» &7Message&8: &c[message]\n&8» &7Staff&8: &c[staff]" +
                 "\n&8» &7Points&8: &c[points] &8| &c[pointsType]\n&8» &7Time&8: &c[time]");
@@ -306,6 +312,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.CHAT_FILTER_PROMOTION = addAndGetMessageValue("chat.filter.spam.promotion","[prefix]&cPlease donn't advertise.");
         Messages.CHAT_FILTER_NICKNAME = addAndGetMessageValue("chat.filter.spam.nickname","&e&lexample.net\n&5&6&7&8\n&cYour nickname is not allowed on this server\n&7\n&aIf you change you name, you can connect :D");
         Messages.CHAT_FILTER_COMMAND = addAndGetMessageValue("chat.filter.spam.command","&fUnknown command. Type \"/help\" for help.");
+        Messages.CHAT_FIRST_JOIN_DELAY_CANCELLED = addAndGetMessageValue("chat.firstJoinDelay.message", "[prefix]&cYou have to wait still &e[remaining] &cseconds, until you can write in the chat.");
 
         Messages.FILTER_HELP = addAndGetMessageValue("filter.help","[prefix] &6Filter Administration\n&8» &e/filter reload &8| &7Reload all filters" +
                 "\n&8» &e/filter list {type} &8| &7List all filters\n&8» &e/filter create <type> <message> {operation} &8| &7Create a filter" +

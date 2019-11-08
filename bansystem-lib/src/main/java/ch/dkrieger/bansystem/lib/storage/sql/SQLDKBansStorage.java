@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 15.07.19 11:31
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -563,10 +563,11 @@ public class SQLDKBansStorage implements DKBansStorage {
             List<Broadcast> broadcasts = new ArrayList<>();
             try{
                 while(result.next()){
+                    //Info: Get boolean is a temporary solution (Data Type confusion) -> Boolean.parseBoolean(result.getString("auto"))
                     broadcasts.add(new Broadcast(result.getInt("id"),result.getString("message")
                             ,result.getString("permission")
                             ,result.getString("hover"),result.getLong("created"),result.getLong("lastChange")
-                            ,result.getBoolean("auto"),new Broadcast.Click(result.getString("clickMessage")
+                            ,Boolean.parseBoolean(result.getString("auto")),new Broadcast.Click(result.getString("clickMessage")
                             ,Broadcast.ClickType.valueOf(result.getString("clickType")))));
                 }
             }catch (Exception e){
@@ -626,7 +627,7 @@ public class SQLDKBansStorage implements DKBansStorage {
                             ,result.getString("ip"),result.getLong("timeStamp")
                             ,result.getLong("timeOut"));
                 }
-            }catch (Exception exception){}
+            }catch (Exception ignored){}
             return null;
         });
     }
@@ -652,7 +653,7 @@ public class SQLDKBansStorage implements DKBansStorage {
     public Document getSetting(String name) {
         return this.settings.select().where("name",name).execute(result -> {
             try{while(result.next()) return Document.loadData(result.getString("value"));
-            }catch (Exception exception){}
+            }catch (Exception ignored){}
             return null;
         });
     }

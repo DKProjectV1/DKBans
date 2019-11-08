@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 01.02.19 17:15
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -25,7 +25,9 @@ import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.player.history.entry.HistoryEntry;
 import ch.dkrieger.bansystem.lib.player.history.entry.Unwarn;
+import ch.dkrieger.bansystem.lib.player.history.entry.Warn;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.util.List;
@@ -49,9 +51,25 @@ public class UnwarnCommand extends NetworkCommand {
             int warnId = -1;
             String reason = "";
 
-            if(args.length >= 2 && GeneralUtil.isNumber(args[1])) warnId = Integer.valueOf(args[1]);
+            if(args.length >= 2 && GeneralUtil.isNumber(args[1])) warnId = Integer.parseInt(args[1]);
 
             for(int i = (warnId>0?2:1);i< args.length;i++) reason +=args[i]+" ";
+
+            if(warnId > 0){
+                HistoryEntry entry = player.getHistory().getEntry(warnId);
+                if(!(entry instanceof Warn)){
+                    sender.sendMessage(Messages.UNWARN_NOT_WARN
+                            .replace("[warnId]",""+warnId)
+                            .replace("[player]",player.getColoredName())
+                            .replace("[prefix]",getPrefix()));
+                    return;
+                }
+            }else if(player.getHistory().getWarnCountSinceLastBan() == 0){
+                    sender.sendMessage(Messages.UNWARN_NO_WARNS
+                        .replace("[player]",player.getColoredName())
+                        .replace("[prefix]",getPrefix()));
+                return;
+            }
 
             Unwarn unwarn = player.unwarn(warnId,reason,sender.getUUID());
             if(warnId > 0){
