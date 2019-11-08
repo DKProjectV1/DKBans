@@ -123,6 +123,11 @@ public class BukkitPlayerListener implements Listener {
             player.playerLogin(event.getPlayer().getName(),event.getPlayer().getAddress().getAddress().getHostAddress()
                     ,0,Messages.UNKNOWN,"Proxy-1"
                     ,BukkitBanSystemBootstrap.getInstance().getColor(player),event.getPlayer().hasPermission("dkbans.bypass"));
+            if(event.getPlayer().hasPermission("dkbans.admin")) {
+                if(BanSystem.getInstance().getUpdateChecker().hasNewVersion()) {
+                    event.getPlayer().sendMessage(Messages.PREFIX_BAN + "New version available &e" + BanSystem.getInstance().getUpdateChecker().getLatestVersionString());
+                }
+            }
         });
     }
     @EventHandler

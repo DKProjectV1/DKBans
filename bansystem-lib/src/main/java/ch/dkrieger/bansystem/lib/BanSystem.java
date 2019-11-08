@@ -40,7 +40,9 @@ import ch.dkrieger.bansystem.lib.storage.json.JsonDKBansStorage;
 import ch.dkrieger.bansystem.lib.storage.mongodb.MongoDBDKBansStorage;
 import ch.dkrieger.bansystem.lib.storage.sql.SQLDKBansStorage;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
+import ch.dkrieger.bansystem.lib.utils.UpdateChecker;
 
+import java.net.MalformedURLException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -66,6 +68,8 @@ public class BanSystem {
 
     private NetworkStats cachedNetworkStats, tempSyncStats;
 
+    private UpdateChecker updateChecker;
+
     public BanSystem(DKBansPlatform platform, DKNetwork network, PlayerManager playerManager) {
         if(instance != null) throw new IllegalArgumentException("DKBans is already initialised");
         instance = this;
@@ -84,6 +88,16 @@ public class BanSystem {
         if(this.version == null) this.version = "Unknown";
         System.out.println(Messages.SYSTEM_PREFIX+"plugin is starting");
         System.out.println(Messages.SYSTEM_PREFIX+"BanSystem "+this.version+" by Davide Wietlisbach");
+
+
+        try {
+            this.updateChecker = new UpdateChecker(52570);
+            if(this.updateChecker.hasNewVersion()) {
+                System.out.println(Messages.SYSTEM_PREFIX + "New version available: " + this.updateChecker.getLatestVersionString());
+            }
+        } catch (MalformedURLException ignored) {
+            System.out.println(Messages.SYSTEM_PREFIX + "Can't check newest version.");
+        }
 
         systemBootstrap();
 
@@ -255,6 +269,10 @@ public class BanSystem {
     public NetworkStats getTempSyncStats() {
         if(this.tempSyncStats == null) this.tempSyncStats = new NetworkStats();
         return tempSyncStats;
+    }
+
+    public UpdateChecker getUpdateChecker() {
+        return updateChecker;
     }
 
     public void setPlayerManager(PlayerManager playerManager) {
