@@ -38,6 +38,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.PREFIX_TEAMCHAT = addAndGetMessageValue("prefix.teamchat","&8» &eTeamChat &8| &f");
         Messages.PREFIX_CHAT = addAndGetMessageValue("prefix.chat","&8» &eChat &8| &f");
         Messages.PREFIX_CHATLOG = addAndGetMessageValue("prefix.chatlog","&8» &eChatLog &8| &f");
+        Messages.PREFIX_NOTIFY = addAndGetMessageValue("prefix.notify", "&cNotify &8| &f");
 
         Messages.ERROR = addAndGetMessageValue("error","[prefix]&cAn error occurred, please contact a network administrator.");
         Messages.NOPERMISSIONS = addAndGetMessageValue("nopermissions","[prefix]&cYou don't have permission for this command.");
@@ -363,5 +364,7 @@ public class MessageConfig extends SimpleConfig{
 
         Messages.MYHISTORYPOINTS= addAndGetMessageValue("myhistorypoints","[prefix]&7Your history points" +
                 "\n&8» &7Ban&8: &c[points_network]\n&8» &7Mute&8: &c[points_chat]\n&8» &7Total&8: &c[points_all]");
+
+        Messages.NOTIFY_HELP = addAndGetMessageValue("notify.help","[prefix]&cUsage&8: &7 /notify <on, off, toggle>");
     }
 }
