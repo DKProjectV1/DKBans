@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 19.01.19 10:59
+ * @since 28.12.19, 15:05
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -33,6 +33,7 @@ public class MyHistoryPointsCommand extends NetworkCommand {
 
     public MyHistoryPointsCommand() {
         super("myhistorypoints","","dkbans.myhistorypoints","/myHistoryPoints","mybanpoints","mymutepoints");
+        setPrefix(Messages.PREFIX_NETWORK);
     }
 
     @Override

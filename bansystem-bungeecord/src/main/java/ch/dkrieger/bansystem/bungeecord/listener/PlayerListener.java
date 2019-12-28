@@ -2,7 +2,7 @@
  * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 08.11.19, 22:06
+ * @since 28.12.19, 15:05
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -106,6 +106,7 @@ public class PlayerListener implements Listener {
             event.setCancelReason(new TextComponent(ban.toMessage()));
         }
     }
+
     @EventHandler
     public void onPostLogin(PostLoginEvent event){
         BanSystem.getInstance().getTempSyncStats().addLogins();
@@ -141,6 +142,7 @@ public class PlayerListener implements Listener {
             }
         });
     }
+
     @EventHandler
     public void onDisconnect(PlayerDisconnectEvent event){
         ProxyServer.getInstance().getScheduler().runAsync(BungeeCordBanSystemBootstrap.getInstance(),()->{
@@ -153,6 +155,7 @@ public class PlayerListener implements Listener {
             ,server,this.currentMessageCount.get(player.getUUID()));
         });
     }
+
     @EventHandler
     public void onChat(ChatEvent event){
         if(!(event.getSender() instanceof ProxiedPlayer)) return;
@@ -257,6 +260,7 @@ public class PlayerListener implements Listener {
         }else this.banPoints.put(player.getUUID(),1);
         return false;
     }
+
     private boolean repeat(String message, String lastMessage) {
         if(lastMessage.equalsIgnoreCase(message)) return true;
         else{
@@ -270,6 +274,7 @@ public class PlayerListener implements Listener {
              */
         }
     }
+
     @EventHandler
     public void onTabComplete(TabCompleteEvent event){
         if(BanSystem.getInstance().getConfig().tabCompleteBlockEnabled && event.getSender() instanceof ProxiedPlayer){
@@ -290,6 +295,13 @@ public class PlayerListener implements Listener {
                             ,option -> event.getSuggestions().add(option.getOption()));
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onTabComplete(TabCompleteEvent event){
+        if(BanSystem.getInstance().getConfig().tabCompleteBlockEnabled && event.getSender() instanceof ProxiedPlayer){
+            this.lastCursors.put(((ProxiedPlayer) event.getSender()).getUniqueId(),event.getCursor());
         }
     }
 
