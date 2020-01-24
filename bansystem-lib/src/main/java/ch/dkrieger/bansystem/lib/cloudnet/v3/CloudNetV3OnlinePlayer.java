@@ -124,6 +124,13 @@ public class CloudNetV3OnlinePlayer implements OnlineNetworkPlayer {
         Wrapper.getInstance().sendChannelMessage("DKBans","kick",new JsonDocument()
                 .append("uuid",getUUID()).append("kick",kick));
     }
+
+    @Override
+    public void kickToFallback(String message) {
+        Wrapper.getInstance().sendChannelMessage("DKBans", "fallbackKick",
+                new JsonDocument().append("uuid", getUUID()).append("message", message));
+    }
+
     @Override
     public void sendWarn(Warn warn) {
         Wrapper.getInstance().sendChannelMessage("DKBans","warn",new JsonDocument()

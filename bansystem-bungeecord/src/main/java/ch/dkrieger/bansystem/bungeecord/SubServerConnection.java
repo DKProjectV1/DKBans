@@ -114,7 +114,12 @@ public class SubServerConnection implements Listener {
                     }else if(document.getString("action").equalsIgnoreCase("syncSetting")) {
                         BanSystem.getInstance().getSettingProvider().removeFromCache(document.getString("name"));
                         ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedDKBansSettingUpdateEvent(
-                                document.getString("name"),System.currentTimeMillis(),false));
+                                document.getString("name"), System.currentTimeMillis(), false));
+                    } else if(document.getString("action").equalsIgnoreCase("fallbackKick")) {
+                        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(document.getObject("uuid",UUID.class));
+                        if(player != null) {
+                            player.getServer().disconnect(new TextComponent(document.getString("message")));
+                        }
                     }else ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedDKBansMessageReceiveEvent(document));
                 }catch (Exception exception){
                     exception.printStackTrace();

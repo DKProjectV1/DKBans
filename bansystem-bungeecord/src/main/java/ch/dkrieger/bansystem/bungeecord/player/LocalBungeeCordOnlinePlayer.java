@@ -105,6 +105,11 @@ public class LocalBungeeCordOnlinePlayer implements OnlineNetworkPlayer {
     }
 
     @Override
+    public void kickToFallback(String message) {
+        this.player.getServer().disconnect(new TextComponent(message));
+    }
+
+    @Override
     public void sendWarn(Warn warn) {
         if(warn.isKick()) player.disconnect(warn.toKickMessage());
         else player.sendMessage(warn.toChatMessage());

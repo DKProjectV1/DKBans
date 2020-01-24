@@ -55,4 +55,5 @@ public interface OnlineNetworkPlayer {
 
     public void sendKick(Kick kick);
 
+    void kickToFallback(String message);
 }

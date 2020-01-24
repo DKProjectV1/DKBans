@@ -112,6 +112,11 @@ public class BukkitOnlinePlayer implements OnlineNetworkPlayer {
     }
 
     @Override
+    public void kickToFallback(String message) {
+        this.player.kickPlayer(message);
+    }
+
+    @Override
     public void sendWarn(Warn warn) {
         if(warn.isKick()) kick(warn.toKickMessage());
         else BukkitBanSystemBootstrap.getInstance().sendTextComponent(player,warn.toChatMessage());

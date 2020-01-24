@@ -309,6 +309,9 @@ public class Messages {
 
     public static String NOTIFY_HELP;
 
+    public static String FALLBACK_KICK_HELP;
+    public static String FALLBACK_KICK_SUCCESS;
+
     public Messages(String systemname) {
         SYSTEM_NAME = systemname;
         SYSTEM_PREFIX = "["+systemname+"] ";

@@ -39,6 +39,10 @@ public class NotifyCommand extends NetworkCommand {
     public void onExecute(NetworkCommandSender sender, String[] args) {
         if(args.length == 1) {
             NetworkPlayer player = sender.getAsNetworkPlayer();
+            if(player == null) {
+                sender.sendMessage(Messages.NOTIFY_HELP.replace("prefix", getPrefix()));
+                return;
+            }
             if(args[0].equalsIgnoreCase("on")) {
                 changeLogin(sender, player, true, true);
                 return;

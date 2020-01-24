@@ -165,6 +165,7 @@ public class Config extends SimpleConfig {
     public boolean commandEdit;
     public boolean commandMyHistoryPoints;
     public boolean commandNotify;
+    public boolean commandFallbackKick;
 
     private transient DKBansPlatform platform;
 
@@ -328,6 +329,7 @@ public class Config extends SimpleConfig {
         this.commandEdit = addAndGetBooleanValue("command.edit.enabled",true);
         this.commandMyHistoryPoints = addAndGetBooleanValue("command.myhistorypoints.enabled",true);
         this.commandNotify = addAndGetBooleanValue("command.notify.enabled", true);
+        this.commandFallbackKick = addAndGetBooleanValue("command.fallbackKick", true);
     }
     public Ban createAltAccountBan(NetworkPlayer player, String ip){
         return new Ban(player.getUUID(),ip,ipBanBanReason,"",System.currentTimeMillis(),-1,new HistoryPoints(ipBanBanPoints,BanType.NETWORK),666

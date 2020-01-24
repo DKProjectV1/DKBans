@@ -372,5 +372,8 @@ public class MessageConfig extends SimpleConfig{
                 "\n&8» &7Ban&8: &c[points_network]\n&8» &7Mute&8: &c[points_chat]\n&8» &7Total&8: &c[points_all]");
 
         Messages.NOTIFY_HELP = addAndGetMessageValue("notify.help","[prefix]&cUsage&8: &7 /notify <on, off, toggle>");
+
+        Messages.FALLBACK_KICK_HELP = addAndGetMessageValue("fallback.kick.help", "[prefix]&6Usage&8: &7 /fallbackkick <player> [message]");
+        Messages.FALLBACK_KICK_SUCCESS = addAndGetMessageValue("fallback.kick.success", "[prefix]&cYou have kicked to the fallback server.");
     }
 }

@@ -120,6 +120,13 @@ public class CloudNetV2OnlinePlayer implements OnlineNetworkPlayer {
         CloudAPI.getInstance().sendCustomSubProxyMessage("DKBans","kick"
                 ,new Document().append("uuid",getUUID()).append("kick",kick),getProxy());
     }
+
+    @Override
+    public void kickToFallback(String message) {
+        CloudAPI.getInstance().sendCustomSubProxyMessage("DKBans", "fallbackKick",
+                new Document().append("uuid", getUUID()).append("message", message));
+    }
+
     @Override
     public void sendWarn(Warn warn) {
         CloudAPI.getInstance().sendCustomSubProxyMessage("DKBans","warn",new Document()

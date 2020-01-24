@@ -104,6 +104,12 @@ public class BungeeCordOnlinePlayer implements OnlineNetworkPlayer {
     }
 
     @Override
+    public void kickToFallback(String message) {
+        BukkitBanSystemBootstrap.getInstance().getBungeeCordConnection().send("fallbackKick"
+                ,new Document().append("uuid",uuid).append("message",message));
+    }
+
+    @Override
     public void sendWarn(Warn warn) {
         BukkitBanSystemBootstrap.getInstance().getBungeeCordConnection().send("warn"
                 ,new Document().append("uuid",uuid).append("warn",warn));

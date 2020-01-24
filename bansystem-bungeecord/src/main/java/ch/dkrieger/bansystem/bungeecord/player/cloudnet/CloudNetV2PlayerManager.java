@@ -182,6 +182,11 @@ public class CloudNetV2PlayerManager extends PlayerManager implements Listener {
                     Kick kick = event.getDocument().getObject("kick", Kick.class);
                     player.disconnect(kick.toMessage());
                 }
+            }else if(event.getMessage().equalsIgnoreCase("fallbackKick")) {
+                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(event.getDocument().getObject("uuid",UUID.class));
+                if(player != null) {
+                    player.getServer().disconnect(new TextComponent(event.getDocument().getString("message")));
+                }
             }else if(event.getMessage().equalsIgnoreCase("sendBan")){
                 ProxiedPlayer player = ProxyServer.getInstance().getPlayer(event.getDocument().getObject("uuid",UUID.class));
                 if(player != null){

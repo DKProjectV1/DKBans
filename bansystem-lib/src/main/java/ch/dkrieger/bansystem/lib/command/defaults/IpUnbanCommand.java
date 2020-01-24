@@ -24,6 +24,8 @@ import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.command.NetworkCommand;
 import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
+import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
+import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 
 import java.util.List;
 
@@ -42,14 +44,21 @@ public class IpUnbanCommand extends NetworkCommand {
             sender.sendMessage(Messages.IPUNBAN_HELP.replace("[prefix]",getPrefix()));
             return;
         }
-        if(!BanSystem.getInstance().getPlayerManager().isIPBanned(args[0])){
-            sender.sendMessage(Messages.IPBAN_NOT_BANNED
-                    .replace("[prefix]",getPrefix())
-                    .replace("[player]",args[0]));
+        if(GeneralUtil.isIP4Address(args[0]) && BanSystem.getInstance().getPlayerManager().isIPBanned(args[0])) {
+            BanSystem.getInstance().getPlayerManager().unbanIp(args[0]);
+            sender.sendMessage(Messages.IPUNBAN_SUCCESS.replace("[ip]",args[0]).replace("[prefix]",getPrefix()));
             return;
+        } else {
+            NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
+            if(networkPlayer != null) {
+                BanSystem.getInstance().getPlayerManager().unbanIp(args[0]);
+                sender.sendMessage(Messages.IPUNBAN_SUCCESS.replace("[ip]",args[0]).replace("[prefix]",getPrefix()));
+                return;
+            }
         }
-        BanSystem.getInstance().getPlayerManager().unbanIp(args[0]);
-        sender.sendMessage(Messages.IPUNBAN_SUCCESS.replace("[ip]",args[0]).replace("[prefix]",getPrefix()));
+        sender.sendMessage(Messages.IPBAN_NOT_BANNED
+                .replace("[prefix]",getPrefix())
+                .replace("[player]",args[0]));
     }
 
     @Override
