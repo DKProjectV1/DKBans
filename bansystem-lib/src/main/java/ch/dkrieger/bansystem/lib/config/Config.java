@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 08.11.19, 22:06
+ * @since 24.01.20, 22:17
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -236,7 +236,7 @@ public class Config extends SimpleConfig {
         this.onJoinReportSize = addAndGetBooleanValue("player.onjoin.reportsize",true);
 
         this.tabCompleteBlockEnabled = addAndGetBooleanValue("tabcomplete.block.enabled",true);
-        List<String> tabOptions = addAndGetStringListValue("tabcomplete.options",Arrays.asList("dkbans.ban:/ban","dkbans.kick:/kick","report"));
+        List<String> tabOptions = addAndGetStringListValue("tabcomplete.options",Arrays.asList("dkbans.ban:/ban","dkbans.kick:/kick","/report"));
         this.tabCompleteOptions = new ArrayList<>();
         for(String tabOption : tabOptions){
             try{

@@ -1,10 +1,8 @@
-package ch.dkrieger.bansystem.lib.command.defaults;
-
 /*
  * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
- * @author Philipp Elvin Friedhoff
- * @since 24.01.20, 19:57
+ * @author Davide Wietlisbach
+ * @since 24.01.20, 22:17
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -19,6 +17,8 @@ package ch.dkrieger.bansystem.lib.command.defaults;
  * License for the specific language governing permissions and limitations
  * under the License.
  */
+
+package ch.dkrieger.bansystem.lib.command.defaults;
 
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.Messages;
@@ -47,7 +47,7 @@ public class FallbackKickCommand extends NetworkCommand {
             return;
         }
         String message = args.length >= 2 ? getFallbackKickMessage(args) : null;
-        sender.sendMessage(Messages.FALLBACK_KICK_SUCCESS.replace("[prefix]", getPrefix()));
+        sender.sendMessage(Messages.FALLBACK_KICK_SUCCESS.replace("[prefix]", getPrefix()).replace("[player]",player.getPlayer().getColoredName()));
         player.kickToFallback(message);
     }
 
@@ -59,7 +59,7 @@ public class FallbackKickCommand extends NetworkCommand {
     private String getFallbackKickMessage(String[] args) {
         StringBuilder message = new StringBuilder();
         for (int i = 1; i < args.length; i++) {
-            message.append(args[i]);
+            message.append(args[i]).append(" ");
         }
         return message.toString();
     }

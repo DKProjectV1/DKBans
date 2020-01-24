@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 08.11.19, 22:06
+ * @since 24.01.20, 22:17
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -374,7 +374,7 @@ public class MessageConfig extends SimpleConfig{
         Messages.NOTIFY_HELP = addAndGetMessageValue("notify.help","[prefix]&cUsage&8: &7 /notify <on, off, toggle>");
 
         Messages.FALLBACK_KICK_HELP = addAndGetMessageValue("fallback.kick.help", "[prefix]&6Usage&8: &7 /fallbackkick <player> [message]");
-        Messages.FALLBACK_KICK_SUCCESS = addAndGetMessageValue("fallback.kick.success", "[prefix]&cYou have kicked to the fallback server.");
-        Messages.FALLBACK_KICK = addAndGetMessageValue("fallback.kick", "[prefix]&7[message]");
+        Messages.FALLBACK_KICK_SUCCESS = addAndGetMessageValue("fallback.kick.success", "[prefix]&e[player] &7was kicked to a fallback server.");
+        Messages.FALLBACK_KICK = addAndGetMessageValue("fallback.kick.message", "&5\n[prefix]&cYou were kicked to a fallback server\n&8» &3Reason&8: &4&l[message]\n&5");
     }
 }
