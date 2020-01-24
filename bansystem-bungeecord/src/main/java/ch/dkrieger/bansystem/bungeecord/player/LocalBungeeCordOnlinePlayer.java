@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 15.07.19 11:31
+ * @since 24.01.20, 21:13
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -32,6 +32,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.ServerKickEvent;
 
 import java.util.UUID;
 
@@ -106,7 +107,6 @@ public class LocalBungeeCordOnlinePlayer implements OnlineNetworkPlayer {
 
     @Override
     public void kickToFallback(String message) {
-        this.player.getServer().disconnect(new TextComponent(message));
     }
 
     @Override

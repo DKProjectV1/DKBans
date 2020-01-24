@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 21:11
+ * @since 24.01.20, 21:13
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -44,15 +44,24 @@ public class IpUnbanCommand extends NetworkCommand {
             sender.sendMessage(Messages.IPUNBAN_HELP.replace("[prefix]",getPrefix()));
             return;
         }
-        if(GeneralUtil.isIP4Address(args[0]) && BanSystem.getInstance().getPlayerManager().isIPBanned(args[0])) {
-            BanSystem.getInstance().getPlayerManager().unbanIp(args[0]);
-            sender.sendMessage(Messages.IPUNBAN_SUCCESS.replace("[ip]",args[0]).replace("[prefix]",getPrefix()));
-            return;
+        if(GeneralUtil.isIP4Address(args[0])) {
+            if(BanSystem.getInstance().getPlayerManager().isIPBanned(args[0])){
+                BanSystem.getInstance().getPlayerManager().unbanIp(args[0]);
+                sender.sendMessage(Messages.IPUNBAN_SUCCESS.replace("[ip]",args[0]).replace("[prefix]",getPrefix()));
+                return;
+            }else{
+                sender.sendMessage(Messages.IPUNBAN_NOT_BANNED.replace("[ip]",args[0]).replace("[prefix]",getPrefix()));
+            }
         } else {
             NetworkPlayer networkPlayer = BanSystem.getInstance().getPlayerManager().searchPlayer(args[0]);
             if(networkPlayer != null) {
-                BanSystem.getInstance().getPlayerManager().unbanIp(args[0]);
-                sender.sendMessage(Messages.IPUNBAN_SUCCESS.replace("[ip]",args[0]).replace("[prefix]",getPrefix()));
+                String ip = networkPlayer.getIP();
+                if(BanSystem.getInstance().getPlayerManager().isIPBanned(ip)){
+                    BanSystem.getInstance().getPlayerManager().unbanIp(ip);
+                    sender.sendMessage(Messages.IPUNBAN_SUCCESS.replace("[ip]",ip).replace("[prefix]",getPrefix()));
+                }else{
+                    sender.sendMessage(Messages.IPUNBAN_NOT_BANNED.replace("[ip]",ip).replace("[prefix]",getPrefix()));
+                }
                 return;
             }
         }

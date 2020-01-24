@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 06.11.19, 20:31
+ * @since 24.01.20, 21:13
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -66,7 +66,7 @@ public class BungeeCordCommandManager implements NetworkCommandManager {
         private NetworkCommand command;
 
         public BungeeCordNetworkCommand(NetworkCommand command) {
-            super(command.getName(),null,command.getAliases().toArray(new String[command.getAliases().size()]));
+            super(command.getName(),null,command.getAliases().toArray(new String[0]));
             this.command = command;
         }
         @Override

@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 08.11.19, 22:06
+ * @since 24.01.20, 21:13
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -40,7 +40,7 @@ public class NotifyCommand extends NetworkCommand {
         if(args.length == 1) {
             NetworkPlayer player = sender.getAsNetworkPlayer();
             if(player == null) {
-                sender.sendMessage(Messages.NOTIFY_HELP.replace("prefix", getPrefix()));
+                sender.sendMessage(Messages.NOTIFY_HELP.replace("[prefix]", getPrefix()));
                 return;
             }
             if(args[0].equalsIgnoreCase("on")) {
@@ -54,7 +54,7 @@ public class NotifyCommand extends NetworkCommand {
                 return;
             }
         }
-        sender.sendMessage(Messages.NOTIFY_HELP.replace("prefix", getPrefix()));
+        sender.sendMessage(Messages.NOTIFY_HELP.replace("[prefix]", getPrefix()));
     }
 
     @Override

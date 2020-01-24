@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+  ~ (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
   ~
   ~ @author Davide Wietlisbach
-  ~ @since 28.12.19, 15:05
+  ~ @since 24.01.20, 21:13
   ~ @Website https://github.com/DevKrieger/DKBans
   ~
   ~ The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -25,7 +25,7 @@
     <parent>
         <artifactId>DKBans</artifactId>
         <groupId>ch.dkrieger.bansystem</groupId>
-        <version>2.2.7</version>
+        <version>2.2.8</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -64,7 +64,7 @@
         <dependency>
             <groupId>ch.dkrieger.bansystem</groupId>
             <artifactId>bansystem-lib</artifactId>
-            <version>2.2.7</version>
+            <version>2.2.8</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

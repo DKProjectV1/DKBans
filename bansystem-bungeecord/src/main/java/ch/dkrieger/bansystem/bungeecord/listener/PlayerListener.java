@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 28.12.19, 15:05
+ * @since 24.01.20, 21:13
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -295,13 +295,6 @@ public class PlayerListener implements Listener {
                             ,option -> event.getSuggestions().add(option.getOption()));
                 }
             }
-        }
-    }
-
-    @EventHandler
-    public void onTabComplete(TabCompleteEvent event){
-        if(BanSystem.getInstance().getConfig().tabCompleteBlockEnabled && event.getSender() instanceof ProxiedPlayer){
-            this.lastCursors.put(((ProxiedPlayer) event.getSender()).getUniqueId(),event.getCursor());
         }
     }
 

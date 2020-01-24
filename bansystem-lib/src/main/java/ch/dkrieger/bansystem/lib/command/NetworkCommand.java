@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 24.01.20, 21:13
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -30,17 +30,21 @@ public abstract class NetworkCommand {
     private List<String> aliases;
 
     public NetworkCommand(String name) {
-        this(name,"none");
+        this(name,"unknown");
     }
+
     public NetworkCommand(String name, String description) {
         this(name,description,null);
     }
+
     public NetworkCommand(String name, String description, String permission) {
         this(name,description,permission,name);
     }
+
     public NetworkCommand(String name, String description, String permission, String usage, String... aliases) {
         this(name, description, permission, usage, Arrays.asList(aliases));
     }
+
     public NetworkCommand(String name, String description, String permission, String usage, List<String> aliases) {
         this.name = name;
         this.description = description;

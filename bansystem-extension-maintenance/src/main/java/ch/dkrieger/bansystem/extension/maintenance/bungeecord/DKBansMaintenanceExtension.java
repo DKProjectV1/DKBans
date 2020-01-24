@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 15.07.19 11:31
+ * @since 24.01.20, 21:13
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -67,10 +67,12 @@ public class DKBansMaintenanceExtension extends Plugin implements Listener {
         BanSystem.getInstance().getCommandManager().registerCommand(new MaintenanceCommand(config,maintenance));
         ProxyServer.getInstance().getScheduler().schedule(this,this::buildResponse,0L,5L, TimeUnit.SECONDS);
     }
+
     @EventHandler(priority=90)
     public void onPing(ProxyPingEvent event){
         if(maintenance.isEnabled()) event.setResponse(pingResponse);
     }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLogin(LoginEvent event){
         if(maintenance.isEnabled()){
