@@ -51,6 +51,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.ServerKickEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -192,7 +193,25 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
             }else if(event.getMessage().equalsIgnoreCase("fallbackKick")) {
                 ProxiedPlayer player = ProxyServer.getInstance().getPlayer(event.getData().get("uuid",UUID.class));
                 if(player != null) {
-                    player.getServer().disconnect(new TextComponent(event.getData().getString("message")));
+                    ServerInfo next = null;
+                    Queue<String> serverJoinQueue = new LinkedList<>(player.getPendingConnection().getListener().getServerPriority());
+                    while (!serverJoinQueue.isEmpty() )
+                    {
+                        ServerInfo candidate = ProxyServer.getInstance().getServerInfo( serverJoinQueue.remove());
+                        if (!Objects.equals(player.getServer().getInfo(),candidate) ) {
+                            next = candidate;
+                            break;
+                        }
+                    }
+                    ServerKickEvent serverKickEvent = new ServerKickEvent(player, player.getServer().getInfo(),
+                            TextComponent.fromLegacyText(Messages.FALLBACK_KICK.replace("[prefix]", Messages.PREFIX_BAN)
+                                    .replace("[message]", event.getData().getString("message"))),
+                            next,
+                            ServerKickEvent.State.UNKNOWN);
+                    if(!serverKickEvent.isCancelled() && serverKickEvent.getCancelServer() != null) {
+                        player.connect(serverKickEvent.getCancelServer());
+                        player.sendMessage(serverKickEvent.getKickReasonComponent());
+                    }
                 }
             }else if(event.getMessage().equalsIgnoreCase("warn")){
                 ProxiedPlayer player = ProxyServer.getInstance().getPlayer(event.getData().get("uuid",UUID.class));

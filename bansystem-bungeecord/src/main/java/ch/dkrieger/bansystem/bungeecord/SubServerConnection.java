@@ -24,6 +24,7 @@ import ch.dkrieger.bansystem.bungeecord.event.ProxiedDKBansMessageReceiveEvent;
 import ch.dkrieger.bansystem.bungeecord.event.ProxiedDKBansSettingUpdateEvent;
 import ch.dkrieger.bansystem.lib.BanSystem;
 import ch.dkrieger.bansystem.lib.JoinMe;
+import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.broadcast.Broadcast;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayerUpdateCause;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
@@ -118,7 +119,14 @@ public class SubServerConnection implements Listener {
                     } else if(document.getString("action").equalsIgnoreCase("fallbackKick")) {
                         ProxiedPlayer player = ProxyServer.getInstance().getPlayer(document.getObject("uuid",UUID.class));
                         if(player != null) {
-                            player.getServer().disconnect(new TextComponent(document.getString("message")));
+                            for (String server : player.getPendingConnection().getListener().getServerPriority()) {
+                                ServerInfo serverInfo = ProxyServer.getInstance().getServerInfo(server);
+                                if(serverInfo.canAccess(player)) {
+                                    player.connect(serverInfo);
+                                    player.sendMessage(TextComponent.fromLegacyText(Messages.FALLBACK_KICK.replace("[prefix]", Messages.PREFIX_BAN)
+                                            .replace("[message]", document.getString("message"))));
+                                }
+                            }
                         }
                     }else ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedDKBansMessageReceiveEvent(document));
                 }catch (Exception exception){

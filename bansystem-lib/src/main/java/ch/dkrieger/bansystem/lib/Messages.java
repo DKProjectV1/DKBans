@@ -312,6 +312,7 @@ public class Messages {
 
     public static String FALLBACK_KICK_HELP;
     public static String FALLBACK_KICK_SUCCESS;
+    public static String FALLBACK_KICK;
 
     public Messages(String systemname) {
         SYSTEM_NAME = systemname;

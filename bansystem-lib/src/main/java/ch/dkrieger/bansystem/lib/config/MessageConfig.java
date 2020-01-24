@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 24.01.20, 21:13
+ * @since 08.11.19, 22:06
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -348,9 +348,8 @@ public class MessageConfig extends SimpleConfig{
         Messages.IPBAN_NOT_BANNED = addAndGetMessageValue("ipban.notbanned","[prefix]&7This ip is not banned.");
         Messages.IPBAN_ALREADY_BANNED = addAndGetMessageValue("ipban.alreadybanned","[prefix]&7This ip is already banned.");
 
-        Messages.IPUNBAN_HELP = addAndGetMessageValue("ipunban.help","[prefix]&cUsage&8: &7/ipunban <ip/player>");
+        Messages.IPUNBAN_HELP = addAndGetMessageValue("ipunban.help","[prefix]&cUsage&8: &7/ipunban <ip>");
         Messages.IPUNBAN_SUCCESS = addAndGetMessageValue("ipunban.success","[prefix]&7The ip &c[ip] &7was unbanned.");
-        Messages.IPUNBAN_NOT_BANNED = addAndGetMessageValue("ipunban.notBanned","[prefix]&cThe ip &c[ip] &cis not banned.");
 
         Messages.CHATLOG_HELP = addAndGetMessageValue("chatlog.help","[prefix]&cUsage&8: &7/chatlog player/server <player/server>");
         Messages.CHATLOG_NOTFOUND = addAndGetMessageValue("chatlog.notfound","[prefix]&cThe chatlog was not found.");
@@ -376,5 +375,6 @@ public class MessageConfig extends SimpleConfig{
 
         Messages.FALLBACK_KICK_HELP = addAndGetMessageValue("fallback.kick.help", "[prefix]&6Usage&8: &7 /fallbackkick <player> [message]");
         Messages.FALLBACK_KICK_SUCCESS = addAndGetMessageValue("fallback.kick.success", "[prefix]&cYou have kicked to the fallback server.");
+        Messages.FALLBACK_KICK = addAndGetMessageValue("fallback.kick", "[prefix]&7[message]");
     }
 }

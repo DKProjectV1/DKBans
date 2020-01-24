@@ -47,8 +47,8 @@ public class FallbackKickCommand extends NetworkCommand {
             return;
         }
         String message = args.length >= 2 ? getFallbackKickMessage(args) : null;
-        player.kickToFallback(message);
         sender.sendMessage(Messages.FALLBACK_KICK_SUCCESS.replace("[prefix]", getPrefix()));
+        player.kickToFallback(message);
     }
 
     @Override

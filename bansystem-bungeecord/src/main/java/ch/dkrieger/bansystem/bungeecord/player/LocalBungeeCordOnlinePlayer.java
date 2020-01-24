@@ -22,6 +22,7 @@ package ch.dkrieger.bansystem.bungeecord.player;
 
 import ch.dkrieger.bansystem.bungeecord.BungeeCordBanSystemBootstrap;
 import ch.dkrieger.bansystem.lib.BanSystem;
+import ch.dkrieger.bansystem.lib.Messages;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.OnlineNetworkPlayer;
 import ch.dkrieger.bansystem.lib.player.history.BanType;
@@ -34,6 +35,9 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerKickEvent;
 
+import java.util.LinkedList;
+import java.util.Objects;
+import java.util.Queue;
 import java.util.UUID;
 
 public class LocalBungeeCordOnlinePlayer implements OnlineNetworkPlayer {
@@ -107,6 +111,25 @@ public class LocalBungeeCordOnlinePlayer implements OnlineNetworkPlayer {
 
     @Override
     public void kickToFallback(String message) {
+        ServerInfo next = null;
+        Queue<String> serverJoinQueue = new LinkedList<>(player.getPendingConnection().getListener().getServerPriority());
+        while (!serverJoinQueue.isEmpty() )
+        {
+            ServerInfo candidate = ProxyServer.getInstance().getServerInfo( serverJoinQueue.remove());
+            if (!Objects.equals(player.getServer().getInfo(),candidate) ) {
+                next = candidate;
+                break;
+            }
+        }
+        ServerKickEvent serverKickEvent = new ServerKickEvent(player, player.getServer().getInfo(),
+                TextComponent.fromLegacyText(Messages.FALLBACK_KICK.replace("[prefix]", Messages.PREFIX_BAN)
+                        .replace("[message]", message)),
+                next,
+                ServerKickEvent.State.UNKNOWN);
+        if(!serverKickEvent.isCancelled() && serverKickEvent.getCancelServer() != null) {
+            this.player.connect(serverKickEvent.getCancelServer());
+            this.player.sendMessage(serverKickEvent.getKickReasonComponent());
+        }
     }
 
     @Override
