@@ -203,9 +203,11 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
                             break;
                         }
                     }
+                    String message = event.getData().getString("message");
+                    if(message == null) message = "none";
                     ServerKickEvent serverKickEvent = new ServerKickEvent(player, player.getServer().getInfo(),
                             TextComponent.fromLegacyText(Messages.FALLBACK_KICK.replace("[prefix]", Messages.PREFIX_BAN)
-                                    .replace("[message]", event.getData().getString("message"))),
+                                    .replace("[message]", message)),
                             next,
                             ServerKickEvent.State.UNKNOWN);
                     if(!serverKickEvent.isCancelled() && serverKickEvent.getCancelServer() != null) {
