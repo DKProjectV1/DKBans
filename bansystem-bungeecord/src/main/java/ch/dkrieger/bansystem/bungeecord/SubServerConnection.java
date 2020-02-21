@@ -119,12 +119,14 @@ public class SubServerConnection implements Listener {
                     } else if(document.getString("action").equalsIgnoreCase("fallbackKick")) {
                         ProxiedPlayer player = ProxyServer.getInstance().getPlayer(document.getObject("uuid",UUID.class));
                         if(player != null) {
+                            String message = document.getString("message");
+                            if(message == null) message = "none";
                             for (String server : player.getPendingConnection().getListener().getServerPriority()) {
                                 ServerInfo serverInfo = ProxyServer.getInstance().getServerInfo(server);
                                 if(serverInfo.canAccess(player)) {
                                     player.connect(serverInfo);
                                     player.sendMessage(TextComponent.fromLegacyText(Messages.FALLBACK_KICK.replace("[prefix]", Messages.PREFIX_BAN)
-                                            .replace("[message]", document.getString("message"))));
+                                            .replace("[message]", message)));
                                 }
                             }
                         }

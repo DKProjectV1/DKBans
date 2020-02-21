@@ -121,6 +121,7 @@ public class LocalBungeeCordOnlinePlayer implements OnlineNetworkPlayer {
                 break;
             }
         }
+        if(message == null) message = "none";
         ServerKickEvent serverKickEvent = new ServerKickEvent(player, player.getServer().getInfo(),
                 TextComponent.fromLegacyText(Messages.FALLBACK_KICK.replace("[prefix]", Messages.PREFIX_BAN)
                         .replace("[message]", message)),
