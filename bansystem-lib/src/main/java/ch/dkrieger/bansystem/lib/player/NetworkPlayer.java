@@ -2,7 +2,7 @@
  * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 24.01.20, 21:13
+ * @since 21.02.20, 20:34
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -915,10 +915,11 @@ public class NetworkPlayer {
     }
 
     public void denyReports(){
+        final UUID staffId = getReportStaff();
         deleteReportsSilent();
         update(NetworkPlayerUpdateCause.REPORTDENY,new Document().append("reports",this.reports));
         BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(() ->{
-            NetworkPlayer staff = BanSystem.getInstance().getPlayerManager().getPlayer(getReportStaff());
+            NetworkPlayer staff = BanSystem.getInstance().getPlayerManager().getPlayer(staffId);
             if(staff != null) staff.setWatchingReportedPlayer(null);
         });
     }

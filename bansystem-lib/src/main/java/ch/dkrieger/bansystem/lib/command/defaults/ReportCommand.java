@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 26.09.19, 20:38
+ * @since 21.02.20, 20:34
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -70,7 +70,7 @@ public class ReportCommand extends NetworkCommand {
             }else if(args[0].equalsIgnoreCase("list")){
                 sender.executeCommand("/reports");
                 return;
-            }else if(args[0].equalsIgnoreCase("deny")){
+            }else if(args[0].equalsIgnoreCase("deny") && args.length >= 2){
                 NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[1]);
                 if(player == null || !(sender.getUUID().equals(player.getReportStaff()))){
                     sender.sendMessage(Messages.REPORT_NOTFOUND
@@ -83,7 +83,7 @@ public class ReportCommand extends NetworkCommand {
                         .replace("[prefix]",getPrefix()));
                 player.denyReports();
                 return;
-            }else if(args[0].equalsIgnoreCase("accept")){
+            }else if(args[0].equalsIgnoreCase("accept") && args.length >= 2){
                 NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[1]);
                 if(player == null || !(sender.getUUID().equals(player.getReportStaff()))){
                     sender.sendMessage(Messages.REPORT_NOTFOUND
@@ -95,7 +95,7 @@ public class ReportCommand extends NetworkCommand {
                 ReportReason reason = BanSystem.getInstance().getReasonProvider().getReportReason(report.getReasonID());
                 sender.executeCommand("ban "+report.getUUID()+" "+reason.getForBan());
                 return;
-            }else if(args[0].equalsIgnoreCase("other")){
+            }else if(args[0].equalsIgnoreCase("other") && args.length >= 2){
                 NetworkPlayer player = BanSystem.getInstance().getPlayerManager().searchPlayer(args[1]);
                 if(player == null || !(sender.getUUID().equals(player.getReportStaff()))){
                     sender.sendMessage(Messages.REPORT_NOTFOUND
@@ -120,7 +120,7 @@ public class ReportCommand extends NetworkCommand {
                     sender.sendMessage(component);
                 }
                 return;
-            }else if(args[0].equalsIgnoreCase("jump") || args[0].equalsIgnoreCase("goto") || args[0].equalsIgnoreCase("take")) {
+            }else if(args[0].equalsIgnoreCase("jump") || args[0].equalsIgnoreCase("goto") || args[0].equalsIgnoreCase("take") && args.length >= 2) {
                 if(sender.getAsNetworkPlayer().getWatchingReportedPlayer() != null){
                     sender.sendMessage(Messages.REPORT_PROCESS_ALREADY.replace("[prefix]",getPrefix()));
                     return;

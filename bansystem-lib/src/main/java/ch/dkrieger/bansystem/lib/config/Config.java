@@ -2,7 +2,7 @@
  * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 24.01.20, 22:17
+ * @since 21.02.20, 20:34
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -175,8 +175,11 @@ public class Config extends SimpleConfig {
     }
     @Override
     public void onLoad() {
-        this.bungeecord = addAndGetBooleanValue("bungeecord",false);
-        this.storageType = StorageType.parse(addAndGetStringValue("storage.type",StorageType.SQLITE.toString()));
+        this.bungeecord = addAndGetBooleanValue("bungeecord",platform.getPlatformName().equals("bungeecord"));
+
+        StorageType defaultStorage = platform.getPlatformName().equals("bungeecord") ? StorageType.JSON : StorageType.SQLITE;
+
+        this.storageType = StorageType.parse(addAndGetStringValue("storage.type",defaultStorage.toString()));
         this.storageFolder = new File(addAndGetStringValue("storage.folder",platform.getFolder().toString()+"/data/"));
         this.storageHost = addAndGetStringValue("storage.host","localhost");
         this.storagePort = addAndGetStringValue("storage.port","3306");

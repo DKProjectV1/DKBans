@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 10.08.19, 21:12
+ * @since 21.02.20, 20:34
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -45,28 +45,42 @@ public class TeamChatCommand extends NetworkCommand {
                     .replace("[prefix]",getPrefix()));
             return;
         }
-        NetworkPlayer player = sender.getAsNetworkPlayer();
-        if(args[0].equalsIgnoreCase("logout")) changeLogin(sender,player,false);
-        else if(args[0].equalsIgnoreCase("login")) changeLogin(sender,player,true);
-        else if(args[0].equalsIgnoreCase("toggle")) changeLogin(sender,player,!player.isTeamChatLoggedIn());
-        else{
-            if(!sender.hasPermission("dkbans.teamchat.send") && ! sender.hasPermission("dkbans.*")){
-                sender.sendMessage(Messages.NOPERMISSIONS.replace("[prefix]",getPrefix()));
-                return;
+        if(sender instanceof NetworkPlayer){
+            NetworkPlayer player = sender.getAsNetworkPlayer();
+            if(args[0].equalsIgnoreCase("logout")) changeLogin(sender,player,false);
+            else if(args[0].equalsIgnoreCase("login")) changeLogin(sender,player,true);
+            else if(args[0].equalsIgnoreCase("toggle")) changeLogin(sender,player,!player.isTeamChatLoggedIn());
+            else{
+                if(!sender.hasPermission("dkbans.teamchat.send") && ! sender.hasPermission("dkbans.*")){
+                    sender.sendMessage(Messages.NOPERMISSIONS.replace("[prefix]",getPrefix()));
+                    return;
+                }
+                if(!player.isTeamChatLoggedIn()){
+                    sender.sendMessage(Messages.STAFF_STATUS_NOT
+                            .replace("[status]",Messages.STAFF_STATUS_LOGIN)
+                            .replace("[prefix]",getPrefix()));
+                    return;
+                }
+                StringBuilder message = new StringBuilder();
+                for (String arg : args) message.append(arg).append(" ").append(Messages.TEAMCHAT_MESSAGE_COLOR);
+                BanSystem.getInstance().getNetwork().sendTeamMessage(Messages.TEAMCHAT_MESSAGE_FORMAT
+                        .replace("[server]",sender.getServer())
+                        .replace("[prefix]",getPrefix())
+                        .replace("[player]",player.getColoredName())
+                        .replace("[message]", (Messages.TEAMCHAT_MESSAGE_COLOR+message.toString())),true);
             }
-            if(!player.isTeamChatLoggedIn()){
-                sender.sendMessage(Messages.STAFF_STATUS_NOT
-                        .replace("[status]",Messages.STAFF_STATUS_LOGIN)
-                        .replace("[prefix]",getPrefix()));
-                return;
-            }
+        }else{
             StringBuilder message = new StringBuilder();
-            for(int i = 0; i < args.length;i++)  message.append(args[i]).append(" ").append(Messages.TEAMCHAT_MESSAGE_COLOR);
+            for (String arg : args) message.append(arg).append(" ").append(Messages.TEAMCHAT_MESSAGE_COLOR);
             BanSystem.getInstance().getNetwork().sendTeamMessage(Messages.TEAMCHAT_MESSAGE_FORMAT
                     .replace("[server]",sender.getServer())
                     .replace("[prefix]",getPrefix())
-                    .replace("[player]",player.getColoredName())
+                    .replace("[player]","§4Console")
                     .replace("[message]", (Messages.TEAMCHAT_MESSAGE_COLOR+message.toString())),true);
+
+            StringBuilder rawMessage = new StringBuilder();
+            for (String arg : args) rawMessage.append(arg).append(" ");
+            System.out.println("TeamChat: "+rawMessage.toString());
         }
     }
     private void changeLogin(NetworkCommandSender sender, NetworkPlayer player, boolean login){

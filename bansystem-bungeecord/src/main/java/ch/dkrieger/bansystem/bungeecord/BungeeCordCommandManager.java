@@ -2,7 +2,7 @@
  * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 24.01.20, 21:13
+ * @since 21.02.20, 20:34
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -61,7 +61,7 @@ public class BungeeCordCommandManager implements NetworkCommandManager {
                 ,new BungeeCordNetworkCommand(command));
     }
 
-    private class BungeeCordNetworkCommand extends Command implements TabExecutor {
+    private static class BungeeCordNetworkCommand extends Command implements TabExecutor {
 
         private NetworkCommand command;
 
@@ -91,7 +91,8 @@ public class BungeeCordCommandManager implements NetworkCommandManager {
             return new LinkedHashSet<>();
         }
     }
-    private class BungeeCordNetworkCommandSender implements NetworkCommandSender {
+
+    private static class BungeeCordNetworkCommandSender implements NetworkCommandSender {
 
         private CommandSender sender;
 
@@ -105,7 +106,7 @@ public class BungeeCordCommandManager implements NetworkCommandManager {
         @Override
         public String getServer() {
            if(sender instanceof ProxiedPlayer) return ((ProxiedPlayer) sender).getServer().getInfo().getName();
-           return "";
+           return "Global";
         }
 
         @Override
