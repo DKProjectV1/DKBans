@@ -27,6 +27,8 @@ import ch.dkrieger.bansystem.lib.command.NetworkCommandSender;
 import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
 
 import java.text.ParseException;
 import java.util.List;
@@ -85,7 +87,10 @@ public class MaintenanceCommand extends NetworkCommand {
                     String reason = "";
                     for(int i = 1;i<args.length;i++) reason+=args[i]+" ";
                     maintenance.setReason(reason);
-                    sender.sendMessage(config.commandReason.replace("[reason]",reason).replace("[prefix]",getPrefix()));
+                    sender.sendMessage(new TextComponent(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', config.commandReason)
+                            .replace("[reason]",reason)
+                            .replace("[prefix]",getPrefix()))));
+
                     save();
                     return;
                 }else if(args[0].equalsIgnoreCase("add")){
