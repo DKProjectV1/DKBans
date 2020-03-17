@@ -61,7 +61,7 @@ public class TeamChatCommand extends NetworkCommand {
             BanSystem.getInstance().getNetwork().sendTeamMessage(Messages.TEAMCHAT_MESSAGE_FORMAT
                     .replace("[prefix]",getPrefix())
                     .replace("[player]",player.getColoredName())
-                    .replace("[message]",message),true);
+                    .replace("[message]",message.replace('§', '&')),true);
         }
     }
     private void changeLogin(NetworkCommandSender sender, NetworkPlayer player, boolean login){

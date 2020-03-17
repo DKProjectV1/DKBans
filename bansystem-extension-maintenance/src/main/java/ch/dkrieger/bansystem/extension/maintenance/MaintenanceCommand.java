@@ -135,7 +135,7 @@ public class MaintenanceCommand extends NetworkCommand {
                             maintenance.setEnabled(true);
                             maintenance.setTimeOut(BanSystem.getInstance().getConfig().dateFormat.parse(args[1]+" "+args[2]).getTime());
                             sender.sendMessage(config.commandReasonAndTimeOut
-                                    .replace("[reason]",maintenance.getReason())
+                                    .replace("[reason]", maintenance.getReason().replace('§', '&'))
                                     .replace("[timeOut]",BanSystem.getInstance().getConfig().dateFormat.format(maintenance.getTimeOut()))
                                     .replace("[prefix]",getPrefix()));
                             save();
