@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 08.11.19, 22:06
+ * @since 08.05.20, 19:58
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -478,9 +478,12 @@ public class SQLDKBansStorage implements DKBansStorage {
     public void createReport(Report report) {
         reports.insert().insert("uuid").insert("reporter").insert("staff").insert("reason").insert("message")
                 .insert("reportedServer").insert("reasonID").insert("time")
-                .value(report.getUUID().toString()).value(report.getReporterUUID().toString())
-                .value(report.getStaff()==null?"":report.getStaff().toString()).value(report.getReason()).value(report.getMessage())
-                .value(report.getReportedServer()).value(report.getReasonID()).value(report.getTimeStamp()).execute();
+                .value(report.getUUID().toString())
+                .value(report.getReporterUUID() == null ? "" : report.getReporterUUID().toString())
+                .value(report.getStaff() == null ? "" :report.getStaff().toString())
+                .value(report.getReason()).value(report.getMessage())
+                .value(report.getReportedServer()).value(report.getReasonID())
+                .value(report.getTimeStamp()).execute();
     }
 
     @Override

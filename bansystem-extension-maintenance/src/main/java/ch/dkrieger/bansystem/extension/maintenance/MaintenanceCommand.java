@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 13.01.19 12:27
+ * @since 08.05.20, 19:58
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -112,7 +112,6 @@ public class MaintenanceCommand extends NetworkCommand {
                 if(args.length >=3){
                     if(args[0].equalsIgnoreCase("setEnd")){
                         try {
-                            System.out.println(args[1]);
                             maintenance.setTimeOut(BanSystem.getInstance().getConfig().dateFormat.parse(args[1]+" "+args[2]).getTime());
                             sender.sendMessage(config.commandTimeOut
                                     .replace("[timeOut]",BanSystem.getInstance().getConfig().dateFormat.format(maintenance.getTimeOut()))

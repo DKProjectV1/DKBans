@@ -2,7 +2,7 @@
  * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 24.01.20, 22:17
+ * @since 08.05.20, 19:58
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -79,8 +79,8 @@ public class MessageConfig extends SimpleConfig{
         Messages.PLAYER_ALREADY_MUTED = addAndGetMessageValue("player.already.muted","[prefix]&8[player] &cis already muted.");
         Messages.PLAYER_ALREADY_REPORTED = addAndGetMessageValue("player.already.reported","[prefix]&cYou have &8[player] &calready reported.");
         Messages.PLAYER_HAS_MOREBANS_HEADER = addAndGetMessageValue("player.has.morebans.header","[prefix]&8[player] &7has a chat and network ban:");
-        Messages.PLAYER_HAS_MOREBANS_NETWORK = addAndGetMessageValue("player.morebans.network","&8» &cBan &8- &4[reason] &8| &7[remaining-short]");
-        Messages.PLAYER_HAS_MOREBANS_CHAT = addAndGetMessageValue("player.has.morebans.chat","&8» &6Mute &8- &4[reason] &8| &7[remaining-short]");
+        Messages.PLAYER_HAS_MOREBANS_NETWORK = addAndGetMessageValue("player.morebans.network","&8» &cBan &8- &4[reason] &8| &7[remaining-short] &8(&7Click&8)");
+        Messages.PLAYER_HAS_MOREBANS_CHAT = addAndGetMessageValue("player.has.morebans.chat","&8» &6Mute &8- &4[reason] &8| &7[remaining-short] &8(&7Click&8)");
         Messages.PLAYER_UNMUTED = addAndGetMessageValue("player.unmuted","[prefix]&7The player &8[player] &7was unmuted.");
         Messages.PLAYER_UNBANNED = addAndGetMessageValue("player.unbanned","[prefix]&7The player &8[player] &7was unbanned.");
 

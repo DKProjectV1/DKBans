@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 09.06.19 12:15
+ * @since 08.05.20, 19:58
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -144,7 +144,9 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
             player = new CloudNetV3OnlinePlayer(event.getNetworkConnectionInfo().getUniqueId(),event.getNetworkConnectionInfo().getName()
                     ,event.getNetworkServiceInfo().getServerName(), Messages.UNKNOWN);
             this.externalPlayers.put(player.getUUID(),player);
-        }else player.setServer(event.getNetworkServiceInfo().getServerName());
+        }else{
+            player.setServer(event.getNetworkServiceInfo().getServerName());
+        }
         ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedOnlineNetworkPlayerUpdateEvent(player.getUUID(),System.currentTimeMillis(),false));
     }
     @EventHandler

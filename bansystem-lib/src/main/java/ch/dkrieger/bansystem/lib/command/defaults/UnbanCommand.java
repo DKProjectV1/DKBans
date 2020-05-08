@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 08.05.20, 19:58
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -83,17 +83,23 @@ public class UnbanCommand extends NetworkCommand {
         }
         String message = "";
         for(int i = messageStart;i < args.length;i++) message += args[i]+" ";
-        if(type == null && player.isBanned(BanType.NETWORK) && player.isBanned(BanType.CHAT)){
-            sender.sendMessage(Messages.PLAYER_HAS_MOREBANS_HEADER
-                    .replace("[player]",player.getColoredName()).replace("[prefix]",getPrefix()));
-            TextComponent network = new TextComponent(player.getBan(BanType.NETWORK).replace(Messages.PLAYER_HAS_MOREBANS_NETWORK,false));
-            network.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/unban "+args[0]+" NETWORK "+message));
-            TextComponent chat = new TextComponent(player.getBan(BanType.CHAT).replace(Messages.PLAYER_HAS_MOREBANS_NETWORK,false));
-            chat.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/unban "+args[0]+" CHAT "+message));
-            sender.sendMessage(network);
-            sender.sendMessage(chat);
-            return;
-        }else type = player.isBanned(BanType.NETWORK)?BanType.NETWORK:BanType.CHAT;
+
+        if(type == null){
+            if(player.isBanned(BanType.NETWORK) && player.isBanned(BanType.CHAT)){
+                sender.sendMessage(Messages.PLAYER_HAS_MOREBANS_HEADER
+                        .replace("[player]",player.getColoredName()).replace("[prefix]",getPrefix()));
+                TextComponent network = new TextComponent(player.getBan(BanType.NETWORK).replace(Messages.PLAYER_HAS_MOREBANS_NETWORK,false));
+                network.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/unban "+args[0]+" NETWORK "+message));
+                TextComponent chat = new TextComponent(player.getBan(BanType.CHAT).replace(Messages.PLAYER_HAS_MOREBANS_CHAT,false));
+                chat.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/unban "+args[0]+" CHAT "+message));
+                sender.sendMessage(network);
+                sender.sendMessage(chat);
+                return;
+            }else type = player.isBanned(BanType.NETWORK) ? BanType.NETWORK: BanType.CHAT;
+        }
+
+
+
         if(!player.isBanned(type)){
             sender.sendMessage(Messages.PLAYER_NOT_BANNED
                     .replace("[prefix]",getPrefix())
@@ -110,7 +116,7 @@ public class UnbanCommand extends NetworkCommand {
             }
         }
         if(this.unbanMode != ReasonMode.SELF){
-            if(reason.getBanType() != null && !type.equals(reason.getBanType())){
+            if(reason == null || (reason.getBanType() != null && !type.equals(reason.getBanType()))){
                 sender.sendMessage(Messages.UNBAN_NOTFOTHISTYPE.replace("[prefix]",getPrefix()));
                 return;
             }

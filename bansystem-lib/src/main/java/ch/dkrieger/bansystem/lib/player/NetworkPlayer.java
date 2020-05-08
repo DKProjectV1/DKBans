@@ -2,7 +2,7 @@
  * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 21.02.20, 20:34
+ * @since 08.05.20, 19:58
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -1023,17 +1023,22 @@ public class NetworkPlayer {
     public void setID(int id) {
         this.id = id;
     }
+
     @SuppressWarnings("Only for databse id creation")
     public void setHistory(History history) {
         this.history = history;
     }
+
     @SuppressWarnings("Only for databse id creation")
+
     public void setReports(List<Report> reports) {
         this.reports = reports;
     }
+
     public void setOnlineSessions(List<OnlineSession> sessions) {
         this.onlineSessions = sessions;
     }
+
     public void playerLogin(String name, String ip,int clientVersion, String clientLanguage, String proxy, String color ,boolean bypass){
         this.watchingReportedPlayer = null;
         this.reports.clear();
@@ -1053,6 +1058,7 @@ public class NetworkPlayer {
         deleteReportsSilent();
         update(NetworkPlayerUpdateCause.LOGIN);
     }
+
     public void playerLogout(String color ,boolean bypass,String lastServer,int messages){
         if(color != null) this.color = color;
         final UUID watching = this.watchingReportedPlayer;
@@ -1074,13 +1080,16 @@ public class NetworkPlayer {
         update(NetworkPlayerUpdateCause.LOGOUT,new Document().append("reports",reports).append("watchingReportedPlayer",watching));
         deleteReportsSilent();
     }
+
     public void updatePlayerStatsAsync(){
         BanSystem.getInstance().getPlatform().getTaskManager().runTaskAsync(this::updatePlayerStats);
     }
+
     public void updatePlayerStats(){
         BanSystem.getInstance().getStorage().updatePlayerStats(this.uuid,stats);
         update(NetworkPlayerUpdateCause.PLAYERSTATS);
     }
+
     public void saveProperties(){
         BanSystem.getInstance().getStorage().updatePlayerProperties(this.uuid,this.properties);
         update(NetworkPlayerUpdateCause.PROPERTIES);

@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 08.05.20, 19:58
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -35,8 +35,8 @@ public enum BanType {
     public static BanType parse(String parse){
         try{
             return valueOf(parse.toUpperCase());
-        }catch (Exception exception){}
-        return NETWORK;
+        }catch (Exception ignored){}
+        throw new IllegalArgumentException("Invalid ban type");
     }
     public static BanType parseNull(String parse){
         try{

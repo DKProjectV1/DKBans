@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 08.05.20, 19:58
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -52,15 +52,18 @@ public class Report {
     public UUID getUUID() {
         return uuid;
     }
+
     public UUID getStaff() {
         return staff;
     }
+
     public UUID getReporterUUID() {
         return reporter;
     }
     public String getReason() {
         return ChatColor.translateAlternateColorCodes('&',reason);
     }
+
     public String getRwaReason() {
         return reason;
     }
@@ -72,18 +75,23 @@ public class Report {
     public String getReportedServer() {
         return reportedServer;
     }
+
     public long getTimeStamp() {
         return timeStamp;
     }
+
     public int getReasonID() {
         return reasonID;
     }
+
     public NetworkPlayer getPlayer(){
         return BanSystem.getInstance().getPlayerManager().getPlayer(this.uuid);
     }
+
     public NetworkPlayer getReporter(){
         return BanSystem.getInstance().getPlayerManager().getPlayer(this.reporter);
     }
+
     public void setStaff(UUID staff){
         this.staff = staff;
     }

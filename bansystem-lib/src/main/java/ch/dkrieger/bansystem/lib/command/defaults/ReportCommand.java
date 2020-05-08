@@ -2,7 +2,7 @@
  * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 21.02.20, 20:34
+ * @since 08.05.20, 19:58
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -50,11 +50,17 @@ public class ReportCommand extends NetworkCommand {
 
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
+        NetworkPlayer networkSender = sender.getAsNetworkPlayer();
+        if(networkSender == null){
+            sender.sendMessage(Messages.PREFIX_REPORT+"&7This command can only be executed by a player");
+            return;
+        }
+
         if(args.length < 1){
             sendHelp(sender);
             return;
         }
-        NetworkPlayer networkSender = sender.getAsNetworkPlayer();
+
         if(sender.hasPermission("dkbans.report.receive")){
             if(args[0].equalsIgnoreCase("logout")){
                 changeLogin(sender,networkSender,false);

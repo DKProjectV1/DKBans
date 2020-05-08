@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 08.05.20, 19:58
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -269,7 +269,6 @@ public class JsonDKBansStorage implements DKBansStorage {
 
     @Override
     public void banIp(IPBan ipBan) {
-        System.out.println("ban ip");
         this.ipBans.add(ipBan);
     }
 

@@ -2,7 +2,7 @@
  * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 21.02.20, 20:34
+ * @since 08.05.20, 19:58
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -45,8 +45,8 @@ public class TeamChatCommand extends NetworkCommand {
                     .replace("[prefix]",getPrefix()));
             return;
         }
-        if(sender instanceof NetworkPlayer){
-            NetworkPlayer player = sender.getAsNetworkPlayer();
+        NetworkPlayer player = sender.getAsNetworkPlayer();
+        if(player != null){
             if(args[0].equalsIgnoreCase("logout")) changeLogin(sender,player,false);
             else if(args[0].equalsIgnoreCase("login")) changeLogin(sender,player,true);
             else if(args[0].equalsIgnoreCase("toggle")) changeLogin(sender,player,!player.isTeamChatLoggedIn());
