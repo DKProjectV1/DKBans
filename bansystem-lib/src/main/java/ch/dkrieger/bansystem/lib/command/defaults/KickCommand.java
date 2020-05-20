@@ -43,6 +43,12 @@ public class KickCommand extends NetworkCommand {
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
+        if(!sender.hasPermission(reason.getPermission())&& !sender.hasPermission("dkbans.*")){
+            sender.sendMessage(Messages.REASON_NO_PERMISSION
+                    .replace("[prefix]",getPrefix())
+                    .replace("[reason]",reason.getDisplay()));
+            return;
+        }
         if(args.length < 2){
             sendReasons(sender);
             return;
@@ -69,12 +75,6 @@ public class KickCommand extends NetworkCommand {
             reason = BanSystem.getInstance().getReasonProvider().searchKickReason(args[1]);
             if(reason == null){
                 sendReasons(sender);
-                return;
-            }
-            if(!sender.hasPermission(reason.getPermission())&& !sender.hasPermission("dkbans.*")){
-                sender.sendMessage(Messages.REASON_NO_PERMISSION
-                        .replace("[prefix]",getPrefix())
-                        .replace("[reason]",reason.getDisplay()));
                 return;
             }
         }
