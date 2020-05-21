@@ -41,7 +41,7 @@ public class MuteCommand extends NetworkCommand {
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
         if(BanSystem.getInstance().getConfig().banMode == BanMode.SELF){
-            if(!sender.hasPermission(this.permission)&& !sender.hasPermission("dkbans.*")){
+            if(!sender.hasPermission("dkbans.ban")&& !sender.hasPermission("dkbans.*")){
                 sender.sendMessage(Messages.REASON_NO_PERMISSION
                         .replace("[prefix]",getPrefix())
                         .replace("[reason]",reason.getDisplay()));
