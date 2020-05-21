@@ -40,12 +40,6 @@ public class TempmuteCommand extends NetworkCommand {
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
-        if(!sender.hasPermission(reason.getPermission())&& !sender.hasPermission("dkbans.*")){
-            sender.sendMessage(Messages.REASON_NO_PERMISSION
-                    .replace("[prefix]",getPrefix())
-                    .replace("[reason]",reason.getDisplay()));
-            return;
-        }
         if(args.length < 3 || !(GeneralUtil.isNumber(args[1]))){
             sender.sendMessage(Messages.TEMPMUTE_HELP.replace("[prefix]",getPrefix()));
             return;
