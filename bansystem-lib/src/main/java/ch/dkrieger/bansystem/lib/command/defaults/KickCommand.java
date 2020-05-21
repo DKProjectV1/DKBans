@@ -43,7 +43,7 @@ public class KickCommand extends NetworkCommand {
     }
     @Override
     public void onExecute(NetworkCommandSender sender, String[] args) {
-        if(!sender.hasPermission(this.permission)&& !sender.hasPermission("dkbans.*")){
+        if(!sender.hasPermission("dkbans.kick")&& !sender.hasPermission("dkbans.*")){
             sender.sendMessage(Messages.REASON_NO_PERMISSION
                     .replace("[prefix]",getPrefix())
                     .replace("[reason]",reason.getDisplay()));
