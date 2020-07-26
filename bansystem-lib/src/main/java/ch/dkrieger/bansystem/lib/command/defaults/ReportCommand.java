@@ -2,7 +2,7 @@
  * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 08.05.20, 19:58
+ * @since 26.07.20, 22:22
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -113,17 +113,18 @@ public class ReportCommand extends NetworkCommand {
                         .replace("[player]",player.getColoredName())
                         .replace("[prefix]",getPrefix()));
                 for(BanReason reason : BanSystem.getInstance().getReasonProvider().getBanReasons()){
-                    if(!sender.hasPermission(reason.getPermission())) continue;
-                    TextComponent component = new TextComponent(Messages.BAN_HELP_REASON
-                            .replace("[prefix]",getPrefix())
-                            .replace("[id]",""+reason.getID())
-                            .replace("[name]",reason.getDisplay())
-                            .replace("[historyType]",reason.getHistoryType().getDisplay())
-                            .replace("[banType]",reason.getBanType().getDisplay())
-                            .replace("[reason]",reason.getDisplay())
-                            .replace("[points]",""+reason.getPoints()));
-                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/ban "+player.getUUID()+" "+reason.getID()));
-                    sender.sendMessage(component);
+                    if(!reason.isHidden() && !sender.hasPermission(reason.getPermission())){
+                        TextComponent component = new TextComponent(Messages.BAN_HELP_REASON
+                                .replace("[prefix]",getPrefix())
+                                .replace("[id]",""+reason.getID())
+                                .replace("[name]",reason.getDisplay())
+                                .replace("[historyType]",reason.getHistoryType().getDisplay())
+                                .replace("[banType]",reason.getBanType().getDisplay())
+                                .replace("[reason]",reason.getDisplay())
+                                .replace("[points]",""+reason.getPoints()));
+                        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/ban "+player.getUUID()+" "+reason.getID()));
+                        sender.sendMessage(component);
+                    }
                 }
                 return;
             }else if(args[0].equalsIgnoreCase("jump") || args[0].equalsIgnoreCase("goto") || args[0].equalsIgnoreCase("take") && args.length >= 2) {

@@ -2,7 +2,7 @@
  * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 08.05.20, 19:58
+ * @since 26.07.20, 22:22
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -66,7 +66,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
     public CloudNetV3PlayerManager() {
         this.localPlayers = new HashMap<>();
         this.externalPlayers = new HashMap<>();
-        Wrapper.getInstance().sendChannelMessage("DKBans","getOnlinePlayers",new JsonDocument());
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","getOnlinePlayers",new JsonDocument());
     }
 
     @Override
@@ -119,7 +119,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
     @Override
     public void updatePlayer(NetworkPlayer player, NetworkPlayerUpdateCause cause, Document properties) {
         JsonDocument data = JsonDocument.newDocument(properties.toJson());
-        Wrapper.getInstance().sendChannelMessage("DKBans","updatePlayer",data
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","updatePlayer",data
                 .append("uuid",player.getUUID()).append("sender",Wrapper.getInstance().getServiceId().getName()).append("cause",cause));
         BungeeCordBanSystemBootstrap.getInstance().executePlayerUpdateEvents(player.getUUID(),cause,properties,true);
     }
@@ -131,6 +131,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
     public int getOnlineCount() {
         return this.localPlayers.size()+this.externalPlayers.size();
     }
+
     @EventHandler
     public void onServerSwitch(ServerSwitchEvent event){
         ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedOnlineNetworkPlayerUpdateEvent(
@@ -153,6 +154,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
     public void onDisconnect(BungeeBridgeProxyPlayerDisconnectEvent event){
         this.externalPlayers.remove(event.getNetworkConnectionInfo().getUniqueId());
     }
+
     @EventHandler
     public void onMessageReceive(BungeeChannelMessageReceiveEvent event){
         if(event.getChannel().equalsIgnoreCase("DKBans")){
@@ -171,7 +173,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
                 ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
                 if(player != null){
                     int ping = player.getPing();
-                    Wrapper.getInstance().sendChannelMessage("DKBans","pingResult",new JsonDocument()
+                    Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","pingResult",new JsonDocument()
                             .append("uuid",uuid).append("ping",ping));
                 }
             }else if(event.getMessage().equalsIgnoreCase("pingResult")){
@@ -265,7 +267,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
                     players.add(new BungeeCordPlayerManager.PlayerUpdateObject(player.getUniqueId(),player.getName()
                             ,server==null?Messages.UNKNOWN:server.getName(),Wrapper.getInstance().getServiceId().getName()));
                 }
-                Wrapper.getInstance().sendChannelMessage("DKBans","syncOnlinePlayers"
+                Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","syncOnlinePlayers"
                         ,new JsonDocument().append("players",players));
             }else if(event.getMessage().equalsIgnoreCase("syncOnlinePlayers")){
                 List<CloudNetV3OnlinePlayer> players = event.getData().get("players"

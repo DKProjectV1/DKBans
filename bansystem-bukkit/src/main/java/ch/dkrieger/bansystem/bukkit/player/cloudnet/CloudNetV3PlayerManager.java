@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 26.07.20, 22:22
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -50,7 +50,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
 
     public CloudNetV3PlayerManager() {
         this.externalPlayers = new HashMap<>();
-        Wrapper.getInstance().sendChannelMessage("DKBans","getOnlinePlayers",new JsonDocument());
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","getOnlinePlayers",new JsonDocument());
     }
     @Override
     public OnlineNetworkPlayer getOnlinePlayer(int id) {
@@ -89,7 +89,7 @@ public class CloudNetV3PlayerManager extends PlayerManager implements Listener {
     @Override
     public void updatePlayer(NetworkPlayer player, NetworkPlayerUpdateCause cause, Document properties) {
         JsonDocument data = JsonDocument.newDocument(properties.toJson());
-        Wrapper.getInstance().sendChannelMessage("DKBans","updatePlayer",data
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","updatePlayer",data
                 .append("uuid",player.getUUID()).append("sender",Wrapper.getInstance().getServiceId().getName()).append("cause",cause).append("properties",properties));
         BukkitBanSystemBootstrap.getInstance().executePlayerUpdateEvents(player.getUUID(),cause,properties,true);
     }

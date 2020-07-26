@@ -2,7 +2,7 @@
  * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 08.05.20, 19:58
+ * @since 26.07.20, 22:22
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -451,8 +451,10 @@ public class SQLDKBansStorage implements DKBansStorage {
 
     @Override
     public void updateHistoryEntry(NetworkPlayer player, HistoryEntry entry) {
-        this.histories.update().set("jsonEntryObject",GeneralUtil.GSON_NOT_PRETTY.toJson(entry,new TypeToken<HistoryEntry>(){}.getType()))
-                .where("uuid",player.getUUID().toString()).where("id",entry.getID()).execute();
+        this.histories.update()
+                .set("jsonEntryObject",GeneralUtil.GSON_NOT_PRETTY.toJson(entry,new TypeToken<HistoryEntry>(){}.getType()))
+                .where("uuid",player.getUUID().toString())
+                .where("id",entry.getID()).execute();
     }
 
     @Override

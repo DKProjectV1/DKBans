@@ -2,7 +2,7 @@
  * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 24.01.20, 21:13
+ * @since 26.07.20, 22:22
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -61,6 +61,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onLogin(LoginEvent event){
+        if(event.isCancelled()) return;
         if(BungeeCordBanSystemBootstrap.getInstance().isCloudNetV2()) CloudNetExtension.loginFix(event.getConnection().getUniqueId());
         if(ProxyServer.getInstance().getConfig().isOnlineMode() && !(event.getConnection().isOnlineMode())) return;
         if(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.NICKNAME,event.getConnection().getName())){

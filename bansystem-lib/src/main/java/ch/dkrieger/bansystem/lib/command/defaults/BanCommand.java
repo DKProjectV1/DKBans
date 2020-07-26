@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 08.11.19, 22:06
+ * @since 26.07.20, 22:22
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -74,7 +74,9 @@ public class BanCommand extends NetworkCommand {
         if(BanSystem.getInstance().getConfig().banMode == BanMode.SELF){
             StringBuilder message = new StringBuilder();
             for(int i = 1; i< args.length;i++) message.append(args[i]).append(" ");
-            sendBanMessage(sender,player,player.ban(BanType.NETWORK,-1,TimeUnit.MICROSECONDS,message.toString()));
+
+
+            sendBanMessage(sender,player,player.ban(BanType.NETWORK,-1,TimeUnit.MICROSECONDS,message.toString(),0,sender.getUUID()));
             return;
         }
 

@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 09.06.19 12:15
+ * @since 26.07.20, 22:22
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -79,7 +79,7 @@ public class PlaceHolderApiHook extends PlaceholderExpansion {
             }else if(identifier.endsWith("_onlinetime")){
                 return GeneralUtil.calculateRemaining(player.getOnlineTime(),false);
             }else if(identifier.endsWith("_onlinetime-short")){
-                return GeneralUtil.calculateRemaining(player.getOnlineTime(),false);
+                return GeneralUtil.calculateRemaining(player.getOnlineTime(),true);
             }else if(identifier.endsWith("_onlinetime-hour")){
                 return String.valueOf(Math.round(((player.getOnlineTime()/1000D)/60D)/60D));
             }else if(identifier.endsWith("_onlinetime-days")){

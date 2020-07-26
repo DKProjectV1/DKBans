@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 08.11.19, 22:06
+ * @since 26.07.20, 22:22
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -27,10 +27,7 @@ import ch.dkrieger.bansystem.lib.player.NetworkPlayer;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.chat.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BroadcastManager {
 
@@ -54,7 +51,7 @@ public class BroadcastManager {
 
     public Broadcast getNext(){
         List<Broadcast> broadcasts = getAutoBroadcasts();
-        broadcasts.sort((o1, o2) -> (o1.getID()>o2.getID()?1:-1));
+        broadcasts.sort((o1, o2) -> Integer.compare(o1.getID(),o2.getID()));
         if(broadcasts.size() < 1) return null;
         if(BanSystem.getInstance().getConfig().autobroadcastSorted){
             Broadcast broadcast = null;

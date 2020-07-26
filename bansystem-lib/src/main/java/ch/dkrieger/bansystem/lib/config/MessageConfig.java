@@ -2,7 +2,7 @@
  * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 08.05.20, 19:58
+ * @since 26.07.20, 22:22
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -348,8 +348,9 @@ public class MessageConfig extends SimpleConfig{
         Messages.IPBAN_NOT_BANNED = addAndGetMessageValue("ipban.notbanned","[prefix]&7This ip is not banned.");
         Messages.IPBAN_ALREADY_BANNED = addAndGetMessageValue("ipban.alreadybanned","[prefix]&7This ip is already banned.");
 
-        Messages.IPUNBAN_HELP = addAndGetMessageValue("ipunban.help","[prefix]&cUsage&8: &7/ipunban <ip>");
-        Messages.IPUNBAN_SUCCESS = addAndGetMessageValue("ipunban.success","[prefix]&7The ip &c[ip] &7was unbanned.");
+        Messages.IPUNBAN_HELP = addAndGetMessageValue("ipunban.help","[prefix] &cUsage&8: &7/ipunban <ip>");
+        Messages.IPUNBAN_SUCCESS = addAndGetMessageValue("ipunban.success","[prefix] &7The ip &c[ip] &7was unbanned.");
+        Messages.IPUNBAN_NOT_BANNED = addAndGetMessageValue("ipunban.notBanned","[prefix] &7The ip &c[] from &c[player] &7is not banned");
 
         Messages.CHATLOG_HELP = addAndGetMessageValue("chatlog.help","[prefix]&cUsage&8: &7/chatlog player/server <player/server>");
         Messages.CHATLOG_NOTFOUND = addAndGetMessageValue("chatlog.notfound","[prefix]&cThe chatlog was not found.");

@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 26.07.20, 22:22
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -84,17 +84,17 @@ public abstract class CloudNetV3Network implements DKNetwork {
 
     @Override
     public void broadcast(TextComponent component) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","broadcast",new JsonDocument().append("message",component));
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","broadcast",new JsonDocument().append("message",component));
     }
 
     @Override
     public void broadcast(Broadcast broadcast) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","broadcast",new JsonDocument().append("message",broadcast));
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","broadcast",new JsonDocument().append("message",broadcast));
     }
 
     @Override
     public void sendJoinMe(JoinMe joinMe) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","sendJoinMe",new JsonDocument().append("joinme",joinMe));
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","sendJoinMe",new JsonDocument().append("joinme",joinMe));
     }
 
     @Override
@@ -114,22 +114,22 @@ public abstract class CloudNetV3Network implements DKNetwork {
 
     @Override
     public void sendTeamMessage(TextComponent component, boolean onlyLogin) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","sendTeamMessage",new JsonDocument().append("message",component)
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","sendTeamMessage",new JsonDocument().append("message",component)
                 .append("onlyLogin",onlyLogin));
     }
 
     @Override
     public void reloadFilter() {
-        Wrapper.getInstance().sendChannelMessage("DKBans","reloadFilter",new JsonDocument());
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","reloadFilter",new JsonDocument());
     }
 
     @Override
     public void reloadBroadcast() {
-        Wrapper.getInstance().sendChannelMessage("DKBans","reloadBroadcast",new JsonDocument());
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","reloadBroadcast",new JsonDocument());
     }
 
     @Override
     public void syncSetting(String name) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","syncSetting",new JsonDocument("name",name));
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","syncSetting",new JsonDocument("name",name));
     }
 }

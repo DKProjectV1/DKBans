@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 10.08.19, 21:12
+ * @since 26.07.20, 22:22
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -191,15 +191,16 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
         if(plugin != null && plugin.getDescription() != null){
             this.cloudNetV3 = true;
             System.out.println(Messages.SYSTEM_PREFIX+"CloudNetV3 found");
-            return;
         }else this.cloudNetV3 = false;
     }
 
     public void executePlayerUpdateEvents(UUID player, NetworkPlayerUpdateCause cause, Document properties, boolean onThisServer){
+        if(properties == null) return;
         if(cause == NetworkPlayerUpdateCause.LOGIN){
             ProxyServer.getInstance().getPluginManager().callEvent(new ProxiedNetworkPlayerLoginEvent(player,System.currentTimeMillis(),onThisServer));
         }else if(cause == NetworkPlayerUpdateCause.LOGOUT){
             List<Report> reports = properties.getObject("reports",new TypeToken<List<Report>>(){}.getType());
+            if(reports == null) return;
             List<UUID> sentStaffs = new ArrayList<>();
             GeneralUtil.iterateForEach(reports, object -> {
                 ProxiedPlayer reporter = ProxyServer.getInstance().getPlayer(object.getReporterUUID());
@@ -262,6 +263,7 @@ public class BungeeCordBanSystemBootstrap extends Plugin implements DKBansPlatfo
                     ,System.currentTimeMillis(),onThisServer,properties.getObject("staff", UUID.class)));
         }else if(cause == NetworkPlayerUpdateCause.REPORTDENY){
             List<Report> reports = properties.getObject("reports",new TypeToken<List<Report>>(){}.getType());
+            if(reports == null) return;
             List<UUID> sentStaffs = new ArrayList<>();
             GeneralUtil.iterateForEach(reports, object -> {
                 ProxiedPlayer reporter = ProxyServer.getInstance().getPlayer(object.getReporterUUID());

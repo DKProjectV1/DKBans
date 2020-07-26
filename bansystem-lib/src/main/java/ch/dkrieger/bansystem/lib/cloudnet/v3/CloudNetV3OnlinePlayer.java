@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2018 The DKBans Project (Davide Wietlisbach)
+ * (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
  *
  * @author Davide Wietlisbach
- * @since 30.12.18 14:39
+ * @since 26.07.20, 22:22
  * @Website https://github.com/DevKrieger/DKBans
  *
  * The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -74,7 +74,7 @@ public class CloudNetV3OnlinePlayer implements OnlineNetworkPlayer {
     @Override
     public int getPing() {
         PINGGETTER.remove(getUUID());
-        Wrapper.getInstance().sendChannelMessage("DKBans","getPing"
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","getPing"
                 ,new JsonDocument().append("uuid",getUUID()));
         int timeOut = 0;
 
@@ -97,43 +97,43 @@ public class CloudNetV3OnlinePlayer implements OnlineNetworkPlayer {
 
     @Override
     public void sendMessage(TextComponent component) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","sendMessage",new JsonDocument()
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","sendMessage",new JsonDocument()
                 .append("uuid",getUUID()).append("message",component));
     }
 
     @Override
     public void connect(String server) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","connect",new JsonDocument()
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","connect",new JsonDocument()
                 .append("uuid",getUUID()).append("server",server));
     }
 
     @Override
     public void executeCommand(String command) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","executeCommand",new JsonDocument()
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","executeCommand",new JsonDocument()
                 .append("uuid",getUUID()).append("command",command));
     }
 
     @Override
     public void sendBan(Ban ban) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","sendBan",new JsonDocument()
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","sendBan",new JsonDocument()
                 .append("uuid",getUUID()).append("ban",ban));
     }
 
     @Override
     public void sendKick(Kick kick) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","kick",new JsonDocument()
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","kick",new JsonDocument()
                 .append("uuid",getUUID()).append("kick",kick));
     }
 
     @Override
     public void kickToFallback(String message) {
-        Wrapper.getInstance().sendChannelMessage("DKBans", "fallbackKick",
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans", "fallbackKick",
                 new JsonDocument().append("uuid", getUUID()).append("message", message));
     }
 
     @Override
     public void sendWarn(Warn warn) {
-        Wrapper.getInstance().sendChannelMessage("DKBans","warn",new JsonDocument()
+        Wrapper.getInstance().getMessenger().sendChannelMessage("DKBans","warn",new JsonDocument()
                 .append("uuid",getUUID()).append("warn",warn));
     }
 

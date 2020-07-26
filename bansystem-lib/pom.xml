@@ -3,7 +3,7 @@
   ~ (C) Copyright 2020 The DKBans Project (Davide Wietlisbach)
   ~
   ~ @author Davide Wietlisbach
-  ~ @since 08.05.20, 19:58
+  ~ @since 26.07.20, 22:22
   ~ @Website https://github.com/DevKrieger/DKBans
   ~
   ~ The DKBans Project is under the Apache License, version 2.0 (the "License");
@@ -25,7 +25,7 @@
     <parent>
         <artifactId>DKBans</artifactId>
         <groupId>ch.dkrieger.bansystem</groupId>
-        <version>2.3.1</version>
+        <version>2.3.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
