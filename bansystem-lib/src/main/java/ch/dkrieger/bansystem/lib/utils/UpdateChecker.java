@@ -21,12 +21,15 @@ package ch.dkrieger.bansystem.lib.utils;
  */
 
 import ch.dkrieger.bansystem.lib.BanSystem;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.stream.Collectors;
 
 public class UpdateChecker {
 
@@ -36,10 +39,13 @@ public class UpdateChecker {
     private String latestVersionString;
     private UpdateCheckResult updateCheckResult;
 
+    private BaseComponent[] endOfLifeMessage;
+
     public UpdateChecker(int resourceId) throws MalformedURLException {
         this.resourceId = resourceId;
         this.resourceURL = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + resourceId);
         this.currentVersionString = BanSystem.getInstance().getVersion();
+        this.loadEndOfLive();
     }
 
     public boolean hasNewVersion() {
@@ -86,6 +92,19 @@ public class UpdateChecker {
         } catch (Exception exception) {
             return null;
         }
+    }
+
+    public BaseComponent[] getEndOfLifeMessage(){
+        return endOfLifeMessage;
+    }
+
+    public void loadEndOfLive(){
+        try {
+            URLConnection urlConnection = new URL("https://content.pretronic.net/dkplugins-legacy/dkbans.txt").openConnection();
+            String result = new BufferedReader(new InputStreamReader(urlConnection.getInputStream())).lines()
+                    .parallel().collect(Collectors.joining("\n"));
+            this.endOfLifeMessage = ComponentSerializer.parse(result);
+        } catch (Exception ignored) {}
     }
 
     public enum UpdateCheckResult {

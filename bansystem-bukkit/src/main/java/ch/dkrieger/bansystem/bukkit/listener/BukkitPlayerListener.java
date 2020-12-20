@@ -30,6 +30,7 @@ import ch.dkrieger.bansystem.lib.player.history.BanType;
 import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -123,8 +124,18 @@ public class BukkitPlayerListener implements Listener {
             player.playerLogin(event.getPlayer().getName(),event.getPlayer().getAddress().getAddress().getHostAddress()
                     ,0,Messages.UNKNOWN,"Proxy-1"
                     ,BukkitBanSystemBootstrap.getInstance().getColor(player),event.getPlayer().hasPermission("dkbans.bypass"));
-            if(!BanSystem.getInstance().getConfig().bungeecord && event.getPlayer().hasPermission("dkbans.admin") && BanSystem.getInstance().getUpdateChecker().hasNewVersion()) {
-                event.getPlayer().sendMessage(Messages.PREFIX_BAN + "§7New version available §e" + BanSystem.getInstance().getUpdateChecker().getLatestVersionString());
+            if(!BanSystem.getInstance().getConfig().bungeecord && event.getPlayer().hasPermission("dkbans.admin")) {
+                if(BanSystem.getInstance().getUpdateChecker().hasNewVersion()){
+                    event.getPlayer().sendMessage(Messages.PREFIX_BAN + "§7New version available §e" + BanSystem.getInstance().getUpdateChecker().getLatestVersionString());
+                }
+                BaseComponent[] messages = BanSystem.getInstance().getUpdateChecker().getEndOfLifeMessage();
+                if(messages != null){
+                    event.getPlayer().sendMessage(Messages.PREFIX_BAN+" §7------------------------");
+                    for (BaseComponent message : messages) {
+                        BukkitBanSystemBootstrap.getInstance().sendTextComponent(event.getPlayer(),message);
+                    }
+                    event.getPlayer().sendMessage(Messages.PREFIX_BAN+" §7------------------------");
+                }
             }
         });
     }

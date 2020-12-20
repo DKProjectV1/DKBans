@@ -45,6 +45,7 @@ import ch.dkrieger.bansystem.lib.report.Report;
 import ch.dkrieger.bansystem.lib.utils.Document;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import com.google.gson.reflect.TypeToken;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
@@ -231,7 +232,7 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
         }
     }
 
-    public void sendTextComponent(Player player, TextComponent component){
+    public void sendTextComponent(Player player, BaseComponent component){
         try{
             Class<?> IChatBaseComponent = getMinecraftClass("IChatBaseComponent");
             Class<?> ChatSerializer = null;
@@ -249,8 +250,14 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
                 Object type = typeA.invoke(null, (byte)0);
                 setField(packet,"b",type);
             }
+            if(getField(packet.getClass(),"c") != null){
+                setField(packet,"c",UUID.randomUUID());
+            }
+
+
             sendPacket(player,packet);
         }catch (Exception exception){
+            exception.printStackTrace();
             player.sendMessage(component.toLegacyText());
         }
     }
@@ -354,7 +361,7 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
         for(String command :  BanSystem.getInstance().getConfig().reportAutoCommandEnter) Bukkit.dispatchCommand(player,command);
         BanSystem.getInstance().getPlayerManager().getPlayer(player.getUniqueId()).setWatchingReportedPlayer(null);
     }
-    
+
     public static BukkitBanSystemBootstrap getInstance() {
         return instance;
     }

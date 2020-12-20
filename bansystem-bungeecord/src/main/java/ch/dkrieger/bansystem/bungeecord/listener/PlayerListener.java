@@ -32,6 +32,7 @@ import ch.dkrieger.bansystem.lib.player.history.entry.Ban;
 import ch.dkrieger.bansystem.lib.reason.BanReason;
 import ch.dkrieger.bansystem.lib.utils.GeneralUtil;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -138,8 +139,18 @@ public class PlayerListener implements Listener {
             player.playerLogin(event.getPlayer().getName(),event.getPlayer().getAddress().getAddress().getHostAddress()
                     ,event.getPlayer().getPendingConnection().getVersion(),"Unknown",BungeeCordBanSystemBootstrap.getInstance().getProxyName()
                     ,BungeeCordBanSystemBootstrap.getInstance().getColor(player),event.getPlayer().hasPermission("dkbans.bypass"));
-            if(event.getPlayer().hasPermission("dkbans.admin") && BanSystem.getInstance().getUpdateChecker().hasNewVersion()) {
-                event.getPlayer().sendMessage(TextComponent.fromLegacyText(Messages.PREFIX_BAN + "§7New version available §e" + BanSystem.getInstance().getUpdateChecker().getLatestVersionString()));
+            if(event.getPlayer().hasPermission("dkbans.admin")) {
+                if(BanSystem.getInstance().getUpdateChecker().hasNewVersion()){
+                    event.getPlayer().sendMessage(TextComponent.fromLegacyText(Messages.PREFIX_BAN + "§7New version available §e" + BanSystem.getInstance().getUpdateChecker().getLatestVersionString()));
+                }
+                BaseComponent[] messages = BanSystem.getInstance().getUpdateChecker().getEndOfLifeMessage();
+                if(messages != null){
+                    event.getPlayer().sendMessage(Messages.PREFIX_BAN+" §7------------------------");
+                    for (BaseComponent message : messages) {
+                        event.getPlayer().sendMessage(message);
+                    }
+                    event.getPlayer().sendMessage(Messages.PREFIX_BAN+" §7------------------------");
+                }
             }
         });
     }
