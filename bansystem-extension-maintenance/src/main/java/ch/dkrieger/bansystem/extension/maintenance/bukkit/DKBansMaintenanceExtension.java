@@ -52,7 +52,6 @@ public class DKBansMaintenanceExtension extends JavaPlugin implements Listener {
 
     @EventHandler(priority= EventPriority.HIGHEST)
     public void onPing(ServerListPingEvent event){
-        System.out.println("Ping");
         if(maintenance.isEnabled()) event.setMotd(maintenance.replace(config.motdLine1)+"\n"+maintenance.replace(config.motdLine2));
     }
 
