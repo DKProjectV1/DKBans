@@ -79,9 +79,11 @@ public abstract class HistoryEntry {
     public String getReason() {
         return ChatColor.translateAlternateColorCodes('&',reason);
     }
+
     public String getRawReason() {
         return reason;
     }
+
     public String getMessage() {
         return message;
     }
@@ -106,12 +108,14 @@ public abstract class HistoryEntry {
     public String getStaff() {
         return staff;
     }
+
     public NetworkPlayer getStaffAsPlayer(){
         try{
             return BanSystem.getInstance().getPlayerManager().getPlayer(UUID.fromString(this.staff));
         }catch (Exception exception){}
         return null;
     }
+
     public String getStaffName(){
         if(staff == null) return BanSystem.getInstance().getConfig().playerColorConsole+"Console";
         try{
@@ -119,6 +123,7 @@ public abstract class HistoryEntry {
         }catch (Exception exception){}
         return BanSystem.getInstance().getConfig().playerColorConsole+this.staff;
     }
+
     public Document getProperties() {
         return properties;
     }

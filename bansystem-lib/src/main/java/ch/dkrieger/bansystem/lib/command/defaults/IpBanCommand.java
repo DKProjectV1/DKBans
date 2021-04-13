@@ -91,8 +91,8 @@ public class IpBanCommand extends NetworkCommand {
         }
         long duration = -1;
         if(args.length >= 2){
-            if(args.length >= 3) duration = GeneralUtil.convertToMillis(Long.valueOf(args[1]),args[2]);
-            else duration = TimeUnit.DAYS.toMillis(Long.valueOf(args[1]));
+            if(args.length >= 3) duration = GeneralUtil.convertToMillis(Long.parseLong(args[1]),args[2]);
+            else duration = TimeUnit.DAYS.toMillis(Long.parseLong(args[1]));
         }
         IPBan ban = BanSystem.getInstance().getPlayerManager().banIp(ip,duration,TimeUnit.DAYS,lastPlayer);
         sender.sendMessage(Messages.IPBAN_SUCCESS

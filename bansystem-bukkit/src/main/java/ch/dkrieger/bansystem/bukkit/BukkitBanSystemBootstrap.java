@@ -254,7 +254,6 @@ public class BukkitBanSystemBootstrap extends JavaPlugin implements DKBansPlatfo
                 setField(packet,"c",UUID.randomUUID());
             }
 
-
             sendPacket(player,packet);
         }catch (Exception exception){
             exception.printStackTrace();

@@ -229,7 +229,7 @@ public class PlayerListener implements Listener {
                             lastMessage.message = event.getMessage();
                             lastMessage.time = System.currentTimeMillis();
                         }
-                    }else this.lastMessage.put(player.getUniqueId(),new lastMessage(event.getMessage(),System.currentTimeMillis()));
+                    }else this.lastMessage.put(player.getUniqueId(), new lastMessage(event.getMessage(), System.currentTimeMillis()));
                 }
 
                 if(BanSystem.getInstance().getFilterManager().isBlocked(FilterType.MESSAGE,event.getMessage())){
@@ -310,7 +310,7 @@ public class PlayerListener implements Listener {
         }
     }
 
-    private class lastMessage {
+    private static class lastMessage {
 
         private String message;
         private long time;
@@ -320,4 +320,5 @@ public class PlayerListener implements Listener {
             this.time = time;
         }
     }
+
 }

@@ -49,6 +49,7 @@ public class Ban extends HistoryEntry {
         this.banType = banType;
         this.versions = new ArrayList<>();
     }
+
     public long getTimeOut() {
         final long[] time = new long[2];
         final boolean[] found = new boolean[1];
@@ -65,12 +66,15 @@ public class Ban extends HistoryEntry {
     public long getDuration(){
         return getTimeOut()-getTimeStamp();
     }
+
     public long getRemaining(){
         return getTimeOut()-System.currentTimeMillis();
     }
+
     public long getFirstDuration(){
         return timeOut-getTimeStamp();
     }
+
     public long getFirstRemaining(){
         return timeOut-System.currentTimeMillis();
     }
@@ -269,15 +273,19 @@ public class Ban extends HistoryEntry {
         public int getID() {
             return id;
         }
+
         public String getStaff() {
             return staff;
         }
+
         public String getMessage() {
             return message;
         }
+
         public long getTime() {
             return time;
         }
+
         public String getStaffName(){
             if(staff == null) return BanSystem.getInstance().getConfig().playerColorConsole+"Console";
             try{
@@ -289,6 +297,7 @@ public class Ban extends HistoryEntry {
 
         public abstract String getInfoMessage();
     }
+
     public class ReasonBanEdit extends BanEditVersion {
 
         private String reason;
