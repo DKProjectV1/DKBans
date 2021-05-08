@@ -3,6 +3,9 @@ Welcome to the official DKBans repository.
 ### Introduction
 DKBans is an high configurable Opensource Minecraft BanSystem with a lot of features and this is the official repository from the DKBans project. You are able to integrate DKBans in any platform, DKBans is already running on Spigot BungeeCord and CloudNet networks.
 
+**DKBans V1 is no longer supported and maintained. Checkout the new DKBans V5 [here](https://dkplugins.pretronic.net/dkbans/)**
+
+
 ### Wiki
 * [Home](https://github.com/DevKrieger/DKBans/wiki)
 * [Support](https://github.com/DevKrieger/DKBans/wiki/Support)
